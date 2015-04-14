@@ -1,4 +1,4 @@
-package it.polimi.outerspace.outerspace;
+package it.polimi.outerspace;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
