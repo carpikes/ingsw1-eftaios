@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>it.polimi.ingsw</groupId>
-  <artifactId>AlbaneseCarlucci</artifactId>
+  <artifactId>albanesecarlucci</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>AlbaneseCarlucci</name>
+  <name>albanesecarlucci</name>
   <url>http://maven.apache.org</url>
 
   <properties>
