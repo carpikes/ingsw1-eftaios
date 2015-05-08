@@ -26,9 +26,10 @@ public class ServerTCP implements Runnable{
             while (true) {
                 try {
                     Socket s = mServer.accept();
-                    Client c = new ClientTCP(s);
+                    ClientConn c = new ClientTCPConn(s);
+                    
                     mCachedPool.submit(c);
-                    Server.addClient(c);
+                    Server.getInstance().addClient(c);
                 } catch(Exception e){
                     e.printStackTrace();
                 }
