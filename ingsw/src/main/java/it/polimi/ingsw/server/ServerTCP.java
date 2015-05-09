@@ -18,7 +18,7 @@ public class ServerTCP implements Runnable{
         mPort = port;
         mCachedPool = Executors.newCachedThreadPool();
     }
-    
+
     public void run() {
         try {
             mServer = new ServerSocket(mPort);
@@ -27,7 +27,7 @@ public class ServerTCP implements Runnable{
                 try {
                     Socket s = mServer.accept();
                     ClientConn c = new ClientTCPConn(s);
-                    
+
                     mCachedPool.submit(c);
                     Server.getInstance().addClient(c);
                 } catch(Exception e){
@@ -35,7 +35,7 @@ public class ServerTCP implements Runnable{
                 }
             }
         } catch(IOException e){
-        	mLog.log(Level.SEVERE, "TCP Server is down");
+            mLog.log(Level.SEVERE, "TCP Server is down");
             e.printStackTrace();
         }
     }
