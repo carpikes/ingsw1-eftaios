@@ -23,8 +23,16 @@ public class Client {
 			case WAITING_FOR_USERNAME:
 				// msg = username
 				
+				if(mGame.canSetName(msg)) {
+					// FIXME: Race Condition here!
+					mUser = msg;
+				}
 				break;
 		}
+	}
+	
+	public String getUsername() {
+		return mUser;
 	}
 	
 	public void handleDisconnect() {

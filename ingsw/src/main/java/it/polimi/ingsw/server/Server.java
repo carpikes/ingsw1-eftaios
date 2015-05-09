@@ -2,8 +2,12 @@ package it.polimi.ingsw.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Server {
+    private static final Logger mLog = Logger.getLogger(Server.class.getName());
+
     private static class Holder {
         private static final Server INSTANCE = new Server();
     }
@@ -31,16 +35,25 @@ public class Server {
     }
     
     public synchronized void addClient(ClientConn conn) {
-    	if(mCurGame != null && mCurGame.getNumberOfPlayers() == mMaxPlayers) {
+        /* Invariant: mCurGame cannot be full here */
+
+    	if(mCurGame == null) {
+    		mCurGame = new Game();
+        }
+
+    	Client client = new Client(conn,mCurGame);
+
+        if(!mCurGame.addPlayer(client)) {
+            /* No game may be full here */
+            mLog.log(Level.SEVERE, "Game full in a wrong way. What's Happening?");
+            client.handleDisconnect();
+            return;
+        }
+
+        if(mCurGame.isFull()) {
         	mGamesRunning.add(mCurGame);
         	mCurGame = null;
-    	}
-    	
-    	if(mCurGame == null)
-    		mCurGame = new Game();
-    	
-    	Client client = new Client(conn, mCurGame);
-    	mCurGame.addPlayer(client);
+        }
     }
 
     public void runServer() {
