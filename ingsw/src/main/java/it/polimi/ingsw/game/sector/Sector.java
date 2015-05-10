@@ -19,5 +19,13 @@ public abstract class Sector {
 		}
 	}
 	
+	class SectorData {
+		public static final int NOT_VALID = 0;
+		public static final int NOT_DANGEROUS = 1;
+		public static final int DANGEROUS = 2;
+		public static final int ALIEN = 3;
+		public static final int HUMAN = 4;
+		public static final int HATCH = 5;
+	}
 	
 }
