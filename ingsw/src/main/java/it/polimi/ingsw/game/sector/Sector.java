@@ -1,4 +1,4 @@
-package it.polimi.ingsw.game;
+package it.polimi.ingsw.game.sector;
 
 
 public abstract class Sector {

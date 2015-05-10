@@ -1,4 +1,4 @@
-package it.polimi.ingsw.game;
+package it.polimi.ingsw.game.sector;
 
 /*
  * TODO Find a cleaner solution (?)

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.game;
 
+import it.polimi.ingsw.game.sector.Sector;
+
 import java.io.BufferedReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
