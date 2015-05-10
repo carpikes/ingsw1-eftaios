@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ClientTCPConn extends ClientConn{
+class ClientTCPConn extends ClientConn{
     private final PrintWriter mOut;
     private final BufferedReader mIn;
     private final Socket mSocket;

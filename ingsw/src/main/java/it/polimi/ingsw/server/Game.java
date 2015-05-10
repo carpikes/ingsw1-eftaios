@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Game {
+class Game {
     private static final Logger mLog = Logger.getLogger(Game.class.getName());
 
     private static enum States {
@@ -51,10 +51,6 @@ public class Game {
         return true;
     }
 
-    public void setRunning() {
-
-    }
-
     public synchronized boolean isRunning() {
         return mIsReady;
     }
@@ -76,6 +72,8 @@ public class Game {
         return true;
     }
 
+    // TODO: notify users about someone without username
+    // TODO: generate a random username if someone won't choose it
     public void update() {
         if(!mIsRunning) {
             // Game is ready but it is not running 

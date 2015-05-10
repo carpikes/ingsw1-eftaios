@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Server {
+class Server {
     private static final Logger mLog = Logger.getLogger(Server.class.getName());
 
     private static class Holder {

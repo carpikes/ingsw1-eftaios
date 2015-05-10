@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ServerTCP implements Runnable{
+class ServerTCP implements Runnable{
     private static final Logger mLog = Logger.getLogger(ServerTCP.class.getName());
     private ExecutorService mCachedPool;
     private ServerSocket mServer;

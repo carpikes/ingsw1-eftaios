@@ -1,9 +1,8 @@
 package it.polimi.ingsw.game.player;
 
-import it.polimi.ingsw.server.ClientConn;
+import it.polimi.ingsw.client.network.Connection;
 
 public class Player {
 	private Role role; // Alien or Human? You be the judge.
-	private ClientConn connection; // Handle connection to server
-	
+	private Connection connection; // Handle connection to server
 }

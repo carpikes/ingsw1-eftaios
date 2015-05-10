@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server;
 
-public class Client {
+
+class Client {
 
     private final ClientConn mConn;
     private final Game mGame;
