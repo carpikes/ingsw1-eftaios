@@ -17,15 +17,15 @@ public class ConnectionFactory {
         mAssoc = Collections.unmodifiableMap(tAssoc); 
     }
 
-	public static final Map<Integer,String> getConnectionList() {
-	    return mAssoc;
-	}
+    public static final Map<Integer,String> getConnectionList() {
+        return mAssoc;
+    }
 
-	public static Connection getConnection(int type) {
-	    switch(type) {
-	        case CONNECTION_TCP: return new TCPConnection();
+    public static Connection getConnection(int type) {
+        switch(type) {
+            case CONNECTION_TCP: return new TCPConnection();
             case CONNECTION_RMI: return new RMIConnection();
-	    }
-	    return null;
-	}
+        }
+        return null;
+    }
 }

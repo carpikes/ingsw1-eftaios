@@ -11,19 +11,19 @@ class IO {
     }
 
     public static int readInt() {
-       	int i = 0;
-		while(true) {
-			try {
+        int i = 0;
+        while(true) {
+            try {
                 System.out.print("> ");
                 System.out.flush();
-				String m = mReader.readLine();
-				i = Integer.valueOf(m);
-				break;
-			} catch(Exception e) {
-				System.out.println("Invalid choice");
-			}
-		}
-		return i;
+                String m = mReader.readLine();
+                i = Integer.valueOf(m);
+                break;
+            } catch(Exception e) {
+                System.out.println("Invalid choice");
+            }
+        }
+        return i;
     }
 
     public static String readString() {
