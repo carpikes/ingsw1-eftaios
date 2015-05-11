@@ -1,15 +1,17 @@
 package it.polimi.ingsw.client.cli;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
+import it.polimi.ingsw.client.network.OnReceiveListener;
 
-class CLIGame {
+class CLIGame implements OnReceiveListener {
     private Connection mConn;
+    private LinkedBlockingQueue<String> mQueue;
 
     private static void banner() {
         System.out.println("*******************************************************************************");
@@ -32,11 +34,13 @@ class CLIGame {
         System.out.println("*** Command line client                by Michele Albanese & Alain Carlucci ***");
         System.out.println("*******************************************************************************");
         System.out.println("*******************************************************************************");
+        System.out.println("");
     }
 
     public CLIGame() {
+        mQueue = new LinkedBlockingQueue<String>();
         CLIGame.banner();
-
+        IO.write("Which connection do you want to use?");
         Map<Integer,String> mConnectionList = ConnectionFactory.getConnectionList();
 
         Integer min = null, max = null;
@@ -55,8 +59,8 @@ class CLIGame {
         Map<String, Integer> paramsList = mConn.getConfigurationParameters();
         Map<String, Object> paramsConfig = new TreeMap<String, Object>();
         for(Map.Entry<String, Integer> param : paramsList.entrySet()) {
-            IO.write("Insert the following parameter: " + param.getKey());
             Object value = null;
+            IO.write("Type the " + param.getKey());
             switch(param.getValue()) {
                 case Connection.ParametersType.TYPE_INTEGER:
                     value = IO.readInt();
@@ -68,18 +72,70 @@ class CLIGame {
             paramsConfig.put(param.getKey(), value);
         }
         mConn.setConfiguration(paramsConfig);
+        mConn.setOnReceiveListener(this);
+    }
 
+    public void run() {
+        String name = "";
+        
         try {
             mConn.connect();
         } catch (IOException e) {
             System.out.println("Cannot connect: " + e.toString());
+            return;
+        }
+        IO.write("Connected to server.");
+        IO.write("Hello! What's your name?");
+        try {
+            // Choose username
+            boolean nickOk = false;
+            do {
+                name = IO.readString().trim();
+                mConn.sendMessage(name);
+                while(true) {
+                    String cmd = mQueue.take();
+                    if(cmd.startsWith("USEROK ")) {
+                        nickOk = true;
+                        break;
+                    }
+                    if(cmd.equals("USERFAIL"))
+                        break;
+                }
+                if(!nickOk)
+                    IO.write("Another player is using your name. Choose another one.");
+            }while(!nickOk);
+
+            IO.write("Welcome, " + name);
+
+        } catch (InterruptedException e) {
+            return;
         }
 
+        // Main Loop
         try {
-            for(;;)
+            IO.write("Waiting for other players");
+            String cmd = "";
+            while(!cmd.equals("RUN")) {
+                cmd = mQueue.take();
+            }
+            
+            IO.write("Game started. Good luck!");
+            
+            while(mConn.isOnline()) {
                 Thread.sleep(1000);
+            }
         }catch(Exception e) {
 
+        }
+    }
+
+    @Override
+    public void onReceive(String msg) {
+        try {
+            mQueue.put(msg);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 }

@@ -66,9 +66,10 @@ public class TCPConnection extends Connection {
 
     @Override
     public void sendMessage(String msg) {
-        if(mSocket != null && mSocket.isConnected()) {
-            mOut.println(msg);
-        }
+        if(mSocket == null || !mSocket.isConnected() || mOut == null)
+            throw new RuntimeException("Cannot send message. Socket is closed.");
+        mOut.println(msg);
+        mOut.flush();
     }
 
     @Override
@@ -100,15 +101,29 @@ public class TCPConnection extends Connection {
             try  {
                 while(mSocket != null && mSocket.isConnected()) {
                     String line = mReader.readLine();
-                    synchronized(mListener) {
-                        if(mListener != null)
-                            mListener.onReceive(line.trim());
+                    if(mListener != null) {
+                        synchronized(mListener) {
+                            if(mListener != null)
+                                mListener.onReceive(line.trim());
+                        }
                     }
                 }
             } catch (Exception e) {
                 // Connection closed.
+            } finally {
+                System.out.println("Closing socket");
+                try { if(mIn != null) mIn.close();} catch(Exception e) {}
+                try { if(mOut != null) mOut.close();} catch(Exception e) {}
+                try { if(mSocket != null) mSocket.close();} catch(Exception e) {}
             }
         }
 
+    }
+
+    @Override
+    public boolean isOnline() {
+        if(mSocket != null && mSocket.isConnected())
+            return true;
+        return false;
     }
 }

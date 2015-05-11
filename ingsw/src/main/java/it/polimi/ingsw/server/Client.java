@@ -23,10 +23,10 @@ class Client {
             if(mGame.canSetName(msg)) {
                 // FIXME: Race Condition here!
                 mUser = msg;
-                sendMessage("OK " + mGame.getNumberOfPlayers() + " " + mGame.getRemainingTime());
+                sendMessage("USEROK " + mGame.getNumberOfPlayers() + " " + mGame.getRemainingTime());
                 mWaitingForName = false;
             } else {
-                sendMessage("FAIL");
+                sendMessage("USERFAIL");
             }
         } else {
             if(mGame.isRunning()) {

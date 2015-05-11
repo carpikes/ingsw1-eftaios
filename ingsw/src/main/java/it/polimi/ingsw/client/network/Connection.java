@@ -25,4 +25,5 @@ public abstract class Connection {
     public abstract void connect() throws IOException;
     public abstract void sendMessage(String msg);
     public abstract void setOnReceiveListener(OnReceiveListener listener);
+    public abstract boolean isOnline();
 }

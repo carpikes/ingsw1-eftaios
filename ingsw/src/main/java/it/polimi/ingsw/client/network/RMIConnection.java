@@ -29,4 +29,10 @@ public class RMIConnection extends Connection{
 
     }
 
+    @Override
+    public boolean isOnline() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }
