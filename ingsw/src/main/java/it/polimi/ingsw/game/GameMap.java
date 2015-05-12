@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game;
 
 import it.polimi.ingsw.game.sector.Sector;
+import it.polimi.ingsw.game.sector.Sectors;
 
 import java.io.BufferedReader;
 import java.nio.charset.Charset;
@@ -49,7 +50,7 @@ public class GameMap {
 		    	// create Sector according to value read 
 		    	for( int col = 0; col < currentSectorLine.length; ++col ) {
 		    		int idSector = Integer.parseInt(currentSectorLine[col]);
-		    		sectors[row][col] = Sector.getSectorFor(idSector);
+		    		sectors[row][col] = Sectors.getSectorFor(idSector);
 		    	}
 		    }
 		    
