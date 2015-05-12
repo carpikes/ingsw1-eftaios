@@ -56,6 +56,13 @@ class Server {
             mCurGame = null;
         }
     }
+    
+    public synchronized void removeGame(Game g) {
+        if(mCurGame != null && g.equals(mCurGame))
+            mCurGame = null;
+        else
+            mGamesRunning.remove(g);
+    }
 
     public void runServer() {
         for(Runnable server : mServers)

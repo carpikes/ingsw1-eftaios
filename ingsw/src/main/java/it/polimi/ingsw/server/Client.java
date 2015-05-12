@@ -54,5 +54,6 @@ class Client {
     public void handleDisconnect() {
         // TODO
         mConn.disconnect();
+        mGame.removeClient(this);
     }
 }

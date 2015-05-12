@@ -40,9 +40,11 @@ class ClientTCPConn extends ClientConn{
 
     @Override
     public void disconnect() {
-        mOut.println("BYE");
-        mOut.flush();
-        mOut.close();
+        if(mOut != null) {
+            mOut.println("BYE");
+            mOut.flush();
+            mOut.close();
+        }
         try {
             mIn.close();
             mSocket.close();

@@ -93,4 +93,15 @@ class Game {
             // Game is running here
         }
     }
+    
+    public void removeClient(Client client) {
+        mClients.remove(client);
+        if(mClients.size() < mMinPlayers) {
+            if(mClients.size() > 0) {
+                for(Client c : mClients)
+                    c.sendMessage("WIN");
+            }
+            Server.getInstance().removeGame(this);
+        }
+    }
 }
