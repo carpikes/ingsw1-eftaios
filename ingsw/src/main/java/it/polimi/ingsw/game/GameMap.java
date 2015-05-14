@@ -1,70 +1,66 @@
 package it.polimi.ingsw.game;
 
+import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.Sectors;
 
-import java.io.BufferedReader;
-import java.nio.charset.Charset;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameMap {
+    private static final Logger log = Logger.getLogger( GameMap.class.getName() );
+    
 	// including not crossable sectors
-	public static final int WIDTH = 23;
-	public static final int HEIGHT = 14;
+	public static final int ROWS = 14;
+	public static final int COLUMNS = 23;
 	
 	private Sector[][] board;
 	private String name;
 	
 	// You can only construct a new map either from a .map file or by random generation 
-	private GameMap( String _name, Sector[][] _board ) {
-		name = _name;
-		board = _board;
+	private GameMap( String name, Sector[][] board ) {
+	    this.name = name;
+		this.board = board;
 	} 
-	
-	public static GameMap createFromMapFile( Path file ) {
-		Charset charset = Charset.forName("UTF-8");
-		try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
-			// read title
-		    String mapTitle = reader.readLine();
-		    
-		    String line = null;
-		    int row = 0;
-		    
-		    String[] currentSectorLine;
-		    Sector[][] sectors = new Sector[WIDTH][HEIGHT];
-		    
-		    while ((line = reader.readLine()) != null) {
-		        // check for no. of rows
-		    	++row;
-		        if( row > GameMap.WIDTH )
-		        	throw new ArrayIndexOutOfBoundsException("Map file not valid: too many lines.");
-		        
-		        // get array of sectors in row rowCounter
-		    	currentSectorLine = line.split(",");
-		    	
-		        // check for no. of columns
-		    	if( currentSectorLine.length != GameMap.HEIGHT )
-		    		throw new ArrayIndexOutOfBoundsException("Map file not valid: too many columns.");
-		    	
-		    	// create Sector according to value read 
-		    	for( int col = 0; col < currentSectorLine.length; ++col ) {
-		    		int idSector = Integer.parseInt(currentSectorLine[col]);
-		    		sectors[row][col] = Sectors.getSectorFor(idSector);
-		    	}
-		    }
-		    
-		    if( row < GameMap.WIDTH )
-		    	throw new ArrayIndexOutOfBoundsException("Map file not valid: some lines are missing.");
-		    
-		    return new GameMap( mapTitle, sectors );  
-		} catch (Exception e) { 
-			return new GameMap(null, null);
-		}
+
+	public static GameMap createFromMapFile( File file ) {
+	    Sector[][] sectors = new Sector[ROWS][COLUMNS];
+	    String title = null;
+	    
+	    try {
+	        List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+	        Iterator<String> iterator = lines.iterator();
+	        
+	        int i = 0, j = 0;
+	        title = iterator.next();
+	        while ( iterator.hasNext() ) {
+	            String[] currentLine = iterator.next().split(" ");
+	            for( j = 0; j < currentLine.length; ++j )
+	                sectors[i][j] = Sectors.getSectorFor(Integer.parseInt(currentLine[j]));
+	            ++i;
+	        }
+		} catch (IOException e) { 
+			log.log(Level.SEVERE, "Cannot read map file");
+			return null;
+		} catch (ArrayIndexOutOfBoundsException | SectorException e) {
+		    log.log(Level.SEVERE, "File is not well formatted: " + e);
+        }
+		
+		return new GameMap(title, sectors);
 	}
 	
 	public static GameMap generate() {
 		// TODO: advanced functionality to be implemented
 		return new GameMap(null, null);
+	}
+	
+	public Sector getSectorAt( int i, int j ) {
+	    return board[i][j];
 	}
 }

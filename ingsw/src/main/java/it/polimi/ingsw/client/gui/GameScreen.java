@@ -4,6 +4,8 @@ import it.polimi.ingsw.game.GameMap;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.io.File;
+import java.nio.file.Path;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,7 +18,7 @@ public class GameScreen {
 	public static final int HEIGHT = 600;
 	
 	// FIXME: change to non-static once you rip off main method
-	private static GameMap currentMap;
+	// private GameMap currentMap;
 	
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -31,7 +33,7 @@ public class GameScreen {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setResizable(false);
         
-        GameMapPanel gameMapPanel = new GameMapPanel( currentMap );
+        GameMapPanel gameMapPanel = new GameMapPanel( GameMap.createFromMapFile( new File("maps/galilei.txt")) );
         f.add(gameMapPanel, BorderLayout.CENTER);
         
         JPanel rightPanel = new JPanel();

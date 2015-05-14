@@ -1,8 +1,10 @@
 package it.polimi.ingsw.game.sector;
 
+import it.polimi.ingsw.exception.SectorException;
+
 public class Sectors {
 	// Parameterized factory method
-	public static Sector getSectorFor(int id) throws Exception  {
+	public static Sector getSectorFor(int id) throws SectorException  {
 		switch(id) {
 			case ALIEN: 			return new AlienSector();
 			case DANGEROUS: 		return new DangerousSector();
@@ -10,7 +12,7 @@ public class Sectors {
 			case HATCH:				return new HatchSector();
 			case HUMAN:				return new HumanSector();
 			case NOT_VALID:			return new NotValidSector();
-			default:				throw new Exception("Illegal sector code.");
+			default:				throw new SectorException("Illegal sector code.");
 		}
 	}
 	

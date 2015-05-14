@@ -19,5 +19,4 @@ public class HexagonFactory  {
     	
     	return new Polygon( xPts, yPts, numberOfVertices );
     }
-	
 }
