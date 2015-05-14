@@ -8,10 +8,6 @@ import java.util.logging.Logger;
 class Game {
     private static final Logger mLog = Logger.getLogger(Game.class.getName());
 
-    private static enum States {
-        WAITING_FOR_USERS,
-        GAME_RUNNING,
-    };
     // TODO: another hardcoded constant here
     private static final int mMinPlayers = 2;
     private static final int mMaxPlayers = 8;
@@ -72,8 +68,11 @@ class Game {
         return true;
     }
 
-    // TODO: notify users about someone without username
-    // TODO: generate a random username if someone won't choose it
+    /**
+     * This method is called on each game update cycle
+     * @todo notify users about someone without username
+     * @todo generate a random username if someone won't choose it
+     */
     public void update() {
         if(!mIsRunning) {
             // Game is ready but it is not running 
@@ -86,7 +85,7 @@ class Game {
             mLog.log(Level.INFO, "Players ready! Rolling the dice and starting up...");
 
             for(Client c : mClients)
-                c.sendMessage("RUN"); // TODO: something better here
+                c.sendMessage("RUN");
 
             mIsRunning = true;
         } else {

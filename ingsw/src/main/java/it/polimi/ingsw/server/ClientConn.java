@@ -1,6 +1,5 @@
 package it.polimi.ingsw.server;
 
-
 abstract class ClientConn implements Runnable{
     protected Client mClient = null;
 

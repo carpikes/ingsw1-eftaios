@@ -2,13 +2,14 @@ package it.polimi.ingsw.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-class ClientTCPConn extends ClientConn{
+class ClientTCPConn extends ClientConn {
+    private static final Logger mLog = Logger.getLogger(ClientTCPConn.class.getName());
     private final PrintWriter mOut;
     private final BufferedReader mIn;
     private final Socket mSocket;
@@ -26,7 +27,7 @@ class ClientTCPConn extends ClientConn{
                 mClient.handleMessage(msg);
             }
         } catch(IOException e) {
-            // Connection closed. Nothing important here
+            mLog.log(Level.FINE, "Connection closed: " + e.toString());
         }
 
         mClient.handleDisconnect();
@@ -49,7 +50,7 @@ class ClientTCPConn extends ClientConn{
             mIn.close();
             mSocket.close();
         } catch (IOException e) {
-            // Nothing here
+            mLog.log(Level.FINE, "Sockets are already closed: " + e.toString());
         }
     }
 }
