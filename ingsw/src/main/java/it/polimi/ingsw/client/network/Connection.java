@@ -1,9 +1,13 @@
 package it.polimi.ingsw.client.network;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 10, 2015
+ */
 
 public abstract class Connection {
     public class ParametersType {

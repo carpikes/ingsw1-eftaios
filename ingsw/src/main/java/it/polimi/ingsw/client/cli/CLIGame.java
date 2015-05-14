@@ -9,6 +9,11 @@ import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
 
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 10, 2015
+ */
+
 class CLIGame implements OnReceiveListener {
     private Connection mConn;
     private LinkedBlockingQueue<String> mQueue;

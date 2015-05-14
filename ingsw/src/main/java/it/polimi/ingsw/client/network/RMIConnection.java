@@ -3,6 +3,11 @@ package it.polimi.ingsw.client.network;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 10, 2015
+ */
+
 public class RMIConnection extends Connection{
 
     @Override

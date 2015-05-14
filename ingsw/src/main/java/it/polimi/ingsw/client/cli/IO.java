@@ -3,6 +3,11 @@ package it.polimi.ingsw.client.cli;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 10, 2015
+ */
+
 class IO {
     private static BufferedReader mReader = new BufferedReader(new InputStreamReader(System.in));
 
