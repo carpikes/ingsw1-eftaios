@@ -1,5 +1,10 @@
 package it.polimi.ingsw.server;
 
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 8, 2015
+ */
+
 class Client {
     private final ClientConn mConn;
     private final Game mGame;

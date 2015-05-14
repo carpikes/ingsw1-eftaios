@@ -8,6 +8,11 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 8, 2015
+ */
+
 class ServerTCP implements Runnable{
     private static final Logger mLog = Logger.getLogger(ServerTCP.class.getName());
     private ExecutorService mCachedPool;

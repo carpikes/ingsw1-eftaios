@@ -8,6 +8,11 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 8, 2015
+ */
+
 class ClientTCPConn extends ClientConn {
     private static final Logger mLog = Logger.getLogger(ClientTCPConn.class.getName());
     private final PrintWriter mOut;

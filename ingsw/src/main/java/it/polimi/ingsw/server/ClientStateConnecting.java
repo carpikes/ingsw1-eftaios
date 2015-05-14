@@ -1,5 +1,10 @@
 package it.polimi.ingsw.server;
 
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 15, 2015
+ */
+
 public class ClientStateConnecting extends ClientState{
 
     public ClientStateConnecting(Client c, Game g) {
