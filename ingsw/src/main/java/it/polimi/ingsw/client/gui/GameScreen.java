@@ -4,8 +4,9 @@ import it.polimi.ingsw.game.GameMap;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Toolkit;
 import java.io.File;
-import java.nio.file.Path;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -14,8 +15,7 @@ import javax.swing.SwingUtilities;
 public class GameScreen {
 	
 	// TODO: a config file could be useful here
-	public static final int WIDTH = 800;
-	public static final int HEIGHT = 600;
+	public static Dimension screenSize;
 	
 	// FIXME: change to non-static once you rip off main method
 	// private GameMap currentMap;
@@ -29,15 +29,20 @@ public class GameScreen {
     }
     
     private static void createAndShowGUI() {
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        
         JFrame f = new JFrame("Escape from the aliens in outer space");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        f.setUndecorated(true);
         f.setResizable(false);
+        f.setExtendedState(Frame.MAXIMIZED_BOTH);
         
         GameMapPanel gameMapPanel = new GameMapPanel( GameMap.createFromMapFile( new File("maps/galilei.txt")) );
         f.add(gameMapPanel, BorderLayout.CENTER);
         
         JPanel rightPanel = new JPanel();
-        rightPanel.setPreferredSize(new Dimension(WIDTH*3/8,HEIGHT));
+        rightPanel.setPreferredSize( new Dimension( (int) (screenSize.width*0.3), screenSize.height ) );
         f.add(rightPanel, BorderLayout.EAST);
         
         f.pack();

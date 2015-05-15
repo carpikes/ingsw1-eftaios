@@ -41,8 +41,9 @@ public class GameMap {
 	        title = iterator.next();
 	        while ( iterator.hasNext() ) {
 	            String[] currentLine = iterator.next().split(" ");
-	            for( j = 0; j < currentLine.length; ++j )
+	            for( j = 0; j < currentLine.length; ++j ) {
 	                sectors[i][j] = Sectors.getSectorFor(Integer.parseInt(currentLine[j]));
+	            }
 	            ++i;
 	        }
 		} catch (IOException e) { 
