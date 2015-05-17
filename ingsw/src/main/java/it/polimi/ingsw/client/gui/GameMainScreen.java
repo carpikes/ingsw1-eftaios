@@ -89,15 +89,22 @@ public class GameMainScreen extends JFrame {
                 @Override
                 public void mouseReleased(MouseEvent e) { }
             });
+            
             this.addMouseMotionListener( new MouseMotionListener() {
-
+                // TODO: ignore not selectable sectors
+                // get current hex by inspecting each shape area
                 @Override
                 public void mouseMoved(MouseEvent e) {
                     for( int i = 0; i < hexagons.length; ++i )
                         for( int j = 0; j < hexagons[i].length; ++j )
                             if( hexagons[i][j].getShape().contains( e.getPoint() ) ) {
                                 currentHexCoordinates = new Point( i, j );
+                                repaint();
+                                return;
                             }
+                    
+                    currentHexCoordinates = null; // no selectable hexagons found
+                    repaint();
                 }
 
                 @Override
@@ -115,11 +122,11 @@ public class GameMainScreen extends JFrame {
             sectorColors = new HashMap<>();   
 
             sectorColors.put(Sectors.ALIEN, new Color(0,0,0));
-            sectorColors.put(Sectors.DANGEROUS, new Color(50,0,0));
-            sectorColors.put(Sectors.NOT_DANGEROUS, new Color(100,0,0));
-            sectorColors.put(Sectors.HATCH, new Color(150,0,0));
+            sectorColors.put(Sectors.DANGEROUS, new Color(236,20,83));
+            sectorColors.put(Sectors.NOT_DANGEROUS, new Color(222,189,218));
+            sectorColors.put(Sectors.HATCH, new Color(47,53,87));
             sectorColors.put(Sectors.HUMAN, new Color(200,0,0));
-            sectorColors.put(Sectors.NOT_VALID, new Color(245,0,0));
+            sectorColors.put(Sectors.NOT_VALID, new Color(239,236,243));
         }
 
         private void calculateValuesForHexagons() {
@@ -142,31 +149,61 @@ public class GameMainScreen extends JFrame {
             drawHexagons(g2d);
         }
 
-        private void drawHexagons(Graphics2D g2d) {
-            Sector currentSector;
-            Point2D.Double startPoint;
-            
+        private void drawHexagons(Graphics2D g2d) {            
             // Draw columns first since it's easier to do
             for( int col = 0; col < GameMap.COLUMNS; ++col ) {
                 for( int row = 0; row < GameMap.ROWS; ++ row ) {
-                    // calculate point coordinates of upper-left corner of containing rectangle
-                    startPoint =  new Point2D.Double(hexWidth*3/4*col, marginHeight + row * hexHeight + ( isEvenColumn(col)  ? 0 : hexHeight/2 ) );
-                    
-                    // create hexagon: center of it is distant (hexWidth/2, hexHeight/2) from the starting point
-                    hexagons[row][col] = HexagonFactory.createHexagon(new Point2D.Double(startPoint.getX() + hexWidth/2, startPoint.getY() + hexHeight/2), hexWidth/2);
-
-                    /* set color according to type */
-                    currentSector = gameMap.getSectorAt(row, col);
-                    g2d.setColor( sectorColors.get( currentSector.getId() ) );
-                    g2d.fill(hexagons[row][col].getShape());
-
-                    g2d.setColor(Color.BLACK);
-                    g2d.draw(hexagons[row][col].getShape());
+                    drawHexAt(g2d, new Point(row, col), DrawingMode.NORMAL);
                 }
             }
+            
+            if( currentHexCoordinates != null ) {
+                drawHexAt(g2d, currentHexCoordinates, DrawingMode.SELECTED_HEX);
+            }
+        }
+
+        private void drawHexAt(Graphics2D g2d, Point position, DrawingMode mode) {
+            Sector currentSector;
+            Point2D.Double startPoint;
+            
+            // calculate point coordinates of upper-left corner of containing rectangle
+            startPoint =  new Point2D.Double(hexWidth*3/4*position.y, marginHeight + position.x * hexHeight + ( isEvenColumn(position.y)  ? 0 : hexHeight/2 ) );
+            
+            // create hexagon: center of it is distant (hexWidth/2, hexHeight/2) from the starting point
+            hexagons[position.x][position.y] = HexagonFactory.createHexagon(new Point2D.Double(startPoint.getX() + hexWidth/2, startPoint.getY() + hexHeight/2), hexWidth/2);
+
+            // fill the shape according to sector type
+            currentSector = gameMap.getSectorAt(position.x, position.y);
+            
+            // TODO: add other drawing modes
+            // some tweaks on color according to drawing mode
+            switch( mode ) {
+            case NORMAL:
+                g2d.setColor( sectorColors.get( currentSector.getId() ) );
+                break;
+                
+            case SELECTED_HEX:
+                g2d.setColor( Color.CYAN ); // FIXME color hardcoded
+                break;
+            }
+            
+            g2d.fill(hexagons[position.x][position.y].getShape());
+            
+            // border
+            g2d.setColor(Color.BLACK);
+            g2d.draw(hexagons[position.x][position.y].getShape());
+        }
+        
+        private boolean isEvenColumn( int col ) {
+            return col % 2 == 0;
         }
     }
-
+    
+    private enum DrawingMode {
+        NORMAL,             // set color from sectorColors map
+        SELECTED_HEX        // hover color
+    }
+    
     public static void main(String[] args) {
         // Run the GUI codes on the EDT for thread safety
         SwingUtilities.invokeLater(new Runnable() {
@@ -177,7 +214,4 @@ public class GameMainScreen extends JFrame {
         });
     }
 
-    private static boolean isEvenColumn( int col ) {
-        return col % 2 == 0;
-    }
 }
