@@ -12,12 +12,14 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
@@ -35,7 +37,7 @@ public class GameMainScreen extends JFrame {
     private MapCanvasPanel canvas;
 
     public GameMainScreen() {
-        canvas = new MapCanvasPanel( GameMap.createFromMapFile( new File("maps/gfmi.txt") ) );    
+        canvas = new MapCanvasPanel( GameMap.createFromMapFile( new File("maps/galvani.txt") ) );    
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 
         this.add(canvas);
@@ -51,13 +53,13 @@ public class GameMainScreen extends JFrame {
         private GameMap gameMap;
 
         // the array of all drawn hexagons
-        private Shape[][] hexagons;
+        private Hexagon[][] hexagons;
 
         // Color bindings
         private Map<Integer, Color> sectorColors;
 
         // Selected hex
-        private Shape currentHexagon;
+        private Point2D.Double currentHexagonPosition;
 
         // Values for every hexagon
         private double hexWidth;
@@ -66,25 +68,38 @@ public class GameMainScreen extends JFrame {
 
         public MapCanvasPanel( GameMap map ) {
             // initialization 
-            hexagons = new Polygon[GameMap.ROWS][GameMap.COLUMNS];
+            hexagons = new Hexagon[GameMap.ROWS][GameMap.COLUMNS];
             gameMap = map;
-            currentHexagon = null;
+            currentHexagonPosition = null;
 
-            // methods for detecting mouse position
+            // methods for detecting mouse position and clicking
+            this.addMouseListener( new MouseListener() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    // TODO Auto-generated method stub
+                    
+                }
+                
+                @Override
+                public void mouseClicked(MouseEvent arg0) { }
+
+                @Override
+                public void mouseEntered(MouseEvent e) { }
+
+                @Override
+                public void mouseExited(MouseEvent e) { }
+
+                @Override
+                public void mouseReleased(MouseEvent e) { }
+            });
             this.addMouseMotionListener( new MouseMotionListener() {
 
                 @Override
-                public void mouseDragged(MouseEvent arg0) {
-                    // TODO Auto-generated method stub
-
+                public void mouseMoved(MouseEvent e) {
                 }
 
                 @Override
-                public void mouseMoved(MouseEvent e) {
-                    // TODO Auto-generated method stub
-
-                }
-
+                public void mouseDragged(MouseEvent e) { }
             });
 
             // calc width, height and margins according to size
@@ -141,20 +156,23 @@ public class GameMainScreen extends JFrame {
 
                 for( int row = 0; row < GameMap.ROWS; ++ row ) {
                     /* create current shape clip: every time the same point (translation of x and y axis only) */
-                    Shape s = HexagonFactory.createHexagon(new Point2D.Double(hexWidth/2, hexHeight/2), hexWidth/2);
+                    hexagons[row][col] = HexagonFactory.createHexagon(new Point2D.Double(hexWidth/2, hexHeight/2), hexWidth/2);
 
                     /* set color according to type */
                     currentSector = gameMap.getSectorAt(row, col);
                     g2d.setColor( sectorColors.get( currentSector.getId() ) );
-                    g2d.fill(s);
+                    g2d.fill(hexagons[row][col].getShape());
 
                     g2d.setColor(Color.BLACK);
-                    g2d.draw(s);
+                    g2d.draw(hexagons[row][col].getShape());
 
                     /* translate axis */
                     g2d.translate(0.0, hexHeight);
                 }
             }
+            
+            // reset to default after completing drawing
+            g2d.setTransform(defaultTransformation);
         }
     }
 

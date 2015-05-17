@@ -6,12 +6,11 @@ import java.awt.geom.Point2D;
 
 public class HexagonFactory  {
 	public static final int numberOfVertices = 6;
-	private static Path2D hexagonPath;
 	
 	private HexagonFactory() {}
 	
-	public static Shape createHexagon( Point2D.Double center, double size ) {
-	    hexagonPath = new Path2D.Double();
+	public static Hexagon createHexagon( Point2D.Double center, double size ) {
+	    Path2D.Double hexagonPath = new Path2D.Double();
 	     
 	    hexagonPath.moveTo(center.getX()+size, center.getY());
 
@@ -23,6 +22,6 @@ public class HexagonFactory  {
         hexagonPath.lineTo(center.getX()+size, center.getY());
         hexagonPath.closePath();
 
-	    return hexagonPath;
+	    return new Hexagon( center, size, hexagonPath );
     }
 }
