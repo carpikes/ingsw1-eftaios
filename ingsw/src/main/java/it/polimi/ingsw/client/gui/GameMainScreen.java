@@ -8,13 +8,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
+import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.util.HashMap;
@@ -58,8 +56,8 @@ public class GameMainScreen extends JFrame {
         // Color bindings
         private Map<Integer, Color> sectorColors;
 
-        // Selected hex
-        private Point2D.Double currentHexagonPosition;
+        // Selected hex: contains indexes i and j in hexagons[][] array
+        private Point currentHexCoordinates;
 
         // Values for every hexagon
         private double hexWidth;
@@ -70,13 +68,12 @@ public class GameMainScreen extends JFrame {
             // initialization 
             hexagons = new Hexagon[GameMap.ROWS][GameMap.COLUMNS];
             gameMap = map;
-            currentHexagonPosition = null;
+            currentHexCoordinates = null;
 
             // methods for detecting mouse position and clicking
             this.addMouseListener( new MouseListener() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    // TODO Auto-generated method stub
                     
                 }
                 
@@ -96,6 +93,11 @@ public class GameMainScreen extends JFrame {
 
                 @Override
                 public void mouseMoved(MouseEvent e) {
+                    for( int i = 0; i < hexagons.length; ++i )
+                        for( int j = 0; j < hexagons[i].length; ++j )
+                            if( hexagons[i][j].getShape().contains( e.getPoint() ) ) {
+                                currentHexCoordinates = new Point( i, j );
+                            }
                 }
 
                 @Override
@@ -137,26 +139,21 @@ public class GameMainScreen extends JFrame {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
-            // default position is (0, marginHeight), in order to align vertically all the hexagons
-            g2d.translate(0, marginHeight);
-            AffineTransform t = g2d.getTransform();
-
-            drawHexagons(g2d, t);
+            drawHexagons(g2d);
         }
 
-        private void drawHexagons(Graphics2D g2d,
-                AffineTransform defaultTransformation) {
+        private void drawHexagons(Graphics2D g2d) {
             Sector currentSector;
-
+            Point2D.Double startPoint;
+            
             // Draw columns first since it's easier to do
             for( int col = 0; col < GameMap.COLUMNS; ++col ) {
-                // reset axis to first hex in column
-                g2d.setTransform(defaultTransformation);
-                g2d.translate(hexWidth*3/4*col, ( isEvenColumn(col) ) ? 0 : hexHeight/2);
-
                 for( int row = 0; row < GameMap.ROWS; ++ row ) {
-                    /* create current shape clip: every time the same point (translation of x and y axis only) */
-                    hexagons[row][col] = HexagonFactory.createHexagon(new Point2D.Double(hexWidth/2, hexHeight/2), hexWidth/2);
+                    // calculate point coordinates of upper-left corner of containing rectangle
+                    startPoint =  new Point2D.Double(hexWidth*3/4*col, marginHeight + row * hexHeight + ( isEvenColumn(col)  ? 0 : hexHeight/2 ) );
+                    
+                    // create hexagon: center of it is distant (hexWidth/2, hexHeight/2) from the starting point
+                    hexagons[row][col] = HexagonFactory.createHexagon(new Point2D.Double(startPoint.getX() + hexWidth/2, startPoint.getY() + hexHeight/2), hexWidth/2);
 
                     /* set color according to type */
                     currentSector = gameMap.getSectorAt(row, col);
@@ -165,14 +162,8 @@ public class GameMainScreen extends JFrame {
 
                     g2d.setColor(Color.BLACK);
                     g2d.draw(hexagons[row][col].getShape());
-
-                    /* translate axis */
-                    g2d.translate(0.0, hexHeight);
                 }
             }
-            
-            // reset to default after completing drawing
-            g2d.setTransform(defaultTransformation);
         }
     }
 

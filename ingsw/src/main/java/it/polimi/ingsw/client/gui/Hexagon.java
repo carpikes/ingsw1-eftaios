@@ -19,5 +19,8 @@ public class Hexagon {
     public Shape getShape() {
         return path;
     }
-
+    
+    public Point2D.Double getCenter() {
+        return center;
+    }
 }
