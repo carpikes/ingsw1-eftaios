@@ -1,11 +1,17 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.network.NetworkPacket;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
  * @since  May 8, 2015
  */
 
 class Client {
+    private static final Logger mLog = Logger.getLogger(Client.class.getName());
     private final ClientConn mConn;
     private final Game mGame;
     private ClientState mCurState;
@@ -20,15 +26,19 @@ class Client {
         mConn.setClient(this);  
     }
 
-    public synchronized void handleMessage(String msg) {
+    public synchronized void handlePacket(NetworkPacket pkt) {
         synchronized(mCurState) {
             if(mCurState != null)
-                mCurState.handleMessage(msg);
+                mCurState.handlePacket(pkt);
         }
     }
     
-    public void sendMessage(String msg) {
-        mConn.sendCommand(msg);
+    public void sendPacket(NetworkPacket pkt) {
+        mConn.sendPacket(pkt);
+    }
+    
+    public void sendPacket(int opcode) {
+        sendPacket(new NetworkPacket(opcode));
     }
 
     public String getUsername() {
@@ -59,5 +69,12 @@ class Client {
             throw new RuntimeException("This player has no name");
         
         mCurState = new ClientStateInGame(this, mGame);
+    }
+    
+    public void update() {
+        if(mConn.isTimeoutTimerElapsed()) {
+            mLog.log(Level.WARNING, "Ping timeout. Disconnecting.");
+            handleDisconnect();
+        }
     }
 }

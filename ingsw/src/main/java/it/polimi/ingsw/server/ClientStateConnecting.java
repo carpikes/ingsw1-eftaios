@@ -1,5 +1,8 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.NetworkPacket;
+
 /**
  * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
  * @since  May 15, 2015
@@ -13,18 +16,25 @@ public class ClientStateConnecting extends ClientState{
 
     /**
      * Handle an incoming network message 
-     * @param msg In this state, the only allowed msg is the player username.
+     * @param pkt In this state, the only allowed msg is the player username.
      */
     @Override
-    public void handleMessage(String msg) {
+    public void handlePacket(NetworkPacket pkt) {
         synchronized(mGame) {
             synchronized(mClient) {
-                if(mGame.canSetName(msg)) {
-                    mClient.setUsername(msg);
-                    mClient.sendMessage("USEROK " + mGame.getNumberOfPlayers() + " " + mGame.getRemainingTime());
-                    mClient.setGameReady();
-                } else {
-                    mClient.sendMessage("USERFAIL");
+                if(pkt.getOpcode() == GameCommands.CMD_CS_USERNAME) {
+                    String args[] = pkt.getArgs();
+                    if(args.length == 0)
+                        return;
+                    
+                    String name = args[0];
+                    if(mGame.canSetName(name)) {
+                        mClient.setUsername(name);
+                        mClient.sendPacket(new NetworkPacket(GameCommands.CMD_SC_USEROK, String.valueOf(mGame.getNumberOfPlayers()), String.valueOf(mGame.getRemainingTime())));
+                        mClient.setGameReady();
+                    } else {
+                        mClient.sendPacket(GameCommands.CMD_SC_USERFAIL);
+                    }
                 }
             }
         }

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client.network;
 
+import it.polimi.ingsw.game.network.NetworkPacket;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
@@ -33,6 +35,10 @@ public abstract class Connection {
     public abstract void setConfiguration(Map<String, Object> obj);
     public abstract void connect() throws IOException;
     public abstract void disconnect();
-    public abstract void sendMessage(String msg);
+    public abstract void sendPacket(NetworkPacket pkt);
     public abstract boolean isOnline();
+    
+    public void sendPacket(int opcode) {
+        sendPacket(new NetworkPacket(opcode));
+    }
 }

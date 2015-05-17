@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.network;
 
-import it.polimi.ingsw.server.ServerRMIMask;
-import it.polimi.ingsw.server.ServerRMI;
+import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.ServerRMIMask;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -17,8 +17,7 @@ import java.util.logging.Logger;
  * @since  May 16, 2015
  */
 
-public class RMIConnection extends Connection{
-    private static final Logger mLog = Logger.getLogger(ServerRMI.class.getName());
+public class RMIConnection extends Connection {
     private static final String RMISERVER_STRING = "eftaiosRMI";
     
     private ReadRunnable mReader = null;
@@ -83,12 +82,12 @@ public class RMIConnection extends Connection{
     }
 
     @Override
-    public void sendMessage(String msg) {
+    public void sendPacket(NetworkPacket pkt) {
         if(mServerMask == null || mUniqueId == null)
             throw new RuntimeException("RMI Connection is offline");
         
         try {
-            mServerMask.onRMICommand(mUniqueId, msg);
+            mServerMask.onRMICommand(mUniqueId, pkt);
         } catch (RemoteException e) {
             disconnect();
         }
@@ -127,18 +126,17 @@ public class RMIConnection extends Connection{
         public void run() {
             try  {
                 while(mServer != null && mOnline) {
-                    String [] commands = mServer.readCommands(mClientId);
+                    NetworkPacket [] commands = mServer.readCommands(mClientId);
                     if(commands != null && mListener != null) {
-                        for(String i : commands)
+                        for(NetworkPacket i : commands)
                             if(i != null && mListener != null)
-                                mListener.onReceive(i.trim());
+                                mListener.onReceive(i);
                     }
                     Thread.sleep(250);
                 }
             } catch (Exception e) {
-                mLog.log(Level.INFO, "Connection closed:" + e.toString());
+                mLog.log(Level.INFO, "Connection closed: " + e.toString());
             } finally {
-                System.out.println("Closing socket");
                 if(mListener != null)
                     mListener.onDisconnect();
             }
@@ -149,12 +147,13 @@ public class RMIConnection extends Connection{
     @Override
     public void disconnect() {
         mServerMask = null;
+        
+        if(mListener != null)
+            mListener.onDisconnect();
+        
         if(mReader != null) {
             mReader.shutdown();
             mReader = null;
         }
-        
-        if(mListener != null)
-            mListener.onDisconnect();
     }
 }

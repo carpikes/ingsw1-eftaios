@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server;
+package it.polimi.ingsw.game.network;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -9,6 +9,6 @@ import java.rmi.RemoteException;
  */
 public interface ServerRMIMask extends Remote {
     public String registerAndGetId() throws RemoteException;
-    public void onRMICommand(String clientId, String msg) throws RemoteException;
-    public String[] readCommands(String clientId) throws RemoteException;
+    public void onRMICommand(String clientId, NetworkPacket pkt) throws RemoteException;
+    public NetworkPacket[] readCommands(String clientId) throws RemoteException;
 }

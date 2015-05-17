@@ -31,12 +31,14 @@ class ServerTCP implements Runnable{
             while (true) {
                 try {
                     Socket s = mServer.accept();
-                    ClientConn c = new ClientTCPConn(s);
+                    ClientConn c = new ClientConnTCP(s);
 
-                    mCachedPool.submit(c);
-                    Server.getInstance().addClient(c);
+                    if(Server.getInstance().addClient(c))
+                        mCachedPool.submit(c);
+                    else 
+                        c.disconnect();
                 } catch(Exception e){
-                    e.printStackTrace();
+                    mLog.log(Level.WARNING, "TCP Connection closed: " + e.toString());
                 }
             }
         } catch(IOException e){

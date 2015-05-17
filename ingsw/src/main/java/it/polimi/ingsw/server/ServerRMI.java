@@ -1,5 +1,8 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.ServerRMIMask;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -19,11 +22,11 @@ import java.util.logging.Logger;
 public class ServerRMI implements Runnable, ServerRMIMask {
     private static final Logger mLog = Logger.getLogger(ServerRMI.class.getName());
     private static final String RMISERVER_STRING = "eftaiosRMI";
-    private HashMap<String, ClientRMIConn> mMap;
+    private HashMap<String, ClientConnRMI> mMap;
     private Random mRandom = new Random();
     
     public ServerRMI() {
-        mMap = new HashMap<String, ClientRMIConn>();
+        mMap = new HashMap<String, ClientConnRMI>();
     }
     
     @Override
@@ -41,6 +44,7 @@ public class ServerRMI implements Runnable, ServerRMIMask {
             registry.bind(RMISERVER_STRING, stub);
 
             mLog.log(Level.INFO, "RMI server is running");
+            
         } catch (Exception e) {
             mLog.log(Level.SEVERE, "RMI server is down: " + e.toString());
             e.printStackTrace();
@@ -54,32 +58,34 @@ public class ServerRMI implements Runnable, ServerRMIMask {
             id.append((char)('0' + mRandom.nextInt(10)));
         
         String ids = id.toString();
-        ClientRMIConn conn = new ClientRMIConn(this, ids);
-        mMap.put(ids, conn);
-        Server.getInstance().addClient(conn);
+        ClientConnRMI conn = new ClientConnRMI(this, ids);
+        if(Server.getInstance().addClient(conn))
+            mMap.put(ids, conn);
+        else
+            conn.disconnect();
         return ids;
     }
 
     @Override
-    public void onRMICommand(String clientId, String msg) throws RemoteException {
-        if(clientId == null || msg == null)
+    public void onRMICommand(String clientId, NetworkPacket pkt) throws RemoteException {
+        if(clientId == null || pkt == null)
             return;
         
         if(mMap.containsKey(clientId)) {
-            ClientRMIConn conn = mMap.get(clientId);
-            conn.onRMICommand(msg);
+            ClientConnRMI conn = mMap.get(clientId);
+            conn.onRMICommand(pkt);
         } else {
             mLog.log(Level.INFO, "Received an unknown message");
         }
     }
 
     @Override
-    public String[] readCommands(String clientId) throws RemoteException {
+    public NetworkPacket[] readCommands(String clientId) throws RemoteException {
         if(clientId == null)
             return null;
         
         if(mMap.containsKey(clientId)) {
-            ClientRMIConn conn = mMap.get(clientId);
+            ClientConnRMI conn = mMap.get(clientId);
             return conn.readCommands();
         } else {
             mLog.log(Level.INFO, "Received an unknown message");
@@ -87,4 +93,7 @@ public class ServerRMI implements Runnable, ServerRMIMask {
         }
     }
 
+    public void unregister(String id) {
+        mMap.remove(id);
+    } 
 }
