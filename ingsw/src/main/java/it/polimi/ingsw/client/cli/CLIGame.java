@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
@@ -18,6 +20,7 @@ import it.polimi.ingsw.game.network.NetworkPacket;
  */
 
 class CLIGame implements OnReceiveListener {
+    private static final Logger mLog = Logger.getLogger(CLIGame.class.getName());
     private Connection mConn;
     private LinkedBlockingQueue<NetworkPacket> mQueue;
     private boolean mMustClose = false;
@@ -90,7 +93,7 @@ class CLIGame implements OnReceiveListener {
         try {
             mConn.connect();
         } catch (IOException e) {
-            IO.write("Cannot connect: " + e.toString());
+            mLog.log(Level.SEVERE, "Cannot connect: " + e.toString());
             return;
         }
         IO.write("Connected to server.");
@@ -121,6 +124,7 @@ class CLIGame implements OnReceiveListener {
                 IO.write("Welcome, " + name);
 
         } catch (InterruptedException e) {
+            mLog.log(Level.FINER, e.toString());
             return;
         }
 
@@ -138,7 +142,7 @@ class CLIGame implements OnReceiveListener {
                 Thread.sleep(1000);
             }
         }catch(Exception e) {
-            e.printStackTrace();
+            mLog.log(Level.FINER, e.toString());
         }
         IO.write("Goodbye!");
     }
@@ -148,7 +152,7 @@ class CLIGame implements OnReceiveListener {
         try {
             mQueue.put(pkt);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            mLog.log(Level.FINER, e.toString());
         }
     }
 

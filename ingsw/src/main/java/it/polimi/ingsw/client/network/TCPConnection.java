@@ -112,7 +112,7 @@ public class TCPConnection extends Connection {
                 mIn.close();
                 mSocket.close();                
             } catch(IOException e) {
-                e.printStackTrace();
+                mLog.log(Level.FINER, e.toString());
             }
         mSocket = null;
     }
@@ -142,7 +142,7 @@ public class TCPConnection extends Connection {
                         mListener.onReceive((NetworkPacket) obj);
                 }
             } catch (Exception e) {
-                mLog.log(Level.INFO, "Connection closed:" + e.toString());
+                mLog.log(Level.FINER, "Connection closed:" + e.toString());
             } finally {
                 mParent.disconnect();
             }
@@ -166,7 +166,7 @@ public class TCPConnection extends Connection {
                     Thread.sleep(Config.CLIENT_TCP_PING_TIME);
                 }
             } catch (Exception e) {
-                mLog.log(Level.FINE, "Ping thread stopped: " + e.toString());
+                mLog.log(Level.FINER, "Ping thread stopped: " + e.toString());
             }
         }
     }

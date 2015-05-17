@@ -18,6 +18,7 @@ import java.util.logging.Logger;
  */
 
 public class RMIConnection extends Connection {
+    private static final Logger mLog = Logger.getLogger(RMIConnection.class.getName());
     private static final String RMISERVER_STRING = "eftaiosRMI";
     
     private ReadRunnable mReader = null;
@@ -68,7 +69,8 @@ public class RMIConnection extends Connection {
             }
             new Thread(mReader).start();
         } catch (NotBoundException e) {
-            throw new RuntimeException("Cannot find my server on the RMI Registry");
+            mLog.log(Level.WARNING, e.toString());
+            throw new IOException("Cannot find my server on the RMI Registry");
         }
     }
     
@@ -89,6 +91,7 @@ public class RMIConnection extends Connection {
         try {
             mServerMask.onRMICommand(mUniqueId, pkt);
         } catch (RemoteException e) {
+            mLog.log(Level.FINE, e.toString());
             disconnect();
         }
     }

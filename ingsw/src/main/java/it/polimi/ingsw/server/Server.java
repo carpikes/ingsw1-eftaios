@@ -49,41 +49,37 @@ class Server {
 
     public synchronized boolean addClient(ClientConn conn) {
         // Invariant: mCurGame cannot be full here
-
-        synchronized(mConnectedClients) {
-            if(mConnectedClients >= Config.SERVER_MAX_CLIENTS) 
-                return false;
         
-            if(mCurGame == null) {
-                mCurGame = new Game();
-            }
+        if(mConnectedClients >= Config.SERVER_MAX_CLIENTS) 
+            return false;
     
-            Client client = new Client(conn,mCurGame);
-    
-            if(!mCurGame.addPlayer(client)) {
-                // No game may be full here
-                mLog.log(Level.SEVERE, "Game full in a wrong way. What's Happening?");
-                client.handleDisconnect();
-                return false;
-            }
-    
-            if(mCurGame.isFull()) {
-                mGamesRunning.add(mCurGame);
-                mCurGame = null;
-            }
-            
-            mConnectedClients++;
+        if(mCurGame == null) {
+            mCurGame = new Game();
         }
+
+        Client client = new Client(conn,mCurGame);
+
+        if(!mCurGame.addPlayer(client)) {
+            // No game may be full here
+            mLog.log(Level.SEVERE, "Game full in a wrong way. What's Happening?");
+            client.handleDisconnect();
+            return false;
+        }
+
+        if(mCurGame.isFull()) {
+            mGamesRunning.add(mCurGame);
+            mCurGame = null;
+        }
+        
+        mConnectedClients++;
         return true;
     }
     
-    public void removeClient() {
-        synchronized(mConnectedClients) {
-            if(mConnectedClients > 0)
-                mConnectedClients--;
-            else
-                throw new RuntimeException("0 Clients connected. What's Happening?");
-        }
+    public synchronized void removeClient() {
+        if(mConnectedClients > 0)
+            mConnectedClients--;
+        else
+            throw new RuntimeException("0 Clients connected. What's Happening?");
     }
     
     public synchronized void removeGame(Game g) {
