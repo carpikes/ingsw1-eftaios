@@ -40,7 +40,7 @@ class ServerTCP implements Runnable{
                 }
             }
         } catch(IOException e){
-            mLog.log(Level.SEVERE, "TCP Server is down");
+            mLog.log(Level.SEVERE, "TCP Server is down: " + e.toString());
             e.printStackTrace();
         }
     }

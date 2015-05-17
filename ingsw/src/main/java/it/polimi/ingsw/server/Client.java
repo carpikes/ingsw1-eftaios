@@ -47,12 +47,9 @@ class Client {
     }
 
     public void setUsername(String msg) {
-        synchronized(mUser) {
-            if(mUser == null)
-                throw new RuntimeException("Username is already set");
-            
-            mUser = msg;
-        }
+        if(mUser != null)
+            throw new RuntimeException("Username is already set");
+        mUser = msg;
     }
 
     public synchronized void setGameReady() {

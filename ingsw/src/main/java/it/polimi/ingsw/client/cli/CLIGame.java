@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
@@ -17,6 +18,7 @@ import it.polimi.ingsw.client.network.OnReceiveListener;
 class CLIGame implements OnReceiveListener {
     private Connection mConn;
     private LinkedBlockingQueue<String> mQueue;
+    private boolean mMustClose = false;
 
     private static void banner() {
         System.out.println("*******************************************************************************");
@@ -97,8 +99,11 @@ class CLIGame implements OnReceiveListener {
             do {
                 name = IO.readString().trim();
                 mConn.sendMessage(name);
-                while(true) {
-                    String cmd = mQueue.take();
+                while(!mMustClose) {
+                    String cmd = mQueue.poll(1, TimeUnit.SECONDS);
+                    if(cmd == null)
+                        continue;
+                    
                     if(cmd.startsWith("USEROK ")) {
                         nickOk = true;
                         break;
@@ -106,11 +111,12 @@ class CLIGame implements OnReceiveListener {
                     if(cmd.equals("USERFAIL"))
                         break;
                 }
-                if(!nickOk)
+                if(!nickOk && !mMustClose)
                     IO.write("Another player is using your name. Choose another one.");
-            }while(!nickOk);
-
-            IO.write("Welcome, " + name);
+            }while(!nickOk && !mMustClose);
+            
+            if(!mMustClose)
+                IO.write("Welcome, " + name);
 
         } catch (InterruptedException e) {
             return;
@@ -119,18 +125,19 @@ class CLIGame implements OnReceiveListener {
         // Main Loop
         try {
             IO.write("Waiting for other players");
-            String cmd = "";
-            while(!cmd.equals("RUN")) {
-                cmd = mQueue.take();
+            String cmd = null;
+            while((cmd == null || !cmd.equals("RUN")) && !mMustClose) {
+                cmd = mQueue.poll(1, TimeUnit.SECONDS);
             }
             
-            IO.write("Game started. Good luck!");
+            if(!mMustClose)
+                IO.write("Game started. Good luck!");
             
-            while(mConn.isOnline()) {
+            while(mConn.isOnline() && !mMustClose) {
                 Thread.sleep(1000);
             }
         }catch(Exception e) {
-
+            return;
         }
     }
 
@@ -142,5 +149,10 @@ class CLIGame implements OnReceiveListener {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDisconnect() {
+        mMustClose = true;
     }
 }

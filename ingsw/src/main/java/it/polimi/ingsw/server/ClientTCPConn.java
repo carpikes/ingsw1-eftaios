@@ -29,13 +29,14 @@ class ClientTCPConn extends ClientConn {
         try {
             while(mSocket.isConnected()) {
                 String msg = mIn.readLine().trim();
-                mClient.handleMessage(msg);
+                if(mClient != null)
+                    mClient.handleMessage(msg);
             }
         } catch(IOException e) {
             mLog.log(Level.FINE, "Connection closed: " + e.toString());
+        } finally {
+            mClient.handleDisconnect();
         }
-
-        mClient.handleDisconnect();
     }
 
     @Override

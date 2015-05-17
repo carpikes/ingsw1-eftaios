@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
@@ -25,9 +27,9 @@ public class TCPConnection extends Connection {
     private Socket mSocket = null;
     private PrintWriter mOut = null;
     private BufferedReader mIn = null;
-    private ReadRunnable mRead = null;
+    private ReadRunnable mReader = null;
 
-    /* This thing is only used if mRead is not initialized yet */
+    /* This thing is only used if mReader is not initialized yet */
     private OnReceiveListener mTempRecv = null;
 
     public TCPConnection() {
@@ -52,26 +54,25 @@ public class TCPConnection extends Connection {
             mInited = true;
         } else
             throw new RuntimeException("Invalid parameters");
-
     }
 
     @Override
     public void connect() throws IOException {
-        if(mInited) {
-            if(mSocket == null) {
-                mSocket = new Socket(mHost, mPort);
-                mOut = new PrintWriter(mSocket.getOutputStream());
-                mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
-                mRead = new ReadRunnable(mSocket, mIn);
-                if(mTempRecv != null) {
-                    mRead.setListener(mTempRecv);
-                    mTempRecv = null;
-                }
-                new Thread(mRead).start();
-            } else
-                throw new RuntimeException("Socket already created");
-        } else
+        if(!mInited)
             throw new RuntimeException("TCPConnection must be configured before use");
+        
+        if(mSocket != null)
+            throw new RuntimeException("Socket already created");
+    
+        mSocket = new Socket(mHost, mPort);
+        mOut = new PrintWriter(mSocket.getOutputStream());
+        mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
+        mReader = new ReadRunnable(mSocket, mIn);
+        if(mTempRecv != null) {
+            mReader.setListener(mTempRecv);
+            mTempRecv = null;
+        }
+        new Thread(mReader).start();
     }
 
     @Override
@@ -84,8 +85,8 @@ public class TCPConnection extends Connection {
 
     @Override
     public void setOnReceiveListener(OnReceiveListener listener) {
-        if(mRead != null) {
-            mRead.setListener(listener);
+        if(mReader != null) {
+            mReader.setListener(listener);
         } else {
             mTempRecv = listener;
         }
@@ -93,6 +94,7 @@ public class TCPConnection extends Connection {
 
     /* Handle incoming messages and dispatch them to the proper listener */
     private class ReadRunnable implements Runnable {
+        private final Logger mLog = Logger.getLogger(ReadRunnable.class.getName());
         private OnReceiveListener mListener = null;
         private final Socket mSocket;
         private final BufferedReader mReader;
@@ -111,20 +113,18 @@ public class TCPConnection extends Connection {
             try  {
                 while(mSocket != null && mSocket.isConnected()) {
                     String line = mReader.readLine();
-                    if(mListener != null) {
-                        synchronized(mListener) {
-                            if(mListener != null)
-                                mListener.onReceive(line.trim());
-                        }
-                    }
+                    if(mListener != null)
+                        mListener.onReceive(line.trim());
                 }
             } catch (Exception e) {
-                // Connection closed.
+                mLog.log(Level.INFO, "Connection closed:" + e.toString());
             } finally {
                 System.out.println("Closing socket");
                 try { if(mIn != null) mIn.close();} catch(Exception e) {}
                 try { if(mOut != null) mOut.close();} catch(Exception e) {}
                 try { if(mSocket != null) mSocket.close();} catch(Exception e) {}
+                if(mListener != null)
+                    mListener.onDisconnect();
             }
         }
 
@@ -135,5 +135,15 @@ public class TCPConnection extends Connection {
         if(mSocket != null && mSocket.isConnected())
             return true;
         return false;
+    }
+
+    @Override
+    public void disconnect() {
+        if(mSocket != null && mSocket.isConnected())
+            try {
+                mSocket.close();
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
     }
 }

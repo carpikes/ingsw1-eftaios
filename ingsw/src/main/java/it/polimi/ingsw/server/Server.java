@@ -37,7 +37,10 @@ class Server {
         mGamesRunning = new ArrayList<Game>();
 
         ServerTCP tcp = new ServerTCP(mTCPPort);
+        ServerRMI rmi = new ServerRMI();
+
         mServers.add(tcp);
+        mServers.add(rmi);
     }
 
     public synchronized void addClient(ClientConn conn) {

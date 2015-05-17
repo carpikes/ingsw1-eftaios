@@ -15,10 +15,15 @@ public abstract class Connection {
         public static final int TYPE_STRING = 1;
     }
 
+    protected OnReceiveListener mListener = null;
     protected Map<String, Integer> mConfigParams;
 
     Connection() {
         mConfigParams = new TreeMap<String, Integer>();
+    }
+    
+    public void setOnReceiveListener(OnReceiveListener listener) {
+        mListener = listener;
     }
 
     public Map<String, Integer> getConfigurationParameters() {
@@ -27,7 +32,7 @@ public abstract class Connection {
 
     public abstract void setConfiguration(Map<String, Object> obj);
     public abstract void connect() throws IOException;
+    public abstract void disconnect();
     public abstract void sendMessage(String msg);
-    public abstract void setOnReceiveListener(OnReceiveListener listener);
     public abstract boolean isOnline();
 }
