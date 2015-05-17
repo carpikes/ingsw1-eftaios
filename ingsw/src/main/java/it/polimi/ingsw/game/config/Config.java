@@ -1,4 +1,4 @@
-package it.polimi.ingsw.config;
+package it.polimi.ingsw.game.config;
 
 /**
  * @author Alain Carlucci <alain.carlucci@mail.polimi.it>

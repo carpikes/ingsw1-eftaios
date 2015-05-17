@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.config.Config;
+import it.polimi.ingsw.game.config.Config;
 
 import java.util.ArrayList;
 import java.util.List;
