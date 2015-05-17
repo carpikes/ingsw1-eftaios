@@ -35,7 +35,7 @@ public class GameMainScreen extends JFrame {
     private MapCanvasPanel canvas;
 
     public GameMainScreen() {
-        canvas = new MapCanvasPanel( GameMap.createFromMapFile( new File("maps/fermi.txt") ) );    
+        canvas = new MapCanvasPanel( GameMap.createFromMapFile( new File("maps/gfmi.txt") ) );    
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 
         this.add(canvas);

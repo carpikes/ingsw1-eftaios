@@ -48,9 +48,10 @@ public class GameMap {
 	        }
 		} catch (IOException e) { 
 			log.log(Level.SEVERE, "Cannot read map file");
-			return null;
+			System.exit(1);
 		} catch (ArrayIndexOutOfBoundsException | SectorException e) {
 		    log.log(Level.SEVERE, "File is not well formatted: " + e);
+		    System.exit(1);
         }
 		
 		return new GameMap(title, sectors);
