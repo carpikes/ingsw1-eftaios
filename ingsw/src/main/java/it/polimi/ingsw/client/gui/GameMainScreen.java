@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
- * @author Michele Albanese <michele.albanese@mail.polimi.it>
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 
 public class GameMainScreen extends JFrame {

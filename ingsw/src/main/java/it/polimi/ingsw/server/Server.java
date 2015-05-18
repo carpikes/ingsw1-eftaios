@@ -7,14 +7,15 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+/** The server
+ * 
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
  */
-
 public class Server {
     private static final Logger LOG = Logger.getLogger(Server.class.getName());
 
+    /** Singleton Holder */
     private static class Holder {
         private static final Server INSTANCE = new Server();
     }
@@ -23,13 +24,19 @@ public class Server {
         return Holder.INSTANCE;
     }
 
+    /** This list contains all listeners running (e.g. Socket listener, RMI, ...) */
     private List<Listener> mServers;
+    
+    /** This list contains all games active and running */
     private List<Game> mGamesRunning;
     
+    /** Number of connected clients */
     private Integer mConnectedClients;
+    
+    /** Stop event. If true, the server will stop running */
     private boolean mStopEvent = false;
 
-    /* New players will be added here */
+    /** This game is waiting for new players */
     private Game mCurGame = null;
 
     private Server() { 
@@ -44,6 +51,11 @@ public class Server {
         mServers.add(rmi);
     }
 
+    /** New client connected: call this method to add him in a new game
+     * 
+     * @param conn  The client connection
+     * @return      True if the client is correctly added in a game
+     */
     public synchronized boolean addClient(ClientConn conn) {
         // Invariant: mCurGame cannot be full here
         
@@ -71,6 +83,7 @@ public class Server {
         return true;
     }
     
+    /** Decrement client counter */
     public synchronized void removeClient() {
         if(mConnectedClients > 0)
             mConnectedClients--;
@@ -78,13 +91,18 @@ public class Server {
             throw new RuntimeException("0 Clients connected. What's Happening?");
     }
     
-    public synchronized void removeGame(Game g) {
-        if(mCurGame != null && g.equals(mCurGame))
+    /** Removes a game from the games-to-update list 
+     * 
+     * @param game  Game you want to remove
+     */
+    public synchronized void removeGame(Game game) {
+        if(mCurGame != null && game.equals(mCurGame))
             mCurGame = null;
         else
-            mGamesRunning.remove(g);
+            mGamesRunning.remove(game);
     }
 
+    /** Start the server and put listeners online. */
     public void runServer() {
         for(Listener server : mServers)
             new Thread(server).start();
@@ -113,14 +131,23 @@ public class Server {
             server.tearDown();
     }
     
+    /** Get number of connected clients
+     * 
+     * @return Number of connected clients
+     */
     public synchronized int getConnectedClients() {
         return mConnectedClients;
     }
     
+    /** Shut down the server */
     public synchronized void tearDown() {
         mStopEvent = true;
     }
 
+    /** Check if the server is shutted down
+     * 
+     * @return True if the server is correctly shutted down
+     */
     public synchronized boolean isDown() {
         if(mServers != null)
             for(Listener server : mServers)
@@ -129,6 +156,10 @@ public class Server {
         return true;
     }
     
+    /** Check if the server is correctly started up
+     * 
+     * @return True if the server is up and running
+     */
     public synchronized boolean isUp() {
         if(mServers == null)
             return false;

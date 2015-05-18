@@ -1,7 +1,7 @@
 package it.polimi.ingsw.game.network;
 
 /**
- * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 17, 2015
  */
 

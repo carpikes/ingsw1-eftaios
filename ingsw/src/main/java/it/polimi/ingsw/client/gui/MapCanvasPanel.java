@@ -19,9 +19,8 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-/**
- * Panel where the map is drawn. It is used in {@link GameMainScreen} class. 
- * @author Michele Albanese <michele.albanese@mail.polimi.it>
+/** Panel where the map is drawn. It is used in {@link GameMainScreen} class. 
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 public class MapCanvasPanel extends JPanel {
     

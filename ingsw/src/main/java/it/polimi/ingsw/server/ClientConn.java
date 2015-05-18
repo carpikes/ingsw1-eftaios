@@ -3,38 +3,68 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
-/**
- * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+/** Common client connection interface 
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
  */
-
 public abstract class ClientConn implements Runnable {
+    /** The client */
     protected Client mClient = null;
+    
+    /** Last time we received a packet */
     protected long mLastPingTime;
+    
+    /** True if the connection is online */
     protected boolean mIsConnected = false;
+    
     public ClientConn() {
         resetTimeoutTimer();
     }
     
+    /** Set a new client
+     *
+     * @param client The client
+     */
     public void setClient(Client client) {
+        if(mClient != null)
+            throw new RuntimeException("This connection has a client yet");
         mClient = client;
     }
     
+    /** Check if the client is not responding (Ping timeout)
+     * 
+     * @return True if the client is not responding
+     */
     public synchronized boolean isTimeoutTimerElapsed() {
         return (System.currentTimeMillis() - mLastPingTime) > Config.SERVER_CONNECTION_TIMEOUT; 
     }
     
+    /** Call this on a new incoming packet. */
     public synchronized void resetTimeoutTimer() {
         mLastPingTime = System.currentTimeMillis();
     }
 
+    /** Send a packet through this socket
+     * 
+     * @param pkt The packet
+     */
     public abstract void sendPacket(NetworkPacket pkt);
+    
+    /** Close this connection */
     public abstract void disconnect();
     
+    /** Check if this client is connected
+     * 
+     * @return True if this client is online
+     */
     public boolean isConnected() {
         return mIsConnected;
     }
     
+    /** Send a packet without arguments through this socket
+     * 
+     * @param opcode An opcode
+     */
     public void sendPacket(int opcode) {
         sendPacket(new NetworkPacket(opcode));
     }

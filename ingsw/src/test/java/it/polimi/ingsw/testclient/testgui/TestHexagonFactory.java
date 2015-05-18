@@ -10,6 +10,9 @@ import java.awt.geom.Point2D;
 
 import org.junit.Test;
 
+/** Hexagon factory test
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
+ */
 public class TestHexagonFactory {
    
     

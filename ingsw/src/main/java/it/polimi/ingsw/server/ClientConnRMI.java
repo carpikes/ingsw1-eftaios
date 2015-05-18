@@ -7,15 +7,23 @@ import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/**
- * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+/** RMI Connection
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 16, 2015
  */
-
 public class ClientConnRMI extends ClientConn {
+    /** Outgoing packets */
     private Queue<NetworkPacket> mOutgoingQueue;
+    
+    /** Unique client identifier */
     private final String mUniqueId;
+    
+    /** The listening server */
     private final ServerRMI mServer;
+    
+    /** True if the client is disconnecting.
+     * A disconnecting client can't send other packets
+     */
     private boolean mIsDisconnecting = false;
     
     public ClientConnRMI(ServerRMI server, String uniqueId) {
@@ -26,10 +34,15 @@ public class ClientConnRMI extends ClientConn {
         mServer = server;
     }
     
+    /** Empty method, RMI does not need a separate thread */
     @Override
     public void run() {
     }
 
+    /** Send a packet through this socket
+     * 
+     * @param pkt The packet
+     */
     @Override
     public void sendPacket(NetworkPacket pkt) {
         synchronized(mOutgoingQueue) {
@@ -37,6 +50,7 @@ public class ClientConnRMI extends ClientConn {
         }
     }
 
+    /** Close this connection */
     @Override
     public void disconnect() {
         sendPacket(GameCommands.CMD_BYE);

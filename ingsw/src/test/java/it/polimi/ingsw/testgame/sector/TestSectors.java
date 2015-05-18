@@ -5,6 +5,9 @@ import it.polimi.ingsw.game.sector.Sectors;
 
 import org.junit.Test;
 
+/** Test sectors
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
+ */
 public class TestSectors {
 
     @Test(expected=SectorException.class)

@@ -22,13 +22,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 18, 2015
  */
 
 public class TestServer {
     /**
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Throws exception if something is wrong
      */
     @BeforeClass
     public static void setUp() throws Exception {
@@ -96,7 +96,7 @@ public class TestServer {
     }
 
     /**
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Throws exception if something is wrong
      */
     @AfterClass
     public static void tearDown() throws Exception {

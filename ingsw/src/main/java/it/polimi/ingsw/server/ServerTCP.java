@@ -8,18 +8,29 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+/** TCP Server Listener
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
  */
-
 class ServerTCP implements Listener {
     private static final Logger LOG = Logger.getLogger(ServerTCP.class.getName());
+    
+    /** Pool of threads */
     private ExecutorService mCachedPool;
+    
+    /** The listening server */
     private ServerSocket mServer;
+    
+    /** True if the listener should be shutted down */
     private boolean mStopEvent = false;
+    
+    /** Listening port */
     private final int mPort;
 
+    /** The constructor
+     * 
+     * @param port Listening port
+     */
     public ServerTCP(int port) {
         mPort = port;
         mCachedPool = Executors.newCachedThreadPool();
@@ -39,6 +50,7 @@ class ServerTCP implements Listener {
         }
     }
 
+    /** Run the listener */
     public void run() {
         try {
             mServer = new ServerSocket(mPort);
@@ -52,6 +64,7 @@ class ServerTCP implements Listener {
         }
     }
 
+    /** Shut down this listener */
     @Override
     public synchronized void tearDown() {
         mStopEvent = true;
@@ -63,6 +76,10 @@ class ServerTCP implements Listener {
         }
     }
 
+    /** Check if this listener is correctly shutted down
+     * 
+     * @return True if this listener is down
+     */
     @Override
     public synchronized boolean isDown() {
         if(mServer == null)
@@ -72,6 +89,10 @@ class ServerTCP implements Listener {
         return false;
     }
 
+    /** Check if this listener is running
+     * 
+     * @return True if this listener is correctly listening
+     */
     @Override
     public boolean isUp() {
         if(mServer == null)

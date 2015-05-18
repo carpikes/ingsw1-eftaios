@@ -16,7 +16,7 @@ import it.polimi.ingsw.game.network.GameCommands;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 /**
- * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 10, 2015
  */
 
@@ -92,8 +92,6 @@ public class CLIView implements OnReceiveListener, View {
 
     @Override
     public void run() {
-        String name = "";
-        
         try {
             mConn.connect();
         } catch (IOException e) {

@@ -9,23 +9,34 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+/** Game manager
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 9, 2015
  */
-
 class Game {
     private static final Logger LOG = Logger.getLogger(Game.class.getName());
 
+    /** Game is ready to run: someone has not insered his name yet */
     private boolean mIsReady = false;
+    
+    /** Game is running. New players can't connect to this game */
     private boolean mIsRunning = false;
+    
+    /** Game start time */
     private final long mStartTime;
+    
+    /** Clients connected */
     private List<Client> mClients = new ArrayList<Client>(); 
 
     public Game() {
         mStartTime = System.currentTimeMillis();
     }
 
+    /** Add new clients to this game
+     * 
+     * @param client    New client instance
+     * @return          True if the player is added correctly
+     */
     public synchronized boolean addPlayer(Client client) {
         if(mIsRunning || mClients.size() >= Config.GAME_MAX_PLAYERS)
             return false;
@@ -37,11 +48,18 @@ class Game {
         return true;
     }
 
+    /** Check if number of players is greater or equal to the maximum number of players per game
+     * 
+     * @return True if this game is full
+     */
     public synchronized boolean isFull() {
         return mClients.size() >= Config.GAME_MAX_PLAYERS;
     }
 
-    // Check if the game is ready to start
+    /** Check if the game is ready to start
+     * 
+     * @return True if the game is ready to start
+     */
     public synchronized boolean isReady() {
         if(getNumberOfPlayers() < Config.GAME_MIN_PLAYERS || getRemainingTime() > 0)
             return false;
@@ -49,19 +67,36 @@ class Game {
         return true;
     }
 
+    /** Check if the game is running
+     * 
+     * @return True if the game is running (new players can't join)
+     */
     public synchronized boolean isRunning() {
         return mIsReady;
     }
 
+    /** Get number of connected players
+     * 
+     * @return Number of connected players
+     */
     public synchronized int getNumberOfPlayers() {
         return mClients.size();
     }
 
+    /** Get how many seconds are left to start the game
+     * 
+     * @return Remaining time
+     */
     public synchronized long getRemainingTime() {
         long rem = Config.GAME_WAITING_SECS - (System.currentTimeMillis() - mStartTime)/1000;
         return rem > 0 ? rem : 0;
     }
 
+    /** Check if a player can set the name he wants
+     * 
+     * @param name      The name
+     * @return          True if the player can set this name
+     */
     public synchronized boolean canSetName(String name) {
         for(Client c : mClients) {
             if(name.equalsIgnoreCase(c.getUsername()))
@@ -70,8 +105,7 @@ class Game {
         return true;
     }
 
-    /**
-     * This method is called on each game update cycle
+    /** This method is called on each game update cycle
      * @todo notify users about someone without username
      * @todo generate a random username if someone won't choose it
      */
@@ -99,16 +133,28 @@ class Game {
         }
     }
    
+    /** Send a packet without arguments to all players connected
+     * 
+     * @param opcode Packet opcode
+     */
     public void broadcastPacket(int opcode) {
         for(Client c : mClients)
             c.sendPacket(opcode);
     }
     
+    /** Send a packet to all players connected
+     * 
+     * @param pkt Packet
+     */
     public synchronized void broadcastPacket(NetworkPacket pkt) {
         for(Client c : mClients)
             c.sendPacket(pkt);
     }
     
+    /** Remove a client from this game
+     * 
+     * @param client The client
+     */
     public synchronized void removeClient(Client client) {
         if(mClients.remove(client) == false)
             throw new RuntimeException("Are you trying to remove a non-existent client?");

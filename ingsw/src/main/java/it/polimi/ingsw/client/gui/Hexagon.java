@@ -3,10 +3,8 @@ package it.polimi.ingsw.client.gui;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
-/**
- * Class for Hexagon view. Contains center, size, and shape to be drawn on screen.
- * @author Michele Albanese <michele.albanese@mail.polimi.it>
- *
+/** Class for Hexagon view. Contains center, size, and shape to be drawn on screen.
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  *
  */
 public class Hexagon {
