@@ -4,41 +4,53 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
+import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.NetworkPacket;
+
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 10, 2015
+ */
 
 class CLIGame implements OnReceiveListener {
+    private static final Logger mLog = Logger.getLogger(CLIGame.class.getName());
     private Connection mConn;
-    private LinkedBlockingQueue<String> mQueue;
+    private LinkedBlockingQueue<NetworkPacket> mQueue;
+    private boolean mMustClose = false;
 
     private static void banner() {
-        System.out.println("*******************************************************************************");
-        System.out.println("*******************************************************************************");
-        System.out.println("***  ______        _____       _____                    _____       ______  ***");  
-        System.out.println("*** |  ____|      / ____|     / ____|        /\\        |  __ \\     |  ____| ***");  
-        System.out.println("*** | |__        | (___      | |            /  \\       | |__) |    | |__    ***");  
-        System.out.println("*** |  __|        \\___ \\     | |           / /\\ \\      |  ___/     |  __|   ***");  
-        System.out.println("*** | |____       ____) |    | |____      / ____ \\     | |         | |____  ***");  
-        System.out.println("*** |______|     |_____/      \\_____|    /_/    \\_\\    |_|         |______| ***");  
-        System.out.println("***  ___ ___  ___  __  __    _____ _  _ ___      _   _    ___ ___ _  _ ___  ***");
-        System.out.println("*** | __| _ \\/ _ \\|  \\/  |  |_   _| || | __|    /_\\ | |  |_ _| __| \\| / __| ***");
-        System.out.println("*** | _||   / (_) | |\\/| |    | | | __ | _|    / _ \\| |__ | || _|| .` \\__ \\ ***");
-        System.out.println("*** |_| |_|_\\\\___/|_|  |_|    |_| |_||_|___|  /_/ \\_\\____|___|___|_|\\_|___/ ***");
-        System.out.println("***  ___  _  _    ___   _   _  _____  ___  ___    ___  ___   _    ___  ___  ***");
-        System.out.println("*** |_ _|| \\| |  / _ \\ | | | ||_   _|| __|| _ \\  / __|| _ \\ /_\\  / __|| __| ***");
-        System.out.println("***  | | | .` | | (_) || |_| |  | |  | _| |   /  \\__ \\|  _// _ \\| (__ | _|  ***");
-        System.out.println("*** |___||_|\\_|  \\___/  \\___/   |_|  |___||_|_\\  |___/|_| /_/ \\_\\\\___||___| ***");
-        System.out.println("***                                                                         ***");
-        System.out.println("*** Command line client                by Michele Albanese & Alain Carlucci ***");
-        System.out.println("*******************************************************************************");
-        System.out.println("*******************************************************************************");
-        System.out.println("");
+        IO.write("*******************************************************************************");
+        IO.write("*******************************************************************************");
+        IO.write("***  ______        _____       _____                    _____       ______  ***");  
+        IO.write("*** |  ____|      / ____|     / ____|        /\\        |  __ \\     |  ____| ***");  
+        IO.write("*** | |__        | (___      | |            /  \\       | |__) |    | |__    ***");  
+        IO.write("*** |  __|        \\___ \\     | |           / /\\ \\      |  ___/     |  __|   ***");  
+        IO.write("*** | |____       ____) |    | |____      / ____ \\     | |         | |____  ***");  
+        IO.write("*** |______|     |_____/      \\_____|    /_/    \\_\\    |_|         |______| ***");  
+        IO.write("***  ___ ___  ___  __  __    _____ _  _ ___      _   _    ___ ___ _  _ ___  ***");
+        IO.write("*** | __| _ \\/ _ \\|  \\/  |  |_   _| || | __|    /_\\ | |  |_ _| __| \\| / __| ***");
+        IO.write("*** | _||   / (_) | |\\/| |    | | | __ | _|    / _ \\| |__ | || _|| .` \\__ \\ ***");
+        IO.write("*** |_| |_|_\\\\___/|_|  |_|    |_| |_||_|___|  /_/ \\_\\____|___|___|_|\\_|___/ ***");
+        IO.write("***  ___  _  _    ___   _   _  _____  ___  ___    ___  ___   _    ___  ___  ***");
+        IO.write("*** |_ _|| \\| |  / _ \\ | | | ||_   _|| __|| _ \\  / __|| _ \\ /_\\  / __|| __| ***");
+        IO.write("***  | | | .` | | (_) || |_| |  | |  | _| |   /  \\__ \\|  _// _ \\| (__ | _|  ***");
+        IO.write("*** |___||_|\\_|  \\___/  \\___/   |_|  |___||_|_\\  |___/|_| /_/ \\_\\\\___||___| ***");
+        IO.write("***                                                                         ***");
+        IO.write("*** Command line client                by Michele Albanese & Alain Carlucci ***");
+        IO.write("*******************************************************************************");
+        IO.write("*******************************************************************************");
+        IO.write("");
     }
 
     public CLIGame() {
-        mQueue = new LinkedBlockingQueue<String>();
+        mQueue = new LinkedBlockingQueue<NetworkPacket>();
         CLIGame.banner();
         IO.write("Which connection do you want to use?");
         Map<Integer,String> mConnectionList = ConnectionFactory.getConnectionList();
@@ -81,7 +93,7 @@ class CLIGame implements OnReceiveListener {
         try {
             mConn.connect();
         } catch (IOException e) {
-            System.out.println("Cannot connect: " + e.toString());
+            mLog.log(Level.SEVERE, "Cannot connect: " + e.toString());
             return;
         }
         IO.write("Connected to server.");
@@ -91,51 +103,61 @@ class CLIGame implements OnReceiveListener {
             boolean nickOk = false;
             do {
                 name = IO.readString().trim();
-                mConn.sendMessage(name);
-                while(true) {
-                    String cmd = mQueue.take();
-                    if(cmd.startsWith("USEROK ")) {
+                mConn.sendPacket(new NetworkPacket(GameCommands.CMD_CS_USERNAME, name));
+                while(!mMustClose) {
+                    NetworkPacket cmd = mQueue.poll(1, TimeUnit.SECONDS);
+                    if(cmd == null)
+                        continue;
+                    
+                    if(cmd.getOpcode() == GameCommands.CMD_SC_USEROK) {
                         nickOk = true;
                         break;
                     }
-                    if(cmd.equals("USERFAIL"))
+                    if(cmd.getOpcode() == GameCommands.CMD_SC_USERFAIL)
                         break;
                 }
-                if(!nickOk)
+                if(!nickOk && !mMustClose)
                     IO.write("Another player is using your name. Choose another one.");
-            }while(!nickOk);
-
-            IO.write("Welcome, " + name);
+            }while(!nickOk && !mMustClose);
+            
+            if(!mMustClose)
+                IO.write("Welcome, " + name);
 
         } catch (InterruptedException e) {
+            mLog.log(Level.FINER, e.toString());
             return;
         }
 
         // Main Loop
         try {
             IO.write("Waiting for other players");
-            String cmd = "";
-            while(!cmd.equals("RUN")) {
-                cmd = mQueue.take();
-            }
+            NetworkPacket cmd = null;
+            while((cmd == null || cmd.getOpcode() != GameCommands.CMD_SC_RUN) && !mMustClose)
+                cmd = mQueue.poll(1, TimeUnit.SECONDS);
             
-            IO.write("Game started. Good luck!");
+            if(!mMustClose)
+                IO.write("Game started. Good luck!");
             
-            while(mConn.isOnline()) {
+            while(mConn.isOnline() && !mMustClose) {
                 Thread.sleep(1000);
             }
         }catch(Exception e) {
+            mLog.log(Level.FINER, e.toString());
+        }
+        IO.write("Goodbye!");
+    }
 
+    @Override
+    public void onReceive(NetworkPacket pkt) {
+        try {
+            mQueue.put(pkt);
+        } catch (InterruptedException e) {
+            mLog.log(Level.FINER, e.toString());
         }
     }
 
     @Override
-    public void onReceive(String msg) {
-        try {
-            mQueue.put(msg);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public void onDisconnect() {
+        mMustClose = true;
     }
 }

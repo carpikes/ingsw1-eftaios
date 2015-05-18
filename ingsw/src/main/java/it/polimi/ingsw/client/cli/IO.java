@@ -2,8 +2,16 @@ package it.polimi.ingsw.client.cli;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 10, 2015
+ */
 
 class IO {
+    private static final Logger mLog = Logger.getLogger(IO.class.getName());
     private static BufferedReader mReader = new BufferedReader(new InputStreamReader(System.in));
 
     public static void write(String line) {
@@ -20,6 +28,7 @@ class IO {
                 i = Integer.valueOf(m);
                 break;
             } catch(Exception e) {
+                mLog.log(Level.FINEST, e.toString());
                 System.out.println("Invalid choice");
             }
         }
@@ -31,7 +40,9 @@ class IO {
             System.out.print("> ");
             System.out.flush();
             return mReader.readLine().trim();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            mLog.log(Level.FINEST, e.toString());
+        }
         return "";
     }
 

@@ -1,9 +1,16 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.config.Config;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 8, 2015
+ */
 
 class Server {
     private static final Logger mLog = Logger.getLogger(Server.class.getName());
@@ -23,6 +30,8 @@ class Server {
     private static final int mTCPPort = 3834;
     private List<Runnable> mServers;
     private List<Game> mGamesRunning;
+    
+    private Integer mConnectedClients = 0;
 
     /* New players will be added here */
     private Game mCurGame = null;
@@ -32,12 +41,18 @@ class Server {
         mGamesRunning = new ArrayList<Game>();
 
         ServerTCP tcp = new ServerTCP(mTCPPort);
+        ServerRMI rmi = new ServerRMI();
+
         mServers.add(tcp);
+        mServers.add(rmi);
     }
 
-    public synchronized void addClient(ClientConn conn) {
-        /* Invariant: mCurGame cannot be full here */
-
+    public synchronized boolean addClient(ClientConn conn) {
+        // Invariant: mCurGame cannot be full here
+        
+        if(mConnectedClients >= Config.SERVER_MAX_CLIENTS) 
+            return false;
+    
         if(mCurGame == null) {
             mCurGame = new Game();
         }
@@ -45,16 +60,26 @@ class Server {
         Client client = new Client(conn,mCurGame);
 
         if(!mCurGame.addPlayer(client)) {
-            /* No game may be full here */
+            // No game may be full here
             mLog.log(Level.SEVERE, "Game full in a wrong way. What's Happening?");
             client.handleDisconnect();
-            return;
+            return false;
         }
 
         if(mCurGame.isFull()) {
             mGamesRunning.add(mCurGame);
             mCurGame = null;
         }
+        
+        mConnectedClients++;
+        return true;
+    }
+    
+    public synchronized void removeClient() {
+        if(mConnectedClients > 0)
+            mConnectedClients--;
+        else
+            throw new RuntimeException("0 Clients connected. What's Happening?");
     }
     
     public synchronized void removeGame(Game g) {
@@ -77,8 +102,11 @@ class Server {
                         mCurGame = null;
                     }
                 }
-                for (Game g : mGamesRunning)
-                    g.update();
+                synchronized(mGamesRunning) {
+                    for (Game g : mGamesRunning)
+                        g.update();
+                }
+                
                 Thread.sleep(100);
             }
         } catch (InterruptedException e) {

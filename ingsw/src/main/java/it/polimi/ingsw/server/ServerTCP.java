@@ -8,6 +8,11 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 8, 2015
+ */
+
 class ServerTCP implements Runnable{
     private static final Logger mLog = Logger.getLogger(ServerTCP.class.getName());
     private ExecutorService mCachedPool;
@@ -26,16 +31,18 @@ class ServerTCP implements Runnable{
             while (true) {
                 try {
                     Socket s = mServer.accept();
-                    ClientConn c = new ClientTCPConn(s);
+                    ClientConn c = new ClientConnTCP(s);
 
-                    mCachedPool.submit(c);
-                    Server.getInstance().addClient(c);
+                    if(Server.getInstance().addClient(c))
+                        mCachedPool.submit(c);
+                    else 
+                        c.disconnect();
                 } catch(Exception e){
-                    e.printStackTrace();
+                    mLog.log(Level.WARNING, "TCP Connection closed: " + e.toString());
                 }
             }
         } catch(IOException e){
-            mLog.log(Level.SEVERE, "TCP Server is down");
+            mLog.log(Level.SEVERE, "TCP Server is down: " + e.toString());
             e.printStackTrace();
         }
     }

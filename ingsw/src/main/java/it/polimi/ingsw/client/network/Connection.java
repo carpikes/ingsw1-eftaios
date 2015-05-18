@@ -1,9 +1,15 @@
 package it.polimi.ingsw.client.network;
 
+import it.polimi.ingsw.game.network.NetworkPacket;
+
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
+/**
+ * @author Alain Carlucci <alain.carlucci@mail.polimi.it>
+ * @since  May 10, 2015
+ */
 
 public abstract class Connection {
     public class ParametersType {
@@ -11,10 +17,15 @@ public abstract class Connection {
         public static final int TYPE_STRING = 1;
     }
 
+    protected OnReceiveListener mListener = null;
     protected Map<String, Integer> mConfigParams;
 
     Connection() {
         mConfigParams = new TreeMap<String, Integer>();
+    }
+    
+    public void setOnReceiveListener(OnReceiveListener listener) {
+        mListener = listener;
     }
 
     public Map<String, Integer> getConfigurationParameters() {
@@ -23,7 +34,11 @@ public abstract class Connection {
 
     public abstract void setConfiguration(Map<String, Object> obj);
     public abstract void connect() throws IOException;
-    public abstract void sendMessage(String msg);
-    public abstract void setOnReceiveListener(OnReceiveListener listener);
+    public abstract void disconnect();
+    public abstract void sendPacket(NetworkPacket pkt);
     public abstract boolean isOnline();
+    
+    public void sendPacket(int opcode) {
+        sendPacket(new NetworkPacket(opcode));
+    }
 }
