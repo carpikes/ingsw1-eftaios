@@ -13,12 +13,12 @@ public class HexagonFactory  {
 	     
 	    hexagonPath.moveTo(center.getX()+size, center.getY());
 
-        // get vertices by simply rotating by PI/6 for 6 times
+        // get vertices by simply rotating by PI/6 every time
         for( int i = 1; i < NUMBER_OF_VERTICES; ++i ) {
             hexagonPath.lineTo(center.getX() + size * Math.cos(i*Math.PI/3), center.getY() + size * Math.sin(i*Math.PI/3));
         }
-        
         hexagonPath.lineTo(center.getX()+size, center.getY());
+        
         hexagonPath.closePath();
 
 	    return new Hexagon( center, size, hexagonPath );
