@@ -19,7 +19,12 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
+/**
+ * Panel where the map is drawn. It is used in {@link GameMainScreen} class. 
+ * @author Michele Albanese <michele.albanese@mail.polimi.it>
+ */
 public class MapCanvasPanel extends JPanel {
+    
     private static final long serialVersionUID = -5583245069814214909L;
     
     // the map being loaded
@@ -43,6 +48,13 @@ public class MapCanvasPanel extends JPanel {
     private int canvasWidth;
     private int canvasHeight;
     
+    /**
+     * Instantiates a new map canvas panel.
+     *
+     * @param map the map to be drawn
+     * @param canvasWidth the canvas width
+     * @param canvasHeight the canvas height
+     */
     public MapCanvasPanel( GameMap map, int canvasWidth, int canvasHeight ) {
         // initialization 
         this.canvasWidth = canvasWidth;
@@ -70,7 +82,7 @@ public class MapCanvasPanel extends JPanel {
         });
         
         this.addMouseMotionListener( new MouseMotionListener() {
-            // TODO: ignore not selectable sectors
+            // FIXME: ignore not selectable sectors
             // get current hex by inspecting each shape area
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -78,7 +90,7 @@ public class MapCanvasPanel extends JPanel {
                     for( int j = 0; j < hexagons[i].length; ++j )
                         if( hexagons[i][j].getPath().contains( e.getPoint() ) ) {
                             currentHexCoordinates = new Point( i, j );
-                            repaint();
+                            repaint(); // FIXME optimize here!
                             return;
                         }
                 
@@ -97,6 +109,9 @@ public class MapCanvasPanel extends JPanel {
         createSectorColorsMap();
     }
 
+    /**
+     * Creates the sector colors map.
+     */
     private void createSectorColorsMap() {
         sectorColors = new HashMap<>();   
 
@@ -108,6 +123,9 @@ public class MapCanvasPanel extends JPanel {
         sectorColors.put(Sectors.NOT_VALID, new Color(239,236,243));
     }
 
+    /**
+     * Calculate values for hexagons.
+     */
     private void calculateValuesForHexagons() {
         // Reference: http://www.redblobgames.com/grids/hexagons/
         hexWidth = canvasWidth / ( 0.75 * (GameMap.COLUMNS-1) + 1 );
@@ -115,6 +133,9 @@ public class MapCanvasPanel extends JPanel {
         marginHeight = (canvasHeight - hexHeight * ( GameMap.ROWS + 0.5 )) / 2;
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);     // paint parent's background
@@ -128,6 +149,11 @@ public class MapCanvasPanel extends JPanel {
         drawHexagons(g2d);
     }
 
+    /**
+     * Draw hexagons.
+     *
+     * @param g2d The Graphics2D object where to draw on
+     */
     private void drawHexagons(Graphics2D g2d) {            
         // Draw columns first since it's easier to do
         for( int col = 0; col < GameMap.COLUMNS; ++col ) {
@@ -141,6 +167,13 @@ public class MapCanvasPanel extends JPanel {
         }
     }
 
+    /**
+     * Draw hex at given coordinates.
+     *
+     * @param g2d The Graphics2D object where to draw on
+     * @param position the position(i,j) in array of hexagons
+     * @param mode {@link DrawingMode} to use
+     */
     private void drawHexAt(Graphics2D g2d, Point position, DrawingMode mode) {
         Sector currentSector;
         Point2D.Double startPoint;
@@ -176,10 +209,19 @@ public class MapCanvasPanel extends JPanel {
         g2d.draw(hexagons[position.x][position.y].getPath());
     }
     
+    /**
+     * Checks if column % 2 == 0.
+     *
+     * @param col the column index
+     * @return true, if is even column
+     */
     private boolean isEvenColumn( int col ) {
         return col % 2 == 0;
     }
     
+    /**
+     * The Enum DrawingMode. Used by {@link MapCanvasPanel#drawHexAt(Graphics2D, Point, DrawingMode)}
+     */
     private enum DrawingMode {
         NORMAL,             // set color from sectorColors map
         SELECTED_HEX        // hover color
