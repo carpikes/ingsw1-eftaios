@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.gui;
 
-import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
