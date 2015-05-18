@@ -3,11 +3,26 @@ package it.polimi.ingsw.client.gui;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
+/**
+ * Class for creating and returning a new hexagon according to values given.
+ * @author Michele Albanese <michele.albanese@mail.polimi.it>
+ */
 public class HexagonFactory  {
+	
 	public static final int NUMBER_OF_VERTICES = 6;
 	
+	/**
+	 * Private constructor. Use createHexagon() instead.
+	 */
 	private HexagonFactory() { }
 	
+	/**
+	 * Creates a new Hexagon object.
+	 *
+	 * @param center the center
+	 * @param size radius of hex
+	 * @return the hexagon
+	 */
 	public static Hexagon createHexagon( Point2D.Double center, double size ) {
 	    Path2D.Double hexagonPath = new Path2D.Double();
 	     

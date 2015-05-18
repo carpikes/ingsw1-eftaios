@@ -19,7 +19,12 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
+/**
+ * Panel where the map is drawn. It is used in {@link GameMainScreen} class. 
+ * @author Michele Albanese <michele.albanese@mail.polimi.it>
+ */
 public class MapCanvasPanel extends JPanel {
+    
     private static final long serialVersionUID = -5583245069814214909L;
     
     // the map being loaded
@@ -43,6 +48,13 @@ public class MapCanvasPanel extends JPanel {
     private int canvasWidth;
     private int canvasHeight;
     
+    /**
+     * Instantiates a new map canvas panel.
+     *
+     * @param map the map to be drawn
+     * @param canvasWidth the canvas width
+     * @param canvasHeight the canvas height
+     */
     public MapCanvasPanel( GameMap map, int canvasWidth, int canvasHeight ) {
         // initialization 
         this.canvasWidth = canvasWidth;
@@ -70,15 +82,17 @@ public class MapCanvasPanel extends JPanel {
         });
         
         this.addMouseMotionListener( new MouseMotionListener() {
-            // TODO: ignore not selectable sectors
+            // FIXME: ignore not selectable sectors
             // get current hex by inspecting each shape area
             @Override
             public void mouseMoved(MouseEvent e) {
                 for( int i = 0; i < hexagons.length; ++i )
                     for( int j = 0; j < hexagons[i].length; ++j )
-                        if( hexagons[i][j].getPath().contains( e.getPoint() ) ) {
+                        if( hexagons[i][j] != null && hexagons[i][j].getPath().contains( e.getPoint() ) ) {
+                        	Point oldHexCoordinates = currentHexCoordinates;
                             currentHexCoordinates = new Point( i, j );
                             repaint();
+                            
                             return;
                         }
                 
@@ -97,10 +111,13 @@ public class MapCanvasPanel extends JPanel {
         createSectorColorsMap();
     }
 
+    /**
+     * Creates the sector colors map.
+     */
     private void createSectorColorsMap() {
         sectorColors = new HashMap<>();   
 
-        sectorColors.put(Sectors.ALIEN, new Color(0,0,0));
+        sectorColors.put(Sectors.ALIEN, new Color(90,0,0));
         sectorColors.put(Sectors.DANGEROUS, new Color(236,20,83));
         sectorColors.put(Sectors.NOT_DANGEROUS, new Color(222,189,218));
         sectorColors.put(Sectors.HATCH, new Color(47,53,87));
@@ -108,6 +125,9 @@ public class MapCanvasPanel extends JPanel {
         sectorColors.put(Sectors.NOT_VALID, new Color(239,236,243));
     }
 
+    /**
+     * Calculate values for hexagons.
+     */
     private void calculateValuesForHexagons() {
         // Reference: http://www.redblobgames.com/grids/hexagons/
         hexWidth = canvasWidth / ( 0.75 * (GameMap.COLUMNS-1) + 1 );
@@ -115,6 +135,9 @@ public class MapCanvasPanel extends JPanel {
         marginHeight = (canvasHeight - hexHeight * ( GameMap.ROWS + 0.5 )) / 2;
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);     // paint parent's background
@@ -128,11 +151,18 @@ public class MapCanvasPanel extends JPanel {
         drawHexagons(g2d);
     }
 
+    /**
+     * Draw hexagons.
+     *
+     * @param g2d The Graphics2D object where to draw on
+     */
     private void drawHexagons(Graphics2D g2d) {            
         // Draw columns first since it's easier to do
         for( int col = 0; col < GameMap.COLUMNS; ++col ) {
             for( int row = 0; row < GameMap.ROWS; ++ row ) {
-                drawHexAt(g2d, new Point(row, col), DrawingMode.NORMAL);
+            	// draw only if it is a valid sector
+                if( gameMap.getSectorAt(row, col).getId() != Sectors.NOT_VALID )
+                	drawHexAt(g2d, new Point(row, col), DrawingMode.NORMAL);
             }
         }
         
@@ -141,6 +171,13 @@ public class MapCanvasPanel extends JPanel {
         }
     }
 
+    /**
+     * Draw hex at given coordinates.
+     *
+     * @param g2d The Graphics2D object where to draw on
+     * @param position the position(i,j) in array of hexagons
+     * @param mode {@link DrawingMode} to use
+     */
     private void drawHexAt(Graphics2D g2d, Point position, DrawingMode mode) {
         Sector currentSector;
         Point2D.Double startPoint;
@@ -176,10 +213,19 @@ public class MapCanvasPanel extends JPanel {
         g2d.draw(hexagons[position.x][position.y].getPath());
     }
     
+    /**
+     * Checks if column % 2 == 0.
+     *
+     * @param col the column index
+     * @return true, if is even column
+     */
     private boolean isEvenColumn( int col ) {
         return col % 2 == 0;
     }
     
+    /**
+     * The Enum DrawingMode. Used by {@link MapCanvasPanel#drawHexAt(Graphics2D, Point, DrawingMode)}
+     */
     private enum DrawingMode {
         NORMAL,             // set color from sectorColors map
         SELECTED_HEX        // hover color

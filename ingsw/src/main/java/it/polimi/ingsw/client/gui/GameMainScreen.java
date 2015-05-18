@@ -12,10 +12,13 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+/**
+ * @author Michele Albanese <michele.albanese@mail.polimi.it>
+ */
+
 public class GameMainScreen extends JFrame {
 
     private static final long serialVersionUID = 4286896317209068573L;
-    
     private static final Logger LOG = Logger.getLogger( GameMainScreen.class.getName() );
     
     // Constants
@@ -25,9 +28,12 @@ public class GameMainScreen extends JFrame {
     // Drawing canvas
     private MapCanvasPanel canvas;
 
+    /**
+     * Instantiates main game screen.
+     */
     public GameMainScreen() {
         try {
-            GameMap map = GameMap.createFromMapFile( new File("maps/fermi.txt") );
+            GameMap map = GameMap.createFromMapFile( new File("maps/galilei.txt") );
             canvas = new MapCanvasPanel( map, CANVAS_WIDTH, CANVAS_HEIGHT );    
         
             canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
@@ -36,6 +42,7 @@ public class GameMainScreen extends JFrame {
             this.pack();              
             this.setTitle("Escape from the Aliens in Outer Space");
             this.setLocationRelativeTo(null);
+            this.setResizable(false);
             this.setVisible(true);
         } catch (IOException e) { 
             LOG.log(Level.SEVERE, "Cannot read map file: " + e);
