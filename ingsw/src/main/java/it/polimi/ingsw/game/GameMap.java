@@ -47,9 +47,9 @@ public class GameMap {
 	            ++i;
 	        }
 		} catch (IOException e) { 
-			log.log(Level.SEVERE, "Cannot read map file");
+			log.log(Level.SEVERE, "Cannot read map file: " + e);
 			System.exit(1);
-		} catch (ArrayIndexOutOfBoundsException | SectorException e) {
+		} catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
 		    log.log(Level.SEVERE, "File is not well formatted: " + e);
 		    System.exit(1);
         }

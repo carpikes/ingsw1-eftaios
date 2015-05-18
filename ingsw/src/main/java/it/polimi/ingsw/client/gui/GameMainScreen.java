@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.exception.DrawingModeException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.Sectors;
@@ -25,8 +26,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class GameMainScreen extends JFrame {
-    private static final Logger log = Logger.getLogger( GameMainScreen.class.getName() );
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4286896317209068573L;
     // Constants
     public static final int CANVAS_WIDTH  = 1024;
     public static final int CANVAS_HEIGHT = 768;
@@ -35,7 +39,7 @@ public class GameMainScreen extends JFrame {
     private MapCanvasPanel canvas;
 
     public GameMainScreen() {
-        canvas = new MapCanvasPanel( GameMap.createFromMapFile( new File("maps/galvani.txt") ) );    
+        canvas = new MapCanvasPanel( GameMap.createFromMapFile( new File("maps/fermi.txt") ) );    
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 
         this.add(canvas);
@@ -47,6 +51,13 @@ public class GameMainScreen extends JFrame {
     }
 
     private class MapCanvasPanel extends JPanel {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -5583245069814214909L;
+
+        private final Logger log = Logger.getLogger( MapCanvasPanel.class.getName() );
+        
         // the map being loaded
         private GameMap gameMap;
 
@@ -185,6 +196,9 @@ public class GameMainScreen extends JFrame {
             case SELECTED_HEX:
                 g2d.setColor( Color.CYAN ); // FIXME color hardcoded
                 break;
+                
+            default:
+                throw new DrawingModeException("Drawing mode not supported");
             }
             
             g2d.fill(hexagons[position.x][position.y].getShape());

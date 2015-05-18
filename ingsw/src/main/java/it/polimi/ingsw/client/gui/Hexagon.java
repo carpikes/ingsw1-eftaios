@@ -23,4 +23,8 @@ public class Hexagon {
     public Point2D.Double getCenter() {
         return center;
     }
+
+    public double getSize() {
+        return size;
+    }
 }
