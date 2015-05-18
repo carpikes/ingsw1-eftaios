@@ -33,7 +33,7 @@ public class GameMainScreen extends JFrame {
      */
     public GameMainScreen() {
         try {
-            GameMap map = GameMap.createFromMapFile( new File("maps/fermi.txt") );
+            GameMap map = GameMap.createFromMapFile( new File("maps/galilei.txt") );
             canvas = new MapCanvasPanel( map, CANVAS_WIDTH, CANVAS_HEIGHT );    
         
             canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
@@ -42,6 +42,7 @@ public class GameMainScreen extends JFrame {
             this.pack();              
             this.setTitle("Escape from the Aliens in Outer Space");
             this.setLocationRelativeTo(null);
+            this.setResizable(false);
             this.setVisible(true);
         } catch (IOException e) { 
             LOG.log(Level.SEVERE, "Cannot read map file: " + e);

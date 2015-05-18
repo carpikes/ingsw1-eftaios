@@ -88,9 +88,11 @@ public class MapCanvasPanel extends JPanel {
             public void mouseMoved(MouseEvent e) {
                 for( int i = 0; i < hexagons.length; ++i )
                     for( int j = 0; j < hexagons[i].length; ++j )
-                        if( hexagons[i][j].getPath().contains( e.getPoint() ) ) {
+                        if( hexagons[i][j] != null && hexagons[i][j].getPath().contains( e.getPoint() ) ) {
+                        	Point oldHexCoordinates = currentHexCoordinates;
                             currentHexCoordinates = new Point( i, j );
-                            repaint(); // FIXME optimize here!
+                            repaint();
+                            
                             return;
                         }
                 
@@ -115,7 +117,7 @@ public class MapCanvasPanel extends JPanel {
     private void createSectorColorsMap() {
         sectorColors = new HashMap<>();   
 
-        sectorColors.put(Sectors.ALIEN, new Color(0,0,0));
+        sectorColors.put(Sectors.ALIEN, new Color(90,0,0));
         sectorColors.put(Sectors.DANGEROUS, new Color(236,20,83));
         sectorColors.put(Sectors.NOT_DANGEROUS, new Color(222,189,218));
         sectorColors.put(Sectors.HATCH, new Color(47,53,87));
@@ -158,7 +160,9 @@ public class MapCanvasPanel extends JPanel {
         // Draw columns first since it's easier to do
         for( int col = 0; col < GameMap.COLUMNS; ++col ) {
             for( int row = 0; row < GameMap.ROWS; ++ row ) {
-                drawHexAt(g2d, new Point(row, col), DrawingMode.NORMAL);
+            	// draw only if it is a valid sector
+                if( gameMap.getSectorAt(row, col).getId() != Sectors.NOT_VALID )
+                	drawHexAt(g2d, new Point(row, col), DrawingMode.NORMAL);
             }
         }
         

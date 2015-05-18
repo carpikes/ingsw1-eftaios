@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class GameMap {
-    private static final Logger log = Logger.getLogger( GameMap.class.getName() );
+    private static final Logger LOG = Logger.getLogger( GameMap.class.getName() );
     
 	// including not crossable sectors
 	public static final int ROWS = 14;
