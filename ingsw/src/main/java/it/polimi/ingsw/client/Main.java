@@ -9,6 +9,8 @@ import it.polimi.ingsw.client.cli.CLIView;
 
 public class Main {	
     
+    private Main() { }
+    
     public static void main(String[] args) {
         Controller c = new Controller();
         View v = new CLIView();

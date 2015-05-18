@@ -12,6 +12,10 @@ public class Config {
     // Server configuration here
     public static final long SERVER_CONNECTION_TIMEOUT      = 10000;
     public static final int SERVER_MAX_CLIENTS              = 1000;
+    /* Why port 3834? 3834 = 0xEFA -> Escape From Aliens
+     * Note: ports < 1024 are privileges 
+     */
+    public static final int SERVER_TCP_LISTEN_PORT          = 3834;
     
     // Client configuration here
     public static final long CLIENT_TCP_PING_TIME           = 5000;

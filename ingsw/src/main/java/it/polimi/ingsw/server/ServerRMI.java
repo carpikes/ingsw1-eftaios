@@ -3,6 +3,8 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.network.ServerRMIMask;
 
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -19,11 +21,14 @@ import java.util.logging.Logger;
 
 // TODO: remove client unique id from mMap on disconnect
 // TODO: something to check if a client is still alive, indipendent from connectiong (e.g. ping)
-public class ServerRMI implements Runnable, ServerRMIMask {
+public class ServerRMI implements Listener, ServerRMIMask {
     private static final Logger LOG = Logger.getLogger(ServerRMI.class.getName());
     private static final String RMISERVER_STRING = "eftaiosRMI";
     private HashMap<String, ClientConnRMI> mMap;
     private Random mRandom = new Random();
+    private Registry mRegistry;
+    private boolean mIsUp = false;
+    ServerRMIMask mStub;
     
     public ServerRMI() {
         mMap = new HashMap<String, ClientConnRMI>();
@@ -32,19 +37,18 @@ public class ServerRMI implements Runnable, ServerRMIMask {
     @Override
     public void run() {
         try {
-            Registry registry;
             try {
-                registry = LocateRegistry.getRegistry();
-                registry.list(); // This will throw an exception if the registry does not exists
+                mRegistry = LocateRegistry.getRegistry();
+                mRegistry.list(); // This will throw an exception if the mRegistry does not exists
             } catch(Exception e) {
-                registry = LocateRegistry.createRegistry(1099);
+                mRegistry = LocateRegistry.createRegistry(1099);
             }
             
-            ServerRMIMask stub = (ServerRMIMask) UnicastRemoteObject.exportObject(this, 0);
-            registry.bind(RMISERVER_STRING, stub);
+            mStub = (ServerRMIMask) UnicastRemoteObject.exportObject(this, 0);
+            mRegistry.bind(RMISERVER_STRING, mStub);
 
             LOG.log(Level.INFO, "RMI server is running");
-            
+            mIsUp = true;
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "RMI server is down: " + e.toString());
             e.printStackTrace();
@@ -82,18 +86,49 @@ public class ServerRMI implements Runnable, ServerRMIMask {
     @Override
     public NetworkPacket[] readCommands(String clientId) throws RemoteException {
         if(clientId == null)
-            return null;
+            return new NetworkPacket[0];
         
         if(mMap.containsKey(clientId)) {
             ClientConnRMI conn = mMap.get(clientId);
             return conn.readCommands();
         } else {
             LOG.log(Level.INFO, "Received an unknown message");
-            return null;
+            return new NetworkPacket[0];
         }
     }
 
     public void unregister(String id) {
         mMap.remove(id);
-    } 
+    }
+
+    @Override
+    public synchronized void tearDown() {
+        try {
+            if(mRegistry != null) {
+                UnicastRemoteObject.unexportObject(this, true);
+                mRegistry.unbind(RMISERVER_STRING);
+                mRegistry = null;
+            }
+            mIsUp = false;
+        } catch (AccessException e) {
+            LOG.log(Level.FINEST, e.toString());
+        } catch (RemoteException e) {
+            LOG.log(Level.FINEST, e.toString());
+        } catch (NotBoundException e) {
+            LOG.log(Level.FINEST, e.toString());
+        }
+    }
+
+    @Override
+    public synchronized boolean isDown() {
+        if(mRegistry != null)
+            return false;
+        return true;
+    }
+
+    @Override
+    public boolean isUp() {
+        return mIsUp;
+    }
+    
 }

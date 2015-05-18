@@ -81,6 +81,8 @@ public class CLIView implements OnReceiveListener, View {
                 case Connection.ParametersType.TYPE_STRING:
                     value = IO.readString();
                     break;
+                default:
+                    throw new RuntimeException("Unsupported type");
             }
             paramsConfig.put(param.getKey(), value);
         }
@@ -88,17 +90,25 @@ public class CLIView implements OnReceiveListener, View {
         mConn.setOnReceiveListener(this);
     }
 
+    @Override
     public void run() {
         String name = "";
         
         try {
             mConn.connect();
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Cannot connect: " + e.toString());
+            LOG.log(Level.SEVERE, "Cannot connect: " + e.toString(), e);
             return;
         }
         IO.write("Connected to server.");
         IO.write("Hello! What's your name?");
+        askUsername();
+        mainLoop();
+        IO.write("Goodbye!");
+    }
+
+    private void askUsername() {
+        String name;
         try {
             // Choose username
             boolean nickOk = false;
@@ -125,11 +135,12 @@ public class CLIView implements OnReceiveListener, View {
                 IO.write("Welcome, " + name);
 
         } catch (InterruptedException e) {
-            LOG.log(Level.FINER, e.toString());
+            LOG.log(Level.FINER, e.toString(), e);
             return;
         }
+    }
 
-        // Main Loop
+    private void mainLoop() {
         try {
             IO.write("Waiting for other players");
             NetworkPacket cmd = null;
@@ -143,17 +154,16 @@ public class CLIView implements OnReceiveListener, View {
                 Thread.sleep(1000);
             }
         }catch(Exception e) {
-            LOG.log(Level.FINER, e.toString());
+            LOG.log(Level.FINER, e.toString(), e);
         }
-        IO.write("Goodbye!");
     }
-
+    
     @Override
     public void onReceive(NetworkPacket pkt) {
         try {
             mQueue.put(pkt);
         } catch (InterruptedException e) {
-            LOG.log(Level.FINER, e.toString());
+            LOG.log(Level.FINER, e.toString(), e);
         }
     }
 

@@ -20,6 +20,7 @@ public class ClientConnRMI extends ClientConn {
     
     public ClientConnRMI(ServerRMI server, String uniqueId) {
         super();
+        mIsConnected = true;
         mOutgoingQueue = new LinkedList<NetworkPacket>();
         mUniqueId = uniqueId;
         mServer = server;
@@ -40,6 +41,7 @@ public class ClientConnRMI extends ClientConn {
     public void disconnect() {
         sendPacket(GameCommands.CMD_BYE);
         mIsDisconnecting = true;
+        mIsConnected = false;
     }
 
     public void onRMICommand(NetworkPacket pkt) throws RemoteException {
@@ -57,7 +59,7 @@ public class ClientConnRMI extends ClientConn {
         
         synchronized(mOutgoingQueue) {
             if(mOutgoingQueue.isEmpty())
-                return null;
+                return new NetworkPacket[0];
             NetworkPacket[] out = new NetworkPacket[mOutgoingQueue.size()];
             
             int i = 0;
@@ -68,5 +70,4 @@ public class ClientConnRMI extends ClientConn {
             return out;
         }
     }
-
 }

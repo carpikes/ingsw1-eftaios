@@ -23,25 +23,21 @@ public class Server {
         return Holder.INSTANCE;
     }
 
-    /* TODO: mTCPPort must not be hardcoded here
-     * Why port 3834? 3834 = 0xEFA -> Escape From Aliens
-     * Note: ports < 1024 are privileges 
-     */
-    private static final int mTCPPort = 3834;
-    private List<Runnable> mServers;
+    private List<Listener> mServers;
     private List<Game> mGamesRunning;
     
     private Integer mConnectedClients;
+    private boolean mStopEvent = false;
 
     /* New players will be added here */
     private Game mCurGame = null;
 
     private Server() { 
-        mServers = new ArrayList<Runnable>();
+        mServers = new ArrayList<Listener>();
         mGamesRunning = new ArrayList<Game>();
         mConnectedClients = 0;
 
-        ServerTCP tcp = new ServerTCP(mTCPPort);
+        ServerTCP tcp = new ServerTCP(Config.SERVER_TCP_LISTEN_PORT);
         ServerRMI rmi = new ServerRMI();
 
         mServers.add(tcp);
@@ -62,7 +58,6 @@ public class Server {
 
         if(!mCurGame.addPlayer(client)) {
             // No game may be full here
-            LOG.log(Level.SEVERE, "Game full in a wrong way. What's Happening?");
             client.handleDisconnect();
             return false;
         }
@@ -91,11 +86,11 @@ public class Server {
     }
 
     public void runServer() {
-        for(Runnable server : mServers)
+        for(Listener server : mServers)
             new Thread(server).start();
 
         try {
-            for(;;) {
+            while(!mStopEvent) {
                 if(mCurGame != null) {
                     if(mCurGame.isReady()) {
                         LOG.log(Level.INFO, "Game ready! Stopping new incoming connections");
@@ -113,9 +108,34 @@ public class Server {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        
+        for(Listener server : mServers)
+            server.tearDown();
     }
     
     public synchronized int getConnectedClients() {
         return mConnectedClients;
+    }
+    
+    public synchronized void tearDown() {
+        mStopEvent = true;
+    }
+
+    public synchronized boolean isDown() {
+        if(mServers != null)
+            for(Listener server : mServers)
+                if(!server.isDown())
+                    return false;
+        return true;
+    }
+    
+    public synchronized boolean isUp() {
+        if(mServers == null)
+            return false;
+        
+        for(Listener server : mServers)
+            if(!server.isUp())
+                return false;
+        return true;
     }
 }

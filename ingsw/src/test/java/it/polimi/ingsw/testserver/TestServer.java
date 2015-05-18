@@ -1,9 +1,24 @@
 package it.polimi.ingsw.testserver;
 
 import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Map;
+import java.util.TreeMap;
+
+import it.polimi.ingsw.client.network.TCPConnection;
+import it.polimi.ingsw.game.config.Config;
+import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.server.ClientConnTCP;
 import it.polimi.ingsw.server.Server;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -12,14 +27,15 @@ import org.junit.Test;
  */
 
 public class TestServer {
-    private ClientConnTest conn;
     /**
      * @throws java.lang.Exception
      */
-    @Before
-    public void setUp() throws Exception {
-        conn = new ClientConnTest();
+    @BeforeClass
+    public static void setUp() throws Exception {
         new Thread(new Runnable() { public void run() { Server.getInstance().runServer(); } }).start();
+        while(!Server.getInstance().isUp()) {
+            Thread.sleep(10);
+        }
     }
 
     /**
@@ -27,9 +43,68 @@ public class TestServer {
      */
     @Test
     public void testClient() {
+        ClientConnTest conn = new ClientConnTest();
+        ClientConnTest conn2 = new ClientConnTest(); 
+        
+        conn.run();
+        conn2.run();
+        
+        int clientsBefore = Server.getInstance().getConnectedClients();
         assertTrue(Server.getInstance().addClient(conn));
-        conn.doDisconnect();
-        assertEquals(Server.getInstance().getConnectedClients(), 0);
+        assertTrue(Server.getInstance().addClient(conn2));
+        
+        // Emulate and invalid packet
+        conn.emulateReadPacket(new NetworkPacket(GameCommands.CMD_PING));
+        
+        // Try to change username with an empty one
+        conn.emulateReadPacket(new NetworkPacket(GameCommands.CMD_CS_USERNAME));
+        assertFalse(conn.exposeClient().hasUsername());
+        
+        // Try a good username
+        conn.emulateReadPacket(new NetworkPacket(GameCommands.CMD_CS_USERNAME, "test"));
+        assertTrue(conn.exposeClient().hasUsername());
+        
+        // Try an already used username
+        conn2.emulateReadPacket(new NetworkPacket(GameCommands.CMD_CS_USERNAME, "test"));
+        assertFalse(conn2.exposeClient().hasUsername());
+        
+        // Disconnect clients
+        conn.emulateDisconnect();
+        conn2.emulateDisconnect();
+        
+        assertEquals(Server.getInstance().getConnectedClients(), clientsBefore);
+    }
+    
+    @Test
+    public void testTCP() {
+        Socket s;
+        Map<String, Object> paramsConfig = new TreeMap<String, Object>();
+        paramsConfig.put("Host", "localhost");
+        paramsConfig.put("Port", Config.SERVER_TCP_LISTEN_PORT);
+
+        TCPConnection conn = new TCPConnection();
+        conn.setConfiguration(paramsConfig);
+        assertEquals(conn.isOnline(), false);
+        try {
+            conn.connect();
+        } catch (IOException e) {
+            fail("Cannot connect to server: " + e.toString());
+        }
+        assertEquals(conn.isOnline(), true);
+        conn.disconnect();
+        assertEquals(conn.isOnline(), false);
     }
 
+    /**
+     * @throws java.lang.Exception
+     */
+    @AfterClass
+    public static void tearDown() throws Exception {
+        
+        System.out.println("------------------Tearing down------------------");
+        Server.getInstance().tearDown();
+        while(!Server.getInstance().isDown()) {
+            Thread.sleep(10);
+        }
+    }
 }

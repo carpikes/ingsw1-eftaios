@@ -51,9 +51,11 @@ public class Client {
         return false;
     }
 
-    public void handleDisconnect() {
-        mConn.disconnect();
-        mGame.removeClient(this);
+    public synchronized void handleDisconnect() {
+        if(mConn.isConnected()) {
+            mConn.disconnect();
+            mGame.removeClient(this);
+        }
     }
 
     public void setUsername(String msg) {

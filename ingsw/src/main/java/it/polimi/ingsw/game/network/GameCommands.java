@@ -6,6 +6,8 @@ package it.polimi.ingsw.game.network;
  */
 
 public class GameCommands {
+    private GameCommands() { }
+    
     public static final int CMD_INVALID             = 0;
     public static final int CMD_PING                = 1;
     public static final int CMD_BYE                 = 2;

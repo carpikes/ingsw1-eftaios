@@ -69,7 +69,7 @@ public class RMIConnection extends Connection {
             }
             new Thread(mReader).start();
         } catch (NotBoundException e) {
-            LOG.log(Level.WARNING, e.toString());
+            LOG.log(Level.WARNING, e.toString(), e);
             throw new IOException("Cannot find my server on the RMI Registry");
         }
     }
@@ -91,7 +91,7 @@ public class RMIConnection extends Connection {
         try {
             mServerMask.onRMICommand(mUniqueId, pkt);
         } catch (RemoteException e) {
-            LOG.log(Level.FINE, e.toString());
+            LOG.log(Level.FINE, e.toString(), e);
             disconnect();
         }
     }
@@ -129,8 +129,8 @@ public class RMIConnection extends Connection {
         public void run() {
             try  {
                 while(mServer != null && mOnline) {
-                    NetworkPacket [] commands = mServer.readCommands(mClientId);
-                    if(commands != null && mListener != null) {
+                    NetworkPacket[] commands = mServer.readCommands(mClientId);
+                    if(mListener != null) {
                         for(NetworkPacket i : commands)
                             if(i != null && mListener != null)
                                 mListener.onReceive(i);
@@ -138,7 +138,7 @@ public class RMIConnection extends Connection {
                     Thread.sleep(250);
                 }
             } catch (Exception e) {
-                LOG.log(Level.INFO, "Connection closed: " + e.toString());
+                LOG.log(Level.INFO, "Connection closed: " + e.toString(), e);
             } finally {
                 if(mListener != null)
                     mListener.onDisconnect();

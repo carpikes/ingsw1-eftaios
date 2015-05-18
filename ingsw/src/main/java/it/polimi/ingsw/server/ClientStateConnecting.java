@@ -23,7 +23,7 @@ public class ClientStateConnecting extends ClientState{
         synchronized(mGame) {
             synchronized(mClient) {
                 if(pkt.getOpcode() == GameCommands.CMD_CS_USERNAME) {
-                    String args[] = pkt.getArgs();
+                    String[] args = pkt.getArgs();
                     if(args.length == 0)
                         return;
                     

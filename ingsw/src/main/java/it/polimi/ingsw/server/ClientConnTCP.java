@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * @since  May 8, 2015
  */
 
-class ClientConnTCP extends ClientConn {
+public class ClientConnTCP extends ClientConn {
     private static final Logger LOG = Logger.getLogger(ClientConnTCP.class.getName());
     private final ObjectOutputStream mOut;
     private final ObjectInputStream mIn;
@@ -27,6 +27,7 @@ class ClientConnTCP extends ClientConn {
         mSocket = socket;
     }
 
+    @Override
     public void run() {
         try {
             while(mSocket.isConnected()) {
@@ -36,7 +37,7 @@ class ClientConnTCP extends ClientConn {
                     mClient.handlePacket((NetworkPacket)obj);
                 }
             }
-        } catch(Exception e) {
+        } catch(IOException | ClassNotFoundException e) {
             LOG.log(Level.FINE, "Connection closed: " + e.toString());
         } finally {
             mClient.handleDisconnect();
@@ -59,7 +60,7 @@ class ClientConnTCP extends ClientConn {
             try {
                 mOut.writeObject(new NetworkPacket(GameCommands.CMD_BYE));
                 mOut.flush();
-            } catch(Exception e) {
+            } catch(IOException e) {
                 LOG.log(Level.FINER, e.toString());
             }
         }
@@ -68,7 +69,14 @@ class ClientConnTCP extends ClientConn {
             mIn.close();
             mSocket.close();
         } catch (IOException e) {
-            LOG.log(Level.FINE, "Sockets are already closed: " + e.toString());
+            LOG.log(Level.FINE, "Sockets are already closed: " + e.toString(), e);
         }
+    }
+    
+    @Override
+    public boolean isConnected() {
+        if(mSocket == null)
+            return false;
+        return mSocket.isConnected();
     }
 }

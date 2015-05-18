@@ -1,6 +1,7 @@
 package it.polimi.ingsw.testserver;
 
 import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.server.Client;
 import it.polimi.ingsw.server.ClientConn;
 
 /**
@@ -12,6 +13,7 @@ public class ClientConnTest extends ClientConn{
 
     @Override
     public void run() {
+        mIsConnected = true;
         return;
     }
 
@@ -22,11 +24,19 @@ public class ClientConnTest extends ClientConn{
 
     @Override
     public void disconnect() {
+        mIsConnected = false;
         return;
     }
     
-    public void doDisconnect() {
+    public void emulateDisconnect() {
         mClient.handleDisconnect();
     }
 
+    public void emulateReadPacket(NetworkPacket pkt) {
+        mClient.handlePacket(pkt);
+    }
+    
+    public Client exposeClient() {
+        return mClient;
+    }
 }

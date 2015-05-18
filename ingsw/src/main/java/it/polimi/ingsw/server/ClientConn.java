@@ -11,7 +11,7 @@ import it.polimi.ingsw.game.network.NetworkPacket;
 public abstract class ClientConn implements Runnable {
     protected Client mClient = null;
     protected long mLastPingTime;
-
+    protected boolean mIsConnected = false;
     public ClientConn() {
         resetTimeoutTimer();
     }
@@ -31,7 +31,12 @@ public abstract class ClientConn implements Runnable {
     public abstract void sendPacket(NetworkPacket pkt);
     public abstract void disconnect();
     
+    public boolean isConnected() {
+        return mIsConnected;
+    }
+    
     public void sendPacket(int opcode) {
         sendPacket(new NetworkPacket(opcode));
     }
+    
 }

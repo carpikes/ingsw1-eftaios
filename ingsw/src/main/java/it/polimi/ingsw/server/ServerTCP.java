@@ -13,37 +13,71 @@ import java.util.logging.Logger;
  * @since  May 8, 2015
  */
 
-class ServerTCP implements Runnable{
+class ServerTCP implements Listener {
     private static final Logger LOG = Logger.getLogger(ServerTCP.class.getName());
     private ExecutorService mCachedPool;
     private ServerSocket mServer;
-    public final int mPort;
+    private boolean mStopEvent = false;
+    private final int mPort;
 
     public ServerTCP(int port) {
         mPort = port;
         mCachedPool = Executors.newCachedThreadPool();
+    }
+    
+    private void acceptConnection() {
+        try {
+            Socket s = mServer.accept();
+            ClientConn c = new ClientConnTCP(s);
+
+            if(Server.getInstance().addClient(c))
+                mCachedPool.submit(c);
+            else 
+                c.disconnect();
+        } catch(Exception e){
+            LOG.log(Level.WARNING, "TCP Connection closed: " + e.toString(), e);
+        }
     }
 
     public void run() {
         try {
             mServer = new ServerSocket(mPort);
             LOG.log(Level.INFO, "TCP Server is running");
-            while (true) {
-                try {
-                    Socket s = mServer.accept();
-                    ClientConn c = new ClientConnTCP(s);
-
-                    if(Server.getInstance().addClient(c))
-                        mCachedPool.submit(c);
-                    else 
-                        c.disconnect();
-                } catch(Exception e){
-                    LOG.log(Level.WARNING, "TCP Connection closed: " + e.toString());
-                }
+            while (!mStopEvent) {
+                acceptConnection();
             }
+            mServer.close();
         } catch(IOException e){
-            LOG.log(Level.SEVERE, "TCP Server is down: " + e.toString());
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, "TCP Server is down: " + e.toString(), e);
         }
+    }
+
+    @Override
+    public synchronized void tearDown() {
+        mStopEvent = true;
+        try {
+            if(mServer != null)
+                mServer.close();
+        } catch (IOException e) {
+            LOG.log(Level.FINEST, e.toString());
+        }
+    }
+
+    @Override
+    public synchronized boolean isDown() {
+        if(mServer == null)
+            return true;
+        if(mServer.isClosed())
+            return true;
+        return false;
+    }
+
+    @Override
+    public boolean isUp() {
+        if(mServer == null)
+            return false;
+        if(mServer.isBound() && !mServer.isClosed())
+            return true;
+        return false;
     }
 }

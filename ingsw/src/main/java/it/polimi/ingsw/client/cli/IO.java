@@ -28,7 +28,7 @@ class IO {
                 i = Integer.valueOf(m);
                 break;
             } catch(Exception e) {
-                LOG.log(Level.FINEST, e.toString());
+                LOG.log(Level.FINEST, e.toString(), e);
                 System.out.println("Invalid choice");
             }
         }
@@ -41,7 +41,7 @@ class IO {
             System.out.flush();
             return mReader.readLine().trim();
         } catch (Exception e) {
-            LOG.log(Level.FINEST, e.toString());
+            LOG.log(Level.FINEST, e.toString(), e);
         }
         return "";
     }
