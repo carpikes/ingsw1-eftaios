@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.2">
+  <zoom_level>5</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>160</x>
+      <y>50</y>
+      <w>185</w>
+      <h>95</h>
+    </coordinates>
+    <panel_attributes>it.polimi.ingsw.client.gui::GameMainScreen
+--
+-serialVersionUID: long
+-LOG: java.util.logging.Logger
+-CANVAS_WIDTH: int
+-CANVAS_HEIGHT: int
+-canvas: it.polimi.ingsw.client.gui.MapCanvasPanel
+--
++GameMainScreen(): ctor
++main(java.lang.String[]): void
+--
+
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>555</x>
+      <y>175</y>
+      <w>320</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>it.polimi.ingsw.client.gui::Hexagon
+--
+-center: java.awt.geom.Point2D$Double
+-size: double
+-path: java.awt.geom.Path2D$Double
+--
++Hexagon(java.awt.geom.Point2D$Double, double, java.awt.geom.Path2D$Double)
++getPath(): java.awt.geom.Path2D$Double
++getCenter(): java.awt.geom.Point2D$Double
++getSize(): double
+--
+
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>555</x>
+      <y>85</y>
+      <w>335</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>it.polimi.ingsw.client.gui::HexagonFactory
+--
++NUMBER_OF_VERTICES: int
+--
+-HexagonFactory(): ctor
++createHexagon(java.awt.geom.Point2D$Double, double): it.polimi.ingsw.client.gui.Hexagon
+--
+
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>100</x>
+      <y>195</y>
+      <w>405</w>
+      <h>215</h>
+    </coordinates>
+    <panel_attributes>it.polimi.ingsw.client.gui::MapCanvasPanel
+--
+-serialVersionUID: long
+-gameMap: it.polimi.ingsw.game.GameMap
+-hexagons: it.polimi.ingsw.client.gui.Hexagon[][]
+-sectorColors: java.util.Map
+-currentHexCoordinates: java.awt.Point
+-hexWidth: double
+-hexHeight: double
+-marginHeight: double
+-canvasWidth: int
+-canvasHeight: int
+--
++MapCanvasPanel(it.polimi.ingsw.game.GameMap, int, int): ctor
+-createSectorColorsMap(): void
+-calculateValuesForHexagons(): void
++paintComponent(java.awt.Graphics): void
+-drawHexagons(java.awt.Graphics2D): void
+-drawHexAt(java.awt.Graphics2D, java.awt.Point, it.polimi.ingsw.client.gui.MapCanvasPanel$DrawingMode): void
+-isEvenColumn(int): boolean
+--
+
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>140</y>
+      <w>15</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>500</x>
+      <y>215</y>
+      <w>65</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>90</y>
+      <w>85</w>
+      <h>115</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>150.0;10.0;10.0;10.0;10.0;210.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>760</x>
+      <y>135</y>
+      <w>15</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>
