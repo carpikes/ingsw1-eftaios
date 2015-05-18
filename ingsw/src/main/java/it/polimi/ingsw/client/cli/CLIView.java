@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
@@ -19,8 +20,8 @@ import it.polimi.ingsw.game.network.NetworkPacket;
  * @since  May 10, 2015
  */
 
-class CLIGame implements OnReceiveListener {
-    private static final Logger mLog = Logger.getLogger(CLIGame.class.getName());
+public class CLIView implements OnReceiveListener, View {
+    private static final Logger mLog = Logger.getLogger(CLIView.class.getName());
     private Connection mConn;
     private LinkedBlockingQueue<NetworkPacket> mQueue;
     private boolean mMustClose = false;
@@ -49,9 +50,9 @@ class CLIGame implements OnReceiveListener {
         IO.write("");
     }
 
-    public CLIGame() {
+    public CLIView() {
         mQueue = new LinkedBlockingQueue<NetworkPacket>();
-        CLIGame.banner();
+        CLIView.banner();
         IO.write("Which connection do you want to use?");
         Map<Integer,String> mConnectionList = ConnectionFactory.getConnectionList();
 
