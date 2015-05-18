@@ -10,7 +10,7 @@ import java.util.logging.Logger;
  * @since  May 8, 2015
  */
 
-class Client {
+public class Client {
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
     private final ClientConn mConn;
     private final Game mGame;

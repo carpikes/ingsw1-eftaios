@@ -8,7 +8,7 @@ import it.polimi.ingsw.game.network.NetworkPacket;
  * @since  May 8, 2015
  */
 
-abstract class ClientConn implements Runnable {
+public abstract class ClientConn implements Runnable {
     protected Client mClient = null;
     protected long mLastPingTime;
 
