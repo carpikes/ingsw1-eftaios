@@ -16,7 +16,7 @@ public class Hexagon {
         this.path = hexagonPath;
     }
     
-    public Shape getShape() {
+    public Path2D.Double getPath() {
         return path;
     }
     

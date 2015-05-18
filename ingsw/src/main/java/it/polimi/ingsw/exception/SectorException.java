@@ -9,24 +9,7 @@ public class SectorException extends RuntimeException {
         
     }
 
-    public SectorException(String message, Throwable cause,
-            boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-        
-    }
-
-    public SectorException(String message, Throwable cause) {
-        super(message, cause);
-        
-    }
-
     public SectorException(String message) {
         super(message);
-        
-    }
-
-    public SectorException(Throwable cause) {
-        super(cause);
-        
     }
 }

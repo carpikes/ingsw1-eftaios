@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.exception.DrawingModeException;
+import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.Sectors;
@@ -16,6 +17,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -27,10 +29,10 @@ import javax.swing.SwingUtilities;
 
 public class GameMainScreen extends JFrame {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 4286896317209068573L;
+    
+    private static final Logger log = Logger.getLogger( GameMainScreen.class.getName() );
+    
     // Constants
     public static final int CANVAS_WIDTH  = 1024;
     public static final int CANVAS_HEIGHT = 768;
@@ -39,15 +41,23 @@ public class GameMainScreen extends JFrame {
     private MapCanvasPanel canvas;
 
     public GameMainScreen() {
-        canvas = new MapCanvasPanel( GameMap.createFromMapFile( new File("maps/fermi.txt") ) );    
-        canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
-
-        this.add(canvas);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);   
-        this.pack();              
-        this.setTitle("Escape from the Aliens in Outer Space");
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
+        try {
+            canvas = new MapCanvasPanel( GameMap.createFromMapFile( new File("maps/fermi.txt") ) );    
+        
+            canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+            this.add(canvas);
+            this.setDefaultCloseOperation(EXIT_ON_CLOSE);   
+            this.pack();              
+            this.setTitle("Escape from the Aliens in Outer Space");
+            this.setLocationRelativeTo(null);
+            this.setVisible(true);
+        } catch (IOException e) { 
+            log.log(Level.SEVERE, "Cannot read map file: " + e);
+            System.exit(1);
+        } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
+            log.log(Level.SEVERE, "File is not well formatted: " + e);
+            System.exit(1);
+        }
     }
 
     private class MapCanvasPanel extends JPanel {
@@ -108,7 +118,7 @@ public class GameMainScreen extends JFrame {
                 public void mouseMoved(MouseEvent e) {
                     for( int i = 0; i < hexagons.length; ++i )
                         for( int j = 0; j < hexagons[i].length; ++j )
-                            if( hexagons[i][j].getShape().contains( e.getPoint() ) ) {
+                            if( hexagons[i][j].getPath().contains( e.getPoint() ) ) {
                                 currentHexCoordinates = new Point( i, j );
                                 repaint();
                                 return;
@@ -201,11 +211,11 @@ public class GameMainScreen extends JFrame {
                 throw new DrawingModeException("Drawing mode not supported");
             }
             
-            g2d.fill(hexagons[position.x][position.y].getShape());
+            g2d.fill(hexagons[position.x][position.y].getPath());
             
             // border
             g2d.setColor(Color.BLACK);
-            g2d.draw(hexagons[position.x][position.y].getShape());
+            g2d.draw(hexagons[position.x][position.y].getPath());
         }
         
         private boolean isEvenColumn( int col ) {

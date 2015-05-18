@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GameMap {
@@ -29,30 +28,25 @@ public class GameMap {
 		this.board = board;
 	} 
 
-	public static GameMap createFromMapFile( File file ) {
+	public static GameMap createFromMapFile( File file ) throws IOException {
 	    Sector[][] sectors = new Sector[ROWS][COLUMNS];
 	    String title = null;
 	    
-	    try {
-	        List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-	        Iterator<String> iterator = lines.iterator();
-	        
-	        int i = 0, j = 0;
-	        title = iterator.next();
-	        while ( iterator.hasNext() ) {
-	            String[] currentLine = iterator.next().split(" ");
-	            for( j = 0; j < currentLine.length; ++j ) {
-	                sectors[i][j] = Sectors.getSectorFor(Integer.parseInt(currentLine[j]));
-	            }
-	            ++i;
-	        }
-		} catch (IOException e) { 
-			log.log(Level.SEVERE, "Cannot read map file: " + e);
-			System.exit(1);
-		} catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
-		    log.log(Level.SEVERE, "File is not well formatted: " + e);
-		    System.exit(1);
+        List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+        Iterator<String> iterator = lines.iterator();
+        
+        int i = 0, j = 0;
+        title = iterator.next();
+        while ( iterator.hasNext() ) {
+            String[] currentLine = iterator.next().split(" ");
+            for( j = 0; j < currentLine.length; ++j ) {
+                sectors[i][j] = Sectors.getSectorFor(Integer.parseInt(currentLine[j]));
+            }
+            ++i;
         }
+        
+        if( i != ROWS || j != COLUMNS )
+            throw new SectorException("Missing sector");
 		
 		return new GameMap(title, sectors);
 	}
