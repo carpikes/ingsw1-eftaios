@@ -16,7 +16,7 @@ public class GameMainScreen extends JFrame {
 
     private static final long serialVersionUID = 4286896317209068573L;
     
-    private static final Logger log = Logger.getLogger( GameMainScreen.class.getName() );
+    private static final Logger LOG = Logger.getLogger( GameMainScreen.class.getName() );
     
     // Constants
     private static final int CANVAS_WIDTH  = 1024;
@@ -38,10 +38,10 @@ public class GameMainScreen extends JFrame {
             this.setLocationRelativeTo(null);
             this.setVisible(true);
         } catch (IOException e) { 
-            log.log(Level.SEVERE, "Cannot read map file: " + e);
+            LOG.log(Level.SEVERE, "Cannot read map file: " + e);
             System.exit(1);
         } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
-            log.log(Level.SEVERE, "File is not well formatted: " + e);
+            LOG.log(Level.SEVERE, "File is not well formatted: " + e);
             System.exit(1);
         }
     }

@@ -21,7 +21,7 @@ import it.polimi.ingsw.game.network.NetworkPacket;
  */
 
 public class CLIView implements OnReceiveListener, View {
-    private static final Logger mLog = Logger.getLogger(CLIView.class.getName());
+    private static final Logger LOG = Logger.getLogger(CLIView.class.getName());
     private Connection mConn;
     private LinkedBlockingQueue<NetworkPacket> mQueue;
     private boolean mMustClose = false;
@@ -94,7 +94,7 @@ public class CLIView implements OnReceiveListener, View {
         try {
             mConn.connect();
         } catch (IOException e) {
-            mLog.log(Level.SEVERE, "Cannot connect: " + e.toString());
+            LOG.log(Level.SEVERE, "Cannot connect: " + e.toString());
             return;
         }
         IO.write("Connected to server.");
@@ -125,7 +125,7 @@ public class CLIView implements OnReceiveListener, View {
                 IO.write("Welcome, " + name);
 
         } catch (InterruptedException e) {
-            mLog.log(Level.FINER, e.toString());
+            LOG.log(Level.FINER, e.toString());
             return;
         }
 
@@ -143,7 +143,7 @@ public class CLIView implements OnReceiveListener, View {
                 Thread.sleep(1000);
             }
         }catch(Exception e) {
-            mLog.log(Level.FINER, e.toString());
+            LOG.log(Level.FINER, e.toString());
         }
         IO.write("Goodbye!");
     }
@@ -153,7 +153,7 @@ public class CLIView implements OnReceiveListener, View {
         try {
             mQueue.put(pkt);
         } catch (InterruptedException e) {
-            mLog.log(Level.FINER, e.toString());
+            LOG.log(Level.FINER, e.toString());
         }
     }
 

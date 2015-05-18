@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  */
 
 class Game {
-    private static final Logger mLog = Logger.getLogger(Game.class.getName());
+    private static final Logger LOG = Logger.getLogger(Game.class.getName());
 
     private boolean mIsReady = false;
     private boolean mIsRunning = false;
@@ -89,7 +89,7 @@ class Game {
                     return;
                 }
             // Yeah, let's start
-            mLog.log(Level.INFO, "Players ready! Rolling the dice and starting up...");
+            LOG.log(Level.INFO, "Players ready! Rolling the dice and starting up...");
 
             broadcastPacket(GameCommands.CMD_SC_RUN);
 

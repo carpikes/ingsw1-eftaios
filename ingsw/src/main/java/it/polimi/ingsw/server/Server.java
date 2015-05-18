@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  */
 
 class Server {
-    private static final Logger mLog = Logger.getLogger(Server.class.getName());
+    private static final Logger LOG = Logger.getLogger(Server.class.getName());
 
     private static class Holder {
         private static final Server INSTANCE = new Server();
@@ -61,7 +61,7 @@ class Server {
 
         if(!mCurGame.addPlayer(client)) {
             // No game may be full here
-            mLog.log(Level.SEVERE, "Game full in a wrong way. What's Happening?");
+            LOG.log(Level.SEVERE, "Game full in a wrong way. What's Happening?");
             client.handleDisconnect();
             return false;
         }
@@ -97,7 +97,7 @@ class Server {
             for(;;) {
                 if(mCurGame != null) {
                     if(mCurGame.isReady()) {
-                        mLog.log(Level.INFO, "Game ready! Stopping new incoming connections");
+                        LOG.log(Level.INFO, "Game ready! Stopping new incoming connections");
                         mGamesRunning.add(mCurGame);
                         mCurGame = null;
                     }

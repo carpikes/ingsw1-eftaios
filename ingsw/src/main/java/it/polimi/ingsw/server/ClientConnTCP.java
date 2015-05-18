@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 
 class ClientConnTCP extends ClientConn {
-    private static final Logger mLog = Logger.getLogger(ClientConnTCP.class.getName());
+    private static final Logger LOG = Logger.getLogger(ClientConnTCP.class.getName());
     private final ObjectOutputStream mOut;
     private final ObjectInputStream mIn;
     private final Socket mSocket;
@@ -37,7 +37,7 @@ class ClientConnTCP extends ClientConn {
                 }
             }
         } catch(Exception e) {
-            mLog.log(Level.FINE, "Connection closed: " + e.toString());
+            LOG.log(Level.FINE, "Connection closed: " + e.toString());
         } finally {
             mClient.handleDisconnect();
         }
@@ -60,7 +60,7 @@ class ClientConnTCP extends ClientConn {
                 mOut.writeObject(new NetworkPacket(GameCommands.CMD_BYE));
                 mOut.flush();
             } catch(Exception e) {
-                mLog.log(Level.FINER, e.toString());
+                LOG.log(Level.FINER, e.toString());
             }
         }
         try {
@@ -68,7 +68,7 @@ class ClientConnTCP extends ClientConn {
             mIn.close();
             mSocket.close();
         } catch (IOException e) {
-            mLog.log(Level.FINE, "Sockets are already closed: " + e.toString());
+            LOG.log(Level.FINE, "Sockets are already closed: " + e.toString());
         }
     }
 }

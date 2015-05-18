@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  */
 
 class IO {
-    private static final Logger mLog = Logger.getLogger(IO.class.getName());
+    private static final Logger LOG = Logger.getLogger(IO.class.getName());
     private static BufferedReader mReader = new BufferedReader(new InputStreamReader(System.in));
 
     public static void write(String line) {
@@ -28,7 +28,7 @@ class IO {
                 i = Integer.valueOf(m);
                 break;
             } catch(Exception e) {
-                mLog.log(Level.FINEST, e.toString());
+                LOG.log(Level.FINEST, e.toString());
                 System.out.println("Invalid choice");
             }
         }
@@ -41,7 +41,7 @@ class IO {
             System.out.flush();
             return mReader.readLine().trim();
         } catch (Exception e) {
-            mLog.log(Level.FINEST, e.toString());
+            LOG.log(Level.FINEST, e.toString());
         }
         return "";
     }

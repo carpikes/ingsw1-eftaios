@@ -16,14 +16,11 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
 public class MapCanvasPanel extends JPanel {
     private static final long serialVersionUID = -5583245069814214909L;
-
-    private final Logger log = Logger.getLogger( MapCanvasPanel.class.getName() );
     
     // the map being loaded
     private GameMap gameMap;

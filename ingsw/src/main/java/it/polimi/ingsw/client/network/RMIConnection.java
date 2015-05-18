@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 
 public class RMIConnection extends Connection {
-    private static final Logger mLog = Logger.getLogger(RMIConnection.class.getName());
+    private static final Logger LOG = Logger.getLogger(RMIConnection.class.getName());
     private static final String RMISERVER_STRING = "eftaiosRMI";
     
     private ReadRunnable mReader = null;
@@ -69,7 +69,7 @@ public class RMIConnection extends Connection {
             }
             new Thread(mReader).start();
         } catch (NotBoundException e) {
-            mLog.log(Level.WARNING, e.toString());
+            LOG.log(Level.WARNING, e.toString());
             throw new IOException("Cannot find my server on the RMI Registry");
         }
     }
@@ -91,7 +91,7 @@ public class RMIConnection extends Connection {
         try {
             mServerMask.onRMICommand(mUniqueId, pkt);
         } catch (RemoteException e) {
-            mLog.log(Level.FINE, e.toString());
+            LOG.log(Level.FINE, e.toString());
             disconnect();
         }
     }
@@ -106,7 +106,7 @@ public class RMIConnection extends Connection {
     
     /* Handle incoming messages and dispatch them to the proper listener */
     private class ReadRunnable implements Runnable {
-        private final Logger mLog = Logger.getLogger(ReadRunnable.class.getName());
+        private final Logger LOG = Logger.getLogger(ReadRunnable.class.getName());
         private OnReceiveListener mListener = null;
         private final ServerRMIMask mServer;
         private final String mClientId;
@@ -138,7 +138,7 @@ public class RMIConnection extends Connection {
                     Thread.sleep(250);
                 }
             } catch (Exception e) {
-                mLog.log(Level.INFO, "Connection closed: " + e.toString());
+                LOG.log(Level.INFO, "Connection closed: " + e.toString());
             } finally {
                 if(mListener != null)
                     mListener.onDisconnect();

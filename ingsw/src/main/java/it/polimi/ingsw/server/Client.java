@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  */
 
 class Client {
-    private static final Logger mLog = Logger.getLogger(Client.class.getName());
+    private static final Logger LOG = Logger.getLogger(Client.class.getName());
     private final ClientConn mConn;
     private final Game mGame;
     private ClientState mCurState;
@@ -73,7 +73,7 @@ class Client {
     
     public void update() {
         if(mConn.isTimeoutTimerElapsed()) {
-            mLog.log(Level.WARNING, "Ping timeout. Disconnecting.");
+            LOG.log(Level.WARNING, "Ping timeout. Disconnecting.");
             handleDisconnect();
         }
     }

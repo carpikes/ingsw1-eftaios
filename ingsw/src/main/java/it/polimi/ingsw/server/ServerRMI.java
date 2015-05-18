@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 // TODO: remove client unique id from mMap on disconnect
 // TODO: something to check if a client is still alive, indipendent from connectiong (e.g. ping)
 public class ServerRMI implements Runnable, ServerRMIMask {
-    private static final Logger mLog = Logger.getLogger(ServerRMI.class.getName());
+    private static final Logger LOG = Logger.getLogger(ServerRMI.class.getName());
     private static final String RMISERVER_STRING = "eftaiosRMI";
     private HashMap<String, ClientConnRMI> mMap;
     private Random mRandom = new Random();
@@ -43,10 +43,10 @@ public class ServerRMI implements Runnable, ServerRMIMask {
             ServerRMIMask stub = (ServerRMIMask) UnicastRemoteObject.exportObject(this, 0);
             registry.bind(RMISERVER_STRING, stub);
 
-            mLog.log(Level.INFO, "RMI server is running");
+            LOG.log(Level.INFO, "RMI server is running");
             
         } catch (Exception e) {
-            mLog.log(Level.SEVERE, "RMI server is down: " + e.toString());
+            LOG.log(Level.SEVERE, "RMI server is down: " + e.toString());
             e.printStackTrace();
         }
     }
@@ -75,7 +75,7 @@ public class ServerRMI implements Runnable, ServerRMIMask {
             ClientConnRMI conn = mMap.get(clientId);
             conn.onRMICommand(pkt);
         } else {
-            mLog.log(Level.INFO, "Received an unknown message");
+            LOG.log(Level.INFO, "Received an unknown message");
         }
     }
 
@@ -88,7 +88,7 @@ public class ServerRMI implements Runnable, ServerRMIMask {
             ClientConnRMI conn = mMap.get(clientId);
             return conn.readCommands();
         } else {
-            mLog.log(Level.INFO, "Received an unknown message");
+            LOG.log(Level.INFO, "Received an unknown message");
             return null;
         }
     }

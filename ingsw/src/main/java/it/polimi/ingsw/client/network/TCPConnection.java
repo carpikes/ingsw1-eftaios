@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 
 public class TCPConnection extends Connection {
-    private static final Logger mLog = Logger.getLogger(TCPConnection.class.getName());
+    private static final Logger LOG = Logger.getLogger(TCPConnection.class.getName());
     private String mHost;
     private int mPort = -1;
     private boolean mInited = false;
@@ -83,7 +83,7 @@ public class TCPConnection extends Connection {
             mOut.writeObject(pkt);
             mOut.flush();
         }catch(IOException e) {
-            mLog.log(Level.FINER, "Connection closed: " + e.toString());
+            LOG.log(Level.FINER, "Connection closed: " + e.toString());
             disconnect();
         }
     }
@@ -112,14 +112,14 @@ public class TCPConnection extends Connection {
                 mIn.close();
                 mSocket.close();                
             } catch(IOException e) {
-                mLog.log(Level.FINER, e.toString());
+                LOG.log(Level.FINER, e.toString());
             }
         mSocket = null;
     }
 
     // Handle incoming messages and dispatch them to the proper listener
     private class ReadRunnable implements Runnable {
-        private final Logger mLog = Logger.getLogger(ReadRunnable.class.getName());
+        private final Logger LOG = Logger.getLogger(ReadRunnable.class.getName());
         private OnReceiveListener mListener = null;
         private final TCPConnection mParent;
         private final ObjectInputStream mReader;
@@ -142,7 +142,7 @@ public class TCPConnection extends Connection {
                         mListener.onReceive((NetworkPacket) obj);
                 }
             } catch (Exception e) {
-                mLog.log(Level.FINER, "Connection closed:" + e.toString());
+                LOG.log(Level.FINER, "Connection closed:" + e.toString());
             } finally {
                 mParent.disconnect();
             }
@@ -151,7 +151,7 @@ public class TCPConnection extends Connection {
     
     // Ping the server each Config.CLIENT_TCP_PING_TIME milliseconds
     private class PingRunnable implements Runnable {
-        private final Logger mLog = Logger.getLogger(ReadRunnable.class.getName());
+        private final Logger LOG = Logger.getLogger(ReadRunnable.class.getName());
         private final TCPConnection mParent;
         
         public PingRunnable(TCPConnection parent) {
@@ -166,7 +166,7 @@ public class TCPConnection extends Connection {
                     Thread.sleep(Config.CLIENT_TCP_PING_TIME);
                 }
             } catch (Exception e) {
-                mLog.log(Level.FINER, "Ping thread stopped: " + e.toString());
+                LOG.log(Level.FINER, "Ping thread stopped: " + e.toString());
             }
         }
     }

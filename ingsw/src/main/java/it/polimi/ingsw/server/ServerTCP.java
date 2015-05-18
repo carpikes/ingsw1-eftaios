@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  */
 
 class ServerTCP implements Runnable{
-    private static final Logger mLog = Logger.getLogger(ServerTCP.class.getName());
+    private static final Logger LOG = Logger.getLogger(ServerTCP.class.getName());
     private ExecutorService mCachedPool;
     private ServerSocket mServer;
     public final int mPort;
@@ -27,7 +27,7 @@ class ServerTCP implements Runnable{
     public void run() {
         try {
             mServer = new ServerSocket(mPort);
-            mLog.log(Level.INFO, "TCP Server is running");
+            LOG.log(Level.INFO, "TCP Server is running");
             while (true) {
                 try {
                     Socket s = mServer.accept();
@@ -38,11 +38,11 @@ class ServerTCP implements Runnable{
                     else 
                         c.disconnect();
                 } catch(Exception e){
-                    mLog.log(Level.WARNING, "TCP Connection closed: " + e.toString());
+                    LOG.log(Level.WARNING, "TCP Connection closed: " + e.toString());
                 }
             }
         } catch(IOException e){
-            mLog.log(Level.SEVERE, "TCP Server is down: " + e.toString());
+            LOG.log(Level.SEVERE, "TCP Server is down: " + e.toString());
             e.printStackTrace();
         }
     }

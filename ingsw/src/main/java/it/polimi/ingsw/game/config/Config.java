@@ -7,6 +7,8 @@ package it.polimi.ingsw.game.config;
 
 public class Config {
     
+    private Config() {}
+    
     // Server configuration here
     public static final long SERVER_CONNECTION_TIMEOUT      = 10000;
     public static final int SERVER_MAX_CLIENTS              = 1000;
