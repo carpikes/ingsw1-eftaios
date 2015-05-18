@@ -2,10 +2,11 @@ package it.polimi.ingsw.game.sector;
 
 
 public abstract class Sector {
-	// image component stuff
 	
-	private boolean crossable;
+    @Override
+	public String toString() {
+	    return getClass().getName();
+	}
 	
-	
-	
+	public abstract int getId();
 }

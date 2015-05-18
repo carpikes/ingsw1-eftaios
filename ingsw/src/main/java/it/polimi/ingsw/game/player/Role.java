@@ -1,7 +1,7 @@
 package it.polimi.ingsw.game.player;
 
 public interface Role {
-	// icon?
+    // icon?
  
-	public void move();
+    public void move();
 }
