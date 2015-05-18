@@ -117,7 +117,7 @@ class Game {
         Server.getInstance().removeClient();
         
         broadcastPacket(new NetworkPacket(GameCommands.CMD_SC_STAT, String.valueOf(mClients.size())));
-        if(mClients.size() < Config.GAME_MIN_PLAYERS && mIsRunning) {
+        if(mClients.size() == 0 || (mClients.size() < Config.GAME_MIN_PLAYERS && mIsRunning)) {
             broadcastPacket(GameCommands.CMD_SC_WIN);
             Server.getInstance().removeGame(this);
         }

@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  * @since  May 8, 2015
  */
 
-class Server {
+public class Server {
     private static final Logger LOG = Logger.getLogger(Server.class.getName());
 
     private static class Holder {
@@ -31,7 +31,7 @@ class Server {
     private List<Runnable> mServers;
     private List<Game> mGamesRunning;
     
-    private Integer mConnectedClients = 0;
+    private Integer mConnectedClients;
 
     /* New players will be added here */
     private Game mCurGame = null;
@@ -39,6 +39,7 @@ class Server {
     private Server() { 
         mServers = new ArrayList<Runnable>();
         mGamesRunning = new ArrayList<Game>();
+        mConnectedClients = 0;
 
         ServerTCP tcp = new ServerTCP(mTCPPort);
         ServerRMI rmi = new ServerRMI();
@@ -112,5 +113,9 @@ class Server {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+    
+    public synchronized int getConnectedClients() {
+        return mConnectedClients;
     }
 }
