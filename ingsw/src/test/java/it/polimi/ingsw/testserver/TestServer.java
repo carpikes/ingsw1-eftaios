@@ -19,6 +19,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -63,7 +64,7 @@ public class TestServer {
         
     }
     
-    @Test
+    @Ignore
     public void testLoad() {
         TCPConnection[] conns = new TCPConnection[Config.SERVER_MAX_CLIENTS];
         Map<String, Object> paramsConfig = new TreeMap<String, Object>();
