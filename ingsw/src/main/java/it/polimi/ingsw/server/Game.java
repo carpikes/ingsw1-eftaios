@@ -15,9 +15,6 @@ import java.util.logging.Logger;
  */
 class Game {
     private static final Logger LOG = Logger.getLogger(Game.class.getName());
-
-    /** Game is ready to run: someone has not insered his name yet */
-    private boolean mIsReady = false;
     
     /** Game is running. New players can't connect to this game */
     private boolean mIsRunning = false;
@@ -61,8 +58,15 @@ class Game {
      * @return True if the game is ready to start
      */
     public synchronized boolean isReady() {
-        if(getNumberOfPlayers() < Config.GAME_MIN_PLAYERS || getRemainingTime() > 0)
+        if((getNumberOfPlayers() < Config.GAME_MIN_PLAYERS || getRemainingTime() > 0) && !mIsRunning)
             return false;
+        
+        if(mIsRunning)
+            return true;
+        
+        for(Client i : mClients)
+            if(!i.hasUsername())
+                return false;
 
         return true;
     }
@@ -72,7 +76,7 @@ class Game {
      * @return True if the game is running (new players can't join)
      */
     public synchronized boolean isRunning() {
-        return mIsReady;
+        return mIsRunning;
     }
 
     /** Get number of connected players

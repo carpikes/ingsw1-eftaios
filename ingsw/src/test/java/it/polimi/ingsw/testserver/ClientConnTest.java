@@ -29,7 +29,8 @@ public class ClientConnTest extends ClientConn{
     }
     
     public void emulateDisconnect() {
-        mClient.handleDisconnect();
+        if(mClient != null)
+            mClient.handleDisconnect();
     }
 
     public void emulateReadPacket(NetworkPacket pkt) {

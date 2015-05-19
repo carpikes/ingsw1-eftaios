@@ -39,14 +39,16 @@ class ServerTCP implements Listener {
     private void acceptConnection() {
         try {
             Socket s = mServer.accept();
-            ClientConn c = new ClientConnTCP(s);
+            if(s != null && !mStopEvent) {
+                ClientConn c = new ClientConnTCP(s);
 
-            if(Server.getInstance().addClient(c))
-                mCachedPool.submit(c);
-            else 
-                c.disconnect();
+                if(Server.getInstance().addClient(c))
+                    mCachedPool.submit(c);
+                else 
+                    c.disconnect();
+            }
         } catch(Exception e){
-            LOG.log(Level.WARNING, "TCP Connection closed: " + e.toString(), e);
+            LOG.log(Level.FINEST, "TCP Connection closed: " + e.toString(), e);
         }
     }
 

@@ -37,6 +37,81 @@ public class TestServer {
             Thread.sleep(10);
         }
     }
+    
+    @Test
+    public void testGame() {
+        
+        ClientConnTest[] conns = new ClientConnTest[Config.GAME_MAX_PLAYERS];
+        
+        for(int i=0;i<Config.GAME_MAX_PLAYERS;i++) {
+            conns[i] = new ClientConnTest();
+            conns[i].run();
+            assertTrue(Server.getInstance().addClient(conns[i]));
+            conns[i].emulateReadPacket(new NetworkPacket(GameCommands.CMD_CS_USERNAME, "test_" + i));
+            assertTrue(conns[i].exposeClient().hasUsername());
+        }
+        try {
+            Thread.sleep(500);
+        } catch( InterruptedException e) { }
+        for(ClientConnTest i : conns) {
+            assertTrue(i.exposeClient().isGameReady());
+            i.emulateReadPacket(new NetworkPacket(GameCommands.CMD_PING));
+        }
+
+        for(ClientConnTest i : conns)
+            i.emulateDisconnect();
+        
+    }
+    
+    @Test
+    public void testLoad() {
+        TCPConnection[] conns = new TCPConnection[Config.SERVER_MAX_CLIENTS];
+        Map<String, Object> paramsConfig = new TreeMap<String, Object>();
+        paramsConfig.put("Host", "localhost");
+        paramsConfig.put("Port", Config.SERVER_TCP_LISTEN_PORT);
+        
+        int clientsBefore = Server.getInstance().getConnectedClients();
+        
+        assertEquals(clientsBefore, 0);
+        
+        try {
+            for(int i = 0; i<conns.length;i++) {
+                conns[i] = new TCPConnection();
+                conns[i].setConfiguration(paramsConfig);
+                try {
+                    conns[i].connect();
+                    System.out.println("Connecting [" + i + "]");
+                    double maxSecs = 3;
+                    
+                    while(maxSecs > 0 && Server.getInstance().getConnectedClients() != i + 1 ) {
+                        Thread.sleep(50);
+                        maxSecs -= 0.050;
+                    }
+                    assertEquals(Server.getInstance().getConnectedClients(), i + 1);
+                    Thread.sleep(500);
+                } catch (IOException e) {
+                    fail("Cannot connect to server: " + e.toString());
+                }
+            }
+        
+        
+            for(int i = 0;i<conns.length;i++) {
+                assertTrue(conns[i].isOnline());
+                conns[i].disconnect();
+                double maxSecs = 3;
+                
+                while(maxSecs > 0 && Server.getInstance().getConnectedClients() != Config.SERVER_MAX_CLIENTS - i) {
+                    Thread.sleep(50);
+                    maxSecs -= 0.050;
+                }
+                System.out.println("Disconnecting [" + i + "]");
+                assertEquals(Server.getInstance().getConnectedClients(),Config.SERVER_MAX_CLIENTS - i);
+                Thread.sleep(500);
+            }
+        
+        } catch( InterruptedException e) { }
+        assertEquals(Server.getInstance().getConnectedClients(), 0);
+    }
 
     /**
      * Test method for {@link it.polimi.ingsw.server.Server#addClient(it.polimi.ingsw.server.ClientConn)}.
@@ -77,7 +152,6 @@ public class TestServer {
     
     @Test
     public void testTCP() {
-        Socket s;
         Map<String, Object> paramsConfig = new TreeMap<String, Object>();
         paramsConfig.put("Host", "localhost");
         paramsConfig.put("Port", Config.SERVER_TCP_LISTEN_PORT);
@@ -100,7 +174,6 @@ public class TestServer {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        
         System.out.println("------------------Tearing down------------------");
         Server.getInstance().tearDown();
         while(!Server.getInstance().isDown()) {

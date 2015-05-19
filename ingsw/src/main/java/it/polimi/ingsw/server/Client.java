@@ -112,6 +112,12 @@ public class Client {
         mCurState = new ClientStateInGame(this, mGame);
     }
     
+    /** Check if the state is GameReady */
+    public synchronized boolean isGameReady() {
+        return (mCurState instanceof ClientStateInGame && mGame.isRunning());
+    }
+
+    
     /** Update timeouts */
     public void update() {
         if(mConn.isTimeoutTimerElapsed()) {

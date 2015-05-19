@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.game.config.Config;
+import it.polimi.ingsw.game.network.GameCommands;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +60,12 @@ public class Server {
     public synchronized boolean addClient(ClientConn conn) {
         // Invariant: mCurGame cannot be full here
         
-        if(mConnectedClients >= Config.SERVER_MAX_CLIENTS) 
+        if(mConnectedClients >= Config.SERVER_MAX_CLIENTS) {
+            conn.sendPacket(GameCommands.CMD_SC_FULL);
             return false;
+        }
+        
+        mConnectedClients++;
     
         if(mCurGame == null) {
             mCurGame = new Game();
@@ -74,12 +79,13 @@ public class Server {
             return false;
         }
 
-        if(mCurGame.isFull()) {
-            mGamesRunning.add(mCurGame);
-            mCurGame = null;
+        synchronized(mGamesRunning) {
+            if(mCurGame != null && mCurGame.isFull()) {
+                mGamesRunning.add(mCurGame);
+                mCurGame = null;
+            } 
         }
         
-        mConnectedClients++;
         return true;
     }
     
@@ -95,11 +101,13 @@ public class Server {
      * 
      * @param game  Game you want to remove
      */
-    public synchronized void removeGame(Game game) {
-        if(mCurGame != null && game.equals(mCurGame))
-            mCurGame = null;
-        else
-            mGamesRunning.remove(game);
+    public void removeGame(Game game) {
+        synchronized(mGamesRunning) {
+            if(mCurGame != null && game.equals(mCurGame))
+                mCurGame = null;
+            else
+                mGamesRunning.remove(game);
+        }
     }
 
     /** Start the server and put listeners online. */
@@ -124,7 +132,7 @@ public class Server {
                 Thread.sleep(100);
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.log(Level.FINER, e.toString(), e);
         }
         
         for(Listener server : mServers)

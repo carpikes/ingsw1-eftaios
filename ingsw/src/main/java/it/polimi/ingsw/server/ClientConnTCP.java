@@ -24,7 +24,7 @@ public class ClientConnTCP extends ClientConn {
     private final ObjectInputStream mIn;
     
     /** The socket */
-    private final Socket mSocket;
+    private Socket mSocket;
 
     /** Constructor
      * 
@@ -49,7 +49,7 @@ public class ClientConnTCP extends ClientConn {
                 }
             }
         } catch(IOException | ClassNotFoundException e) {
-            LOG.log(Level.FINE, "Connection closed: " + e.toString());
+            LOG.log(Level.FINE, "Connection closed: " + e.toString(), e);
         } finally {
             mClient.handleDisconnect();
         }
@@ -60,24 +60,25 @@ public class ClientConnTCP extends ClientConn {
      * @param pkt The packet
      */
     @Override
-    public void sendPacket(NetworkPacket pkt) {
+    public synchronized void sendPacket(NetworkPacket pkt) {
         try {
             mOut.writeObject(pkt);
             mOut.flush();
         } catch (IOException e) {
+            LOG.log(Level.FINEST, e.toString(), e);
             mClient.handleDisconnect();
         }
     }
 
     /** Close this connection */
     @Override
-    public void disconnect() {
+    public synchronized void disconnect() {
         if(mOut != null) {
             try {
                 mOut.writeObject(new NetworkPacket(GameCommands.CMD_BYE));
                 mOut.flush();
             } catch(IOException e) {
-                LOG.log(Level.FINER, e.toString());
+                LOG.log(Level.FINER, e.toString(), e);
             }
         }
         try {
@@ -87,6 +88,8 @@ public class ClientConnTCP extends ClientConn {
         } catch (IOException e) {
             LOG.log(Level.FINE, "Sockets are already closed: " + e.toString(), e);
         }
+        
+        mSocket = null;
     }
     
     /** Check if this client is connected
@@ -94,7 +97,7 @@ public class ClientConnTCP extends ClientConn {
      * @return True if this client is online
      */
     @Override
-    public boolean isConnected() {
+    public synchronized boolean isConnected() {
         if(mSocket == null)
             return false;
         return mSocket.isConnected();

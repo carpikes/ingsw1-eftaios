@@ -103,7 +103,7 @@ public class TCPConnection extends Connection {
     }
 
     @Override
-    public void disconnect() {
+    public synchronized void disconnect() {
         if(mListener != null)
             mListener.onDisconnect();
         if(mSocket != null && mSocket.isConnected())
