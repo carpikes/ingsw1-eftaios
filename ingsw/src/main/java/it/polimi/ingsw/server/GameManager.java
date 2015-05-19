@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.GameLogic;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameCommands;
 import it.polimi.ingsw.game.network.NetworkPacket;
@@ -13,8 +14,8 @@ import java.util.logging.Logger;
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 9, 2015
  */
-class Game {
-    private static final Logger LOG = Logger.getLogger(Game.class.getName());
+class GameManager {
+    private static final Logger LOG = Logger.getLogger(GameManager.class.getName());
     
     /** Game is running. New players can't connect to this game */
     private boolean mIsRunning = false;
@@ -25,8 +26,12 @@ class Game {
     /** Clients connected */
     private List<Client> mClients = new ArrayList<Client>(); 
 
-    public Game() {
+    /** The underlying game all people play */
+    private GameLogic game;
+    
+    public GameManager() {
         mStartTime = System.currentTimeMillis();
+        game = new GameLogic();
     }
 
     /** Add new clients to this game
@@ -133,7 +138,7 @@ class Game {
 
             mIsRunning = true;
         } else {
-            // Game is running here
+            game.gameUpdate();
         }
     }
    

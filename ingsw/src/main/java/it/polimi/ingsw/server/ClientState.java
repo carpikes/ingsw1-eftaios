@@ -11,14 +11,14 @@ public abstract class ClientState {
     protected Client mClient;
     
     /** The game he is playing */
-    protected Game mGame;
+    protected GameManager mGame;
     
     /** Constructor
      * 
      * @param c     Client instance
      * @param g     Game instance
      */
-    public ClientState(Client c, Game g) {
+    public ClientState(Client c, GameManager g) {
         mClient = c;
         mGame = g;
     }

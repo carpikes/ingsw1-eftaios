@@ -9,7 +9,7 @@ import it.polimi.ingsw.game.network.NetworkPacket;
 
 public class ClientStateInGame extends ClientState{
 
-    public ClientStateInGame(Client c, Game g) {
+    public ClientStateInGame(Client c, GameManager g) {
         super(c,g);
     }
 

@@ -29,7 +29,7 @@ public class Server {
     private List<Listener> mServers;
     
     /** This list contains all games active and running */
-    private List<Game> mGamesRunning;
+    private List<GameManager> mGamesRunning;
     
     /** Number of connected clients */
     private Integer mConnectedClients;
@@ -38,11 +38,11 @@ public class Server {
     private boolean mStopEvent = false;
 
     /** This game is waiting for new players */
-    private Game mCurGame = null;
+    private GameManager mCurGame = null;
 
     private Server() { 
         mServers = new ArrayList<Listener>();
-        mGamesRunning = new ArrayList<Game>();
+        mGamesRunning = new ArrayList<GameManager>();
         mConnectedClients = 0;
 
         ServerTCP tcp = new ServerTCP(Config.SERVER_TCP_LISTEN_PORT);
@@ -68,7 +68,7 @@ public class Server {
         mConnectedClients++;
     
         if(mCurGame == null) {
-            mCurGame = new Game();
+            mCurGame = new GameManager();
         }
 
         Client client = new Client(conn,mCurGame);
@@ -101,7 +101,7 @@ public class Server {
      * 
      * @param game  Game you want to remove
      */
-    public void removeGame(Game game) {
+    public void removeGame(GameManager game) {
         synchronized(mGamesRunning) {
             if(mCurGame != null && game.equals(mCurGame))
                 mCurGame = null;
@@ -125,7 +125,7 @@ public class Server {
                     }
                 }
                 synchronized(mGamesRunning) {
-                    for (Game g : mGamesRunning)
+                    for (GameManager g : mGamesRunning)
                         g.update();
                 }
                 

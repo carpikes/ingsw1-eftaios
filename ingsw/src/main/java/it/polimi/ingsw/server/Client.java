@@ -16,7 +16,7 @@ public class Client {
     private final ClientConn mConn;
     
     /** Game he is playing */
-    private final Game mGame;
+    private final GameManager mGame;
     
     /** Client current state (Choosing username, playing */
     private ClientState mCurState;
@@ -29,7 +29,7 @@ public class Client {
      * @param conn Connection to the client
      * @param game Game he is playing
      */
-    public Client(ClientConn conn, Game game) {
+    public Client(ClientConn conn, GameManager game) {
         mConn = conn;
         mGame = game;
         mCurState = new ClientStateConnecting(this, game);
