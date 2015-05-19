@@ -90,7 +90,7 @@ public class MapCanvasPanel extends JPanel {
                         if( hexagons[i][j] != null && hexagons[i][j].getPath().contains( e.getPoint() ) ) {
                         	Point oldHexCoordinates = currentHexCoordinates;
                             currentHexCoordinates = new Point( i, j );
-                            repaint();
+                            repaint(); // FIXME Optimize me! Draw only necessary pixels
                             
                             return;
                         }
