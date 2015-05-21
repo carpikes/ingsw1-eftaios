@@ -3,7 +3,7 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.exception.DrawingModeException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.sector.Sector;
-import it.polimi.ingsw.game.sector.Sectors;
+import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -116,12 +116,12 @@ public class MapCanvasPanel extends JPanel {
     private void createSectorColorsMap() {
         sectorColors = new HashMap<>();   
 
-        sectorColors.put(Sectors.ALIEN, new Color(90,0,0));
-        sectorColors.put(Sectors.DANGEROUS, new Color(236,20,83));
-        sectorColors.put(Sectors.NOT_DANGEROUS, new Color(222,189,218));
-        sectorColors.put(Sectors.HATCH, new Color(47,53,87));
-        sectorColors.put(Sectors.HUMAN, new Color(200,0,0));
-        sectorColors.put(Sectors.NOT_VALID, new Color(239,236,243));
+        sectorColors.put(SectorBuilder.ALIEN, new Color(90,0,0));
+        sectorColors.put(SectorBuilder.DANGEROUS, new Color(236,20,83));
+        sectorColors.put(SectorBuilder.NOT_DANGEROUS, new Color(222,189,218));
+        sectorColors.put(SectorBuilder.HATCH, new Color(47,53,87));
+        sectorColors.put(SectorBuilder.HUMAN, new Color(200,0,0));
+        sectorColors.put(SectorBuilder.NOT_VALID, new Color(239,236,243));
     }
 
     /**
@@ -145,7 +145,7 @@ public class MapCanvasPanel extends JPanel {
         setBackground(Color.WHITE);  // set background color for this JPanel
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+       /* g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);*/
 
         drawHexagons(g2d);
     }
@@ -160,7 +160,7 @@ public class MapCanvasPanel extends JPanel {
         for( int col = 0; col < GameMap.COLUMNS; ++col ) {
             for( int row = 0; row < GameMap.ROWS; ++ row ) {
             	// draw only if it is a valid sector
-                if( gameMap.getSectorAt(row, col).getId() != Sectors.NOT_VALID )
+                if( gameMap.getSectorAt(row, col).getId() != SectorBuilder.NOT_VALID )
                 	drawHexAt(g2d, new Point(row, col), DrawingMode.NORMAL);
             }
         }

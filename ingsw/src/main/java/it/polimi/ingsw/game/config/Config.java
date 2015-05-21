@@ -17,6 +17,7 @@ public class Config {
     // Server configuration here
     public static final long SERVER_CONNECTION_TIMEOUT      = 10000;
     public static final int SERVER_MAX_CLIENTS              = 3 * GAME_MAX_PLAYERS;
+    
     /* Why port 3834? 3834 = 0xEFA -> Escape From Aliens
      * Note: ports < 1024 are privileges 
      */

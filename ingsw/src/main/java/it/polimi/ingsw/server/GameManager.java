@@ -1,6 +1,5 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.GameLogic;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameCommands;
 import it.polimi.ingsw.game.network.NetworkPacket;
@@ -25,13 +24,9 @@ class GameManager {
     
     /** Clients connected */
     private List<Client> mClients = new ArrayList<Client>(); 
-
-    /** The underlying game all people play */
-    private GameLogic game;
     
     public GameManager() {
         mStartTime = System.currentTimeMillis();
-        game = new GameLogic();
     }
 
     /** Add new clients to this game
@@ -138,7 +133,7 @@ class GameManager {
 
             mIsRunning = true;
         } else {
-            game.gameUpdate();
+            // update game;
         }
     }
    

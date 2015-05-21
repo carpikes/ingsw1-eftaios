@@ -1,16 +1,17 @@
 package it.polimi.ingsw.game.sector;
 
-import it.polimi.ingsw.game.GameLogic;
-import it.polimi.ingsw.game.GamePlayer;
 
-
-public abstract class Sector {
+public class Sector {
 	
-    @Override
-	public String toString() {
-	    return getClass().getName();
-	}
+    private int id;
+    
+    // other properties: maybe we can refactor and create a SectorProperties class
+    private int crossable;
+    //...
+    
+    public Sector( int id ) {
+        this.id = id;
+    }
 	
-	public abstract int getId();
-	public abstract boolean doSectorAction(GameLogic logic, GamePlayer player);
+	public int getId() { return id; }
 }

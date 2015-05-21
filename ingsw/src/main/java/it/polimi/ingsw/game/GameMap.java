@@ -2,7 +2,7 @@ package it.polimi.ingsw.game;
 
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.sector.Sector;
-import it.polimi.ingsw.game.sector.Sectors;
+import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class GameMap {
         while ( iterator.hasNext() ) {
             String[] currentLine = iterator.next().split(" ");
             for( j = 0; j < currentLine.length; ++j ) {
-                sectors[i][j] = Sectors.getSectorFor(Integer.parseInt(currentLine[j]));
+                sectors[i][j] = SectorBuilder.getSectorFor(Integer.parseInt(currentLine[j]));
             }
             ++i;
         }

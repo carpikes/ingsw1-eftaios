@@ -2,7 +2,7 @@ package it.polimi.ingsw.game.sector;
 
 import it.polimi.ingsw.exception.SectorException;
 
-public class Sectors {
+public class SectorBuilder {
     
     // FIXME: maybe there's a better solution?
     public static final int NOT_VALID = 0;
@@ -12,17 +12,17 @@ public class Sectors {
     public static final int ALIEN = 8;
     public static final int HUMAN = 9;
     
-    private Sectors() {}
+    private SectorBuilder() {}
     
     // Parameterized factory method
     public static Sector getSectorFor(int id) throws SectorException  {
         switch(id) {
-            case ALIEN:              return new AlienSector();
-            case DANGEROUS:          return new DangerousSector();
-            case NOT_DANGEROUS:      return new NotDangerousSector();
-            case HATCH:              return new HatchSector();
-            case HUMAN:              return new HumanSector();
-            case NOT_VALID:          return new NotValidSector();
+            case ALIEN:              return new Sector(ALIEN);
+            case DANGEROUS:          return new Sector(DANGEROUS);
+            case NOT_DANGEROUS:      return new Sector(NOT_DANGEROUS);
+            case HATCH:              return new Sector(HATCH);
+            case HUMAN:              return new Sector(HUMAN);
+            case NOT_VALID:          return new Sector(NOT_VALID);
             default:                 throw new SectorException("Illegal sector code");
         }
     }
