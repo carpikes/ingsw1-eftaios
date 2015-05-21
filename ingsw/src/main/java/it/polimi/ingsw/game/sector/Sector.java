@@ -14,4 +14,11 @@ public class Sector {
     }
 	
 	public int getId() { return id; }
+
+    /**
+     * @return
+     */
+    public boolean isValid() {
+        return id != SectorBuilder.NOT_VALID;
+    }
 }

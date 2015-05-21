@@ -4,6 +4,7 @@ import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -59,4 +60,26 @@ public class GameMap {
 	public Sector getSectorAt( int i, int j ) {
 	    return board[i][j];
 	}
+	
+	public Sector getSectorAt( Point point ) {
+	    return getSectorAt( point.x, point.y );
+	}
+
+    /** Check if given point is inside the map
+     * @param destination
+     * @return
+     */
+    public boolean isWithinBounds(Point p) {
+        return ( p.x >= 0 && p.y >= 0 && p.x < ROWS && p.y < COLUMNS ); 
+    }
+
+    /** Calculate how many hexagons are there between A and B
+     * @param source Where you start 
+     * @param destination Where you end in
+     * @return 
+     */
+    public int distance(Point currentPosition, Point destination) {
+        // TODO: IMPLEMENTAMI!
+        return 1;
+    }
 }

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.game;
 
+import it.polimi.ingsw.game.player.GamePlayer;
+
 import java.util.ArrayList;
 
 /** Class representing the current state of the game. The GameLogic on the server and every player
@@ -20,6 +22,14 @@ public class GameState {
     
     public void update() {
         // update game
+    }
+    
+    public GamePlayer getCurrentPlayer() {
+        return players.get(turnId);
+    }
+
+    public GameMap getMap() {
+        return map;
     }
 
 }
