@@ -3,6 +3,8 @@
  */
 package it.polimi.ingsw.game.player.playerstate;
 
+import it.polimi.ingsw.game.GameState;
+
 /**
  * @author Michele
  * @since 21 May 2015
@@ -13,7 +15,7 @@ public class ObjectCardState implements PlayerState {
      * @see it.polimi.ingsw.game.player.playerstate.PlayerState#attack()
      */
     @Override
-    public void attack() {
+    public void attack(GameState gameState) {
         // TODO Auto-generated method stub
 
     }
@@ -22,7 +24,7 @@ public class ObjectCardState implements PlayerState {
      * @see it.polimi.ingsw.game.player.playerstate.PlayerState#move()
      */
     @Override
-    public void move() {
+    public void move(GameState gameState) {
         // TODO Auto-generated method stub
 
     }
@@ -31,7 +33,7 @@ public class ObjectCardState implements PlayerState {
      * @see it.polimi.ingsw.game.player.playerstate.PlayerState#drawCard()
      */
     @Override
-    public void drawCard() {
+    public void drawCard(GameState gameState) {
         // TODO Auto-generated method stub
 
     }
@@ -40,7 +42,7 @@ public class ObjectCardState implements PlayerState {
      * @see it.polimi.ingsw.game.player.playerstate.PlayerState#useObjectCard()
      */
     @Override
-    public void useObjectCard() {
+    public void useObjectCard(GameState gameState) {
         // TODO Auto-generated method stub
 
     }

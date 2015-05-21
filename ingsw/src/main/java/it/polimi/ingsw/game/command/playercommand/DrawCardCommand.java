@@ -4,15 +4,21 @@
 package it.polimi.ingsw.game.command.playercommand;
 
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.card.Card;
 import it.polimi.ingsw.game.command.Command;
-import it.polimi.ingsw.game.player.GamePlayer;
 
 /**
  * @author Michele
  * @since 21 May 2015
  */
 public class DrawCardCommand implements Command {
-
+    
+    private Card card;
+    
+    public DrawCardCommand(Card card) {
+        this.card = card;
+    }
+    
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.command.Command#isValidInCurrentContext(it.polimi.ingsw.game.GameState)
      */

@@ -4,6 +4,7 @@
 package it.polimi.ingsw.game.player.playerstate;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
+import it.polimi.ingsw.game.GameState;
 
 /**
  * @author Michele
@@ -15,7 +16,7 @@ public class NotPlayingState implements PlayerState {
      * @see it.polimi.ingsw.game.player.playerstate.PlayerState#attack()
      */
     @Override
-    public void attack() {
+    public void attack(GameState gameState) {
         throw new IllegalStateOperationException("Cannot attack while not playing!");
     }
 
@@ -23,7 +24,7 @@ public class NotPlayingState implements PlayerState {
      * @see it.polimi.ingsw.game.player.playerstate.PlayerState#move()
      */
     @Override
-    public void move() {
+    public void move(GameState gameState) {
         throw new IllegalStateOperationException("Cannot move while not playing!");
     }
 
@@ -31,7 +32,7 @@ public class NotPlayingState implements PlayerState {
      * @see it.polimi.ingsw.game.player.playerstate.PlayerState#drawCard()
      */
     @Override
-    public void drawCard() {
+    public void drawCard(GameState gameState) {
         throw new IllegalStateOperationException("Cannot draw any cards while not playing!");
     }
 
@@ -39,7 +40,7 @@ public class NotPlayingState implements PlayerState {
      * @see it.polimi.ingsw.game.player.playerstate.PlayerState#useObjectCard()
      */
     @Override
-    public void useObjectCard() {
+    public void useObjectCard(GameState gameState) {
         throw new IllegalStateOperationException("Cannot use any cards while not playing!");
     }
 

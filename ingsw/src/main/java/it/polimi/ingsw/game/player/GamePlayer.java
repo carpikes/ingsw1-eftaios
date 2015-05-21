@@ -118,18 +118,18 @@ public class GamePlayer {
     
     /* Delegate all possible actions to state object */
     public void attack() {
-        currentState.attack();
+        currentState.attack(null);
     }
     
     public void move() {
-        currentState.move();
+        currentState.move(null);
     }
     
     public void drawCard() {
-        currentState.drawCard();
+        currentState.drawCard(null);
     }
     
     public void useObjectCard() {
-        currentState.useObjectCard();
+        currentState.useObjectCard(null);
     }
 }
