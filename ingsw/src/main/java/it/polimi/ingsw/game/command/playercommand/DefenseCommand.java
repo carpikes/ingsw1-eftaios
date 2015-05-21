@@ -10,15 +10,20 @@ import it.polimi.ingsw.game.command.Command;
  * @author Michele
  * @since 21 May 2015
  */
-public class EnableDefenseCommand implements Command {
-
+public class DefenseCommand implements Command {
+    
+    private boolean value;
+    
+    public DefenseCommand( boolean value ) {
+        this.value = value;
+    }
+    
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.command.Command#isValidInCurrentContext(it.polimi.ingsw.game.GameState)
      */
     @Override
     public boolean isValid(GameState gameState) {
-        // TODO Auto-generated method stub
-        return false;
+        return gameState.getCurrentPlayer().isDefenseEnable() ^ value; // only one must be true
     }
 
     /* (non-Javadoc)
@@ -26,8 +31,7 @@ public class EnableDefenseCommand implements Command {
      */
     @Override
     public void execute(GameState gameState) {
-        // TODO Auto-generated method stub
-
+        gameState.getCurrentPlayer().setDefense(value);
     }
 
 }
