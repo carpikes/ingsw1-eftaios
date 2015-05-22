@@ -10,9 +10,9 @@ public class NetworkPacket implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private final int mOpcode;
-    private final String[] mArgs;
+    private final Serializable[] mArgs;
     
-    public NetworkPacket(int opcode, String... args) {
+    public NetworkPacket(int opcode, Serializable... args) {
         mOpcode = opcode;
         mArgs = args;
     }
@@ -21,7 +21,7 @@ public class NetworkPacket implements Serializable {
         return mOpcode;
     }
     
-    public String[] getArgs() {
+    public Serializable[] getArgs() {
         return mArgs;
     }
 }

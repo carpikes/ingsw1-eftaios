@@ -1,13 +1,19 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.player.playerstate.MovingState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.rmi.CORBA.Util;
 
 /** Game manager
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -23,10 +29,20 @@ class GameManager {
     private final long mStartTime;
     
     /** Clients connected */
-    private List<Client> mClients = new ArrayList<Client>(); 
+    private List<Client> mClients = new ArrayList<Client>();
+
+    /** Current turn */
+    private Integer mCurTurn = null; 
+    
+    /** Random generator */
+    private final Random mRandom;
+    
+    /** Game state */
+    private GameState mCurState = null;
     
     public GameManager() {
         mStartTime = System.currentTimeMillis();
+        mRandom = new Random();
     }
 
     /** Add new clients to this game
@@ -126,17 +142,43 @@ class GameManager {
                     // Some slow users still haven't typed their name
                     return;
                 }
-            // Yeah, let's start
+            
+            // Let the game begin
             LOG.log(Level.INFO, "Players ready! Rolling the dice and starting up...");
 
-            broadcastPacket(GameCommands.CMD_SC_RUN);
-
+            initGameSettings();
+            
+            // Send infos to all players
+            String[] userList = new String[mClients.size()];
+            
+            for(int i = 0; i < mClients.size();i++)
+                userList[i] = mClients.get(i).getUsername();
+            
+            for(Client c : mClients) {
+                GameInfoContainer info = new GameInfoContainer(userList, mCurTurn, false);  // TODO: human or alien?
+                c.sendPacket(new NetworkPacket(GameCommands.CMD_SC_RUN, info));
+            }
+            
             mIsRunning = true;
         } else {
-            // update game;
+            if(mCurState != null)
+                mCurState.update();
         }
     }
    
+    /**
+     * 
+     */
+    private void initGameSettings() {
+        // TODO:         Humans / Aliens
+        // in this       Decks
+        // method        ...
+        
+        mCurTurn = mRandom.nextInt(mClients.size());
+        mCurState = new GameState(null); // TODO: first state here
+        LOG.log(Level.INFO, mClients.get(mCurTurn).getUsername() + " is the first player");
+    }
+
     /** Send a packet without arguments to all players connected
      * 
      * @param opcode Packet opcode
@@ -170,6 +212,19 @@ class GameManager {
         if(mClients.size() == 0 || (mClients.size() < Config.GAME_MIN_PLAYERS && mIsRunning)) {
             broadcastPacket(GameCommands.CMD_SC_WIN);
             Server.getInstance().removeGame(this);
+        }
+    }
+
+    /**
+     * @param client
+     * @param pkt
+     */
+    public void handlePacket(Client client, NetworkPacket pkt) {
+        if(!mIsRunning)
+            LOG.log(Level.SEVERE, "Game is not started yet. What's happening?");
+        
+        if(mCurTurn != null && mCurTurn.equals(client) && mCurState != null) {
+            mCurState.queuePacket(pkt);
         }
     }
 }

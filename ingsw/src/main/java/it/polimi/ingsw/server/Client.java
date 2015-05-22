@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.network.GameCommands;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.util.logging.Level;
@@ -9,6 +10,8 @@ import java.util.logging.Logger;
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
  */
+
+// TODO: Do we *really* need ClientState*?
 public class Client {
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
     
@@ -18,10 +21,10 @@ public class Client {
     /** Game he is playing */
     private final GameManager mGame;
     
-    /** Client current state (Choosing username, playing */
-    private ClientState mCurState;
+    /** Am I playing or waiting for other players? */
+    private boolean mPlaying = false;
     
-    /** Username */
+    /** My username */
     private String mUser = null;
 
     /** The constructor
@@ -32,7 +35,6 @@ public class Client {
     public Client(ClientConn conn, GameManager game) {
         mConn = conn;
         mGame = game;
-        mCurState = new ClientStateConnecting(this, game);
 
         /* Enable bidirectional communication Client <-> ClientConn */
         mConn.setClient(this);  
@@ -43,10 +45,27 @@ public class Client {
      * @param pkt The packet
      */
     public synchronized void handlePacket(NetworkPacket pkt) {
-        synchronized(mCurState) {
-            if(mCurState != null)
-                mCurState.handlePacket(pkt);
-        }
+    	if(!mPlaying) {
+    		// Choosing username
+            synchronized(mGame) {
+                if(pkt.getOpcode() == GameCommands.CMD_CS_USERNAME) {
+                    String[] args = (String[]) pkt.getArgs();
+                    if(args.length == 0)
+                        return;
+                    
+                    String name = args[0];
+                    if(mGame.canSetName(name) && mUser == null) {
+                        setUsername(name);
+                        sendPacket(new NetworkPacket(GameCommands.CMD_SC_USEROK, String.valueOf(mGame.getNumberOfPlayers()), String.valueOf(mGame.getRemainingTime())));
+                        setGameReady();
+                    } else {
+                        sendPacket(GameCommands.CMD_SC_USERFAIL);
+                    }
+                }
+            }
+    	} else {
+    		mGame.handlePacket(this, pkt);
+    	}
     }
     
     /** Send a packet through the network
@@ -104,17 +123,17 @@ public class Client {
 
     /** Change the state to "Game ready" */
     public synchronized void setGameReady() {
-        if(mCurState instanceof ClientStateInGame)
+        if(mPlaying)
             throw new RuntimeException("This player is already in game");
         if(mUser == null)
             throw new RuntimeException("This player has no name");
         
-        mCurState = new ClientStateInGame(this, mGame);
+        mPlaying = true;
     }
     
     /** Check if the state is GameReady */
     public synchronized boolean isGameReady() {
-        return (mCurState instanceof ClientStateInGame && mGame.isRunning());
+        return (mPlaying && mGame.isRunning());
     }
 
     

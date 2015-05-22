@@ -79,7 +79,7 @@ public class GameMap {
      * @return 
      */
     public int distance(Point currentPosition, Point destination) {
-        // TODO: IMPLEMENTAMI!
+        // TODO: IMPLEMENTAMI! <- stai calmo lol
         return 1;
     }
 }
