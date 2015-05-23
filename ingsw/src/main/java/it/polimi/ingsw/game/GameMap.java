@@ -17,6 +17,12 @@ import java.util.logging.Logger;
 public class GameMap {
     private static final Logger LOG = Logger.getLogger( GameMap.class.getName() );
     
+    private static final String[] mapFiles = {
+        "maps/fermi.txt",
+        "maps/galilei.txt",
+        "maps/galvani.txt",
+    };
+    
 	// including not crossable sectors
 	public static final int ROWS = 14;
 	public static final int COLUMNS = 23;
@@ -100,12 +106,22 @@ public class GameMap {
      * @return True if is valid
      */
     public static boolean isValidMap(Integer mapId) {
-        // TODO Auto-generated method stub
+        // Generate map
+        if(mapId == -1)
+            return true;
+        
+        if(mapId >= 0 && mapId < mapFiles.length)
+            return true;
         return false;
     }
 
-    public static GameMap createFromId(int mapId) {
-        // TODO Auto-generated method stub
-        return null;
+    public static GameMap createFromId(int mapId) throws IOException {
+        if(!isValidMap(mapId))
+            throw new RuntimeException("Invalid map id");
+            
+        if(mapId == -1)
+            return GameMap.generate();
+        
+        return GameMap.createFromMapFile(new File(mapFiles[mapId]));
     }
 }

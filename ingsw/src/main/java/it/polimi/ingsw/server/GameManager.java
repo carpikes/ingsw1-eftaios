@@ -34,10 +34,7 @@ class GameManager {
 
     /** Current turn */
     private Integer mCurTurn = null; 
-    
-    /** Random generator */
-    private final Random mRandom;
-    
+
     /** ChosenMap */
     private Integer mChosenMapId = null;
     
@@ -46,7 +43,6 @@ class GameManager {
     
     public GameManager() {
         mStartTime = System.currentTimeMillis();
-        mRandom = new Random();
     }
 
     /** Add new clients to this game

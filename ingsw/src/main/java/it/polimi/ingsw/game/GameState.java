@@ -8,23 +8,36 @@ import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleFactory;
 import it.polimi.ingsw.server.Client;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /** Class representing the current state of the game. It holds the effective rules of the game and verify whether each action is valid or not.
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 21, 2015
  */
 public class GameState {
+    private static final Logger LOG = Logger.getLogger(GameState.class.getName());
+    
     private final Queue<NetworkPacket> mEventQueue;
     private final GameMap mMap;
     private final List<GamePlayer> mPlayers;
     private int mTurnId = 0;
     
     public GameState(int mapId, List<Client> clients) {
-        mMap = GameMap.createFromId(mapId);
+        GameMap tmpMap;
+        try {
+            tmpMap = GameMap.createFromId(mapId);
+        } catch(IOException e) {
+            LOG.log(Level.SEVERE, "Missing map files: " + e.toString(), e);
+            tmpMap = GameMap.generate();
+        }
+        mMap = tmpMap;
+        
         mEventQueue = new LinkedList<>();
         
         mPlayers = new ArrayList<>();
