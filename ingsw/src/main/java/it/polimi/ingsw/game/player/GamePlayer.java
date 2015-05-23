@@ -80,4 +80,33 @@ public class GamePlayer {
     public void setCurrentPosition(Point position) {
         this.position = position;
     }
+
+    /**
+     * @param p
+     */
+    public void notifyChange(GamePlayer p) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /**
+     * @return
+     */
+    public Role getRole() {
+       return role;
+    }
+
+    /**
+     * @return
+     */
+    public boolean isAlien() {
+        return role instanceof Alien;
+    }
+
+    /**
+     * @return
+     */
+    public boolean isHuman() {
+        return role instanceof Human;
+    }
 }

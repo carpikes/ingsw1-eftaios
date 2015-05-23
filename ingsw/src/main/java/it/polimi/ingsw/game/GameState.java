@@ -77,4 +77,16 @@ public class GameState {
             return false;
         }
     }
+    
+    public void notifyChangesToAll() {
+        for( GamePlayer p : mPlayers )
+            p.notifyChange(p);
+    }
+
+    /**
+     * @return
+     */
+    public ArrayList<GamePlayer> getPlayers() {
+        return mPlayers;
+    }
 }
