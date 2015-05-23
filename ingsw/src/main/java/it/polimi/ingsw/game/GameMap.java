@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game;
 
 import it.polimi.ingsw.exception.SectorException;
+import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
@@ -81,5 +82,10 @@ public class GameMap {
     public int distance(Point currentPosition, Point destination) {
         // TODO: IMPLEMENTAMI! <- stai calmo lol
         return 1;
+    }
+
+    public Point getStartingPoint(Role role) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

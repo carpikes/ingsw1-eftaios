@@ -56,7 +56,7 @@ public class Client {
                     String name = args[0];
                     if(mGame.canSetName(name) && mUser == null) {
                         setUsername(name);
-                        sendPacket(new NetworkPacket(GameCommands.CMD_SC_USEROK, String.valueOf(mGame.getNumberOfPlayers()), String.valueOf(mGame.getRemainingTime())));
+                        sendPacket(new NetworkPacket(GameCommands.CMD_SC_USEROK, mGame.getNumberOfPlayers(), mGame.getRemainingLoginTime()));
                         setGameReady();
                     } else {
                         sendPacket(GameCommands.CMD_SC_USERFAIL);

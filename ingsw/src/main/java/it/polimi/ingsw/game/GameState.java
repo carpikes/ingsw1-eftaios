@@ -1,11 +1,16 @@
 package it.polimi.ingsw.game;
 
+import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.PlayerState;
+import it.polimi.ingsw.game.player.Role;
+import it.polimi.ingsw.game.player.RoleFactory;
+import it.polimi.ingsw.server.Client;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /** Class representing the current state of the game. It holds the effective rules of the game and verify whether each action is valid or not.
@@ -13,14 +18,24 @@ import java.util.Queue;
  * @since  May 21, 2015
  */
 public class GameState {
-    private Queue<NetworkPacket> mEventQueue;
-    private GameMap mMap;
-    private ArrayList<GamePlayer> mPlayers;
+    private final Queue<NetworkPacket> mEventQueue;
+    private final GameMap mMap;
+    private final List<GamePlayer> mPlayers;
     private int mTurnId = 0;
     
-    public GameState(GameMap map) {
-        mMap = map;
+    public GameState(List<Client> clients) {
+        mMap = GameMap.generate();
         mEventQueue = new LinkedList<>();
+        
+        mPlayers = new ArrayList<>();
+        List<Role> roles = RoleFactory.generateRoles(clients.size());
+        
+        for(int i = 0;i<clients.size(); i++) {
+            Role role = roles.get(i);
+            GamePlayer player = new GamePlayer(role, mMap.getStartingPoint(role));
+            
+            mPlayers.add(player);
+        }
     }
     
     public void update() {
@@ -38,10 +53,6 @@ public class GameState {
 
     public GameMap getMap() {
         return mMap;
-    }
-
-    public synchronized void setPlayers(ArrayList<GamePlayer> players) {
-        this.mPlayers = players;
     }
     
     public void queuePacket(NetworkPacket pkt) {
@@ -83,10 +94,13 @@ public class GameState {
             p.notifyChange(p);
     }
 
-    /**
-     * @return
-     */
-    public ArrayList<GamePlayer> getPlayers() {
+    public GameInfoContainer buildInfoContainer(String[] userList, int i) {
+        // FIXME mUsers.toArray() each time is quite expensive 
+        GameInfoContainer info = new GameInfoContainer(userList, mPlayers.get(i).isHuman());
+        return info;
+    }
+
+    public List<GamePlayer> getPlayers() {
         return mPlayers;
     }
 }

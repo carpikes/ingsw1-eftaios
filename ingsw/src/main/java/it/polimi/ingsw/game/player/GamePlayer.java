@@ -21,16 +21,14 @@ public class GamePlayer {
     private int maxMoves;
     
     /** Alien or human? */
-    private Role role; 
-    
-    /** Handle connection to server */
-    private Client client; 
+    private final Role role;
     
     /** Current state in game for the player */
     private PlayerState currentState;
     
-    public GamePlayer( Point startPosition ) {
+    public GamePlayer( Role playerRole, Point startPosition ) {
         // playerstate
+        role = playerRole;
         defense = false;
         maxMoves = role.getMaxMoves();
         position = startPosition; 

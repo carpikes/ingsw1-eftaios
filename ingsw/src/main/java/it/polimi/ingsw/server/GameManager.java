@@ -7,6 +7,7 @@ import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -35,7 +36,7 @@ class GameManager {
     private final Random mRandom;
     
     /** Game state */
-    private GameState mCurState = null;
+    private GameState mState = null;
     
     public GameManager() {
         mStartTime = System.currentTimeMillis();
@@ -52,7 +53,7 @@ class GameManager {
             return false;
 
         mClients.add(client);
-        client.sendPacket(new NetworkPacket(GameCommands.CMD_SC_TIME, String.valueOf(getRemainingTime())));
+        client.sendPacket(new NetworkPacket(GameCommands.CMD_SC_TIME, String.valueOf(getRemainingLoginTime())));
         broadcastPacket(new NetworkPacket(GameCommands.CMD_SC_STAT, String.valueOf(mClients.size())));
 
         return true;
@@ -71,7 +72,7 @@ class GameManager {
      * @return True if the game is ready to start
      */
     public synchronized boolean isReady() {
-        if((getNumberOfPlayers() < Config.GAME_MIN_PLAYERS || getRemainingTime() > 0) && !mIsRunning)
+        if((getNumberOfPlayers() < Config.GAME_MIN_PLAYERS || getRemainingLoginTime() > 0) && !mIsRunning)
             return false;
         
         if(mIsRunning)
@@ -100,11 +101,11 @@ class GameManager {
         return mClients.size();
     }
 
-    /** Get how many seconds are left to start the game
+    /** Get how many seconds are left before the game starts
      * 
      * @return Remaining time
      */
-    public synchronized long getRemainingTime() {
+    public synchronized long getRemainingLoginTime() {
         long rem = Config.GAME_WAITING_SECS - (System.currentTimeMillis() - mStartTime)/1000;
         return rem > 0 ? rem : 0;
     }
@@ -143,37 +144,28 @@ class GameManager {
             // Let the game begin
             LOG.log(Level.INFO, "Players ready! Rolling the dice and starting up...");
 
-            initGameSettings();
+            Collections.shuffle(mClients);
+            
+            mState = new GameState(mClients);
+            
+            LOG.log(Level.INFO, mClients.get(0).getUsername() + " is the first player");
             
             // Send infos to all players
             String[] userList = new String[mClients.size()];
             
-            for(int i = 0; i < mClients.size();i++)
+            for(int i = 0; i < mClients.size(); i++)
                 userList[i] = mClients.get(i).getUsername();
             
-            for(Client c : mClients) {
-                GameInfoContainer info = new GameInfoContainer(userList, mCurTurn, false);  // TODO: human or alien?
-                c.sendPacket(new NetworkPacket(GameCommands.CMD_SC_RUN, info));
+            for(int i = 0; i < mClients.size(); i++) {
+                GameInfoContainer info = mState.buildInfoContainer(userList, i);
+                mClients.get(i).sendPacket(new NetworkPacket(GameCommands.CMD_SC_RUN, info));
             }
             
             mIsRunning = true;
         } else {
-            if(mCurState != null)
-                mCurState.update();
+            if(mState != null)
+                mState.update();
         }
-    }
-   
-    /**
-     * 
-     */
-    private void initGameSettings() {
-        // TODO:         Humans / Aliens
-        // in this       Decks
-        // method        ...
-        
-        mCurTurn = mRandom.nextInt(mClients.size());
-        mCurState = new GameState(null); // TODO: first state here
-        LOG.log(Level.INFO, mClients.get(mCurTurn).getUsername() + " is the first player");
     }
 
     /** Send a packet without arguments to all players connected
@@ -220,8 +212,8 @@ class GameManager {
         if(!mIsRunning)
             LOG.log(Level.SEVERE, "Game is not started yet. What's happening?");
         
-        if(mCurTurn != null && mCurTurn.equals(client) && mCurState != null) {
-            mCurState.queuePacket(pkt);
+        if(mCurTurn != null && mCurTurn.equals(client) && mState != null) {
+            mState.queuePacket(pkt);
         }
     }
 }

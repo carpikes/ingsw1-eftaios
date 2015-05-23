@@ -12,32 +12,21 @@ public class GameInfoContainer implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** List of player usernames (and id!) */
-	private final String[] mPlayers;
-	
-	/** First player */
-	private final int mFirstTurn;
+	private final String[] mUsers;
 	
 	/** Are you human or alien? */
 	private final boolean mHuman;
 	
-	public GameInfoContainer(String[] players, int firstTurn, boolean isHuman) {
-		mPlayers = players;
-		mFirstTurn = firstTurn;
+	public GameInfoContainer(String[] usernames, boolean isHuman) {
+		mUsers = usernames;
 		mHuman = isHuman;
 	}
 
 	/**
-	 * @return the mPlayers
+	 * @return the mUsers
 	 */
 	public String[] getPlayersList() {
-		return mPlayers;
-	}
-
-	/**
-	 * @return the mFirstTurn
-	 */
-	public int getFirstTurn() {
-		return mFirstTurn;
+		return mUsers;
 	}
 
 	/**
