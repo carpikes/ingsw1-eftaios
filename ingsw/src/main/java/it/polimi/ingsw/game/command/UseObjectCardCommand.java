@@ -4,7 +4,7 @@
 package it.polimi.ingsw.game.command;
 
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.card.Card;
+import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.PlayerState;
@@ -16,9 +16,9 @@ import it.polimi.ingsw.game.player.Role;
  */
 public class UseObjectCardCommand implements Command {
     
-    Card objectCard;
+    ObjectCard objectCard;
     
-    public UseObjectCardCommand(Card objectCard) {
+    public UseObjectCardCommand(ObjectCard objectCard) {
         this.objectCard = objectCard;
     }
 

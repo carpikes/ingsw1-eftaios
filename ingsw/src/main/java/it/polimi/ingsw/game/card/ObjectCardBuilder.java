@@ -9,10 +9,10 @@ import it.polimi.ingsw.exception.MissingCardException;
  * @author Michele
  * @since 23 May 2015
  */
-public class CardBuilder {
-    private CardBuilder() { }
+public class ObjectCardBuilder {
+    private ObjectCardBuilder() { }
     
-    public static Card getCard( CardType type ) {
+    public static ObjectCard getCard( ObjectCardType type ) {
         switch( type ) {
         /*case ATTACK: return new Card("Attack", new AttackCommand(), true); 
         case TELEPORT: return new Card("Teleport", new MoveCommand(), true); 
