@@ -11,7 +11,9 @@ import it.polimi.ingsw.game.GameState;
  * @since  May 21, 2015
  */
 
-public interface Command {
-    public boolean isValid( GameState gameState );
-    void execute( GameState gameState );
+public abstract class Command {
+    public abstract boolean isValid( GameState gameState );
+    public abstract void execute( GameState gameState );
+    
+    protected abstract boolean checkCurrentPlayerState(GameState gameState);
 }

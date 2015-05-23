@@ -1,15 +1,5 @@
 package it.polimi.ingsw.game.player;
 
-import it.polimi.ingsw.game.player.playerstate.AttackingState;
-import it.polimi.ingsw.game.player.playerstate.AwayState;
-import it.polimi.ingsw.game.player.playerstate.DangerousCardState;
-import it.polimi.ingsw.game.player.playerstate.HatchCardState;
-import it.polimi.ingsw.game.player.playerstate.LoserState;
-import it.polimi.ingsw.game.player.playerstate.MovingState;
-import it.polimi.ingsw.game.player.playerstate.NotPlayingState;
-import it.polimi.ingsw.game.player.playerstate.ObjectCardState;
-import it.polimi.ingsw.game.player.playerstate.PlayerState;
-import it.polimi.ingsw.game.player.playerstate.WinnerState;
 import it.polimi.ingsw.server.Client;
 
 import java.awt.Point;
@@ -39,36 +29,11 @@ public class GamePlayer {
     /** Current state in game for the player */
     private PlayerState currentState;
     
-    /** Static references to all possible states */
-    private static AttackingState attackingState;
-    private static AwayState awayState;
-    private static DangerousCardState dangerousCardState;
-    private static HatchCardState hatchCardState;
-    private static LoserState loserState;
-    private static MovingState movingState;
-    private static NotPlayingState notPlayingState;
-    private static ObjectCardState objectCardState;
-    private static WinnerState winnerState;
-    
     public GamePlayer( Point startPosition ) {
         // playerstate
         defense = false;
         maxMoves = role.getMaxMoves();
         position = startPosition; 
-        
-        initializeStates();
-    }
-
-    private void initializeStates() {
-        attackingState = new AttackingState();
-        awayState = new AwayState();
-        dangerousCardState = new DangerousCardState();
-        hatchCardState = new HatchCardState();
-        loserState = new LoserState();
-        movingState = new MovingState();
-        notPlayingState = new NotPlayingState();
-        objectCardState = new ObjectCardState();
-        winnerState = new WinnerState();
     }
 
     public PlayerState getCurrentState() {
@@ -114,22 +79,5 @@ public class GamePlayer {
      */
     public void setCurrentPosition(Point position) {
         this.position = position;
-    }
-    
-    /* Delegate all possible actions to state object */
-    public void attack() {
-        currentState.attack(null);
-    }
-    
-    public void move() {
-        currentState.move(null);
-    }
-    
-    public void drawCard() {
-        currentState.drawCard(null);
-    }
-    
-    public void useObjectCard() {
-        currentState.useObjectCard(null);
     }
 }

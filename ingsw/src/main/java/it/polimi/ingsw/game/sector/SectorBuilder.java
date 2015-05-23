@@ -4,9 +4,9 @@ import it.polimi.ingsw.exception.SectorException;
 
 public class SectorBuilder {
     
-    // FIXME: maybe there's a better solution?
     public static final int NOT_VALID = 0;
     public static final int HATCH = 2;
+    public static final int USED_HATCH = 4;
     public static final int NOT_DANGEROUS = 1;
     public static final int DANGEROUS = 3;
     public static final int ALIEN = 8;

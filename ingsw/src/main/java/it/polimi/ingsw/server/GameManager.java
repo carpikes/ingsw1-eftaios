@@ -5,15 +5,12 @@ import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameCommands;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
-import it.polimi.ingsw.game.player.playerstate.MovingState;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.rmi.CORBA.Util;
 
 /** Game manager
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
