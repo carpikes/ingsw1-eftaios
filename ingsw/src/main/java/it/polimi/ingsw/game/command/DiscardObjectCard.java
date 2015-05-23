@@ -14,12 +14,12 @@ import it.polimi.ingsw.game.player.Role;
  * @author Michele
  * @since 23 May 2015
  */
-public class UseObjectCardCommand implements Command {
+public class DiscardObjectCard implements Command {
     
-    ObjectCard objectCard;
+    int index;
     
-    public UseObjectCardCommand(ObjectCard objectCard) {
-        this.objectCard = objectCard;
+    public DiscardObjectCard(int i) {
+        index = i;
     }
 
     /* (non-Javadoc)
@@ -30,7 +30,7 @@ public class UseObjectCardCommand implements Command {
         GamePlayer player = gameState.getCurrentPlayer();
         PlayerState playerState = player.getCurrentState();
         
-        return ( playerState == PlayerState.USING_OBJECT_CARD && player.isHuman() ); 
+        return ( playerState == PlayerState.OBJECT_CARD_DRAWN && player.isHuman() ); 
     }
 
     /* (non-Javadoc)
@@ -38,7 +38,7 @@ public class UseObjectCardCommand implements Command {
      */
     @Override
     public void execute(GameState gameState) {
-        objectCard.useCard( gameState );
+        // FIXME to be implemented
     }
 
 }
