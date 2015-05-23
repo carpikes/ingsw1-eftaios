@@ -1,7 +1,5 @@
 package it.polimi.ingsw.game.player;
 
-import it.polimi.ingsw.server.Client;
-
 import java.awt.Point;
 
 /**
@@ -17,6 +15,9 @@ public class GamePlayer {
     /** Defense enabled? (defense card used or not) */
     private boolean defense;
     
+    /** Object card already used in current turn */
+    private boolean objectCardUsed;
+    
     /** How many sectors can I cross in total? */
     private int maxMoves;
     
@@ -29,9 +30,11 @@ public class GamePlayer {
     public GamePlayer( Role playerRole, Point startPosition ) {
         // playerstate
         role = playerRole;
+        currentState = PlayerState.NOT_MY_TURN;
         defense = false;
         maxMoves = role.getMaxMoves();
         position = startPosition; 
+        objectCardUsed = false;
     }
 
     public PlayerState getCurrentState() {

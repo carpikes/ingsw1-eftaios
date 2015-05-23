@@ -30,7 +30,7 @@ public class UseObjectCardCommand implements Command {
         GamePlayer player = gameState.getCurrentPlayer();
         PlayerState playerState = player.getCurrentState();
         
-        return ( playerState == PlayerState.OBJECT_CARD_DRAWN && player.isHuman() ); 
+        return ( playerState == PlayerState.USING_OBJECT_CARD && player.isHuman() ); 
     }
 
     /* (non-Javadoc)
