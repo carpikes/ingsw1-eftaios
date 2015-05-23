@@ -3,6 +3,7 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.game.network.GameCommands;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,27 +46,37 @@ public class Client {
      * @param pkt The packet
      */
     public synchronized void handlePacket(NetworkPacket pkt) {
-    	if(!mPlaying) {
-    		// Choosing username
-            synchronized(mGame) {
-                if(pkt.getOpcode() == GameCommands.CMD_CS_USERNAME) {
-                    String[] args = (String[]) pkt.getArgs();
-                    if(args.length == 0)
-                        return;
-                    
-                    String name = args[0];
-                    if(mGame.canSetName(name) && mUser == null) {
-                        setUsername(name);
-                        sendPacket(new NetworkPacket(GameCommands.CMD_SC_USEROK, mGame.getNumberOfPlayers(), mGame.getRemainingLoginTime()));
-                        setGameReady();
-                    } else {
-                        sendPacket(GameCommands.CMD_SC_USERFAIL);
+        if(!mPlaying) {
+            try {
+                Serializable[] args = pkt.getArgs();
+                if(args == null || args.length == 0)
+                    return;
+                
+                // Choosing username
+                synchronized(mGame) {
+                    switch(pkt.getOpcode()) {
+                        case GameCommands.CMD_CS_USERNAME:
+                            String name = (String) args[0];
+                            if(mGame.canSetName(name) && mUser == null) {
+                                setUsername(name);
+                                sendPacket(new NetworkPacket(GameCommands.CMD_SC_USEROK, mGame.getNumberOfPlayers(), mGame.getRemainingLoginTime()));
+                                setGameReady();
+                            } else
+                                sendPacket(GameCommands.CMD_SC_USERFAIL);
+                            break;
+                        case GameCommands.CMD_CS_LOADMAP:
+                            if(args.length == 1 && mGame.setMap(this, (Integer)args[0]))
+                                sendPacket(GameCommands.CMD_SC_MAPOK);
+                            else
+                                sendPacket(GameCommands.CMD_SC_MAPFAIL);
+                            break;
                     }
                 }
+            } catch( Exception e ) {
+                LOG.log(Level.SEVERE, "Unknown packet: " + e.toString(), e);
             }
-    	} else {
-    		mGame.handlePacket(this, pkt);
-    	}
+        } else
+            mGame.handlePacket(this, pkt);
     }
     
     /** Send a packet through the network

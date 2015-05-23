@@ -1,13 +1,16 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameCommands;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -27,13 +30,16 @@ class GameManager {
     private final long mStartTime;
     
     /** Clients connected */
-    private List<Client> mClients = new ArrayList<Client>();
+    private List<Client> mClients = new LinkedList<Client>();
 
     /** Current turn */
     private Integer mCurTurn = null; 
     
     /** Random generator */
     private final Random mRandom;
+    
+    /** ChosenMap */
+    private Integer mChosenMapId = null;
     
     /** Game state */
     private GameState mState = null;
@@ -55,6 +61,10 @@ class GameManager {
         mClients.add(client);
         client.sendPacket(new NetworkPacket(GameCommands.CMD_SC_TIME, String.valueOf(getRemainingLoginTime())));
         broadcastPacket(new NetworkPacket(GameCommands.CMD_SC_STAT, String.valueOf(mClients.size())));
+        
+        // @first client: ask for map
+        if(mClients.size() == 1)
+            askForMap(client);
 
         return true;
     }
@@ -141,12 +151,15 @@ class GameManager {
                     return;
                 }
             
+            if(mChosenMapId == null)
+                return;
+            
             // Let the game begin
             LOG.log(Level.INFO, "Players ready! Rolling the dice and starting up...");
 
             Collections.shuffle(mClients);
             
-            mState = new GameState(mClients);
+            mState = new GameState(mChosenMapId, mClients);
             
             LOG.log(Level.INFO, mClients.get(0).getUsername() + " is the first player");
             
@@ -191,6 +204,10 @@ class GameManager {
      * @param client The client
      */
     public synchronized void removeClient(Client client) {
+        boolean mustAskForMap = false;
+        if(mClients.get(0).equals(client) && mChosenMapId == null)
+            mustAskForMap = true;
+        
         if(mClients.remove(client) == false)
             throw new RuntimeException("Are you trying to remove a non-existent client?");
         
@@ -201,7 +218,22 @@ class GameManager {
         if(mClients.size() == 0 || (mClients.size() < Config.GAME_MIN_PLAYERS && mIsRunning)) {
             broadcastPacket(GameCommands.CMD_SC_WIN);
             Server.getInstance().removeGame(this);
+        } else {
+            // Game is still alive
+            if(mustAskForMap && mClients.size()>0)
+                askForMap(mClients.get(0));
         }
+    }
+
+    /** Ask to client which map to use
+     * 
+     * @param client The client
+     */
+    private void askForMap(Client client) {
+        NetworkPacket pkt;
+        
+        pkt = new NetworkPacket(GameCommands.CMD_SC_CHOOSEMAP, (Serializable[]) GameMap.getListOfMaps());
+        client.sendPacket(pkt);
     }
 
     /**
@@ -215,5 +247,15 @@ class GameManager {
         if(mCurTurn != null && mCurTurn.equals(client) && mState != null) {
             mState.queuePacket(pkt);
         }
+    }
+
+    public boolean setMap(Client client, Integer chosenMap) {
+        if(mChosenMapId != null)
+            return false;
+        
+        if(mClients.size() > 0 && mClients.get(0).equals(client) && GameMap.isValidMap(chosenMap))
+            return true;
+        
+        return false;
     }
 }

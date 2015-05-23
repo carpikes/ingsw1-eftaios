@@ -23,8 +23,8 @@ public class GameState {
     private final List<GamePlayer> mPlayers;
     private int mTurnId = 0;
     
-    public GameState(List<Client> clients) {
-        mMap = GameMap.generate();
+    public GameState(int mapId, List<Client> clients) {
+        mMap = GameMap.createFromId(mapId);
         mEventQueue = new LinkedList<>();
         
         mPlayers = new ArrayList<>();
@@ -78,7 +78,7 @@ public class GameState {
         else {
             // check if there are players still playing
             for( int i = mTurnId; i < mTurnId + mPlayers.size(); ++i )
-                if( mPlayers.get( i % mPlayers.size() ).getCurrentState() == PlayerState.END_OF_TURN ) {
+                if( mPlayers.get( i % mPlayers.size() ).getCurrentState() == PlayerState.NOT_MY_TURN ) {
                     mTurnId = i % mPlayers.size();
                     mPlayers.get(mTurnId).setCurrentState(PlayerState.START_OF_TURN);
                     
@@ -95,7 +95,6 @@ public class GameState {
     }
 
     public GameInfoContainer buildInfoContainer(String[] userList, int i) {
-        // FIXME mUsers.toArray() each time is quite expensive 
         GameInfoContainer info = new GameInfoContainer(userList, mPlayers.get(i).isHuman());
         return info;
     }

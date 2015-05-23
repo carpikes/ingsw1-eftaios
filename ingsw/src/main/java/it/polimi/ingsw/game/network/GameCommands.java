@@ -20,10 +20,14 @@ public class GameCommands {
     public static final int CMD_SC_USERFAIL         = 8;
     public static final int CMD_SC_RUN              = 9;
     public static final int CMD_SC_WIN              = 10;
+    public static final int CMD_SC_CHOOSEMAP        = 11;
+    public static final int CMD_CS_LOADMAP          = 12;
+    public static final int CMD_SC_MAPOK            = 13;
+    public static final int CMD_SC_MAPFAIL          = 14;
     
     /** GAME COMMANDS */
-    public static final int CMD_CS_ATTACK           = 11;
-    public static final int CMD_CS_DISCARD_OBJ_CARD = 12;
-    public static final int CMD_CS_USE_OBJ_CARD     = 13;
-    public static final int CMD_CS_SET_POSITION     = 14;
+    public static final int CMD_CS_ATTACK           = 15;
+    public static final int CMD_CS_DISCARD_OBJ_CARD = 16;
+    public static final int CMD_CS_USE_OBJ_CARD     = 17;
+    public static final int CMD_CS_SET_POSITION     = 18;
 }

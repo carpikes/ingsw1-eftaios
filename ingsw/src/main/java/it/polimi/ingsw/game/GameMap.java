@@ -88,4 +88,24 @@ public class GameMap {
         // TODO Auto-generated method stub
         return null;
     }
+
+    public static String[] getListOfMaps() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /** Check if the given mapId is valid
+     * 
+     * @param mapId Chosen map id
+     * @return True if is valid
+     */
+    public static boolean isValidMap(Integer mapId) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public static GameMap createFromId(int mapId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
