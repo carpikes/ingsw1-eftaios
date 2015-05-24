@@ -56,6 +56,7 @@ class GameManager {
 
         mClients.add(client);
         client.sendPacket(new NetworkPacket(GameCommands.CMD_SC_TIME, String.valueOf(getRemainingLoginTime())));
+        client.sendPacket(GameCommands.CMD_SC_CHOOSEUSER);
         broadcastPacket(new NetworkPacket(GameCommands.CMD_SC_STAT, String.valueOf(mClients.size())));
         
         // @first client: ask for map

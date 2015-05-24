@@ -19,7 +19,7 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-/** Panel where the map is drawn. It is used in {@link GameMainScreen} class. 
+/** Panel where the map is drawn. It is used in {@link GUIFrame} class. 
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 public class MapCanvasPanel extends JPanel {

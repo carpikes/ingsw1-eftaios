@@ -67,10 +67,7 @@ public class TestServer {
     @Ignore
     public void testLoad() {
         TCPConnection[] conns = new TCPConnection[Config.SERVER_MAX_CLIENTS];
-        Map<String, Object> paramsConfig = new TreeMap<String, Object>();
-        paramsConfig.put("Host", "localhost");
-        paramsConfig.put("Port", Config.SERVER_TCP_LISTEN_PORT);
-        
+
         int clientsBefore = Server.getInstance().getConnectedClients();
         
         assertEquals(clientsBefore, 0);
@@ -78,7 +75,7 @@ public class TestServer {
         try {
             for(int i = 0; i<conns.length;i++) {
                 conns[i] = new TCPConnection();
-                conns[i].setConfiguration(paramsConfig);
+                conns[i].setHost("localhost");
                 try {
                     conns[i].connect();
                     System.out.println("Connecting [" + i + "]");
@@ -153,12 +150,8 @@ public class TestServer {
     
     @Test
     public void testTCP() {
-        Map<String, Object> paramsConfig = new TreeMap<String, Object>();
-        paramsConfig.put("Host", "localhost");
-        paramsConfig.put("Port", Config.SERVER_TCP_LISTEN_PORT);
-
         TCPConnection conn = new TCPConnection();
-        conn.setConfiguration(paramsConfig);
+        conn.setHost("localhost");
         assertEquals(conn.isOnline(), false);
         try {
             conn.connect();

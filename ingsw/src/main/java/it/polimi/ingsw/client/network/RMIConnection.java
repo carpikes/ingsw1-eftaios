@@ -30,20 +30,11 @@ public class RMIConnection extends Connection {
 
     public RMIConnection() {
         super();
-        mConfigParams.put("Registry Host", Connection.ParametersType.TYPE_STRING);
     }
     
     @Override
-    public void setConfiguration(Map<String, Object> obj) {
-        Object objHost = obj.get("Registry Host");
-        if(objHost != null && objHost instanceof String) {
-            mHost = ((String) objHost).trim();
-
-            if(mHost.length() == 0)
-                throw new RuntimeException("Invalid host");
-            mInited = true;
-        } else
-            throw new RuntimeException("Invalid parameters");
+    public void setHost(String host) {
+        mHost = host;
     }
 
     @Override

@@ -16,10 +16,10 @@ import javax.swing.SwingUtilities;
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 
-public class GameMainScreen extends JFrame {
+public class GUIFrame extends JFrame {
 
     private static final long serialVersionUID = 4286896317209068573L;
-    private static final Logger LOG = Logger.getLogger( GameMainScreen.class.getName() );
+    private static final Logger LOG = Logger.getLogger( GUIFrame.class.getName() );
     
     // Constants
     private static final int CANVAS_WIDTH  = 1024;
@@ -31,7 +31,7 @@ public class GameMainScreen extends JFrame {
     /**
      * Instantiates main game screen.
      */
-    public GameMainScreen() {
+    public GUIFrame() {
         try {
             GameMap map = GameMap.createFromMapFile( new File("maps/galilei.txt") );
             canvas = new MapCanvasPanel( map, CANVAS_WIDTH, CANVAS_HEIGHT );    
@@ -58,7 +58,7 @@ public class GameMainScreen extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new GameMainScreen();
+                new GUIFrame();
             }
         });
     }

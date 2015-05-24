@@ -12,27 +12,13 @@ import java.util.TreeMap;
  */
 
 public abstract class Connection {
-    public class ParametersType {
-        public static final int TYPE_INTEGER = 0;
-        public static final int TYPE_STRING = 1;
-    }
-
     protected OnReceiveListener mListener = null;
-    protected Map<String, Integer> mConfigParams;
-
-    Connection() {
-        mConfigParams = new TreeMap<String, Integer>();
-    }
     
     public void setOnReceiveListener(OnReceiveListener listener) {
         mListener = listener;
     }
 
-    public Map<String, Integer> getConfigurationParameters() {
-        return mConfigParams;
-    }
-
-    public abstract void setConfiguration(Map<String, Object> obj);
+    public abstract void setHost(String host);
     public abstract void connect() throws IOException;
     public abstract void disconnect();
     public abstract void sendPacket(NetworkPacket pkt);

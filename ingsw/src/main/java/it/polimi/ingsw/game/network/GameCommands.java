@@ -15,19 +15,20 @@ public class GameCommands {
     public static final int CMD_SC_FULL             = 3;
     public static final int CMD_SC_STAT             = 4;
     public static final int CMD_SC_TIME             = 5;
-    public static final int CMD_CS_USERNAME         = 6;
-    public static final int CMD_SC_USEROK           = 7;
-    public static final int CMD_SC_USERFAIL         = 8;
-    public static final int CMD_SC_RUN              = 9;
-    public static final int CMD_SC_WIN              = 10;
-    public static final int CMD_SC_CHOOSEMAP        = 11;
-    public static final int CMD_CS_LOADMAP          = 12;
-    public static final int CMD_SC_MAPOK            = 13;
-    public static final int CMD_SC_MAPFAIL          = 14;
+    public static final int CMD_SC_CHOOSEUSER       = 6;
+    public static final int CMD_CS_USERNAME         = 7;
+    public static final int CMD_SC_USEROK           = 8;
+    public static final int CMD_SC_USERFAIL         = 9;
+    public static final int CMD_SC_RUN              = 10;
+    public static final int CMD_SC_WIN              = 11;
+    public static final int CMD_SC_CHOOSEMAP        = 12;
+    public static final int CMD_CS_LOADMAP          = 13;
+    public static final int CMD_SC_MAPOK            = 14;
+    public static final int CMD_SC_MAPFAIL          = 15;
     
     /** GAME COMMANDS */
-    public static final int CMD_CS_ATTACK           = 15;
-    public static final int CMD_CS_DISCARD_OBJ_CARD = 16;
-    public static final int CMD_CS_USE_OBJ_CARD     = 17;
-    public static final int CMD_CS_SET_POSITION     = 18;
+    public static final int CMD_CS_ATTACK           = 16;
+    public static final int CMD_CS_DISCARD_OBJ_CARD = 17;
+    public static final int CMD_CS_USE_OBJ_CARD     = 18;
+    public static final int CMD_CS_SET_POSITION     = 19;
 }
