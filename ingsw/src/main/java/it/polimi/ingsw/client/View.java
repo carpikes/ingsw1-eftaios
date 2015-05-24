@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.game.network.GameInfoContainer;
+
 import java.util.Map;
 
 /**
@@ -17,4 +19,5 @@ public interface View {
     public void showError(String string);
     public void updateLoginTime(int i);
     public void updateLoginStat(int i);
+    public void switchToMainScreen(GameInfoContainer container);
 }

@@ -3,8 +3,10 @@ package it.polimi.ingsw.client.gui;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import it.polimi.ingsw.client.View;
+import it.polimi.ingsw.game.network.GameInfoContainer;
 
 /**
  * @author Alain
@@ -12,7 +14,12 @@ import it.polimi.ingsw.client.View;
  *
  */
 public class GUIView implements View {
-    MainFrame mMainFrame;
+    GUIFrame mMainFrame;
+    
+    public GUIView() {
+        mMainFrame = new GUIFrame();
+    }
+    
     @Override
     public int askConnectionType(String[] params) {
         Object ret = JOptionPane.showInputDialog(null, "Choose a connection", "Connection type", 
@@ -36,13 +43,18 @@ public class GUIView implements View {
 
     @Override
     public int askMap(String[] mapList) {
-        // TODO Auto-generated method stub
-        return 0;
+        Object ret = JOptionPane.showInputDialog(null, "Choose a map", "", 
+                JOptionPane.QUESTION_MESSAGE, null, mapList, mapList[0]);
+   
+       for(int i = 0; i<mapList.length;i++)
+           if(mapList[i].equals(ret))
+               return i;
+       return -1;
     }
 
     @Override
     public void run() {
-        mMainFrame = new MainFrame();
+        mMainFrame.setVisible(true);
     }
 
     @Override
@@ -64,6 +76,14 @@ public class GUIView implements View {
     @Override
     public void updateLoginStat(int i) {
         mMainFrame.setPlayers(i);
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.network.GameInfoContainer)
+     */
+    @Override
+    public void switchToMainScreen(GameInfoContainer container) {
+        mMainFrame.switchToMap(container.getMap());
     }
 
 }

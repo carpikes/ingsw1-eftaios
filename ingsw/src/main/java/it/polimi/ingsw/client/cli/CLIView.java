@@ -13,6 +13,7 @@ import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
 import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 /**
@@ -55,36 +56,6 @@ public class CLIView implements View {
     public void run() {
     }
 
-    private void mainLoop() {
-       /* try {
-            IO.write("Waiting for other players");
-            NetworkPacket cmd = null;
-            while((cmd == null || cmd.getOpcode() != GameCommands.CMD_SC_RUN) && !mMustClose)
-                cmd = mQueue.poll(1, TimeUnit.SECONDS);
-            
-            if(!mMustClose)
-                IO.write("Game started. Good luck!");
-            
-            while(mConn.isOnline() && !mMustClose) {
-                Thread.sleep(1000);
-            }
-        }catch(Exception e) {
-            LOG.log(Level.FINER, e.toString(), e);
-        }*/
-    }
-    
-    /*@Override
-    public void onReceive(NetworkPacket pkt) {
-        try {
-            mQueue.put(pkt);
-        } catch (InterruptedException e) {
-            LOG.log(Level.FINER, e.toString(), e);
-        }
-    }*/
-
-    /* (non-Javadoc)
-     * @see it.polimi.ingsw.client.View#askConnectionInfo(java.util.Map)
-     */
     @Override
     public int askConnectionType(String[] params) {
         IO.write("Which connection do you want to use?");
@@ -142,5 +113,14 @@ public class CLIView implements View {
     @Override
     public void updateLoginStat(int i) {
         IO.write("Players online: " + i);
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.network.GameInfoContainer)
+     */
+    @Override
+    public void switchToMainScreen(GameInfoContainer container) {
+        // TODO Auto-generated method stub
+        
     }
 }

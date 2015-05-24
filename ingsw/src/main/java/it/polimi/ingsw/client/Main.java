@@ -3,7 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.cli.CLIView;
 import it.polimi.ingsw.client.gui.GUIFrame;
 import it.polimi.ingsw.client.gui.GUIView;
-import it.polimi.ingsw.client.gui.MainFrame;
+import it.polimi.ingsw.client.gui.GUIFrame;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 
 /**

@@ -55,7 +55,7 @@ public class TestServer {
             Thread.sleep(500);
         } catch( InterruptedException e) { }
         for(ClientConnTest i : conns) {
-            assertTrue(i.exposeClient().isGameReady());
+            assertTrue(i.exposeClient().hasUsername());
             i.emulateReadPacket(new NetworkPacket(GameCommands.CMD_PING));
         }
 

@@ -8,13 +8,19 @@ import it.polimi.ingsw.game.sector.SectorBuilder;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class GameMap {
+public class GameMap implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     private static final Logger LOG = Logger.getLogger( GameMap.class.getName() );
     
     private static final String[] mapFiles = {
@@ -96,8 +102,7 @@ public class GameMap {
     }
 
     public static String[] getListOfMaps() {
-        // TODO Auto-generated method stub
-        return null;
+        return mapFiles;
     }
 
     /** Check if the given mapId is valid

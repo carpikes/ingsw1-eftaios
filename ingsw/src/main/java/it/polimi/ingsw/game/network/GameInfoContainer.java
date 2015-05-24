@@ -1,5 +1,7 @@
 package it.polimi.ingsw.game.network;
 
+import it.polimi.ingsw.game.GameMap;
+
 import java.io.Serializable;
 
 /**
@@ -16,10 +18,12 @@ public class GameInfoContainer implements Serializable {
 	
 	/** Are you human or alien? */
 	private final boolean mHuman;
+	private final GameMap mMap;
 	
-	public GameInfoContainer(String[] usernames, boolean isHuman) {
+	public GameInfoContainer(String[] usernames, boolean isHuman, GameMap map) {
 		mUsers = usernames;
 		mHuman = isHuman;
+		mMap = map;
 	}
 
 	/**
@@ -30,6 +34,13 @@ public class GameInfoContainer implements Serializable {
 	}
 
 	/**
+     * @return the mMap
+     */
+    public GameMap getMap() {
+        return mMap;
+    }
+
+    /**
 	 * @return the mHuman
 	 */
 	public boolean isHuman() {

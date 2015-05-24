@@ -120,7 +120,9 @@ public class Server {
                 if(mCurGame != null) {
                     if(mCurGame.isReady()) {
                         LOG.log(Level.INFO, "Game ready! Stopping new incoming connections");
-                        mGamesRunning.add(mCurGame);
+                        synchronized(mGamesRunning) {
+                            mGamesRunning.add(mCurGame);
+                        }
                         mCurGame = null;
                     }
                 }

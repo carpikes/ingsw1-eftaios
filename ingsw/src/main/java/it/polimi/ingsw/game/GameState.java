@@ -135,7 +135,7 @@ public class GameState {
     }
 
     public GameInfoContainer buildInfoContainer(String[] userList, int i) {
-        GameInfoContainer info = new GameInfoContainer(userList, mPlayers.get(i).isHuman());
+        GameInfoContainer info = new GameInfoContainer(userList, mPlayers.get(i).isHuman(), mMap);
         return info;
     }
 

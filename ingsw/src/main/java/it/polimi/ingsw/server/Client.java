@@ -46,7 +46,7 @@ public class Client {
      * @param pkt The packet
      */
     public synchronized void handlePacket(NetworkPacket pkt) {
-        if(!mPlaying) {
+        if(!mGame.isRunning()) {
             try {
                 Serializable[] args = pkt.getArgs();
                 if(args == null || args.length == 0)
@@ -60,11 +60,11 @@ public class Client {
                             if(mGame.canSetName(name) && mUser == null) {
                                 setUsername(name);
                                 sendPacket(new NetworkPacket(GameCommands.CMD_SC_USEROK, mGame.getNumberOfPlayers(), mGame.getRemainingLoginTime()));
-                                setGameReady();
                             } else
                                 sendPacket(GameCommands.CMD_SC_USERFAIL);
                             break;
                         case GameCommands.CMD_CS_LOADMAP:
+                            // FIXME null map
                             if(args.length == 1 && mGame.setMap(this, (Integer)args[0]))
                                 sendPacket(GameCommands.CMD_SC_MAPOK);
                             else
@@ -131,22 +131,6 @@ public class Client {
             throw new RuntimeException("Username is already set");
         mUser = username;
     }
-
-    /** Change the state to "Game ready" */
-    public synchronized void setGameReady() {
-        if(mPlaying)
-            throw new RuntimeException("This player is already in game");
-        if(mUser == null)
-            throw new RuntimeException("This player has no name");
-        
-        mPlaying = true;
-    }
-    
-    /** Check if the state is GameReady */
-    public synchronized boolean isGameReady() {
-        return (mPlaying && mGame.isRunning());
-    }
-
     
     /** Update timeouts */
     public void update() {

@@ -1,21 +1,13 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.exception.SectorException;
-import it.polimi.ingsw.game.GameMap;
-
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
@@ -23,14 +15,14 @@ import javax.swing.JPanel;
  * @since 24/mag/2015
  *
  */
-
-class Lol extends JPanel {
+class LoginCanvasPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
     private Font mBigFont;
     private Font mSmallFont;
     private int mTime = -1;
     private int mPlayers = 0;
     
-    public Lol() {
+    public LoginCanvasPanel() {
         mBigFont = new Font("Helvetica", Font.PLAIN, 48);
         mSmallFont = new Font("Helvetica", Font.PLAIN, 24);
     }
@@ -72,31 +64,5 @@ class Lol extends JPanel {
     }
     public void setPlayers(int newPlayers) {
         mPlayers = newPlayers;
-    }
-}
-
-public class MainFrame extends JFrame {
-    private static final long serialVersionUID = 1L;
-    private Lol canvas;
-    
-    public MainFrame() {
-        canvas = new Lol();    
-        Dimension d = new Dimension(800,600);
-        canvas.setPreferredSize(d);
-        canvas.setMinimumSize(d);
-        this.add(canvas);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);   
-        this.pack();              
-        this.setTitle("Escape from the Aliens in Outer Space");
-        this.setLocationRelativeTo(null);
-        this.setResizable(false);
-        this.setVisible(true);
-    }
-    
-    public void setRemainingTime(int remainingTime) {
-        canvas.setTime(remainingTime);
-    }
-    public void setPlayers(int newPlayers) {
-        canvas.setPlayers(newPlayers);
     }
 }

@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
 import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.io.IOException;
@@ -66,7 +67,7 @@ public class Controller implements OnReceiveListener {
                 NetworkPacket cmd = mQueue.poll(1, TimeUnit.SECONDS);
                 if(cmd == null)
                     continue;
-                
+                String msg = "";
                 switch(cmd.getOpcode()) {
                     case GameCommands.CMD_SC_TIME:
                         mView.updateLoginTime(Integer.parseInt((String) cmd.getArgs()[0]));
@@ -75,22 +76,21 @@ public class Controller implements OnReceiveListener {
                         mView.updateLoginStat(Integer.parseInt((String) cmd.getArgs()[0]));
                         break;
                     case GameCommands.CMD_SC_USERFAIL:
-                        user = mView.askUsername("Another player is using your name. Choose another one.");
-                        mConn.sendPacket(new NetworkPacket(GameCommands.CMD_CS_USERNAME, user));
-                        break;
+                        msg = "Another player is using your name. Choose another one.";
                     case GameCommands.CMD_SC_CHOOSEUSER:
-                        user = mView.askUsername("Choose a username");
+                        user = mView.askUsername(msg.equals("")?"Choose a username":msg);
                         mConn.sendPacket(new NetworkPacket(GameCommands.CMD_CS_USERNAME, user));
                         break;
                     case GameCommands.CMD_SC_USEROK:
                         break;
+                    case GameCommands.CMD_SC_MAPFAIL:
                     case GameCommands.CMD_SC_CHOOSEMAP:
+                        mConn.sendPacket(new NetworkPacket(GameCommands.CMD_CS_LOADMAP, mView.askMap((String[])cmd.getArgs())));
                         break;
                     case GameCommands.CMD_SC_MAPOK:
                         break;
-                    case GameCommands.CMD_SC_MAPFAIL:
-                        break;
                     case GameCommands.CMD_SC_RUN:
+                        mView.switchToMainScreen((GameInfoContainer)(cmd.getArgs()[0]));
                         break;
                     case GameCommands.CMD_BYE:
                         break;

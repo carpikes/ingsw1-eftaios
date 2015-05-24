@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 9, 2015
  */
-class GameManager {
+public class GameManager {
     private static final Logger LOG = Logger.getLogger(GameManager.class.getName());
     
     /** Game is running. New players can't connect to this game */
@@ -74,22 +74,18 @@ class GameManager {
         return mClients.size() >= Config.GAME_MAX_PLAYERS;
     }
 
-    /** Check if the game is ready to start
+    /** Check if the game is ready to start and can't accept new connections
      * 
      * @return True if the game is ready to start
      */
     public synchronized boolean isReady() {
-        if((getNumberOfPlayers() < Config.GAME_MIN_PLAYERS || getRemainingLoginTime() > 0) && !mIsRunning)
-            return false;
+        if((getRemainingLoginTime() == 0 && mClients.size() >= Config.GAME_MIN_PLAYERS) || mClients.size() == Config.GAME_MAX_PLAYERS)
+            return true;
         
         if(mIsRunning)
             return true;
         
-        for(Client i : mClients)
-            if(!i.hasUsername())
-                return false;
-
-        return true;
+        return false;
     }
 
     /** Check if the game is running
@@ -123,6 +119,9 @@ class GameManager {
      * @return          True if the player can set this name
      */
     public synchronized boolean canSetName(String name) {
+        if(name == null)
+            return false;
+        
         for(Client c : mClients) {
             if(name.equalsIgnoreCase(c.getUsername()))
                 return false;
@@ -250,8 +249,10 @@ class GameManager {
         if(mChosenMapId != null)
             return false;
         
-        if(mClients.size() > 0 && mClients.get(0).equals(client) && GameMap.isValidMap(chosenMap))
+        if(mClients.size() > 0 && mClients.get(0).equals(client) && GameMap.isValidMap(chosenMap)) {
+            mChosenMapId = chosenMap;
             return true;
+        }
         
         return false;
     }

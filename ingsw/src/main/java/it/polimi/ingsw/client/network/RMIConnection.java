@@ -35,6 +35,7 @@ public class RMIConnection extends Connection {
     @Override
     public void setHost(String host) {
         mHost = host;
+        mInited = true;
     }
 
     @Override

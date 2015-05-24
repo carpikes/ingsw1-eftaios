@@ -1,7 +1,9 @@
 package it.polimi.ingsw.game.sector;
 
+import java.io.Serializable;
 
-public class Sector {
+
+public class Sector implements Serializable{
 	
     private int id;
     
