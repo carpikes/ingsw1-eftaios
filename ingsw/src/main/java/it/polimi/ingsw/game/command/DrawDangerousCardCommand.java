@@ -4,25 +4,24 @@
 package it.polimi.ingsw.game.command;
 
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.player.Alien;
+import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.player.GamePlayer;
+import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.PlayerState;
 import it.polimi.ingsw.game.player.Role;
-
-import java.awt.Point;
 
 /**
  * @author Michele
  * @since 23 May 2015
  */
-public class AttackCommand implements Command {
+public class DrawDangerousCardCommand implements Command {
     
-    private Point position;
+    ObjectCard objectCard;
     
-    public AttackCommand( Point where ) {
-        position = where;
+    public DrawDangerousCardCommand(ObjectCard objectCard) {
+        this.objectCard = objectCard;
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.command.Command#isValid(it.polimi.ingsw.game.GameState)
      */
@@ -31,11 +30,7 @@ public class AttackCommand implements Command {
         GamePlayer player = gameState.getCurrentPlayer();
         PlayerState playerState = player.getCurrentState();
         
-        return(
-                ( playerState == PlayerState.ATTACKED && player.isAlien() )
-                ||
-                ( playerState == PlayerState.OBJECT_CARD_DRAWN && player.isHuman() )
-              );        
+        return ( playerState == PlayerState.USING_OBJECT_CARD && player.isHuman() ); 
     }
 
     /* (non-Javadoc)
@@ -43,9 +38,7 @@ public class AttackCommand implements Command {
      */
     @Override
     public void execute(GameState gameState) {
-        for( GamePlayer p : gameState.getPlayers() )
-            if( p.getCurrentPosition().equals(position) )
-                p.setCurrentState(PlayerState.LOSER);
+        objectCard.useCard( gameState );
     }
 
 }

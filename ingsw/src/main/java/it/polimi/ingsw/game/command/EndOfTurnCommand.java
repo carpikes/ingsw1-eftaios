@@ -4,23 +4,21 @@
 package it.polimi.ingsw.game.command;
 
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.player.Alien;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.PlayerState;
-import it.polimi.ingsw.game.player.Role;
 
 import java.awt.Point;
 
-/**
+/** 
  * @author Michele
  * @since 23 May 2015
  */
-public class AttackCommand implements Command {
-    
+public class EndOfTurnCommand implements Command {
+
     private Point position;
     
-    public AttackCommand( Point where ) {
-        position = where;
+    public EndOfTurnCommand(Point destination) {
+        position = destination;
     }
     
     /* (non-Javadoc)
@@ -31,11 +29,7 @@ public class AttackCommand implements Command {
         GamePlayer player = gameState.getCurrentPlayer();
         PlayerState playerState = player.getCurrentState();
         
-        return(
-                ( playerState == PlayerState.ATTACKED && player.isAlien() )
-                ||
-                ( playerState == PlayerState.OBJECT_CARD_DRAWN && player.isHuman() )
-              );        
+        return true;
     }
 
     /* (non-Javadoc)
@@ -43,9 +37,7 @@ public class AttackCommand implements Command {
      */
     @Override
     public void execute(GameState gameState) {
-        for( GamePlayer p : gameState.getPlayers() )
-            if( p.getCurrentPosition().equals(position) )
-                p.setCurrentState(PlayerState.LOSER);
+        gameState.getCurrentPlayer().setCurrentPosition(position);        
     }
 
 }

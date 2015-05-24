@@ -155,7 +155,7 @@ public class GameManager {
 
             Collections.shuffle(mClients);
             
-            mState = new GameState(mChosenMapId, mClients);
+            mState = new GameState(this, mChosenMapId, mClients);
             
             LOG.log(Level.INFO, mClients.get(0).getUsername() + " is the first player");
             

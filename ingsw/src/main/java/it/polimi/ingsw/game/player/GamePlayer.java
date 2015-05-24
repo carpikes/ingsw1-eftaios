@@ -1,5 +1,8 @@
 package it.polimi.ingsw.game.player;
 
+import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.server.Client;
+
 import java.awt.Point;
 
 /**
@@ -27,14 +30,17 @@ public class GamePlayer {
     /** Current state in game for the player */
     private PlayerState currentState;
     
+    /** Connection to client */
+    private Client connection;
+    
     public GamePlayer( Role playerRole, Point startPosition ) {
-        // playerstate
         role = playerRole;
         currentState = PlayerState.NOT_MY_TURN;
         defense = false;
         maxMoves = role.getMaxMoves();
         position = startPosition; 
         objectCardUsed = false;
+        // connection = 
     }
 
     public PlayerState getCurrentState() {
@@ -44,7 +50,7 @@ public class GamePlayer {
     public void setCurrentState(PlayerState currentState) {
         this.currentState = currentState;
     }
-
+    
     public boolean isDefenseEnable() {
         return defense;
     }
@@ -110,4 +116,24 @@ public class GamePlayer {
     public boolean isHuman() {
         return role instanceof Human;
     }
+
+    public Client getConnection() {
+        return connection;
+    }
+
+    /**
+     * @param i
+     */
+    public void sendPacket(int opcode) {
+        connection.sendPacket(opcode);
+    }
+
+    /**
+     * @param networkPacket
+     */
+    public void sendPacket(NetworkPacket networkPacket) {
+        connection.sendPacket(networkPacket);
+    }
+    
+    
 }

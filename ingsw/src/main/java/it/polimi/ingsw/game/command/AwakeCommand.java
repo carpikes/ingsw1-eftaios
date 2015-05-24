@@ -15,11 +15,11 @@ import java.awt.Point;
  * @author Michele
  * @since 23 May 2015
  */
-public class AttackCommand implements Command {
+public class AwakeCommand implements Command {
     
     private Point position;
     
-    public AttackCommand( Point where ) {
+    public AwakeCommand( Point where ) {
         position = where;
     }
     

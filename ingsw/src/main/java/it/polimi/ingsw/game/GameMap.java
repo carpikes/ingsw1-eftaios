@@ -129,4 +129,14 @@ public class GameMap implements Serializable {
         
         return GameMap.createFromMapFile(new File(mapFiles[mapId]));
     }
+
+    /**
+     * @param point 
+     * @param usedHatch
+     */
+    public void setType(Point point, int type) {
+        if( isWithinBounds(point) ) {
+            board[point.x][point.y] = SectorBuilder.getSectorFor(type);
+        }
+    }
 }

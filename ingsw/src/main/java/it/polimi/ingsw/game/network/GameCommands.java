@@ -26,9 +26,15 @@ public class GameCommands {
     public static final int CMD_SC_MAPOK            = 14;
     public static final int CMD_SC_MAPFAIL          = 15;
     
-    /** GAME COMMANDS */
-    public static final int CMD_CS_ATTACK           = 16;
-    public static final int CMD_CS_DISCARD_OBJ_CARD = 17;
-    public static final int CMD_CS_USE_OBJ_CARD     = 18;
-    public static final int CMD_CS_SET_POSITION     = 19;
+    /** GAME COMMANDS TO SERVER */
+    public static final int CMD_CS_ATTACK           = 31;
+    public static final int CMD_CS_DISCARD_OBJ_CARD = 32;
+    public static final int CMD_CS_USE_OBJ_CARD     = 33;
+    public static final int CMD_CS_SET_POSITION     = 34;
+    public static final int CMD_CS_MOVE             = 35;
+    
+    /** GAME COMMANDS TO CLIENTS */
+    public static final int CMD_SC_UPDATE_LOCAL_INFO = 50;
+    public static final int CMD_SC_START_TURN        = 51;
+    
 }
