@@ -1,5 +1,7 @@
 package it.polimi.ingsw.game;
 
+import it.polimi.ingsw.game.command.Command;
+import it.polimi.ingsw.game.command.CommandBuilder;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
@@ -53,8 +55,33 @@ public class GameState {
     
     public void update() {
         // get action from queue
-        // process it
+    	executeCommandFromPacket( getPacketFromQueue() );
+    	
         // change state of current player if necessary
+    	
+    	
+    }
+    
+    private NetworkPacket getPacketFromQueue( ) {
+    	synchronized(mEventQueue) {
+            return mEventQueue.poll();
+        }
+    }
+    
+    private boolean executeCommandFromPacket( NetworkPacket pkt ) {
+    	if( pkt == null ) {
+    		return false; // no commands to execute
+    	} else {
+    		Command command = CommandBuilder.getCommandFromNetworkPacket(pkt);
+    		
+    		if( command.isValid( this ) ) {
+	    		command.execute(this);
+	    		return true;
+    		} else {
+    			LOG.log( Level.WARNING, "Command " + command + " not valid in state: " + getCurrentPlayer().getCurrentState() );
+    			return false;
+    		}
+    	}
     }
     
     public synchronized GamePlayer getCurrentPlayer() {
