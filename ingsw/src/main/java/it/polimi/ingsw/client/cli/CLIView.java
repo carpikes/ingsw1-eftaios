@@ -76,7 +76,7 @@ public class CLIView implements View {
     }
 
     @Override
-    public int askMap(String[] mapList) {
+    public Integer askMap(String[] mapList) {
         IO.write("Choose a map:");
         for(int i=0;i<mapList.length;i++)
             IO.write(String.format("%d) %s", i+1, mapList[i]));

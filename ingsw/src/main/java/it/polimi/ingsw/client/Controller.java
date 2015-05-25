@@ -78,14 +78,21 @@ public class Controller implements OnReceiveListener {
                     case GameCommands.CMD_SC_USERFAIL:
                         msg = "Another player is using your name. Choose another one.";
                     case GameCommands.CMD_SC_CHOOSEUSER:
-                        user = mView.askUsername(msg.equals("")?"Choose a username":msg);
-                        mConn.sendPacket(new NetworkPacket(GameCommands.CMD_CS_USERNAME, user));
+                        do {
+                            user = mView.askUsername(msg.equals("")?"Choose a username":msg);
+                        } while(user == null || user.trim().length() == 0);
+                        mConn.sendPacket(new NetworkPacket(GameCommands.CMD_CS_USERNAME, user.trim()));
                         break;
                     case GameCommands.CMD_SC_USEROK:
                         break;
                     case GameCommands.CMD_SC_MAPFAIL:
                     case GameCommands.CMD_SC_CHOOSEMAP:
-                        mConn.sendPacket(new NetworkPacket(GameCommands.CMD_CS_LOADMAP, mView.askMap((String[])cmd.getArgs())));
+                        Integer chosenMap;
+                        do {
+                        chosenMap = mView.askMap((String[])cmd.getArgs());
+                        } while(chosenMap == null);
+                        
+                        mConn.sendPacket(new NetworkPacket(GameCommands.CMD_CS_LOADMAP, chosenMap));
                         break;
                     case GameCommands.CMD_SC_MAPOK:
                         break;
@@ -106,9 +113,6 @@ public class Controller implements OnReceiveListener {
         
     }
 
-    /* (non-Javadoc)
-     * @see it.polimi.ingsw.client.network.OnReceiveListener#onReceive(it.polimi.ingsw.game.network.NetworkPacket)
-     */
     @Override
     public void onReceive(NetworkPacket obj) {
         synchronized(mQueue) {
@@ -116,12 +120,7 @@ public class Controller implements OnReceiveListener {
         }
     }
 
-    /* (non-Javadoc)
-     * @see it.polimi.ingsw.client.network.OnReceiveListener#onDisconnect()
-     */
     @Override
     public void onDisconnect() {
-        // TODO Auto-generated method stub
-        
     }
 }

@@ -12,7 +12,7 @@ public interface View {
     public int askConnectionType(String[] params);
     public String askHost();
     public String askUsername(String message);
-    public int askMap(String[] mapList);
+    public Integer askMap(String[] mapList);
     
     public void run();
 

@@ -12,7 +12,10 @@ public class Config {
     // Game configuration here
     public static final int GAME_MIN_PLAYERS                = 2;
     public static final int GAME_MAX_PLAYERS                = 8;
-    public static final int GAME_WAITING_SECS               = 5;
+    public static final int GAME_WAITING_SECS               = 30;
+    
+    public static final int GAME_MAP_WIDTH                  = 23;
+    public static final int GAME_MAP_HEIGHT                 = 14;
     
     // Server configuration here
     public static final long SERVER_CONNECTION_TIMEOUT      = 10000;

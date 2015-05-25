@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.config.Config;
 
 import java.awt.Dimension;
 import java.util.logging.Level;
@@ -33,6 +34,7 @@ public class GUIFrame extends JFrame {
         
         setDefaultCloseOperation(EXIT_ON_CLOSE);   
         setTitle("Escape from the Aliens in Outer Space");
+        setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
         setResizable(false);
         
@@ -54,16 +56,19 @@ public class GUIFrame extends JFrame {
     }
     
     public void switchToMap(GameMap map) {
+        if(mLoginCanvas == null)
+            throw new RuntimeException("Map is already loaded");
         try {
-            mMapCanvas = new MapCanvasPanel( map, WIDTH, HEIGHT);
+            mMapCanvas = new MapCanvasPanel( map, Config.GAME_MAP_WIDTH, Config.GAME_MAP_HEIGHT);
             mMapCanvas.setPreferredSize(mDimension);
         } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
             LOG.log(Level.SEVERE, "File is not well formatted: " + e);
             System.exit(1);
         }
         
-        this.removeAll();
+        remove(mLoginCanvas);
         add(mMapCanvas);
+        mLoginCanvas = null;
         pack();
     }
 }
