@@ -6,17 +6,24 @@ package it.polimi.ingsw.game.state;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.card.DangerousCard;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.sector.SectorBuilder;
+
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Michele
  * @since 25 May 2015
  */
 public class MoveDoneState implements State {
-
+    
+    private static final Logger LOG = Logger.getLogger(MoveDoneState.class.getName());
+    
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
@@ -64,33 +71,41 @@ public class MoveDoneState implements State {
      * @return 
      */
     private State drawDangerousCard(GameState gameState) {
+        GamePlayer player = gameState.getCurrentPlayer();
         
-        /*Random generator = new Random();
-        int index = generator.nextInt(3);
+        // get a random dangerous card
+        Random generator = new Random();
+        int index = generator.nextInt( DangerousCard.values().length );
+        DangerousCard card = DangerousCard.getCardAt(index);
         
-        switch( index ) {
-        case 0: // noise in your sector
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_YOUR_SECTOR) );
-            gameManager.broadcastPacket( new NetworkPacket(GameCommands.CMD_SC_NOISE, getCurrentPlayer().getCurrentPosition()) );
+        State nextState;
+        
+        // according to type, choose what to do next
+        switch( card ) {
+        case NOISE_IN_YOUR_SECTOR: // noise in your sector
+            player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_YOUR_SECTOR) );
+            gameState.getGameManager().broadcastPacket( new NetworkPacket(GameCommand.CMD_SC_NOISE, player.getCurrentPosition()) );
             
-            // --> preleva carta oggetto
-            getObjectCard(player);
+            nextState = gameState.getObjectCard( );
             break;
             
-        case 1: // noise in any sector
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_ANY_SECTOR) );
-            player.setCurrentState( PlayerState.USING_DANGEROUS_CARD );
+        case NOISE_IN_ANY_SECTOR: // noise in any sector
+            player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_ANY_SECTOR) );
+            nextState = new UsingDangerousCardState();
             break;
             
-        case 2: // silence
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.SILENCE) );
-            gameManager.broadcastPacket( GameCommands.CMD_SC_SILENCE );
+        case SILENCE: // silence
+            player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.SILENCE) );
+            gameState.getGameManager().broadcastPacket( GameCommand.CMD_SC_SILENCE );
             
-            player.setCurrentState( PlayerState.ENDING_TURN );
+            nextState = new EndingTurnState();
             break;
-        }*/
+            
+        default:
+            LOG.log(Level.SEVERE, "Unknown dangerous card. You should never get here!");
+            nextState = new EndingTurnState(); // end gracefully
+        }
         
-        return null;
+        return nextState;
     }
-
 }

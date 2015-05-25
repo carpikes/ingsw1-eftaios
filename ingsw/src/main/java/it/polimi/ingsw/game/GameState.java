@@ -73,52 +73,6 @@ public class GameState {
        /* // Choose what to do according to current state
         switch( player.getCurrentState() ) {
         
-            
-        
-        case MOVE_DONE:
-            
-            if( command instanceof UseObjectCardCommand ) {
-                startUsingObjectCard();
-            } else {
-                // DANGEROUS: either draw a card OR attack
-                if( mMap.getSectorAt( player.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS ) {
-                    if( command instanceof DrawDangerousCardCommand ) {
-                        command.execute(this);
-                        drawDangerousCard(player);
-                    } else if( command instanceof AttackCommand ) {
-                        attack();
-                        player.setCurrentState( PlayerState.ENDING_TURN );
-                    } else {
-                        throw new IllegalStateOperationException("You can only attack or draw a dangerous sector card. Discarding command.");
-                    }
-                } else {
-                    // NOT DANGEROUS: either attack or pass
-                    if( command instanceof NotMyTurnCommand ) {
-                        command.execute(this);
-                        player.setCurrentState( PlayerState.NOT_MY_TURN );
-                    } else if( command instanceof AttackCommand ) {
-                        attack();
-                        player.setCurrentState( PlayerState.ENDING_TURN );
-                    } else {
-                        throw new IllegalStateOperationException("You can only attack or pass. Discarding command.");
-                    }
-                }
-            }
-            break;
-            
-        // NOISE IN ANY SECTOR    
-        case USING_DANGEROUS_CARD:
-            if( command instanceof ChoosePositionCommand ) {
-                // --->  getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_YOUR_SECTOR) );
-                // ---> gameManager.broadcastPacket( new NetworkPacket(GameCommands.CMD_SC_NOISE, getCurrentPlayer().getCurrentPosition()) );
-                command.execute(this);
-                
-                // --> preleva carta oggetto
-                getObjectCard(player);
-                break;
-            } else {
-                throw new IllegalStateOperationException("You can only choose a position here. Discarding packet.");
-            }
         
         case DISCARDING_OBJECT_CARD:
             if( command instanceof DiscardObjectCard ) {
@@ -168,7 +122,7 @@ public class GameState {
         
     }*/
     
-    private void getObjectCard(GamePlayer player) {
+    //private void getObjectCard(GamePlayer player) {
         /*ObjectCard newCard = null;
         
         // TODO: create object card
@@ -180,7 +134,7 @@ public class GameState {
         } else {
             getCurrentPlayer().sendPacket( GameCommands.CMD_SC_DISCARD_OBJECT_CARD );
         }*/
-    }
+   // }
     
     /**
      * @param gameState
@@ -245,5 +199,18 @@ public class GameState {
      */
     public State attack(Point currentPosition) {
         return null;
+    }
+    
+    /**
+     * @param player
+     * @return
+     */
+    public State getObjectCard( ) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public GameManager getGameManager() {
+        return gameManager;
     }
 }
