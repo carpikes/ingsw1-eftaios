@@ -4,7 +4,7 @@
 package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 
@@ -25,7 +25,7 @@ public class StartTurnState implements State {
         GamePlayer player = gameState.getCurrentPlayer();
         
         ArrayList< Point > availableSectors = gameState.getMap().getCellsWithMaxDistance( player.getCurrentPosition(), player.getMaxMoves() );
-        player.sendPacket( new NetworkPacket(GameCommands.CMD_SC_START_TURN, availableSectors) );
+        player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_START_TURN, availableSectors) );
         
         return new MovingState();
     }

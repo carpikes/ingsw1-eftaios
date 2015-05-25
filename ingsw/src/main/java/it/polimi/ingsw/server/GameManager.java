@@ -3,7 +3,7 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
@@ -55,9 +55,9 @@ public class GameManager {
             return false;
 
         mClients.add(client);
-        client.sendPacket(new NetworkPacket(GameCommands.CMD_SC_TIME, String.valueOf(getRemainingLoginTime())));
-        client.sendPacket(GameCommands.CMD_SC_CHOOSEUSER);
-        broadcastPacket(new NetworkPacket(GameCommands.CMD_SC_STAT, String.valueOf(mClients.size())));
+        client.sendPacket(new NetworkPacket(GameCommand.CMD_SC_TIME, String.valueOf(getRemainingLoginTime())));
+        client.sendPacket(GameCommand.CMD_SC_CHOOSEUSER);
+        broadcastPacket(new NetworkPacket(GameCommand.CMD_SC_STAT, String.valueOf(mClients.size())));
         
         // @first client: ask for map
         if(mClients.size() == 1)
@@ -167,7 +167,7 @@ public class GameManager {
             
             for(int i = 0; i < mClients.size(); i++) {
                 GameInfoContainer info = mState.buildInfoContainer(userList, i);
-                mClients.get(i).sendPacket(new NetworkPacket(GameCommands.CMD_SC_RUN, info));
+                mClients.get(i).sendPacket(new NetworkPacket(GameCommand.CMD_SC_RUN, info));
             }
             
             mIsRunning = true;
@@ -181,7 +181,7 @@ public class GameManager {
      * 
      * @param opcode Packet opcode
      */
-    public void broadcastPacket(int opcode) {
+    public void broadcastPacket(GameCommand opcode) {
         for(Client c : mClients)
             c.sendPacket(opcode);
     }
@@ -210,9 +210,9 @@ public class GameManager {
         // Decrement global user counter
         Server.getInstance().removeClient();
         
-        broadcastPacket(new NetworkPacket(GameCommands.CMD_SC_STAT, String.valueOf(mClients.size())));
+        broadcastPacket(new NetworkPacket(GameCommand.CMD_SC_STAT, String.valueOf(mClients.size())));
         if(mClients.size() == 0 || (mClients.size() < Config.GAME_MIN_PLAYERS && mIsRunning)) {
-            broadcastPacket(GameCommands.CMD_SC_WIN);
+            broadcastPacket(GameCommand.CMD_SC_WIN);
             Server.getInstance().removeGame(this);
         } else {
             // Game is still alive
@@ -228,7 +228,7 @@ public class GameManager {
     private void askForMap(Client client) {
         NetworkPacket pkt;
         
-        pkt = new NetworkPacket(GameCommands.CMD_SC_CHOOSEMAP, (Serializable[]) GameMap.getListOfMaps());
+        pkt = new NetworkPacket(GameCommand.CMD_SC_CHOOSEMAP, (Serializable[]) GameMap.getListOfMaps());
         client.sendPacket(pkt);
     }
 

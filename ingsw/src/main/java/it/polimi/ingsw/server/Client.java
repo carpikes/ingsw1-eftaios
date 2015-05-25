@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.io.Serializable;
@@ -55,20 +55,20 @@ public class Client {
                 // Choosing username
                 synchronized(mGame) {
                     switch(pkt.getOpcode()) {
-                        case GameCommands.CMD_CS_USERNAME:
+                        case CMD_CS_USERNAME:
                             String name = (String) args[0];
                             if(mGame.canSetName(name) && mUser == null) {
                                 setUsername(name);
-                                sendPacket(new NetworkPacket(GameCommands.CMD_SC_USEROK, mGame.getNumberOfPlayers(), mGame.getRemainingLoginTime()));
+                                sendPacket(new NetworkPacket(GameCommand.CMD_SC_USEROK, mGame.getNumberOfPlayers(), mGame.getRemainingLoginTime()));
                             } else
-                                sendPacket(GameCommands.CMD_SC_USERFAIL);
+                                sendPacket(GameCommand.CMD_SC_USERFAIL);
                             break;
-                        case GameCommands.CMD_CS_LOADMAP:
+                        case CMD_CS_LOADMAP:
                             // FIXME null map
                             if(args.length == 1 && mGame.setMap(this, (Integer)args[0]))
-                                sendPacket(GameCommands.CMD_SC_MAPOK);
+                                sendPacket(GameCommand.CMD_SC_MAPOK);
                             else
-                                sendPacket(GameCommands.CMD_SC_MAPFAIL);
+                                sendPacket(GameCommand.CMD_SC_MAPFAIL);
                             break;
                     }
                 }
@@ -91,7 +91,7 @@ public class Client {
      * 
      * @param opcode The opcode
      */
-    public void sendPacket(int opcode) {
+    public void sendPacket(GameCommand opcode) {
         sendPacket(new NetworkPacket(opcode));
     }
 

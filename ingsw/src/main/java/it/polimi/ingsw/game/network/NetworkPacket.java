@@ -9,15 +9,15 @@ import java.io.Serializable;
 public class NetworkPacket implements Serializable {
     private static final long serialVersionUID = 1L;
     
-    private final int mOpcode;
+    private final GameCommand mOpcode;
     private final Serializable[] mArgs;
     
-    public NetworkPacket(int opcode, Serializable... args) {
+    public NetworkPacket(GameCommand opcode, Serializable... args) {
         mOpcode = opcode;
         mArgs = args;
     }
     
-    public int getOpcode() {
+    public GameCommand getOpcode() {
         return mOpcode;
     }
     

@@ -1,0 +1,49 @@
+package it.polimi.ingsw.game.network;
+
+/**
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @since  May 17, 2015
+ */
+
+public enum GameCommand {
+    
+    /** LOGIN COMMANDS */
+    CMD_INVALID,
+    CMD_PING,
+    CMD_BYE,
+    CMD_SC_FULL,
+    CMD_SC_STAT,
+    CMD_SC_TIME,
+    CMD_SC_CHOOSEUSER,
+    CMD_CS_USERNAME,
+    CMD_SC_USEROK,
+    CMD_SC_USERFAIL,
+    CMD_SC_RUN,
+    CMD_SC_WIN,
+    CMD_SC_CHOOSEMAP,
+    CMD_CS_LOADMAP,
+    CMD_SC_MAPOK,
+    CMD_SC_MAPFAIL,
+   
+    /** GAME COMMANDS TO SERVER */
+    CMD_CS_ATTACK,
+    CMD_CS_DISCARD_OBJ_CARD,
+    CMD_CS_USE_OBJ_CARD,
+    CMD_CS_SET_POSITION,
+    CMD_CS_MOVE,
+    CMD_CS_DRAW_DANGEROUS_CARD,
+    CMD_CS_NOT_MY_TURN,
+    
+    /** GAME COMMANDS TO CLIENTS */
+    CMD_SC_UPDATE_LOCAL_INFO,
+    CMD_SC_START_TURN,
+    CMD_SC_MOVE_DONE,
+    CMD_SC_NOISE,
+    CMD_SC_DANGEROUS_CARD_DRAWN,
+    CMD_SC_SILENCE,
+    CMD_SC_OBJECT_CARD_OBTAINED,
+    CMD_SC_DISCARD_OBJECT_CARD,
+    
+    CMD_SC_END_OF_TURN,
+    CMD_SC_NOT_MY_TURN,
+}

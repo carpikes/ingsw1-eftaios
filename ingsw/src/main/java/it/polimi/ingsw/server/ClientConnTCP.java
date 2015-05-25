@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.io.IOException;
@@ -75,7 +75,7 @@ public class ClientConnTCP extends ClientConn {
     public synchronized void disconnect() {
         if(mOut != null) {
             try {
-                mOut.writeObject(new NetworkPacket(GameCommands.CMD_BYE));
+                mOut.writeObject(new NetworkPacket(GameCommand.CMD_BYE));
                 mOut.flush();
             } catch(IOException e) {
                 LOG.log(Level.FINER, e.toString(), e);

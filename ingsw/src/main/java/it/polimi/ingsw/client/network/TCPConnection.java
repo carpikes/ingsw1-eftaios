@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.network;
 
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.io.IOException;
@@ -148,7 +148,7 @@ public class TCPConnection extends Connection {
         public void run() {
             try  {
                 while(mParent.isOnline()) {
-                    mParent.sendPacket(GameCommands.CMD_PING);
+                    mParent.sendPacket(GameCommand.CMD_PING);
                     Thread.sleep(Config.CLIENT_TCP_PING_TIME);
                 }
             } catch (Exception e) {

@@ -6,7 +6,7 @@ package it.polimi.ingsw.game.state;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.PlayerState;
@@ -35,7 +35,7 @@ public class MovingState implements State {
         // If we actually received a command from the client...
         if( packet != null ) {
             // If the user said he wanted to move..
-            if( packet.getOpcode() == GameCommands.CMD_CS_MOVE ) {
+            if( packet.getOpcode() == GameCommand.CMD_CS_MOVE ) {
                 // TODO: MUOVI EFFETTIVAMENTE!
                 // moveTo()
                 
@@ -45,10 +45,10 @@ public class MovingState implements State {
                     nextState = drawHatchCard( gameState );
                 } else {
                     // tell the client it has choose what to do after moving
-                    player.sendPacket( GameCommands.CMD_SC_MOVE_DONE );
+                    player.sendPacket( GameCommand.CMD_SC_MOVE_DONE );
                     nextState =  new MoveDoneState();
                 }
-            } else if( packet.getOpcode() == GameCommands.CMD_CS_USE_OBJ_CARD ) {
+            } else if( packet.getOpcode() == GameCommand.CMD_CS_USE_OBJ_CARD ) {
                 // TODO where should I put this?
                 nextState = gameState.startUsingObjectCard();
             } else {
@@ -74,10 +74,10 @@ public class MovingState implements State {
         
         if( isRed ) {
             // OUCH! You cannot use that hatch!
-            player.sendPacket( GameCommands.CMD_SC_END_OF_TURN );
+            player.sendPacket( GameCommand.CMD_SC_END_OF_TURN );
             nextState = new EndingTurnState();
         } else {
-            player.sendPacket( GameCommands.CMD_SC_WIN );
+            player.sendPacket( GameCommand.CMD_SC_WIN );
             nextState = new WinnerState();
             
             // remove player

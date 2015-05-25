@@ -1,6 +1,6 @@
 package it.polimi.ingsw.game;
 
-import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
@@ -161,35 +161,8 @@ public class GameState {
         */
         
         // TODO notifica modifiche a tutti
-        gameManager.broadcastPacket( new NetworkPacket(GameCommands.CMD_SC_UPDATE_LOCAL_INFO, null) );
+        gameManager.broadcastPacket( new NetworkPacket(GameCommand.CMD_SC_UPDATE_LOCAL_INFO, null) );
     }
-
-    /*private void drawDangerousCard(GamePlayer player) {
-        Random generator = new Random();
-        int index = generator.nextInt(3);
-        
-        switch( index ) {
-        case 0: // noise in your sector
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_YOUR_SECTOR) );
-            gameManager.broadcastPacket( new NetworkPacket(GameCommands.CMD_SC_NOISE, getCurrentPlayer().getCurrentPosition()) );
-            
-            // --> preleva carta oggetto
-            getObjectCard(player);
-            break;
-            
-        case 1: // noise in any sector
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_ANY_SECTOR) );
-            player.setCurrentState( PlayerState.USING_DANGEROUS_CARD );
-            break;
-            
-        case 2: // silence
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.SILENCE) );
-            gameManager.broadcastPacket( GameCommands.CMD_SC_SILENCE );
-            
-            player.setCurrentState( PlayerState.ENDING_TURN );
-            break;
-        }
-    }*/
 
     /*private void attack() {
         
@@ -264,5 +237,13 @@ public class GameState {
 
     public List<GamePlayer> getPlayers() {
         return mPlayers;
+    }
+
+    /**
+     * @param currentPosition
+     * @return 
+     */
+    public State attack(Point currentPosition) {
+        return null;
     }
 }

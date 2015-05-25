@@ -1,10 +1,9 @@
 package it.polimi.ingsw.client.network;
 
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -24,7 +23,7 @@ public abstract class Connection {
     public abstract void sendPacket(NetworkPacket pkt);
     public abstract boolean isOnline();
     
-    public void sendPacket(int opcode) {
+    public void sendPacket(GameCommand opcode) {
         sendPacket(new NetworkPacket(opcode));
     }
 }

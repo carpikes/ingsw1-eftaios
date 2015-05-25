@@ -3,7 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
-import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
@@ -69,37 +69,37 @@ public class Controller implements OnReceiveListener {
                     continue;
                 String msg = "";
                 switch(cmd.getOpcode()) {
-                    case GameCommands.CMD_SC_TIME:
+                    case CMD_SC_TIME:
                         mView.updateLoginTime(Integer.parseInt((String) cmd.getArgs()[0]));
                         break;
-                    case GameCommands.CMD_SC_STAT:
+                    case CMD_SC_STAT:
                         mView.updateLoginStat(Integer.parseInt((String) cmd.getArgs()[0]));
                         break;
-                    case GameCommands.CMD_SC_USERFAIL:
+                    case CMD_SC_USERFAIL:
                         msg = "Another player is using your name. Choose another one.";
-                    case GameCommands.CMD_SC_CHOOSEUSER:
+                    case CMD_SC_CHOOSEUSER:
                         do {
                             user = mView.askUsername(msg.equals("")?"Choose a username":msg);
                         } while(user == null || user.trim().length() == 0);
-                        mConn.sendPacket(new NetworkPacket(GameCommands.CMD_CS_USERNAME, user.trim()));
+                        mConn.sendPacket(new NetworkPacket(GameCommand.CMD_CS_USERNAME, user.trim()));
                         break;
-                    case GameCommands.CMD_SC_USEROK:
+                    case CMD_SC_USEROK:
                         break;
-                    case GameCommands.CMD_SC_MAPFAIL:
-                    case GameCommands.CMD_SC_CHOOSEMAP:
+                    case CMD_SC_MAPFAIL:
+                    case CMD_SC_CHOOSEMAP:
                         Integer chosenMap;
                         do {
                         chosenMap = mView.askMap((String[])cmd.getArgs());
                         } while(chosenMap == null);
                         
-                        mConn.sendPacket(new NetworkPacket(GameCommands.CMD_CS_LOADMAP, chosenMap));
+                        mConn.sendPacket(new NetworkPacket(GameCommand.CMD_CS_LOADMAP, chosenMap));
                         break;
-                    case GameCommands.CMD_SC_MAPOK:
+                    case CMD_SC_MAPOK:
                         break;
-                    case GameCommands.CMD_SC_RUN:
+                    case CMD_SC_RUN:
                         mView.switchToMainScreen((GameInfoContainer)(cmd.getArgs()[0]));
                         break;
-                    case GameCommands.CMD_BYE:
+                    case CMD_BYE:
                         break;
 
                 };

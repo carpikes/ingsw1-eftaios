@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.network.GameCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class Server {
         // Invariant: mCurGame cannot be full here
         
         if(mConnectedClients >= Config.SERVER_MAX_CLIENTS) {
-            conn.sendPacket(GameCommands.CMD_SC_FULL);
+            conn.sendPacket(GameCommand.CMD_SC_FULL);
             return false;
         }
         

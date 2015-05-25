@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game.player;
 
 import it.polimi.ingsw.game.card.ObjectCard;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.state.State;
 import it.polimi.ingsw.server.Client;
@@ -135,7 +136,7 @@ public class GamePlayer {
     /**
      * @param i
      */
-    public void sendPacket(int opcode) {
+    public void sendPacket(GameCommand opcode) {
         connection.sendPacket(opcode);
     }
 
