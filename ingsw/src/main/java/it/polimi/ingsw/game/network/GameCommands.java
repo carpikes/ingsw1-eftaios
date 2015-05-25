@@ -5,6 +5,7 @@ package it.polimi.ingsw.game.network;
  * @since  May 17, 2015
  */
 
+// TODO enum instead?
 public class GameCommands {
     private GameCommands() { }
     
@@ -44,10 +45,5 @@ public class GameCommands {
     public static final int CMD_SC_DISCARD_OBJECT_CARD = 57;
     
     public static final int CMD_SC_END_OF_TURN       = 70;
-    
-    
-    
-    
-    
-    
+    public static final int CMD_SC_NOT_MY_TURN       = 71;
 }

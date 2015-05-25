@@ -2,6 +2,7 @@ package it.polimi.ingsw.game.player;
 
 import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.state.State;
 import it.polimi.ingsw.server.Client;
 
 import java.awt.Point;
@@ -33,27 +34,31 @@ public class GamePlayer {
     private final Role role;
     
     /** Current state in game for the player */
-    private PlayerState currentState;
+    private State currentState;
     
     /** Connection to client */
     private Client connection;
     
+    /** ID in game */
+    private int id;
+    
     public GamePlayer( Role playerRole, Point startPosition ) {
         objectCards = new ArrayList<>();
         role = playerRole;
-        currentState = PlayerState.NOT_MY_TURN;
+        // state = 
         defense = false;
         maxMoves = role.getMaxMoves();
         position = startPosition; 
         objectCardUsed = false;
         // connection = 
+        // id = 
     }
 
-    public PlayerState getCurrentState() {
+    public State getCurrentState() {
         return currentState;
     }
 
-    public void setCurrentState(PlayerState currentState) {
+    public void setCurrentState(State currentState) {
         this.currentState = currentState;
     }
     
@@ -155,6 +160,13 @@ public class GamePlayer {
 
     public void setObjectCardUsed(boolean objectCardUsed) {
         this.objectCardUsed = objectCardUsed;
+    }
+
+    /**
+     * @return
+     */
+    public int getId() {
+        return id;
     }
     
     

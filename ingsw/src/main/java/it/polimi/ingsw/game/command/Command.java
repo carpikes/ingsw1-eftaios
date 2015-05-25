@@ -12,6 +12,5 @@ import it.polimi.ingsw.game.GameState;
  */
 
 public interface Command {
-    boolean isValid( GameState gameState );
     void execute( GameState gameState );
 }

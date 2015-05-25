@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -138,5 +139,19 @@ public class GameMap implements Serializable {
         if( isWithinBounds(point) ) {
             board[point.x][point.y] = SectorBuilder.getSectorFor(type);
         }
+    }
+
+    /**
+     * @param currentPosition
+     * @param maxMoves
+     * @return
+     */
+    public ArrayList<Point> getCellsWithMaxDistance(Point currentPosition,
+            int maxMoves) {
+        // TODO Not implemented yet: it always returns Point (0,0)
+        ArrayList<Point> sectors = new ArrayList< >();
+        
+        sectors.add( new Point(0,0) );
+        return sectors;
     }
 }

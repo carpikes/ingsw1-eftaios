@@ -1,27 +1,12 @@
 package it.polimi.ingsw.game;
 
-import it.polimi.ingsw.exception.IllegalStateOperationException;
-import it.polimi.ingsw.game.card.DangerousCardType;
-import it.polimi.ingsw.game.card.ObjectCard;
-import it.polimi.ingsw.game.command.AttackCommand;
-import it.polimi.ingsw.game.command.AwakeCommand;
-import it.polimi.ingsw.game.command.ChoosePositionCommand;
-import it.polimi.ingsw.game.command.Command;
-import it.polimi.ingsw.game.command.CommandBuilder;
-import it.polimi.ingsw.game.command.DiscardObjectCard;
-import it.polimi.ingsw.game.command.DrawDangerousCardCommand;
-import it.polimi.ingsw.game.command.MoveCommand;
-import it.polimi.ingsw.game.command.NotMyTurnCommand;
-import it.polimi.ingsw.game.command.UseObjectCardCommand;
 import it.polimi.ingsw.game.network.GameCommands;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
-import it.polimi.ingsw.game.player.PlayerState;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleFactory;
-import it.polimi.ingsw.game.sector.Sector;
-import it.polimi.ingsw.game.sector.SectorBuilder;
+import it.polimi.ingsw.game.state.State;
 import it.polimi.ingsw.server.Client;
 import it.polimi.ingsw.server.GameManager;
 
@@ -31,7 +16,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,58 +66,15 @@ public class GameState {
         GamePlayer player = getCurrentPlayer();
         
         NetworkPacket pkt = getPacketFromQueue();
-        Command command = getCommandFromPacket(pkt);
         
-        Random rnd = new Random();
+        State nextState = player.getCurrentState().update(this);
+        player.setCurrentState(nextState);
         
-        // Choose what to do according to current state
+       /* // Choose what to do according to current state
         switch( player.getCurrentState() ) {
         
-        // invoked when the server need to notify that someone is the new current game player
-        case START_TURN:
-            // calculate the cells where the player can go
-            ArrayList< Point > availablePoints = getCellsWithMaxDistance( player.getMaxMoves() );
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_START_TURN, availablePoints) );
-            player.setCurrentState( PlayerState.MOVING );
-            break;
             
-        case MOVING:
-            if( command instanceof MoveCommand ) {
-                // after moving, check where I went to
-                // move to hatch states when going on a hatch sector
-                command.execute(this);
-                
-                Sector sector = mMap.getSectorAt( player.getCurrentPosition() );
-                if( sector.isCrossable() && sector.getId() == SectorBuilder.HATCH ) {
-                    // draw an hatch card and choose accordingly
-                    mMap.setType( player.getCurrentPosition(), SectorBuilder.USED_HATCH );
-                    
-                    boolean isRed = rnd.nextBoolean();
-                    
-                    if( isRed ) {
-                        player.setCurrentState( PlayerState.NOT_MY_TURN );
-                        getCurrentPlayer().sendPacket( GameCommands.CMD_SC_END_OF_TURN );
-                    } else {
-                        player.setCurrentState( PlayerState.WINNER );
-                        getCurrentPlayer().sendPacket( GameCommands.CMD_SC_WIN );
-                        
-                        // spostati al prossimo giocatore
-                        noMorePlayingPlayers.add( mPlayers.remove(mTurnId) );
-                    }
-                    
-                    sector = SectorBuilder.getSectorFor( SectorBuilder.USED_HATCH );
-                } else {
-                    // tell the client it has choose what to do after moving
-                    getCurrentPlayer().sendPacket( GameCommands.CMD_SC_MOVE_DONE );
-                    player.setCurrentState( PlayerState.MOVE_DONE );
-                }
-            } else if( command instanceof UseObjectCardCommand ) {
-                startUsingObjectCard();
-            } else {
-                throw new IllegalStateOperationException("You can only move. Discarding command.");
-            }
-            break;
-            
+        
         case MOVE_DONE:
             
             if( command instanceof UseObjectCardCommand ) {
@@ -212,27 +153,24 @@ public class GameState {
             break;
             
         case AWAY:
-            if( command instanceof AwakeCommand ) {
-                player.setCurrentState( PlayerState.NOT_MY_TURN );
-            } else {
-                throw new IllegalStateOperationException("You can only awake. Discarding command.");
-            }
+            
             break;
         default:
             throw new IllegalStateOperationException("Unknown state.");
         }
+        */
         
         // TODO notifica modifiche a tutti
         gameManager.broadcastPacket( new NetworkPacket(GameCommands.CMD_SC_UPDATE_LOCAL_INFO, null) );
     }
 
-    private void drawDangerousCard(GamePlayer player) {
+    /*private void drawDangerousCard(GamePlayer player) {
         Random generator = new Random();
         int index = generator.nextInt(3);
         
         switch( index ) {
         case 0: // noise in your sector
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardType.NOISE_IN_YOUR_SECTOR) );
+            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_YOUR_SECTOR) );
             gameManager.broadcastPacket( new NetworkPacket(GameCommands.CMD_SC_NOISE, getCurrentPlayer().getCurrentPosition()) );
             
             // --> preleva carta oggetto
@@ -240,45 +178,50 @@ public class GameState {
             break;
             
         case 1: // noise in any sector
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardType.NOISE_IN_ANY_SECTOR) );
+            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_ANY_SECTOR) );
             player.setCurrentState( PlayerState.USING_DANGEROUS_CARD );
             break;
             
         case 2: // silence
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardType.SILENCE) );
+            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.SILENCE) );
             gameManager.broadcastPacket( GameCommands.CMD_SC_SILENCE );
             
             player.setCurrentState( PlayerState.ENDING_TURN );
             break;
         }
-    }
+    }*/
 
-    private void attack() {
+    /*private void attack() {
         
-    }
+    }*/
     
     private void getObjectCard(GamePlayer player) {
-        ObjectCard newCard = null;
+        /*ObjectCard newCard = null;
         
         // TODO: create object card
         if( player.getNumberOfCards() < 3 ) {
             player.getObjectCards().add( newCard );
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_OBJECT_CARD_OBTAINED, null /*tipo di carta ottenuto*/) );
+            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommands.CMD_SC_OBJECT_CARD_OBTAINED, null tipo di carta ottenuto) );
             
             player.setCurrentState( PlayerState.ENDING_TURN );
         } else {
             getCurrentPlayer().sendPacket( GameCommands.CMD_SC_DISCARD_OBJECT_CARD );
-        }
+        }*/
     }
     
     /**
      * @param gameState
+     * @return 
      */
-    private void startUsingObjectCard() {
-        // TODO Auto-generated method stub
-        
+    // TODO to be implemented
+    public State startUsingObjectCard() {
+       return null;
     }
 
+    public void removePlayer( int id ) {
+        noMorePlayingPlayers.add( mPlayers.remove(id) );
+    }
+    
     /**
      * @param maxMoves
      * @return
@@ -291,27 +234,10 @@ public class GameState {
         return points;
     }
 
-    private NetworkPacket getPacketFromQueue( ) {
+    public NetworkPacket getPacketFromQueue( ) {
     	synchronized(mEventQueue) {
             return mEventQueue.poll();
         }
-    }
-    
-    private Command getCommandFromPacket( NetworkPacket pkt ) {
-        if( pkt == null )
-            return null;
-        
-        return CommandBuilder.getCommandFromNetworkPacket(pkt);
-    }
-    
-    private boolean executeCommand( Command command ) {
-		if( command.isValid( this ) ) {
-    		command.execute(this);
-    		return true;
-		} else {
-			LOG.log( Level.WARNING, "Command " + command + " not valid in state: " + getCurrentPlayer().getCurrentState() );
-			return false;
-		}
     }
     
     public synchronized GamePlayer getCurrentPlayer() {
@@ -331,39 +257,6 @@ public class GameState {
         }
     }
     
-    public boolean hasGameEnded() {
-        if( mPlayers == null || mPlayers.isEmpty() )
-            return true;
-        
-        for( GamePlayer p : mPlayers )
-            if( p.getCurrentState() == PlayerState.WINNER || p.getCurrentState() == PlayerState.LOSER )
-                return false;
-        
-        return true;
-    }
-    
-    public boolean moveToNextPlayer() {
-        if( hasGameEnded() )
-            return false;
-        else {
-            // check if there are players still playing
-            for( int i = mTurnId; i < mTurnId + mPlayers.size(); ++i )
-                if( mPlayers.get( i % mPlayers.size() ).getCurrentState() == PlayerState.NOT_MY_TURN ) {
-                    mTurnId = i % mPlayers.size();
-                    mPlayers.get(mTurnId).setCurrentState(PlayerState.START_TURN);
-                    
-                    return true;
-                }
-            
-            return false;
-        }
-    }
-    
-    public void notifyChangesToAll() {
-        for( GamePlayer p : mPlayers )
-            p.notifyChange(p);
-    }
-
     public GameInfoContainer buildInfoContainer(String[] userList, int i) {
         GameInfoContainer info = new GameInfoContainer(userList, mPlayers.get(i).isHuman(), mMap);
         return info;
