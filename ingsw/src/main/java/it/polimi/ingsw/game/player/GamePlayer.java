@@ -1,7 +1,7 @@
 package it.polimi.ingsw.game.player;
 
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.card.ObjectCard;
-import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.state.State;
 import it.polimi.ingsw.server.Client;

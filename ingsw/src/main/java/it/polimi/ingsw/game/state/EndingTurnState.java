@@ -3,7 +3,10 @@
  */
 package it.polimi.ingsw.game.state;
 
+import it.polimi.ingsw.exception.IllegalStateOperationException;
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.network.NetworkPacket;
 
 /**
  * @author Michele
@@ -16,7 +19,21 @@ public class EndingTurnState implements State {
      */
     @Override
     public State update( GameState gameState ) {
-        return null;
+        NetworkPacket packet = gameState.getPacketFromQueue();
+        
+        State nextState = this;
+        if( packet != null ) {
+            if( packet.getOpcode() == GameCommand.CMD_CS_NOT_MY_TURN ) {
+                nextState = new NotMyTurnState();
+            } else if( packet.getOpcode() == GameCommand.CMD_CS_USE_OBJ_CARD ) {
+                // TODO where should I put this?
+                nextState = gameState.startUsingObjectCard();
+            } else {
+                throw new IllegalStateOperationException("You can only use an object card or end here. Discarding packet.");
+            }
+        }
+        
+        return nextState;
     }
 
 }

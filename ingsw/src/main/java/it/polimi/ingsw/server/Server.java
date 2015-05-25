@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.GameCommand;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.io.IOException;

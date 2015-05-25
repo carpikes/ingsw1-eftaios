@@ -1,5 +1,7 @@
 package it.polimi.ingsw.game.network;
 
+import it.polimi.ingsw.game.GameCommand;
+
 import java.io.Serializable;
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)

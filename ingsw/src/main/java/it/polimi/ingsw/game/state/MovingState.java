@@ -4,9 +4,9 @@
 package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.PlayerState;

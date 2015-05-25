@@ -16,7 +16,7 @@ public class LoserState implements State {
      */
     @Override
     public State update( GameState gameState ) {
-        return null;
+        return this;
     }
 
 }

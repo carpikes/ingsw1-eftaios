@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import it.polimi.ingsw.client.network.TCPConnection;
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.server.ClientConnTCP;
 import it.polimi.ingsw.server.Server;

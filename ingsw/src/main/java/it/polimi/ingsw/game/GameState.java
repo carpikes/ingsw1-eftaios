@@ -1,6 +1,5 @@
 package it.polimi.ingsw.game;
 
-import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
@@ -70,9 +69,7 @@ public class GameState {
         State nextState = player.getCurrentState().update(this);
         player.setCurrentState(nextState);
         
-       /* // Choose what to do according to current state
-        switch( player.getCurrentState() ) {
-        
+       /*
         
         case DISCARDING_OBJECT_CARD:
             if( command instanceof DiscardObjectCard ) {
@@ -88,30 +85,9 @@ public class GameState {
         case USING_OBJECT_CARD:
             player.setObjectCardUsed(true);
             break;
-            
-        case ENDING_TURN:
-            if( command instanceof UseObjectCardCommand ) {
-                startUsingObjectCard();
-            } else if( command instanceof NotMyTurnCommand ) {
-                command.execute(this);
-                player.setCurrentState( PlayerState.NOT_MY_TURN );
-            } else {
-                throw new IllegalStateOperationException("You can only choose what object card to discard here. Discarding packet.");
-            }
-            break;
+           
+
         
-        case NOT_MY_TURN:    
-        case WINNER:
-        case LOSER:
-            // ignore any communication (except for updating GameInfoContainer through broadcastPacket method below)
-            break;
-            
-        case AWAY:
-            
-            break;
-        default:
-            throw new IllegalStateOperationException("Unknown state.");
-        }
         */
         
         // TODO notifica modifiche a tutti

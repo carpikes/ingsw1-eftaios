@@ -1,4 +1,4 @@
-package it.polimi.ingsw.game.network;
+package it.polimi.ingsw.game;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -34,6 +34,7 @@ public enum GameCommand {
     CMD_CS_DRAW_DANGEROUS_CARD,
     CMD_CS_NOISE_IN_ANY_SECTOR_POSITION,
     CMD_CS_NOT_MY_TURN,
+    CMD_CS_AWAKE,
     
     /** GAME COMMANDS TO CLIENTS */
     CMD_SC_UPDATE_LOCAL_INFO,
@@ -46,5 +47,4 @@ public enum GameCommand {
     CMD_SC_DISCARD_OBJECT_CARD,
     
     CMD_SC_END_OF_TURN,
-    CMD_SC_NOT_MY_TURN,
 }
