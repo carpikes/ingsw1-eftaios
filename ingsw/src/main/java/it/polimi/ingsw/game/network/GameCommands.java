@@ -36,5 +36,18 @@ public class GameCommands {
     /** GAME COMMANDS TO CLIENTS */
     public static final int CMD_SC_UPDATE_LOCAL_INFO = 50;
     public static final int CMD_SC_START_TURN        = 51;
+    public static final int CMD_SC_MOVE_DONE         = 52;
+    public static final int CMD_SC_NOISE             = 53;
+    public static final int CMD_SC_DANGEROUS_CARD_DRAWN = 54;
+    public static final int CMD_SC_SILENCE              = 55;
+    public static final int CMD_SC_OBJECT_CARD_OBTAINED = 56;
+    public static final int CMD_SC_DISCARD_OBJECT_CARD = 57;
+    
+    public static final int CMD_SC_END_OF_TURN       = 70;
+    
+    
+    
+    
+    
     
 }

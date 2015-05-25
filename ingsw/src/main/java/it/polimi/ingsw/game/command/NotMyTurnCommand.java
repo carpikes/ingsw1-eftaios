@@ -13,11 +13,11 @@ import java.awt.Point;
  * @author Michele
  * @since 23 May 2015
  */
-public class EndOfTurnCommand implements Command {
+public class NotMyTurnCommand implements Command {
 
     private Point position;
     
-    public EndOfTurnCommand(Point destination) {
+    public NotMyTurnCommand(Point destination) {
         position = destination;
     }
     

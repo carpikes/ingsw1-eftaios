@@ -1,9 +1,11 @@
 package it.polimi.ingsw.game.player;
 
+import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.server.Client;
 
 import java.awt.Point;
+import java.util.ArrayList;
 
 /**
  *
@@ -21,6 +23,9 @@ public class GamePlayer {
     /** Object card already used in current turn */
     private boolean objectCardUsed;
     
+    /** Object cards the player owns */
+    private ArrayList < ObjectCard > objectCards;
+    
     /** How many sectors can I cross in total? */
     private int maxMoves;
     
@@ -34,6 +39,7 @@ public class GamePlayer {
     private Client connection;
     
     public GamePlayer( Role playerRole, Point startPosition ) {
+        objectCards = new ArrayList<>();
         role = playerRole;
         currentState = PlayerState.NOT_MY_TURN;
         defense = false;
@@ -133,6 +139,22 @@ public class GamePlayer {
      */
     public void sendPacket(NetworkPacket networkPacket) {
         connection.sendPacket(networkPacket);
+    }
+
+    public ArrayList<ObjectCard> getObjectCards() {
+        return objectCards;
+    }
+    
+    public int getNumberOfCards() {
+        return objectCards.size();
+    }
+
+    public boolean isObjectCardUsed() {
+        return objectCardUsed;
+    }
+
+    public void setObjectCardUsed(boolean objectCardUsed) {
+        this.objectCardUsed = objectCardUsed;
     }
     
     

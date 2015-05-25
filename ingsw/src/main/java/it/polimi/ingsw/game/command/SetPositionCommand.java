@@ -29,11 +29,13 @@ public class SetPositionCommand implements Command {
         GamePlayer player = gameState.getCurrentPlayer();
         PlayerState playerState = player.getCurrentState();
         
-        return (
-                playerState == PlayerState.START_OF_TURN
+        return true;
+        
+        /*return (
+                playerState == PlayerState.START_TURN
                 ||
                 ( playerState == PlayerState.OBJECT_CARD_DRAWN && player.isHuman() ) // for the teleport card (FIXME: maybe a separate state would be better)
-                );
+                );*/
     }
 
     /* (non-Javadoc)

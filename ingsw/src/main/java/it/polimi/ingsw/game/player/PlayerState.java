@@ -10,16 +10,14 @@ package it.polimi.ingsw.game.player;
  * @since 23 May 2015
  */
 public enum PlayerState {
-    START_OF_TURN(true), // before moving
+    START_TURN(true), // before moving
     MOVING(false), // after moving
     MOVE_DONE(true),
-    HATCH_CARD_DRAWN(false),
-    ATTACKED(false),
     DANGEROUS_CARD_DRAWN(true),
     USING_DANGEROUS_CARD(false), // invoked when choosing a state after drawing a Noise in any sector card
-    OBJECT_CARD_DRAWN(false), // invoked when drawing a card: can lead to a DiscardObjectCardCommand
+    DISCARDING_OBJECT_CARD(false),
     USING_OBJECT_CARD(true), // invoked when choosing a state after drawing a Spotlight card
-    END_OF_TURN(false),
+    ENDING_TURN(false),
     NOT_MY_TURN(false),
     WINNER(false),
     LOSER(false),

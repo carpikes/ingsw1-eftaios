@@ -31,11 +31,13 @@ public class AttackCommand implements Command {
         GamePlayer player = gameState.getCurrentPlayer();
         PlayerState playerState = player.getCurrentState();
         
-        return(
+        return true;
+        
+        /*return(
                 ( playerState == PlayerState.ATTACKED && player.isAlien() )
                 ||
                 ( playerState == PlayerState.OBJECT_CARD_DRAWN && player.isHuman() )
-              );        
+              );     */   
     }
 
     /* (non-Javadoc)

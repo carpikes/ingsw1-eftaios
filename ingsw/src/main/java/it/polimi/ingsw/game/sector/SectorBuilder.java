@@ -17,12 +17,13 @@ public class SectorBuilder {
     // Parameterized factory method
     public static Sector getSectorFor(int id) throws SectorException  {
         switch(id) {
-            case ALIEN:              return new Sector(ALIEN);
-            case DANGEROUS:          return new Sector(DANGEROUS);
-            case NOT_DANGEROUS:      return new Sector(NOT_DANGEROUS);
-            case HATCH:              return new Sector(HATCH);
-            case HUMAN:              return new Sector(HUMAN);
-            case NOT_VALID:          return new Sector(NOT_VALID);
+            case ALIEN:              return new Sector(ALIEN, false);
+            case DANGEROUS:          return new Sector(DANGEROUS, true);
+            case NOT_DANGEROUS:      return new Sector(NOT_DANGEROUS, true);
+            case HATCH:              return new Sector(HATCH, true);
+            case USED_HATCH:         return new Sector(USED_HATCH, false);
+            case HUMAN:              return new Sector(HUMAN, false);
+            case NOT_VALID:          return new Sector(NOT_VALID, false);
             default:                 throw new SectorException("Illegal sector code");
         }
     }

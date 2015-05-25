@@ -30,7 +30,9 @@ public class DiscardObjectCard implements Command {
         GamePlayer player = gameState.getCurrentPlayer();
         PlayerState playerState = player.getCurrentState();
         
-        return ( playerState == PlayerState.OBJECT_CARD_DRAWN && player.isHuman() ); 
+        return true;
+        
+        /*return ( playerState == PlayerState.OBJECT_CARD_DRAWN && player.isHuman() ); */
     }
 
     /* (non-Javadoc)
