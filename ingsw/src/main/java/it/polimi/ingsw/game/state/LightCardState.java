@@ -12,7 +12,7 @@ import it.polimi.ingsw.game.network.NetworkPacket;
  * @author Michele
  * @since 25 May 2015
  */
-public class UsingDangerousCardState implements State {
+public class LightCardState implements State {
 
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()

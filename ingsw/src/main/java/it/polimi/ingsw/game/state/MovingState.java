@@ -7,13 +7,15 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.card.HatchCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
-import it.polimi.ingsw.game.player.PlayerState;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Michele
@@ -21,6 +23,8 @@ import java.util.Random;
  */
 public class MovingState implements State {
 
+    private static final Logger LOG = Logger.getLogger(MovingState.class.getName());
+    
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
@@ -70,18 +74,27 @@ public class MovingState implements State {
         map.setType( player.getCurrentPosition(), SectorBuilder.USED_HATCH );
         
         // draw an hatch card and choose accordingly
-        boolean isRed = generator.nextBoolean();
+        int index = generator.nextInt( HatchCard.values().length );
+        HatchCard card = HatchCard.getCardAt(index);
         
-        if( isRed ) {
+        switch( card ) {
+        case RED_HATCH:
             // OUCH! You cannot use that hatch!
             player.sendPacket( GameCommand.CMD_SC_END_OF_TURN );
             nextState = new EndingTurnState();
-        } else {
+            break;
+
+        case GREEN_HATCH:
             player.sendPacket( GameCommand.CMD_SC_WIN );
             nextState = new WinnerState();
             
             // remove player
             gameState.removePlayer( player.getId() );
+            break;
+            
+        default:
+            LOG.log(Level.SEVERE, "Unknown dangerous card. You should never get here!");
+            nextState = new EndingTurnState(); // end gracefully
         }
         
         return nextState;

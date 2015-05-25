@@ -91,7 +91,7 @@ public class MoveDoneState implements State {
             
         case NOISE_IN_ANY_SECTOR: // noise in any sector
             player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_ANY_SECTOR) );
-            nextState = new UsingDangerousCardState();
+            nextState = new LightCardState();
             break;
             
         case SILENCE: // silence
