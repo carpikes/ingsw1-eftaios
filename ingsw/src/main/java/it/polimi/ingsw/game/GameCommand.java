@@ -6,7 +6,6 @@ package it.polimi.ingsw.game;
  */
 
 public enum GameCommand {
-    
     /** LOGIN COMMANDS */
     CMD_INVALID,
     CMD_PING,
@@ -45,6 +44,8 @@ public enum GameCommand {
     CMD_SC_SILENCE,
     CMD_SC_OBJECT_CARD_OBTAINED,
     CMD_SC_DISCARD_OBJECT_CARD,
+    CMD_SC_ADRENALINE_WRONG_STATE,
+    CMD_SC_CANNOT_USE_OBJ_CARD,
     
     CMD_SC_END_OF_TURN,
 }

@@ -3,7 +3,7 @@ package it.polimi.ingsw.game.player;
 import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
-import it.polimi.ingsw.game.state.State;
+import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.server.Client;
 
 import java.awt.Point;
@@ -25,6 +25,9 @@ public class GamePlayer {
     /** Object card already used in current turn */
     private boolean objectCardUsed;
     
+    /** Sedatives card used? */
+    private boolean drawDangerousCard;
+    
     /** Object cards the player owns */
     private ArrayList < ObjectCard > objectCards;
     
@@ -35,7 +38,10 @@ public class GamePlayer {
     private final Role role;
     
     /** Current state in game for the player */
-    private State currentState;
+    private PlayerState currentState;
+    
+    /** State before using SpotlightCard */
+    private PlayerState stateBeforeSpotlightCard;
     
     /** Connection to client */
     private Client connection;
@@ -47,19 +53,21 @@ public class GamePlayer {
         objectCards = new ArrayList<>();
         role = playerRole;
         // state = 
+        // stateBeforeObjectCard = 
         defense = false;
         maxMoves = role.getMaxMoves();
         position = startPosition; 
         objectCardUsed = false;
         // connection = 
         // id = 
+        drawDangerousCard = true;
     }
 
-    public State getCurrentState() {
+    public PlayerState getCurrentState() {
         return currentState;
     }
 
-    public void setCurrentState(State currentState) {
+    public void setCurrentState(PlayerState currentState) {
         this.currentState = currentState;
     }
     
@@ -168,6 +176,27 @@ public class GamePlayer {
      */
     public int getId() {
         return id;
+    }
+
+    public void setMaxMoves(int maxMoves) {
+        this.maxMoves = maxMoves;
+    }
+    
+    // TODO: AGGIUNGERE IL CONTROLLO PRIMA DI OGNI PRELIEVO CARTA 
+    public boolean shouldDrawDangerousCard() {
+        return drawDangerousCard;
+    }
+
+    public void setShouldDrawDangerousCard(boolean shouldDrawDangerousCard) {
+        this.drawDangerousCard = shouldDrawDangerousCard;
+    }
+
+    public PlayerState getStateBeforeSpotlightCard() {
+        return stateBeforeSpotlightCard;
+    }
+
+    public void setStateBeforeSpotlightCard(PlayerState stateBefore) {
+        this.stateBeforeSpotlightCard = stateBefore;
     }
     
     

@@ -15,13 +15,13 @@ import java.util.ArrayList;
  * @author Michele
  * @since 25 May 2015
  */
-public class StartTurnState implements State {
+public class StartTurnState implements PlayerState {
 
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
     @Override
-    public State update( GameState gameState ) {
+    public PlayerState update( GameState gameState ) {
         GamePlayer player = gameState.getCurrentPlayer();
         
         ArrayList< Point > availableSectors = gameState.getMap().getCellsWithMaxDistance( player.getCurrentPosition(), player.getMaxMoves() );

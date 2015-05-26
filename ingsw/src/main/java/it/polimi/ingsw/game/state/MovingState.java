@@ -8,11 +8,13 @@ import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.HatchCard;
+import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
+import java.awt.Point;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,7 +23,7 @@ import java.util.logging.Logger;
  * @author Michele
  * @since 25 May 2015
  */
-public class MovingState implements State {
+public class MovingState implements PlayerState {
 
     private static final Logger LOG = Logger.getLogger(MovingState.class.getName());
     
@@ -29,19 +31,18 @@ public class MovingState implements State {
      * @see it.polimi.ingsw.game.state.State#update()
      */
     @Override
-    public State update( GameState gameState ) {
+    public PlayerState update( GameState gameState ) {
         GamePlayer player = gameState.getCurrentPlayer();
         NetworkPacket packet = gameState.getPacketFromQueue();
         GameMap map = gameState.getMap();
         
-        State nextState = this;
+        PlayerState nextState = this;
         
         // If we actually received a command from the client...
         if( packet != null ) {
             // If the user said he wanted to move..
             if( packet.getOpcode() == GameCommand.CMD_CS_MOVE ) {
-                // TODO: MUOVI EFFETTIVAMENTE!
-                // moveTo()
+                gameState.moveTo( (Point)packet.getArgs()[0]  );
                 
                 Sector sector = map.getSectorAt( player.getCurrentPosition() );
                 // If we are on an hatch sector, draw an hatch card and act accordingly
@@ -54,7 +55,7 @@ public class MovingState implements State {
                 }
             } else if( packet.getOpcode() == GameCommand.CMD_CS_USE_OBJ_CARD ) {
                 // TODO where should I put this?
-                nextState = gameState.startUsingObjectCard();
+                gameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
             } else {
                 throw new IllegalStateOperationException("You can only move. Discarding command.");
             }
@@ -63,12 +64,12 @@ public class MovingState implements State {
         return nextState;
     }
 
-    private State drawHatchCard(GameState gameState) {
+    private PlayerState drawHatchCard(GameState gameState) {
         Random generator = new Random();
         GamePlayer player = gameState.getCurrentPlayer();
         GameMap map = gameState.getMap();
         
-        State nextState;
+        PlayerState nextState;
         
         // set current cell as no more accessible
         map.setType( player.getCurrentPosition(), SectorBuilder.USED_HATCH );

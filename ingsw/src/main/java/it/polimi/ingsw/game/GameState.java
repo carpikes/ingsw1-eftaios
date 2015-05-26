@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game;
 
+import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameInfoContainer;
@@ -9,7 +10,9 @@ import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleFactory;
 import it.polimi.ingsw.game.state.DiscardingObjectCardState;
 import it.polimi.ingsw.game.state.EndingTurnState;
-import it.polimi.ingsw.game.state.State;
+import it.polimi.ingsw.game.state.MovingState;
+import it.polimi.ingsw.game.state.PlayerState;
+import it.polimi.ingsw.game.state.SpotlightCardState;
 import it.polimi.ingsw.server.Client;
 import it.polimi.ingsw.server.GameManager;
 
@@ -65,42 +68,95 @@ public class GameState {
     public void update() {
         GamePlayer player = getCurrentPlayer();
                 
-        State nextState = player.getCurrentState().update(this);
+        PlayerState nextState = player.getCurrentState().update(this);
         player.setCurrentState(nextState);
-        
-        /* case USING_OBJECT_CARD:
-            player.setObjectCardUsed(true);
-            break;
-        */
-        
+
         // TODO notifica modifiche a tutti
         gameManager.broadcastPacket( new NetworkPacket(GameCommand.CMD_SC_UPDATE_LOCAL_INFO, null) );
     }
     
+    // TODO: refactoring of the following methods
+    /* -----------------------------------------------*/
     /**
+     * @param objectCard 
      * @param gameState
      * @return 
      */
-    // TODO to be implemented
-    public State startUsingObjectCard() {
-       return null;
+    public PlayerState startUsingObjectCard(ObjectCard objectCard) {
+        GamePlayer player = getCurrentPlayer();
+        PlayerState nextState = player.getCurrentState();
+        
+        if( player.isHuman() && !player.isObjectCardUsed() ) {
+            getCurrentPlayer().setObjectCardUsed(true);
+            
+            switch( objectCard ) {
+            case ATTACK:
+                attack( player.getCurrentPosition() );
+                break;
+                
+            case TELEPORT:
+                // TODO set correct sector
+                Point humanSector = null;
+                
+                moveTo( humanSector );
+                break;
+                
+            case ADRENALINE:
+                if( player.getCurrentState() instanceof MovingState ) {
+                    player.setMaxMoves( 2 );
+                } else {
+                    player.sendPacket( GameCommand.CMD_SC_ADRENALINE_WRONG_STATE ); 
+                }
+                break;
+                
+            case SEDATIVES:
+                player.setShouldDrawDangerousCard(false);
+                break;
+            
+            case SPOTLIGHT:
+                // another possibility here: add a second argument with the desired position, in order to make all in one state
+                player.setStateBeforeSpotlightCard( player.getCurrentState() );
+                nextState = new SpotlightCardState();
+                break;
+                
+            case DEFENSE:
+                // return
+                break;
+                
+            default:
+               throw new InvalidCardException("Unknown card.");
+            }
+        } else {
+            player.sendPacket( GameCommand.CMD_SC_CANNOT_USE_OBJ_CARD ); 
+        }
+        
+        return nextState;
     }
+    
     /**
      * @param currentPosition
      * @return 
      */
-    public State attack(Point currentPosition) {
-        return null;
+    public void attack(Point currentPosition) {
+    
+    }
+    
+    /**
+     * @param point
+     */
+    public void moveTo(Point point) {
+        // TODO Auto-generated method stub
+        
     }
     
     /**
      * @param player
      * @return
      */
-    public State getObjectCard( ) {
+    public PlayerState getObjectCard( ) {
         GamePlayer player = getCurrentPlayer();
         ObjectCard newCard = ObjectCard.getRandomCard();
-        State nextState;
+        PlayerState nextState;
         
         if( player.getNumberOfCards() < Config.MAX_NUMBER_OF_OBJ_CARDS ) {
             player.getObjectCards().add( newCard );
@@ -114,6 +170,15 @@ public class GameState {
         
         return nextState;
     }
+    
+    /**
+     * @param point
+     */
+    public void light(Point point) {
+        // TODO Auto-generated method stub
+        
+    }
+    /* -----------------------------------------------*/
     
     public void removePlayer( int id ) {
         noMorePlayingPlayers.add( mPlayers.remove(id) );
@@ -166,4 +231,5 @@ public class GameState {
     public GameManager getGameManager() {
         return gameManager;
     }
+
 }
