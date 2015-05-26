@@ -40,11 +40,11 @@ public class Controller implements OnReceiveListener {
         if(mConn == null)
             return;
         
-        String host = mView.askHost().trim();
-        if(host.length() == 0)
+        String host = mView.askHost();
+        if(host == null || host.trim().length() == 0)
             return;
         
-        mConn.setHost(host);
+        mConn.setHost(host.trim());
         
         try {
             mConn.connect();

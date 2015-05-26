@@ -62,14 +62,13 @@ public class GameState {
         
         for(int i = 0;i<clients.size(); i++) {
             Role role = roles.get(i);
-            GamePlayer player = new GamePlayer(role, mMap.getStartingPoint(role));
+            GamePlayer player = new GamePlayer(role, mMap.getStartingPoint(role), clients.get(i));
+            mPlayers.add(player);
             
             if(i == mTurnId)
                 player.setCurrentState(new StartTurnState(this));
             else
                 player.setCurrentState(new NotMyTurnState(this));
-            
-            mPlayers.add(player);
         }
     }
        
@@ -203,10 +202,7 @@ public class GameState {
     }
     
     public synchronized GamePlayer getCurrentPlayer() {
-        if(mPlayers != null && mTurnId < mPlayers.size())
-            return mPlayers.get(mTurnId);
-        
-        return null; // FIXME THROW EXCEPTION HERE!
+        return mPlayers.get(0);
     }
 
     public GameMap getMap() {

@@ -26,10 +26,10 @@ public class Server {
     }
 
     /** This list contains all listeners running (e.g. Socket listener, RMI, ...) */
-    private List<Listener> mServers;
+    private final List<Listener> mServers;
     
     /** This list contains all games active and running */
-    private List<GameManager> mGamesRunning;
+    private final List<GameManager> mGamesRunning;
     
     /** Number of connected clients */
     private Integer mConnectedClients;
@@ -126,6 +126,7 @@ public class Server {
                         mCurGame = null;
                     }
                 }
+
                 synchronized(mGamesRunning) {
                     for (GameManager g : mGamesRunning)
                         g.update();

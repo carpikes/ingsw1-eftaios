@@ -49,7 +49,7 @@ public class GamePlayer {
     /** ID in game */
     private int id;
     
-    public GamePlayer( Role playerRole, Point startPosition ) {
+    public GamePlayer( Role playerRole, Point startPosition, Client connection) {
         objectCards = new ArrayList<>();
         role = playerRole;
         // state = 
@@ -58,7 +58,7 @@ public class GamePlayer {
         maxMoves = role.getMaxMoves();
         position = startPosition; 
         objectCardUsed = false;
-        // connection = 
+        this.connection = connection;
         // id = 
         drawDangerousCard = true;
     }

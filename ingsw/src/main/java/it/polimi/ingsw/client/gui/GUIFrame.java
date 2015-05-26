@@ -42,10 +42,12 @@ public class GUIFrame extends JFrame {
     }
     
     public void setRemainingTime(int remainingTime) {
-        mLoginCanvas.setTime(remainingTime);
+        if(mLoginCanvas != null)
+            mLoginCanvas.setTime(remainingTime);
     }
     public void setPlayers(int newPlayers) {
-        mLoginCanvas.setPlayers(newPlayers);
+        if(mLoginCanvas != null)
+            mLoginCanvas.setPlayers(newPlayers);
     }
     
     private void switchToLogin() {
@@ -59,7 +61,7 @@ public class GUIFrame extends JFrame {
         if(mLoginCanvas == null)
             throw new RuntimeException("Map is already loaded");
         try {
-            mMapCanvas = new MapCanvasPanel( map, Config.GAME_MAP_WIDTH, Config.GAME_MAP_HEIGHT);
+            mMapCanvas = new MapCanvasPanel( map, WIDTH, HEIGHT);
             mMapCanvas.setPreferredSize(mDimension);
         } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
             LOG.log(Level.SEVERE, "File is not well formatted: " + e);
