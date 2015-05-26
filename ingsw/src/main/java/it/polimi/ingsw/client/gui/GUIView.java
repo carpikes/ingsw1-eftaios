@@ -94,4 +94,11 @@ public class GUIView implements View {
         mMainFrame.switchToMap(container.getMap());
     }
 
+    @Override
+    public void close() {
+        if(mMainFrame != null) {
+            mMainFrame.setVisible(false);
+        }
+    }
+
 }

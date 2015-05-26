@@ -141,11 +141,11 @@ public class ServerRMI implements Listener, ServerRMIMask {
             }
             mIsUp = false;
         } catch (AccessException e) {
-            LOG.log(Level.FINEST, e.toString());
+            LOG.log(Level.FINEST, e.toString(), e);
         } catch (RemoteException e) {
-            LOG.log(Level.FINEST, e.toString());
+            LOG.log(Level.FINEST, e.toString(), e);
         } catch (NotBoundException e) {
-            LOG.log(Level.FINEST, e.toString());
+            LOG.log(Level.FINEST, e.toString(), e);
         }
     }
 

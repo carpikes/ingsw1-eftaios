@@ -14,10 +14,18 @@ public class ConnectionFactory {
     public static final int CONNECTION_RMI = 1;
     private static String[] tAssoc = {"TCP", "RMI"};
 
+    /** Returns a list of available connections
+     * 
+     * @return The list
+     */
     public static final String[] getConnectionList() {
         return tAssoc;
     }
 
+    /** Get an instance of the chosen connection
+     *
+     * @param type The chosen connection type
+     */
     public static Connection getConnection(int type) {
         switch(type) {
             case CONNECTION_TCP: return new TCPConnection();

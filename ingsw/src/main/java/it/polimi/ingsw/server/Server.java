@@ -21,6 +21,10 @@ public class Server {
         private static final Server INSTANCE = new Server();
     }
 
+    /** Returns the current server instance
+     * 
+     * @return The instance
+     */
     public static Server getInstance() {
         return Holder.INSTANCE;
     }

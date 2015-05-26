@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/** RMI Connection
+/** RMI Connection Handler
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 16, 2015
  */
@@ -26,6 +26,11 @@ public class ClientConnRMI extends ClientConn {
      */
     private boolean mIsDisconnecting = false;
     
+    /** The constructor
+     * 
+     * @param server    RMI Server listener
+     * @param uniqueId  A unique Identifier
+     */
     public ClientConnRMI(ServerRMI server, String uniqueId) {
         super();
         mIsConnected = true;
@@ -58,12 +63,21 @@ public class ClientConnRMI extends ClientConn {
         mIsConnected = false;
     }
 
+    /** This method is called on each received command
+     * 
+     * @param pkt The packet
+     * @throws RemoteException
+     */
     public void onRMICommand(NetworkPacket pkt) throws RemoteException {
         resetTimeoutTimer();
         if(mClient != null && pkt != null && !mIsDisconnecting)
             mClient.handlePacket(pkt);
     }
 
+    /** This method is called from a client 
+     * 
+     * @return A list of packets
+     */
     public NetworkPacket[] readCommands() {
         resetTimeoutTimer();
         

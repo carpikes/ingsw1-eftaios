@@ -36,6 +36,7 @@ class ServerTCP implements Listener {
         mCachedPool = Executors.newCachedThreadPool();
     }
     
+    /** Server loop */
     private void acceptConnection() {
         try {
             Socket s = mServer.accept();

@@ -7,12 +7,11 @@ import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Player manager
+/** Player (connection) manager
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
  */
 
-// TODO: Do we *really* need ClientState*?
 public class Client {
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
     

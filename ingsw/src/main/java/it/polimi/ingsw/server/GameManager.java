@@ -245,6 +245,12 @@ public class GameManager {
         }
     }
 
+    /** Save the map chosen by the first player
+     * 
+     * @param client The player
+     * @param chosenMap The chosen map
+     * @return True if the choice is valid
+     */
     public boolean setMap(Client client, Integer chosenMap) {
         if(mChosenMapId != null)
             return false;

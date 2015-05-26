@@ -8,29 +8,37 @@ import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-/**
+/** Client controller
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 18, 2015
  */
-
 public class Controller implements OnReceiveListener {
+    /** The view */
     private View mView;
-    private Connection mConn;
-    private LinkedBlockingQueue<NetworkPacket> mQueue;
-    private boolean mMustClose = false;
     
+    /** The connection */
+    private Connection mConn;
+    
+    /** List of incoming packets/events */
+    private LinkedBlockingQueue<NetworkPacket> mQueue;
+    
+    /** True if the client must be shutted down */
+    private boolean mStopEvent = false;
+    
+    /** The constructor */
     public Controller() {
         mQueue = new LinkedBlockingQueue<NetworkPacket>();
     }
     
+    /** Set the view */
     public void setView(View v) {
         mView = v;
     }
     
+    /** Main loop */
     public void run() {
         String[] connList = ConnectionFactory.getConnectionList();
         
@@ -62,7 +70,7 @@ public class Controller implements OnReceiveListener {
         mView.run();
         
         String user = "";
-        while(!mMustClose) {
+        while(!mStopEvent) {
             try {
                 NetworkPacket cmd = mQueue.poll(1, TimeUnit.SECONDS);
                 if(cmd == null)
@@ -104,15 +112,14 @@ public class Controller implements OnReceiveListener {
 
                 };
             } catch(InterruptedException e) {
-                mMustClose = true;
+                mStopEvent = true;
                 break;
             }
         }
-
-        mView.run();
-        
+        mView.close();
     }
 
+    /** This method handles an incoming packet */
     @Override
     public void onReceive(NetworkPacket obj) {
         synchronized(mQueue) {
@@ -120,7 +127,9 @@ public class Controller implements OnReceiveListener {
         }
     }
 
+    /** This method handles a disconnect event */
     @Override
     public void onDisconnect() {
+        mStopEvent = true;
     }
 }
