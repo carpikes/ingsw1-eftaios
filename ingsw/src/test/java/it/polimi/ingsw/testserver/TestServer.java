@@ -78,7 +78,7 @@ public class TestServer {
                 conns[i].setHost("localhost");
                 try {
                     conns[i].connect();
-                    System.out.println("Connecting [" + i + "]");
+                    //System.out.println("Connecting [" + i + "]");
                     double maxSecs = 3;
                     
                     while(maxSecs > 0 && Server.getInstance().getConnectedClients() != i + 1 ) {
@@ -102,7 +102,7 @@ public class TestServer {
                     Thread.sleep(50);
                     maxSecs -= 0.050;
                 }
-                System.out.println("Disconnecting [" + i + "]");
+                //System.out.println("Disconnecting [" + i + "]");
                 assertEquals(Server.getInstance().getConnectedClients(),Config.SERVER_MAX_CLIENTS - i);
                 Thread.sleep(500);
             }
@@ -168,7 +168,7 @@ public class TestServer {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        System.out.println("------------------Tearing down------------------");
+        //System.out.println("------------------Tearing down------------------");
         Server.getInstance().tearDown();
         while(!Server.getInstance().isDown()) {
             Thread.sleep(10);
