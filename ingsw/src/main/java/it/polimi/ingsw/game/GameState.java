@@ -84,7 +84,7 @@ public class GameState {
         }
 
         // TODO notifica modifiche a tutti
-        gameManager.broadcastPacket( new NetworkPacket(GameCommand.CMD_SC_UPDATE_LOCAL_INFO, null) );
+        
     }
     
     // TODO: refactoring of the following methods
