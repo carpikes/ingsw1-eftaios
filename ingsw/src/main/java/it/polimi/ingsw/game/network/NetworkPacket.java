@@ -1,5 +1,7 @@
 package it.polimi.ingsw.game.network;
 
+import it.polimi.ingsw.game.GameCommand;
+
 import java.io.Serializable;
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -9,19 +11,19 @@ import java.io.Serializable;
 public class NetworkPacket implements Serializable {
     private static final long serialVersionUID = 1L;
     
-    private final int mOpcode;
-    private final String[] mArgs;
+    private final GameCommand mOpcode;
+    private final Serializable[] mArgs;
     
-    public NetworkPacket(int opcode, String... args) {
+    public NetworkPacket(GameCommand opcode, Serializable... args) {
         mOpcode = opcode;
         mArgs = args;
     }
     
-    public int getOpcode() {
+    public GameCommand getOpcode() {
         return mOpcode;
     }
     
-    public String[] getArgs() {
+    public Serializable[] getArgs() {
         return mArgs;
     }
 }

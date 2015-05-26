@@ -10,20 +10,12 @@ import java.util.Map;
  */
 
 public class ConnectionFactory {
-    public static final int CONNECTION_TCP = 1;
-    public static final int CONNECTION_RMI = 2;
+    public static final int CONNECTION_TCP = 0;
+    public static final int CONNECTION_RMI = 1;
+    private static String[] tAssoc = {"TCP", "RMI"};
 
-    private static final Map<Integer, String> mAssoc;
-
-    static {
-        Map<Integer, String> tAssoc = new HashMap<Integer, String>();
-        tAssoc.put(CONNECTION_TCP, "TCP");
-        tAssoc.put(CONNECTION_RMI, "RMI");
-        mAssoc = Collections.unmodifiableMap(tAssoc); 
-    }
-
-    public static final Map<Integer,String> getConnectionList() {
-        return mAssoc;
+    public static final String[] getConnectionList() {
+        return tAssoc;
     }
 
     public static Connection getConnection(int type) {

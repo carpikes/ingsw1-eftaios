@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.network;
 
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.GameCommands;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 public class TCPConnection extends Connection {
     private static final Logger LOG = Logger.getLogger(TCPConnection.class.getName());
     private String mHost;
-    private int mPort = -1;
+    private int mPort = Config.SERVER_TCP_LISTEN_PORT;
     private boolean mInited = false;
 
     private Socket mSocket = null;
@@ -32,26 +32,12 @@ public class TCPConnection extends Connection {
 
     public TCPConnection() {
         super();
-        mConfigParams.put("Host", Connection.ParametersType.TYPE_STRING);
-        mConfigParams.put("Port", Connection.ParametersType.TYPE_INTEGER);
     }
 
     @Override
-    public void setConfiguration(Map<String, Object> obj) {
-        Object o1 = obj.get("Host");
-        Object o2 = obj.get("Port");
-
-        if(o1 != null && o2 != null && o1 instanceof String && o2 instanceof Integer) {
-            mHost = ((String) o1).trim();
-            mPort = (Integer) o2;
-
-            if(mHost.length() == 0)
-                throw new RuntimeException("Invalid host");
-            if(mPort < 0 || mPort > 65535)
-                throw new RuntimeException("Invalid port");
-            mInited = true;
-        } else
-            throw new RuntimeException("Invalid parameters");
+    public void setHost(String host) {
+        mHost = host;
+        mInited = true;
     }
 
     @Override
@@ -162,7 +148,7 @@ public class TCPConnection extends Connection {
         public void run() {
             try  {
                 while(mParent.isOnline()) {
-                    mParent.sendPacket(GameCommands.CMD_PING);
+                    mParent.sendPacket(GameCommand.CMD_PING);
                     Thread.sleep(Config.CLIENT_TCP_PING_TIME);
                 }
             } catch (Exception e) {

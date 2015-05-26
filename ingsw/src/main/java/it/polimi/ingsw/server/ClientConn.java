@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
@@ -65,7 +66,7 @@ public abstract class ClientConn implements Runnable {
      * 
      * @param opcode An opcode
      */
-    public void sendPacket(int opcode) {
+    public void sendPacket(GameCommand opcode) {
         sendPacket(new NetworkPacket(opcode));
     }
     

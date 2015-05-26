@@ -1,7 +1,9 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,6 +11,8 @@ import java.util.logging.Logger;
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
  */
+
+// TODO: Do we *really* need ClientState*?
 public class Client {
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
     
@@ -18,10 +22,10 @@ public class Client {
     /** Game he is playing */
     private final GameManager mGame;
     
-    /** Client current state (Choosing username, playing */
-    private ClientState mCurState;
+    /** Am I playing or waiting for other players? */
+    private boolean mPlaying = false;
     
-    /** Username */
+    /** My username */
     private String mUser = null;
 
     /** The constructor
@@ -32,7 +36,6 @@ public class Client {
     public Client(ClientConn conn, GameManager game) {
         mConn = conn;
         mGame = game;
-        mCurState = new ClientStateConnecting(this, game);
 
         /* Enable bidirectional communication Client <-> ClientConn */
         mConn.setClient(this);  
@@ -43,10 +46,37 @@ public class Client {
      * @param pkt The packet
      */
     public synchronized void handlePacket(NetworkPacket pkt) {
-        synchronized(mCurState) {
-            if(mCurState != null)
-                mCurState.handlePacket(pkt);
-        }
+        if(!mGame.isRunning()) {
+            try {
+                Serializable[] args = pkt.getArgs();
+                if(args == null || args.length == 0)
+                    return;
+                
+                // Choosing username
+                synchronized(mGame) {
+                    switch(pkt.getOpcode()) {
+                        case CMD_CS_USERNAME:
+                            String name = (String) args[0];
+                            if(mGame.canSetName(name) && mUser == null) {
+                                setUsername(name);
+                                sendPacket(new NetworkPacket(GameCommand.CMD_SC_USEROK, mGame.getNumberOfPlayers(), mGame.getRemainingLoginTime()));
+                            } else
+                                sendPacket(GameCommand.CMD_SC_USERFAIL);
+                            break;
+                        case CMD_CS_LOADMAP:
+                            // FIXME null map
+                            if(args.length == 1 && mGame.setMap(this, (Integer)args[0]))
+                                sendPacket(GameCommand.CMD_SC_MAPOK);
+                            else
+                                sendPacket(GameCommand.CMD_SC_MAPFAIL);
+                            break;
+                    }
+                }
+            } catch( Exception e ) {
+                LOG.log(Level.SEVERE, "Unknown packet: " + e.toString(), e);
+            }
+        } else
+            mGame.handlePacket(this, pkt);
     }
     
     /** Send a packet through the network
@@ -61,7 +91,7 @@ public class Client {
      * 
      * @param opcode The opcode
      */
-    public void sendPacket(int opcode) {
+    public void sendPacket(GameCommand opcode) {
         sendPacket(new NetworkPacket(opcode));
     }
 
@@ -101,22 +131,6 @@ public class Client {
             throw new RuntimeException("Username is already set");
         mUser = username;
     }
-
-    /** Change the state to "Game ready" */
-    public synchronized void setGameReady() {
-        if(mCurState instanceof ClientStateInGame)
-            throw new RuntimeException("This player is already in game");
-        if(mUser == null)
-            throw new RuntimeException("This player has no name");
-        
-        mCurState = new ClientStateInGame(this, mGame);
-    }
-    
-    /** Check if the state is GameReady */
-    public synchronized boolean isGameReady() {
-        return (mCurState instanceof ClientStateInGame && mGame.isRunning());
-    }
-
     
     /** Update timeouts */
     public void update() {

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.rmi.RemoteException;
@@ -53,7 +53,7 @@ public class ClientConnRMI extends ClientConn {
     /** Close this connection */
     @Override
     public void disconnect() {
-        sendPacket(GameCommands.CMD_BYE);
+        sendPacket(GameCommand.CMD_BYE);
         mIsDisconnecting = true;
         mIsConnected = false;
     }

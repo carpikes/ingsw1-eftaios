@@ -12,7 +12,8 @@ import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
-import it.polimi.ingsw.game.network.GameCommands;
+import it.polimi.ingsw.game.GameCommand;
+import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 /**
@@ -20,11 +21,8 @@ import it.polimi.ingsw.game.network.NetworkPacket;
  * @since  May 10, 2015
  */
 
-public class CLIView implements OnReceiveListener, View {
+public class CLIView implements View {
     private static final Logger LOG = Logger.getLogger(CLIView.class.getName());
-    private Connection mConn;
-    private LinkedBlockingQueue<NetworkPacket> mQueue;
-    private boolean mMustClose = false;
 
     private static void banner() {
         IO.write("*******************************************************************************");
@@ -51,122 +49,78 @@ public class CLIView implements OnReceiveListener, View {
     }
 
     public CLIView() {
-        mQueue = new LinkedBlockingQueue<NetworkPacket>();
         CLIView.banner();
-        IO.write("Which connection do you want to use?");
-        Map<Integer,String> mConnectionList = ConnectionFactory.getConnectionList();
-
-        Integer min = null, max = null;
-        for(Map.Entry<Integer, String> m : mConnectionList.entrySet()) {
-            if(min == null) min = m.getKey();
-            if(max == null) max = m.getKey();
-            min = Math.min(m.getKey(), min);
-            max = Math.max(m.getKey(), max);
-            IO.write(m.getKey() + ") " + m.getValue());
-        }
-
-        int connType = IO.readRangeInt(min, max);
-
-        mConn = ConnectionFactory.getConnection(connType);
-
-        Map<String, Integer> paramsList = mConn.getConfigurationParameters();
-        Map<String, Object> paramsConfig = new TreeMap<String, Object>();
-        for(Map.Entry<String, Integer> param : paramsList.entrySet()) {
-            Object value = null;
-            IO.write("Type the " + param.getKey());
-            switch(param.getValue()) {
-                case Connection.ParametersType.TYPE_INTEGER:
-                    value = IO.readInt();
-                    break;
-                case Connection.ParametersType.TYPE_STRING:
-                    value = IO.readString();
-                    break;
-                default:
-                    throw new RuntimeException("Unsupported type");
-            }
-            paramsConfig.put(param.getKey(), value);
-        }
-        mConn.setConfiguration(paramsConfig);
-        mConn.setOnReceiveListener(this);
     }
 
     @Override
     public void run() {
-        try {
-            mConn.connect();
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Cannot connect: " + e.toString(), e);
-            return;
-        }
-        IO.write("Connected to server.");
-        IO.write("Hello! What's your name?");
-        askUsername();
-        mainLoop();
-        IO.write("Goodbye!");
     }
 
-    private void askUsername() {
+    @Override
+    public int askConnectionType(String[] params) {
+        IO.write("Which connection do you want to use?");
+        
+        for(int i=0;i<params.length;i++)
+            IO.write((i+1) + ") " + params[i]);
+        
+        return IO.readRangeInt(1, params.length)-1;
+    }
+
+    @Override
+    public String askUsername(String message) {
         String name;
-        try {
-            // Choose username
-            boolean nickOk = false;
-            do {
-                name = IO.readString().trim();
-                mConn.sendPacket(new NetworkPacket(GameCommands.CMD_CS_USERNAME, name));
-                while(!mMustClose) {
-                    NetworkPacket cmd = mQueue.poll(1, TimeUnit.SECONDS);
-                    if(cmd == null)
-                        continue;
-                    
-                    if(cmd.getOpcode() == GameCommands.CMD_SC_USEROK) {
-                        nickOk = true;
-                        break;
-                    }
-                    if(cmd.getOpcode() == GameCommands.CMD_SC_USERFAIL)
-                        break;
-                }
-                if(!nickOk && !mMustClose)
-                    IO.write("Another player is using your name. Choose another one.");
-            }while(!nickOk && !mMustClose);
-            
-            if(!mMustClose)
-                IO.write("Welcome, " + name);
-
-        } catch (InterruptedException e) {
-            LOG.log(Level.FINER, e.toString(), e);
-            return;
-        }
-    }
-
-    private void mainLoop() {
-        try {
-            IO.write("Waiting for other players");
-            NetworkPacket cmd = null;
-            while((cmd == null || cmd.getOpcode() != GameCommands.CMD_SC_RUN) && !mMustClose)
-                cmd = mQueue.poll(1, TimeUnit.SECONDS);
-            
-            if(!mMustClose)
-                IO.write("Game started. Good luck!");
-            
-            while(mConn.isOnline() && !mMustClose) {
-                Thread.sleep(1000);
-            }
-        }catch(Exception e) {
-            LOG.log(Level.FINER, e.toString(), e);
-        }
-    }
-    
-    @Override
-    public void onReceive(NetworkPacket pkt) {
-        try {
-            mQueue.put(pkt);
-        } catch (InterruptedException e) {
-            LOG.log(Level.FINER, e.toString(), e);
-        }
+        
+        IO.write(message);
+        name = IO.readString().trim();
+        return name;
     }
 
     @Override
-    public void onDisconnect() {
-        mMustClose = true;
+    public Integer askMap(String[] mapList) {
+        IO.write("Choose a map:");
+        for(int i=0;i<mapList.length;i++)
+            IO.write(String.format("%d) %s", i+1, mapList[i]));
+        
+        int choice = IO.readRangeInt(1, mapList.length)-1;
+        return choice;
+    }
+
+    @Override
+    public String askHost() {
+        IO.write("Type the hostname");
+        return IO.readString();
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#showError(java.lang.String)
+     */
+    @Override
+    public void showError(String string) {
+        IO.write("ERROR: " + string);
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#updateLoginTime(int)
+     */
+    @Override
+    public void updateLoginTime(int i) {
+        IO.write("Remaining time: " + i);
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#updateLoginStat(int)
+     */
+    @Override
+    public void updateLoginStat(int i) {
+        IO.write("Players online: " + i);
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.network.GameInfoContainer)
+     */
+    @Override
+    public void switchToMainScreen(GameInfoContainer container) {
+        // TODO Auto-generated method stub
+        
     }
 }

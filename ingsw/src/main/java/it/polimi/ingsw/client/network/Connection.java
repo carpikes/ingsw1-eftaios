@@ -1,10 +1,9 @@
 package it.polimi.ingsw.client.network;
 
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -12,33 +11,19 @@ import java.util.TreeMap;
  */
 
 public abstract class Connection {
-    public class ParametersType {
-        public static final int TYPE_INTEGER = 0;
-        public static final int TYPE_STRING = 1;
-    }
-
     protected OnReceiveListener mListener = null;
-    protected Map<String, Integer> mConfigParams;
-
-    Connection() {
-        mConfigParams = new TreeMap<String, Integer>();
-    }
     
     public void setOnReceiveListener(OnReceiveListener listener) {
         mListener = listener;
     }
 
-    public Map<String, Integer> getConfigurationParameters() {
-        return mConfigParams;
-    }
-
-    public abstract void setConfiguration(Map<String, Object> obj);
+    public abstract void setHost(String host);
     public abstract void connect() throws IOException;
     public abstract void disconnect();
     public abstract void sendPacket(NetworkPacket pkt);
     public abstract boolean isOnline();
     
-    public void sendPacket(int opcode) {
+    public void sendPacket(GameCommand opcode) {
         sendPacket(new NetworkPacket(opcode));
     }
 }
