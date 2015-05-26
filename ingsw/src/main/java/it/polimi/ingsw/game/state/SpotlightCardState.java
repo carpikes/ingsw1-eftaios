@@ -14,13 +14,17 @@ import java.awt.Point;
  * @author Michele
  * @since 25 May 2015
  */
-public class SpotlightCardState implements PlayerState {
+public class SpotlightCardState extends PlayerState {
+
+    public SpotlightCardState(GameState state) {
+        super(state);
+    }
 
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
     @Override
-    public PlayerState update( GameState gameState ) {
+    public PlayerState update() {
         NetworkPacket packet = gameState.getPacketFromQueue();
         
         PlayerState nextState = this;

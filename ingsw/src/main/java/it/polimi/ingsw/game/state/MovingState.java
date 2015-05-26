@@ -15,6 +15,7 @@ import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,15 +24,21 @@ import java.util.logging.Logger;
  * @author Michele
  * @since 25 May 2015
  */
-public class MovingState implements PlayerState {
+public class MovingState extends PlayerState {
 
     private static final Logger LOG = Logger.getLogger(MovingState.class.getName());
+    private ArrayList< Point > availableSectors;
+    
+    public MovingState(GameState state) {
+        super(state);
+        availableSectors = state.getCellsWithMaxDistance();
+    }
     
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
     @Override
-    public PlayerState update( GameState gameState ) {
+    public PlayerState update() {
         GamePlayer player = gameState.getCurrentPlayer();
         NetworkPacket packet = gameState.getPacketFromQueue();
         GameMap map = gameState.getMap();
@@ -42,16 +49,22 @@ public class MovingState implements PlayerState {
         if( packet != null ) {
             // If the user said he wanted to move..
             if( packet.getOpcode() == GameCommand.CMD_CS_MOVE ) {
-                gameState.moveTo( (Point)packet.getArgs()[0]  );
-                
-                Sector sector = map.getSectorAt( player.getCurrentPosition() );
-                // If we are on an hatch sector, draw an hatch card and act accordingly
-                if( sector.getId() == SectorBuilder.HATCH ) {
-                    nextState = drawHatchCard( gameState );
+                Point chosenPos = (Point)packet.getArgs()[0];
+                if(availableSectors.contains(chosenPos)) {
+                    gameState.moveTo(chosenPos);
+                    
+                    Sector sector = map.getSectorAt( player.getCurrentPosition() );
+                    // If we are on an hatch sector, draw an hatch card and act accordingly
+                    if( sector.getId() == SectorBuilder.HATCH ) {
+                        nextState = drawHatchCard( gameState );
+                    } else {
+                        // tell the client it has choose what to do after moving
+                        player.sendPacket( GameCommand.CMD_SC_MOVE_DONE );
+                        nextState =  new MoveDoneState(gameState);
+                    }
                 } else {
-                    // tell the client it has choose what to do after moving
-                    player.sendPacket( GameCommand.CMD_SC_MOVE_DONE );
-                    nextState =  new MoveDoneState();
+                    //invalid position
+                    player.sendPacket(GameCommand.CMD_SC_MOVE_INVALID);
                 }
             } else if( packet.getOpcode() == GameCommand.CMD_CS_USE_OBJ_CARD ) {
                 // TODO where should I put this?
@@ -82,12 +95,12 @@ public class MovingState implements PlayerState {
         case RED_HATCH:
             // OUCH! You cannot use that hatch!
             player.sendPacket( GameCommand.CMD_SC_END_OF_TURN );
-            nextState = new EndingTurnState();
+            nextState = new EndingTurnState(gameState);
             break;
 
         case GREEN_HATCH:
             player.sendPacket( GameCommand.CMD_SC_WIN );
-            nextState = new WinnerState();
+            nextState = new WinnerState(gameState);
             
             // remove player
             gameState.removePlayer( player.getId() );
@@ -95,7 +108,7 @@ public class MovingState implements PlayerState {
             
         default:
             LOG.log(Level.SEVERE, "Unknown dangerous card. You should never get here!");
-            nextState = new EndingTurnState(); // end gracefully
+            nextState = new EndingTurnState(gameState); // end gracefully
         }
         
         return nextState;

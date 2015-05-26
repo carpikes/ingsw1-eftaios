@@ -12,13 +12,18 @@ import it.polimi.ingsw.game.network.NetworkPacket;
  * @author Michele
  * @since 25 May 2015
  */
-public class NoiseInAnySectorState implements PlayerState {
+public class NoiseInAnySectorState extends PlayerState {
+
+    public NoiseInAnySectorState(GameState state) {
+        super(state);
+        // TODO Auto-generated constructor stub
+    }
 
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
     @Override
-    public PlayerState update( GameState gameState ) {
+    public PlayerState update() {
         NetworkPacket packet = gameState.getPacketFromQueue();
 
         PlayerState nextState = this;

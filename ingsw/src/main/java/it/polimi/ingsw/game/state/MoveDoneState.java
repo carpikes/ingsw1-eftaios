@@ -21,15 +21,20 @@ import java.util.logging.Logger;
  * @author Michele
  * @since 25 May 2015
  */
-public class MoveDoneState implements PlayerState {
+public class MoveDoneState extends PlayerState {
     
+    public MoveDoneState(GameState state) {
+        super(state);
+        // TODO Auto-generated constructor stub
+    }
+
     private static final Logger LOG = Logger.getLogger(MoveDoneState.class.getName());
     
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
     @Override
-    public PlayerState update( GameState gameState ) {
+    public PlayerState update() {
         GamePlayer player = gameState.getCurrentPlayer();
         NetworkPacket packet = gameState.getPacketFromQueue();
         GameMap map = gameState.getMap();
@@ -46,19 +51,19 @@ public class MoveDoneState implements PlayerState {
                 if( map.getSectorAt( player.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS ) { 
                     if( packet.getOpcode() == GameCommand.CMD_CS_DRAW_DANGEROUS_CARD ) {
                         nextState = drawDangerousCard( gameState );
-                    } else if( packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
+                    } else if( player.isAlien() && packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
                         gameState.attack( player.getCurrentPosition() );
-                        nextState = new EndingTurnState();
+                        nextState = new EndingTurnState(gameState);
                     } else {
-                        throw new IllegalStateOperationException("You can only attack or draw a dangerous sector card. Discarding command.");
+                        throw new IllegalStateOperationException("Discarding command.");
                     }
                 } else {
                     // NOT DANGEROUS: either attack or pass
                     if( packet.getOpcode() == GameCommand.CMD_CS_NOT_MY_TURN ) {
-                        nextState = new NotMyTurnState();
+                        nextState = new NotMyTurnState(gameState);
                     } else if( packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
                         gameState.attack( player.getCurrentPosition() );
-                        nextState = new EndingTurnState();
+                        nextState = new EndingTurnState(gameState);
                     } else {
                         throw new IllegalStateOperationException("You can only attack or pass. Discarding command.");
                     }
@@ -94,19 +99,19 @@ public class MoveDoneState implements PlayerState {
             
         case NOISE_IN_ANY_SECTOR: // noise in any sector
             player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_ANY_SECTOR) );
-            nextState = new NoiseInAnySectorState();
+            nextState = new NoiseInAnySectorState(gameState);
             break;
             
         case SILENCE: // silence
             player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.SILENCE) );
             gameState.getGameManager().broadcastPacket( GameCommand.CMD_SC_SILENCE );
             
-            nextState = new EndingTurnState();
+            nextState = new EndingTurnState(gameState);
             break;
             
         default:
             LOG.log(Level.SEVERE, "Unknown dangerous card. You should never get here!");
-            nextState = new EndingTurnState(); // end gracefully
+            nextState = new EndingTurnState(gameState); // end gracefully
         }
         
         return nextState;

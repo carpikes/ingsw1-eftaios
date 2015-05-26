@@ -15,18 +15,27 @@ import java.util.ArrayList;
  * @author Michele
  * @since 25 May 2015
  */
-public class StartTurnState implements PlayerState {
+public class StartTurnState extends PlayerState {
+
+    public StartTurnState(GameState state) {
+        super(state);
+        GamePlayer me = state.getCurrentPlayer();
+        
+        //FIXME What if alien is sated?
+        me.setMaxMoves(me.getRole().getMaxMoves());
+        me.setObjectCardUsed(false);
+        me.setStateBeforeSpotlightCard(null);
+    }
 
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
     @Override
-    public PlayerState update( GameState gameState ) {
+    public PlayerState update() {
         GamePlayer player = gameState.getCurrentPlayer();
         
-        ArrayList< Point > availableSectors = gameState.getMap().getCellsWithMaxDistance( player.getCurrentPosition(), player.getMaxMoves() );
-        player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_START_TURN, availableSectors) );
+        player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_START_TURN, player.getCurrentPosition(), player.getMaxMoves()) );
         
-        return new MovingState();
+        return new MovingState(gameState);
     }
 }

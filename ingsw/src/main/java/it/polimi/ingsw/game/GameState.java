@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game;
 
+import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.config.Config;
@@ -11,8 +12,10 @@ import it.polimi.ingsw.game.player.RoleFactory;
 import it.polimi.ingsw.game.state.DiscardingObjectCardState;
 import it.polimi.ingsw.game.state.EndingTurnState;
 import it.polimi.ingsw.game.state.MovingState;
+import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.SpotlightCardState;
+import it.polimi.ingsw.game.state.StartTurnState;
 import it.polimi.ingsw.server.Client;
 import it.polimi.ingsw.server.GameManager;
 
@@ -61,6 +64,11 @@ public class GameState {
             Role role = roles.get(i);
             GamePlayer player = new GamePlayer(role, mMap.getStartingPoint(role));
             
+            if(i == mTurnId)
+                player.setCurrentState(new StartTurnState(this));
+            else
+                player.setCurrentState(new NotMyTurnState(this));
+            
             mPlayers.add(player);
         }
     }
@@ -68,8 +76,12 @@ public class GameState {
     public void update() {
         GamePlayer player = getCurrentPlayer();
                 
-        PlayerState nextState = player.getCurrentState().update(this);
-        player.setCurrentState(nextState);
+        try {
+            PlayerState nextState = player.getCurrentState().update();
+            player.setCurrentState(nextState);
+        } catch( IllegalStateOperationException e) {
+            LOG.log(Level.INFO, e.toString(), e);
+        }
 
         // TODO notifica modifiche a tutti
         gameManager.broadcastPacket( new NetworkPacket(GameCommand.CMD_SC_UPDATE_LOCAL_INFO, null) );
@@ -116,7 +128,7 @@ public class GameState {
             case SPOTLIGHT:
                 // another possibility here: add a second argument with the desired position, in order to make all in one state
                 player.setStateBeforeSpotlightCard( player.getCurrentState() );
-                nextState = new SpotlightCardState();
+                nextState = new SpotlightCardState(this);
                 break;
                 
             case DEFENSE:
@@ -162,10 +174,10 @@ public class GameState {
             player.getObjectCards().add( newCard );
             getCurrentPlayer().sendPacket( new NetworkPacket(GameCommand.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
             
-            nextState = new EndingTurnState();
+            nextState = new EndingTurnState(this);
         } else {
             player.sendPacket( GameCommand.CMD_SC_DISCARD_OBJECT_CARD );
-            nextState = new DiscardingObjectCardState();
+            nextState = new DiscardingObjectCardState(this);
         }
         
         return nextState;
@@ -182,18 +194,6 @@ public class GameState {
     
     public void removePlayer( int id ) {
         noMorePlayingPlayers.add( mPlayers.remove(id) );
-    }
-    
-    /**
-     * @param maxMoves
-     * @return
-     */
-    private ArrayList<Point> getCellsWithMaxDistance(int maxMoves) {
-        ArrayList<Point> points = new ArrayList<>();
-        
-        // TODO NOT IMPLEMENTED YET!
-        points.add( new Point(0,0) );
-        return points;
     }
 
     public NetworkPacket getPacketFromQueue( ) {
@@ -230,6 +230,13 @@ public class GameState {
 
     public GameManager getGameManager() {
         return gameManager;
+    }
+    
+    public ArrayList<Point> getCellsWithMaxDistance() {
+        return getMap().getCellsWithMaxDistance( 
+                getCurrentPlayer().getCurrentPosition(), 
+                getCurrentPlayer().getMaxMoves()
+        );
     }
 
 }
