@@ -111,44 +111,7 @@ public class GameState {
         
         if( player.isHuman() && !player.isObjectCardUsed() ) {
             getCurrentPlayer().setObjectCardUsed(true);
-            
-            switch( objectCard ) {
-            case ATTACK:
-                attack( player.getCurrentPosition() );
-                break;
-                
-            case TELEPORT:
-                // TODO set correct sector
-                Point humanSector = null;
-                
-                moveTo( humanSector );
-                break;
-                
-            case ADRENALINE:
-                if( player.getCurrentState() instanceof MovingState ) {
-                    player.setMaxMoves( 2 );
-                } else {
-                    player.sendPacket( GameCommand.CMD_SC_ADRENALINE_WRONG_STATE ); 
-                }
-                break;
-                
-            case SEDATIVES:
-                player.setShouldDrawDangerousCard(false);
-                break;
-            
-            case SPOTLIGHT:
-                // another possibility here: add a second argument with the desired position, in order to make all in one state
-                player.setStateBeforeSpotlightCard( player.getCurrentState() );
-                nextState = new SpotlightCardState(this);
-                break;
-                
-            case DEFENSE:
-                // return
-                break;
-                
-            default:
-               throw new InvalidCardException("Unknown card.");
-            }
+            nextState = objectCard.doAction(this);
         } else {
             player.sendPacket( GameCommand.CMD_SC_CANNOT_USE_OBJ_CARD ); 
         }
