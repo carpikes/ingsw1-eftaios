@@ -5,6 +5,7 @@ import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.player.Alien;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleFactory;
@@ -122,9 +123,20 @@ public class GameState {
      * @param currentPosition The point where the players wants to attack
      */
     public void attack(Point currentPosition) {
+    	boolean attackSuccessful = false;
+
     	for( GamePlayer player : mPlayers ) {
-    		if( player.getCurrentPosition().equals(currentPosition) )
+    		if( player.getCurrentPosition().equals(currentPosition) ) {
     			player.setCurrentState( new LoserState(this) );
+    			attackSuccessful = true;
+    		}
+    	}
+
+    	if( attackSuccessful ) {
+    		GamePlayer player = getCurrentPlayer();
+    		if( player.isAlien() ) {
+    			player.setFull(true);
+    		}
     	}
     }
     

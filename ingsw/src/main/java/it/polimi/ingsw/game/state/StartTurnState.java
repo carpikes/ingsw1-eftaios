@@ -20,7 +20,8 @@ public class StartTurnState extends PlayerState {
     public StartTurnState(GameState state) {
         super(state);
         
-        gameState.getCurrentPlayer().resetValues();
+        GamePlayer player = gameState.getCurrentPlayer();        
+        player.resetValues();
     }
 
     /* (non-Javadoc)

@@ -32,9 +32,6 @@ public class GamePlayer {
     /** Object cards the player owns */
     private ArrayList < ObjectCard > objectCards;
     
-    /** How many sectors can I cross in total? */
-    private int maxMoves;
-    
     /** Alien or human? */
     private final Role role;
     
@@ -50,7 +47,18 @@ public class GamePlayer {
     /** ID in game */
     private int id;
     
-    public GamePlayer( int id, Role playerRole, Point startPosition, Client connection) {
+    /** Number of current move */
+    private int moveCounter;
+    
+    public int getMoveCounter() {
+		return moveCounter;
+	}
+
+	public void setMoveCounter(int moveCounter) {
+		this.moveCounter = moveCounter;
+	}
+
+	public GamePlayer( int id, Role playerRole, Point startPosition, Client connection) {
         resetValues();
     	objectCards = new ArrayList<>();
         role = playerRole;
@@ -58,6 +66,7 @@ public class GamePlayer {
         position = startPosition; 
         this.connection = connection;
         this.id = id; 
+        moveCounter = 0;
     }
 
     public PlayerState getCurrentState() {
@@ -74,13 +83,6 @@ public class GamePlayer {
 
     public void setDefense(boolean defense) {
         this.defense = defense;
-    }
-
-    /**
-     * @return
-     */
-    public int getMaxMoves() {
-        return maxMoves;
     }
 
     /**
@@ -174,10 +176,6 @@ public class GamePlayer {
     public int getId() {
         return id;
     }
-
-    public void setMaxMoves(int maxMoves) {
-        this.maxMoves = maxMoves;
-    }
     
     // TODO: AGGIUNGERE IL CONTROLLO PRIMA DI OGNI PRELIEVO CARTA 
     public boolean shouldDrawDangerousCard() {
@@ -201,7 +199,7 @@ public class GamePlayer {
     	objectCardUsed = false;
     	drawDangerousCard = true;
     	stateBeforeSpotlightCard = null;
-    	maxMoves = getRole().getMaxMoves();
+    	setAdrenaline(false);
     }
 
 	private boolean hasDefenseCard() {
@@ -211,6 +209,26 @@ public class GamePlayer {
 		
 		return false;
 	}
+	
+	public int getMaxMoves() {
+		return role.getMaxMoves();
+	}
     
+	public boolean isFull() {
+		if( role instanceof Alien )
+			return ((Alien) role).hasEaten();
+		else
+			return false;
+	}
+	
+	public void setFull(boolean isFull) {
+		if( role instanceof Alien )
+			((Alien) role).setHasEaten(isFull);
+	}
+	
+	public void setAdrenaline(boolean adrenaline) {
+		if( role instanceof Human) 
+			((Human) role).setAdrenaline(adrenaline);
+	}
     
 }

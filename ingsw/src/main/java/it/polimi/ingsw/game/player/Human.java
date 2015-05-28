@@ -1,8 +1,15 @@
 package it.polimi.ingsw.game.player;
 
+import it.polimi.ingsw.game.config.Config;
+
 public class Human implements Role {
     
-    public static final int MAX_MOVES = 1;
+    private boolean adrenalineUsed;
+    
+    public Human( ) {
+		super();
+		this.adrenalineUsed = false;
+	}
     
     @Override
     public void move() {
@@ -10,12 +17,20 @@ public class Human implements Role {
 
     }
 
-    /* (non-Javadoc)
-     * @see it.polimi.ingsw.game.player.Role#getMaxMoves()
-     */
     @Override
     public int getMaxMoves() {
-       return MAX_MOVES;
+        if( adrenalineUsed ) 
+        	return Config.MAX_HUMAN_ADRENALINE_MOVES;
+        else
+        	return Config.MAX_HUMAN_MOVES;
     }
+
+	public boolean hasUsedAdrenaline() {
+		return adrenalineUsed;
+	}
+
+	public void setAdrenaline(boolean adrenaline) {
+		adrenalineUsed = adrenaline;
+	}
 
 }
