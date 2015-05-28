@@ -19,27 +19,48 @@ import java.util.logging.Logger;
 
 public class TCPConnection extends Connection {
     private static final Logger LOG = Logger.getLogger(TCPConnection.class.getName());
+
+    /** Server host */
     private String mHost;
+
+    /** Server port */
     private int mPort = Config.SERVER_TCP_LISTEN_PORT;
+
+    /** Is all initialized? */
     private boolean mInited = false;
 
+    /** Socket connection */
     private Socket mSocket = null;
+
+    /** Input and output streams */
     private ObjectOutputStream mOut = null;
     private ObjectInputStream mIn = null;
+
+    /** Two working threads */
     private ReadRunnable mReader = null;
     private PingRunnable mPinger = null;
+
+    /** The listener */
     private OnReceiveListener mListener = null;
 
     public TCPConnection() {
         super();
     }
 
+    /** Set the host 
+     *
+     * @param host The host
+     */
     @Override
     public void setHost(String host) {
         mHost = host;
         mInited = true;
     }
 
+    /** Start the connection
+     * 
+     * @throws IOException
+     */
     @Override
     public void connect() throws IOException {
         if(!mInited)
@@ -60,6 +81,10 @@ public class TCPConnection extends Connection {
         new Thread(mPinger).start();
     }
 
+    /** Send a packet to the server
+     *
+     * @param pkt the packet
+     */
     @Override
     public void sendPacket(NetworkPacket pkt) {
         if(mSocket == null || !mSocket.isConnected() || mOut == null)
@@ -74,6 +99,10 @@ public class TCPConnection extends Connection {
         }
     }
 
+    /* Sets the listener
+     * 
+     * @param listener The new listener
+     */
     @Override
     public void setOnReceiveListener(OnReceiveListener listener) {
         mListener = listener;
@@ -81,6 +110,10 @@ public class TCPConnection extends Connection {
             mReader.setListener(mListener);
     }
     
+    /** Check if the client is correctly connected
+     * 
+     * @return True if is online
+     */
     @Override
     public boolean isOnline() {
         if(mSocket != null && mSocket.isConnected())
@@ -88,6 +121,7 @@ public class TCPConnection extends Connection {
         return false;
     }
 
+    /** Disconnect */
     @Override
     public synchronized void disconnect() {
         if(mListener != null)
@@ -103,7 +137,7 @@ public class TCPConnection extends Connection {
         mSocket = null;
     }
 
-    // Handle incoming messages and dispatch them to the proper listener
+    /** Handle incoming messages and dispatch them to the proper listener */
     private class ReadRunnable implements Runnable {
         private final Logger LOG = Logger.getLogger(ReadRunnable.class.getName());
         private OnReceiveListener mListener = null;
@@ -135,7 +169,7 @@ public class TCPConnection extends Connection {
         }
     }
     
-    // Ping the server each Config.CLIENT_TCP_PING_TIME milliseconds
+    /** Ping the server each Config.CLIENT_TCP_PING_TIME milliseconds */
     private class PingRunnable implements Runnable {
         private final Logger LOG = Logger.getLogger(ReadRunnable.class.getName());
         private final TCPConnection mParent;

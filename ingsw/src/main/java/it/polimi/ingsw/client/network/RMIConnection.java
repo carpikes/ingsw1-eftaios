@@ -18,25 +18,46 @@ import java.util.logging.Logger;
  */
 public class RMIConnection extends Connection {
     private static final Logger LOG = Logger.getLogger(RMIConnection.class.getName());
+    
+    /** Service */
     private static final String RMISERVER_STRING = "eftaiosRMI";
     
+    /** Thread that reads data */
     private ReadRunnable mReader = null;
+    
+    /** Receive Listener */
     private OnReceiveListener mTempRecv = null;
+    
+    /** Common RMI Mask */
     private ServerRMIMask mServerMask = null;
+    
+    /** My unique id used to communicate with server */
     private String mUniqueId = null;
+    
+    /** Server host */
     private String mHost;
+    
+    /** Is initialized */
     private boolean mInited = false;
 
     public RMIConnection() {
         super();
     }
-    
+
+    /** Set the server host 
+     *
+     * @param host The host
+     */
     @Override
     public void setHost(String host) {
         mHost = host;
         mInited = true;
     }
 
+    /** Start the connection
+     * 
+     * @throws IOException
+     */
     @Override
     public void connect() throws IOException {
         if(!mInited)
@@ -65,6 +86,10 @@ public class RMIConnection extends Connection {
         }
     }
     
+    /* Sets the listener
+     * 
+     * @param listener The new listener
+     */
     @Override
     public void setOnReceiveListener(OnReceiveListener listener) {
         if(mReader != null) {
@@ -74,6 +99,10 @@ public class RMIConnection extends Connection {
         }
     }
 
+    /** Send a packet to the server
+     *
+     * @param pkt the packet
+     */
     @Override
     public void sendPacket(NetworkPacket pkt) {
         if(mServerMask == null || mUniqueId == null)
@@ -87,6 +116,10 @@ public class RMIConnection extends Connection {
         }
     }
 
+    /** Check if the client is correctly connected
+     * 
+     * @return True if is online
+     */
     @Override
     public boolean isOnline() {
         if(mServerMask == null)
@@ -95,11 +128,17 @@ public class RMIConnection extends Connection {
         return true;
     }
     
-    /* Handle incoming messages and dispatch them to the proper listener */
+    /** Handle incoming messages and dispatch them to the proper listener */
     private class ReadRunnable implements Runnable {
         private final Logger LOG = Logger.getLogger(ReadRunnable.class.getName());
+
+        /** The listener */
         private OnReceiveListener mListener = null;
+
+        /** Common mask */
         private final ServerRMIMask mServer;
+
+        /** My id */
         private final String mClientId;
         private boolean mOnline = true;
 
@@ -108,10 +147,15 @@ public class RMIConnection extends Connection {
             mClientId = id;
         }
 
+        /** Set the listener
+         *
+         * @param listener The listener 
+         */
         public void setListener(OnReceiveListener listener) {
             mListener = listener;
         }
         
+        /** Close the thread */
         public void shutdown() {
             mOnline = false;
         }
@@ -138,6 +182,7 @@ public class RMIConnection extends Connection {
 
     }
 
+    /** Close the connection to the server */
     @Override
     public void disconnect() {
         mServerMask = null;
