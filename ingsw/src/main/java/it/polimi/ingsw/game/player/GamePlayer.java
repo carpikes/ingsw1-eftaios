@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game.player;
 
 import it.polimi.ingsw.game.GameCommand;
+import it.polimi.ingsw.game.card.DefenseCard;
 import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.state.PlayerState;
@@ -49,18 +50,14 @@ public class GamePlayer {
     /** ID in game */
     private int id;
     
-    public GamePlayer( Role playerRole, Point startPosition, Client connection) {
-        objectCards = new ArrayList<>();
+    public GamePlayer( int id, Role playerRole, Point startPosition, Client connection) {
+        resetValues();
+    	objectCards = new ArrayList<>();
         role = playerRole;
-        // state = 
-        // stateBeforeObjectCard = 
-        defense = false;
-        maxMoves = role.getMaxMoves();
+
         position = startPosition; 
-        objectCardUsed = false;
         this.connection = connection;
-        // id = 
-        drawDangerousCard = true;
+        this.id = id; 
     }
 
     public PlayerState getCurrentState() {
@@ -198,6 +195,22 @@ public class GamePlayer {
     public void setStateBeforeSpotlightCard(PlayerState stateBefore) {
         this.stateBeforeSpotlightCard = stateBefore;
     }
+    
+    public void resetValues() {
+    	defense = hasDefenseCard();
+    	objectCardUsed = false;
+    	drawDangerousCard = true;
+    	stateBeforeSpotlightCard = null;
+    	maxMoves = getRole().getMaxMoves();
+    }
+
+	private boolean hasDefenseCard() {
+		for( ObjectCard card : objectCards ) 
+			if( card instanceof DefenseCard )
+				return true;
+		
+		return false;
+	}
     
     
 }

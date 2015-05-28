@@ -19,12 +19,8 @@ public class StartTurnState extends PlayerState {
 
     public StartTurnState(GameState state) {
         super(state);
-        GamePlayer me = state.getCurrentPlayer();
         
-        //FIXME What if alien is sated?
-        me.setMaxMoves(me.getRole().getMaxMoves());
-        me.setObjectCardUsed(false);
-        me.setStateBeforeSpotlightCard(null);
+        gameState.getCurrentPlayer().resetValues();
     }
 
     /* (non-Javadoc)

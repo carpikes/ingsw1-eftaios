@@ -13,7 +13,8 @@ public class WinnerState extends PlayerState {
 
     public WinnerState(GameState state) {
         super(state);
-        // TODO Auto-generated constructor stub
+
+     // rimuovi da lista giocatori
     }
 
     /* (non-Javadoc)

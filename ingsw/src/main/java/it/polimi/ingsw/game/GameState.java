@@ -1,7 +1,6 @@
 package it.polimi.ingsw.game;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
-import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameInfoContainer;
@@ -11,10 +10,9 @@ import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleFactory;
 import it.polimi.ingsw.game.state.DiscardingObjectCardState;
 import it.polimi.ingsw.game.state.EndingTurnState;
-import it.polimi.ingsw.game.state.MovingState;
+import it.polimi.ingsw.game.state.LoserState;
 import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
-import it.polimi.ingsw.game.state.SpotlightCardState;
 import it.polimi.ingsw.game.state.StartTurnState;
 import it.polimi.ingsw.server.Client;
 import it.polimi.ingsw.server.GameManager;
@@ -70,7 +68,7 @@ public class GameState {
         
         for(int i = 0;i<clients.size(); i++) {
             Role role = roles.get(i);
-            GamePlayer player = new GamePlayer(role, mMap.getStartingPoint(role), clients.get(i));
+            GamePlayer player = new GamePlayer(i, role, mMap.getStartingPoint(role), clients.get(i));
             mPlayers.add(player);
             
             if(i == mTurnId)
@@ -124,17 +122,22 @@ public class GameState {
      * @param currentPosition The point where the players wants to attack
      */
     public void attack(Point currentPosition) {
-    
+    	for( GamePlayer player : mPlayers ) {
+    		if( player.getCurrentPosition().equals(currentPosition) )
+    			player.setCurrentState( new LoserState(this) );
+    	}
     }
     
     /**
      * Moves current player in a position. It is used by the Teleport card and when moving during
      * the normal flow of the game.
-     * @param point Where to move 
+     * @param src Where to move 
+     * @param dest TODO
      */
-    public void moveTo(Point point) {
-        // TODO Auto-generated method stub
-        
+    public void moveTo(Point src, Point dest) {
+        if( getMap().isWithinBounds(src) && !src.equals(dest) ) {
+        	this.getCurrentPlayer().setCurrentPosition(dest);
+        }
     }
     
     /**

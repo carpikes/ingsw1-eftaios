@@ -51,7 +51,7 @@ public class MovingState extends PlayerState {
             if( packet.getOpcode() == GameCommand.CMD_CS_MOVE ) {
                 Point chosenPos = (Point)packet.getArgs()[0];
                 if(availableSectors.contains(chosenPos)) {
-                    gameState.moveTo(chosenPos);
+                    gameState.moveTo(chosenPos, null);
                     
                     Sector sector = map.getSectorAt( player.getCurrentPosition() );
                     // If we are on an hatch sector, draw an hatch card and act accordingly
@@ -101,9 +101,6 @@ public class MovingState extends PlayerState {
         case GREEN_HATCH:
             player.sendPacket( GameCommand.CMD_SC_WIN );
             nextState = new WinnerState(gameState);
-            
-            // remove player
-            gameState.removePlayer( player.getId() );
             break;
             
         default:
