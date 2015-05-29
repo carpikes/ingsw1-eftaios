@@ -54,8 +54,8 @@ public class GamePlayer {
 		return moveCounter;
 	}
 
-	public void setMoveCounter(int moveCounter) {
-		this.moveCounter = moveCounter;
+	public void incrementMoveCounter( ) {
+		++moveCounter;
 	}
 
 	public GamePlayer( int id, Role playerRole, Point startPosition, Client connection) {

@@ -13,6 +13,8 @@ public class NotMyTurnState extends PlayerState {
 
     public NotMyTurnState(GameState state) {
         super(state);
+        
+        state.moveToNextPlayer();
     }
 
     /* (non-Javadoc)
@@ -22,5 +24,10 @@ public class NotMyTurnState extends PlayerState {
     public PlayerState update() {
         return this;
     }
+    
+    @Override
+	public boolean stillInGame() {
+		return true;
+	}
 
 }

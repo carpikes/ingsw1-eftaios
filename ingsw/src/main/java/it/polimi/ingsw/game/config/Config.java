@@ -24,6 +24,8 @@ public class Config {
     public static final int MAX_ALIEN_MOVES                 = 2;
     public static final int MAX_ALIEN_FULL_MOVES            = 3;
     
+    public static final int MAX_NUMBER_OF_TURNS 			= 40;
+    
     // Server configuration here
     public static final long SERVER_CONNECTION_TIMEOUT      = 10000;
     public static final int SERVER_MAX_CLIENTS              = 3 * GAME_MAX_PLAYERS;
@@ -35,6 +37,6 @@ public class Config {
     
     // Client configuration here
     public static final long CLIENT_TCP_PING_TIME           = 5000;
-    
+	
 
 }

@@ -39,9 +39,8 @@ public class GameState {
     private final Queue<NetworkPacket> mEventQueue;
     private final GameMap mMap;
     private List<GamePlayer> mPlayers;
-    private List<GamePlayer> noMorePlayingPlayers;
     private int mTurnId = 0;
-    
+
     /**
      * Constructs a new game.
      * @param gameManager The GameManager that created this game.
@@ -64,7 +63,6 @@ public class GameState {
         mEventQueue = new LinkedList<>();
         
         mPlayers = new ArrayList<>();
-        noMorePlayingPlayers = new ArrayList<>();
         List<Role> roles = RoleFactory.generateRoles(clients.size());
         
         for(int i = 0;i<clients.size(); i++) {
@@ -174,7 +172,7 @@ public class GameState {
         return nextState;
     }
     
-    /** Invoked in SpotLightCardState. It lists all people in the set position and in the 6 surronding it.
+    /** Invoked in SpotLightCardState. It lists all people in the set position and in the 6 surrounding it.
      * @param point The position where the card takes effect.
      */
     public void light(Point point) {
@@ -183,14 +181,6 @@ public class GameState {
     }
     /* -----------------------------------------------*/
     
-    /**
-     * 
-     * @param id
-     */
-    public void removePlayer( int id ) {
-        noMorePlayingPlayers.add( mPlayers.remove(id) );
-    }
-
     public NetworkPacket getPacketFromQueue( ) {
     	synchronized(mEventQueue) {
             return mEventQueue.poll();
@@ -230,5 +220,46 @@ public class GameState {
                 getCurrentPlayer().getMaxMoves()
         );
     }
+
+    /**
+     * Invoked when someone exceeds the MAX_NUMBER_OF_TURNS limit in a game.
+     * Kills all humans and make aliens winners.
+     */
+	public void endGame() {
+		// FIXME completa qui
+		
+		// broadcast fine partita
+		// chiudi connessioni e simili
+	}
+	
+	public boolean areTherePeopleStillPlaying() {
+		int counter = 0;
+		
+		for( GamePlayer p : mPlayers )
+			if( p.getCurrentState().stillInGame() )
+				++counter;
+		
+		return counter >= 2;
+	}
+	
+	public void moveToNextPlayer() {
+		if( areTherePeopleStillPlaying() ) {
+			mTurnId = findNextPlayer();
+			mPlayers.get(mTurnId).setCurrentState( new StartTurnState( this ) );
+		} else {
+			// just one or zero players left -> the game has ended
+			endGame();
+		}
+	}
+
+	private int findNextPlayer() {
+		for( int currId = mTurnId; currId < mTurnId + mPlayers.size(); ++mTurnId ) {
+			if( mPlayers.get(currId).getCurrentState() instanceof NotMyTurnState )
+				return currId;
+		}
+		
+		// FIXME exception to be handled
+		return mTurnId;
+	}
 
 }

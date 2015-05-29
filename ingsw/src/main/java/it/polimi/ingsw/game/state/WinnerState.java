@@ -24,5 +24,10 @@ public class WinnerState extends PlayerState {
     public PlayerState update() {
         return this;
     }
+    
+    @Override
+	public boolean stillInGame() {
+		return false;
+	}
 
 }

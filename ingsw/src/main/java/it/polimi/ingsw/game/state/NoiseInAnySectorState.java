@@ -39,4 +39,9 @@ public class NoiseInAnySectorState extends PlayerState {
         return nextState;
     }
     
+    @Override
+	public boolean stillInGame() {
+		return true;
+	}
+    
 }

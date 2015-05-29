@@ -17,4 +17,6 @@ public abstract class PlayerState {
     } 
     
     public abstract PlayerState update();
+
+	public abstract boolean stillInGame();
 }

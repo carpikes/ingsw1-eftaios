@@ -38,4 +38,10 @@ public class AwayState extends PlayerState {
         return nextState;
     }
 
+    // TODO: check this one 
+	@Override
+	public boolean stillInGame() {
+		return false;
+	}
+
 }

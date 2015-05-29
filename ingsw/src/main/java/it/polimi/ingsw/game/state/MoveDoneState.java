@@ -116,4 +116,9 @@ public class MoveDoneState extends PlayerState {
         
         return nextState;
     }
+    
+    @Override
+	public boolean stillInGame() {
+		return true;
+	}
 }
