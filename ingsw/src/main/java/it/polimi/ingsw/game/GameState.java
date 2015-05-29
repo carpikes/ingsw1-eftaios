@@ -251,9 +251,8 @@ public class GameState {
      * Kills all humans and make aliens winners.
      */
 	public void endGame() {
+		this.addToOutputQueue( GameCommand.INFO_END_GAME );
 		// FIXME completa qui
-		
-		// broadcast fine partita
 		// chiudi connessioni e simili
 	}
 	
