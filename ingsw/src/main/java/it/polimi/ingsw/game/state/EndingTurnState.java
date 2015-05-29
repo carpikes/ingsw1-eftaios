@@ -6,7 +6,7 @@ package it.polimi.ingsw.game.state;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.card.ObjectCard;
+import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 /**

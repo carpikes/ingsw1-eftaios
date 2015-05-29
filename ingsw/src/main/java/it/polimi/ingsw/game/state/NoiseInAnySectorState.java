@@ -29,7 +29,7 @@ public class NoiseInAnySectorState extends PlayerState {
         PlayerState nextState = this;
         if( packet != null ) {
             if( packet.getOpcode() == GameCommand.CMD_CS_NOISE_IN_ANY_SECTOR_POSITION ) {
-                gameState.getGameManager().broadcastPacket( new NetworkPacket(GameCommand.CMD_SC_NOISE, packet.getArgs() ) );
+            	gameState.addToOutputQueue( new NetworkPacket(GameCommand.INFO_NOISE, packet.getArgs() ) );
                 nextState = gameState.getObjectCard( );
             } else {
                 throw new IllegalStateOperationException("You can only choose a position here. Discarding packet.");

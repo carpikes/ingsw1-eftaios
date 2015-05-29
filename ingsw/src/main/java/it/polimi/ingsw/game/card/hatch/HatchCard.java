@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.polimi.ingsw.game.card;
+package it.polimi.ingsw.game.card.hatch;
 
 /**
  * @author Michele

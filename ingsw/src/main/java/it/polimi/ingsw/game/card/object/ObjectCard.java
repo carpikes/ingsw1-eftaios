@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.polimi.ingsw.game.card;
+package it.polimi.ingsw.game.card.object;
 
 import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.GameState;
@@ -20,6 +20,11 @@ public abstract class ObjectCard implements Serializable {
 	public static final int OBJECT_CARD_TYPES = 6;
 	
 	public abstract PlayerState doAction(GameState gameState);
+	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
 	
 	/* non è un granché, ma senza enum ... */
 	public static ObjectCard getRandomCard() {

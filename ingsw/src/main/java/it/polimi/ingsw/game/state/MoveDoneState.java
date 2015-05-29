@@ -7,8 +7,8 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.card.DangerousCard;
-import it.polimi.ingsw.game.card.ObjectCard;
+import it.polimi.ingsw.game.card.dangerous.DangerousCard;
+import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.sector.SectorBuilder;
@@ -25,7 +25,9 @@ public class MoveDoneState extends PlayerState {
     
     public MoveDoneState(GameState state) {
         super(state);
-        // TODO Auto-generated constructor stub
+
+        // tell the client it has to choose what to do after moving
+        state.getCurrentPlayer().sendPacket( GameCommand.CMD_SC_MOVE_DONE );
     }
 
     private static final Logger LOG = Logger.getLogger(MoveDoneState.class.getName());
@@ -91,7 +93,7 @@ public class MoveDoneState extends PlayerState {
         switch( card ) {
         case NOISE_IN_YOUR_SECTOR: // noise in your sector
             player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_YOUR_SECTOR) );
-            gameState.getGameManager().broadcastPacket( new NetworkPacket(GameCommand.CMD_SC_NOISE, player.getCurrentPosition()) );
+            gameState.addToOutputQueue( new NetworkPacket(GameCommand.INFO_NOISE, player.getCurrentPosition()) );
             
             nextState = gameState.getObjectCard( );
             break;
@@ -103,7 +105,7 @@ public class MoveDoneState extends PlayerState {
             
         case SILENCE: // silence
             player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.SILENCE) );
-            gameState.getGameManager().broadcastPacket( GameCommand.CMD_SC_SILENCE );
+            gameState.addToOutputQueue( GameCommand.INFO_SILENCE );
             
             nextState = new EndingTurnState(gameState);
             break;

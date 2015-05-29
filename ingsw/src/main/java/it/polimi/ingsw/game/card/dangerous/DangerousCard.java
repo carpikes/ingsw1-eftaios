@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.polimi.ingsw.game.card;
+package it.polimi.ingsw.game.card.dangerous;
 
 /**
  * @author Michele

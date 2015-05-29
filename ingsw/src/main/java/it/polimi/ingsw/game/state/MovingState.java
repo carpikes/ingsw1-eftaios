@@ -7,8 +7,8 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.card.HatchCard;
-import it.polimi.ingsw.game.card.ObjectCard;
+import it.polimi.ingsw.game.card.hatch.HatchCard;
+import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.sector.Sector;
@@ -61,8 +61,6 @@ public class MovingState extends PlayerState {
                     if( sector.getId() == SectorBuilder.HATCH ) {
                         nextState = drawHatchCard( gameState );
                     } else {
-                        // tell the client it has to choose what to do after moving
-                        player.sendPacket( GameCommand.CMD_SC_MOVE_DONE );
                         nextState =  new MoveDoneState(gameState);
                     }
                 } else {

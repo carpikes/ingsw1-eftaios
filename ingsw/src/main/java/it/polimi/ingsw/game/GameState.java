@@ -1,7 +1,7 @@
 package it.polimi.ingsw.game;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
-import it.polimi.ingsw.game.card.ObjectCard;
+import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
@@ -123,6 +123,8 @@ public class GameState {
         PlayerState nextState = player.getCurrentState();
         
         if( player.isHuman() && !player.isObjectCardUsed() ) {        	
+        	this.addToOutputQueue( new NetworkPacket(GameCommand.INFO_OBJ_CARD_USED, objectCard.toString()) );
+        	
             getCurrentPlayer().setObjectCardUsed(true);
             nextState = objectCard.doAction(this);
         } else {
@@ -183,8 +185,9 @@ public class GameState {
         
         if( player.getNumberOfCards() < Config.MAX_NUMBER_OF_OBJ_CARDS ) {
             player.getObjectCards().add( newCard );
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommand.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
             
+            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommand.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
+            this.addToOutputQueue( GameCommand.INFO_GOT_A_NEW_OBJ_CARD );
             nextState = new EndingTurnState(this);
         } else {
             player.sendPacket( GameCommand.CMD_SC_DISCARD_OBJECT_CARD );
@@ -210,7 +213,7 @@ public class GameState {
     }
     
     public synchronized GamePlayer getCurrentPlayer() {
-        return mPlayers.get(0);
+        return mPlayers.get( mTurnId ); 
     }
 
     public GameMap getMap() {

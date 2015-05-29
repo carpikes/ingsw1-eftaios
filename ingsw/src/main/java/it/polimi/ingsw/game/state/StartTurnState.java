@@ -27,6 +27,9 @@ public class StartTurnState extends PlayerState {
         
         if( player.getMoveCounter() >= Config.MAX_NUMBER_OF_TURNS ) {
         	state.endGame();
+        } else {
+        	// tell everybody I'm starting playing!
+        	state.addToOutputQueue( GameCommand.INFO_START_TURN );
         }
     }
 

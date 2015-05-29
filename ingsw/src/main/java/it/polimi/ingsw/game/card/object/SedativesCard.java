@@ -1,16 +1,15 @@
-package it.polimi.ingsw.game.card;
+package it.polimi.ingsw.game.card.object;
 
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 
-public class AttackCard extends ObjectCard {
+public class SedativesCard extends ObjectCard {
 
 	@Override
 	public PlayerState doAction(GameState gameState) {
 		GamePlayer player = gameState.getCurrentPlayer();
-		gameState.attack( player.getCurrentPosition() );
-		
+		player.setShouldDrawDangerousCard(false);
 		return player.getCurrentState();
 	}
 
