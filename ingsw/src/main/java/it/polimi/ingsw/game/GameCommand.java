@@ -59,5 +59,6 @@ public enum GameCommand {
     INFO_NOISE,
     INFO_SILENCE, 
     INFO_GOT_A_NEW_OBJ_CARD,
-    INFO_END_GAME
+    INFO_END_GAME,
+    INFO_SPOTLIGHT
 }

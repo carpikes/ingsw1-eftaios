@@ -201,8 +201,21 @@ public class GameState {
      * @param point The position where the card takes effect.
      */
     public void light(Point point) {
-        // TODO Auto-generated method stub
+    	ArrayList<Point> sectors = getMap().getNeighbourAccessibleSectors(point);
+        sectors.add(point);
         
+        ArrayList<String> caughtPlayers = new ArrayList<>();
+        ArrayList<Point> playerPositions = new ArrayList<>();
+        
+        for( GamePlayer player : mPlayers ) {
+        	if( sectors.contains( player.getCurrentPosition() ) ) {
+        		// TODO manca il nickname in gameplayer!
+        		caughtPlayers.add( null );
+        		playerPositions.add( player.getCurrentPosition() );
+        	}
+        }
+        
+        addToOutputQueue( new NetworkPacket( GameCommand.INFO_SPOTLIGHT, caughtPlayers, playerPositions ) );
     }
     /* -----------------------------------------------*/
     

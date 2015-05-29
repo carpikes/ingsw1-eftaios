@@ -12,8 +12,12 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class GameMap implements Serializable {
@@ -148,10 +152,42 @@ public class GameMap implements Serializable {
      */
     public ArrayList<Point> getCellsWithMaxDistance(Point currentPosition,
             int maxMoves) {
-        // TODO Not implemented yet: it always returns Point (0,0)
-        ArrayList<Point> sectors = new ArrayList< >();
+        /*Set<Point> sectors = new HashSet< >();
+        Queue<Point> frontier = new LinkedList<>();
         
-        sectors.add( new Point(0,0) );
-        return sectors;
+        
+        
+        return sectors;*/
+    	
+    	return null;
+    }
+
+    /**
+     * Get neighbour cells starting from the given position. Note that only dangerous, not dangerous and hatch sectors
+     * are given. Remember that in a mxn matrix, these (x) are the sectors accessible from O:
+     * - x -
+     * x O x
+     * x x x
+     * @param currentPosition The starting sector
+     * @return A list of all neighbours
+     */
+    public ArrayList<Point> getNeighbourAccessibleSectors( Point currentPosition ) {
+    	// get x and y for simplicity's sake
+    	int x = currentPosition.x;
+    	int y = currentPosition.y;
+    	
+    	ArrayList<Point> sectors = new ArrayList< >();
+    	
+    	for( int i = -1; i <= 1; ++i ) {
+    		for( int j = -1; j <= 1; ++j ) 
+    			// exclude the - sectors
+    			if( i+j != 0 || j == 1 ) {
+    				Point p = new Point(x+i, y+j);
+    				if( this.isWithinBounds( p ) && this.getSectorAt(p).isCrossable() )
+    					sectors.add(p);
+    			}
+    	}
+    	
+    	return sectors;
     }
 }
