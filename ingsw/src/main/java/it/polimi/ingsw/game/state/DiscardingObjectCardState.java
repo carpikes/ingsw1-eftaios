@@ -29,7 +29,7 @@ public class DiscardingObjectCardState extends PlayerState {
         PlayerState nextState = this;
         if( packet != null ) {
             if( packet.getOpcode() == GameCommand.CMD_SC_DISCARD_OBJECT_CARD ) {
-                // TODO to be implemented!
+                // TODO discard object card state
                 
                 nextState = new EndingTurnState(gameState);
             } else {

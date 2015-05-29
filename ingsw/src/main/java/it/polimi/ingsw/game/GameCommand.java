@@ -18,7 +18,6 @@ public enum GameCommand {
     CMD_SC_USEROK,
     CMD_SC_USERFAIL,
     CMD_SC_RUN,
-    CMD_SC_WIN,
     CMD_SC_CHOOSEMAP,
     CMD_CS_LOADMAP,
     CMD_SC_MAPOK,
@@ -47,6 +46,14 @@ public enum GameCommand {
     CMD_SC_ADRENALINE_WRONG_STATE,
     CMD_SC_CANNOT_USE_OBJ_CARD,
     CMD_SC_MOVE_INVALID,
-    
     CMD_SC_END_OF_TURN,
+    CMD_SC_LOSE,
+    CMD_SC_WIN,
+    
+    /** INFO TO ALL PLAYERS */
+    INFO_HAS_MOVED,
+    INFO_USED_HATCH,
+    INFO_WINNER,
+    INFO_LOSER, 
+    INFO_KILLED_PEOPLE,
 }

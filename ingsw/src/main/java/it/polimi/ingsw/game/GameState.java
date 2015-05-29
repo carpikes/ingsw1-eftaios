@@ -5,7 +5,6 @@ import it.polimi.ingsw.game.card.ObjectCard;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
-import it.polimi.ingsw.game.player.Alien;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleFactory;
@@ -20,6 +19,7 @@ import it.polimi.ingsw.server.GameManager;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +36,10 @@ public class GameState {
     private static final Logger LOG = Logger.getLogger(GameState.class.getName());
     
     private final GameManager gameManager;
-    private final Queue<NetworkPacket> mEventQueue;
+    
+    private final Queue<NetworkPacket> mInputQueue;
+    private final Queue<NetworkPacket> mOutputQueue;
+    
     private final GameMap mMap;
     private List<GamePlayer> mPlayers;
     private int mTurnId = 0;
@@ -60,7 +63,8 @@ public class GameState {
         
         this.gameManager = gameManager;
         
-        mEventQueue = new LinkedList<>();
+        mInputQueue = new LinkedList<>();
+        mOutputQueue = new LinkedList<>();
         
         mPlayers = new ArrayList<>();
         List<Role> roles = RoleFactory.generateRoles(clients.size());
@@ -90,14 +94,26 @@ public class GameState {
             LOG.log(Level.INFO, e.toString(), e);
         }
 
-        // TODO notifica modifiche a tutti
-        
+        // broadcast messages at the end of the turn
+        flushOutputQueue();
     }
+    
+    
+    private void flushOutputQueue() {
+		if( !mOutputQueue.isEmpty() ) {
+			
+			for( NetworkPacket pkt : mOutputQueue )
+				gameManager.broadcastPacket(pkt);
+			
+			mOutputQueue.clear();
+		}
+	}
     
     // TODO: refactoring of the following methods
     /* -----------------------------------------------*/
     
-    /** Method invoked when someone sends a CMD_CS_USE_OBJ_CARD command. Invoke the correct underlying method 
+
+	/** Method invoked when someone sends a CMD_CS_USE_OBJ_CARD command. Invoke the correct underlying method 
      * (attack() for Attack card..., moveTo() for Teleport card...)
      * @param objectCard The card the user wants to use
      * @return Next PlayerState for current player
@@ -106,7 +122,7 @@ public class GameState {
         GamePlayer player = getCurrentPlayer();
         PlayerState nextState = player.getCurrentState();
         
-        if( player.isHuman() && !player.isObjectCardUsed() ) {
+        if( player.isHuman() && !player.isObjectCardUsed() ) {        	
             getCurrentPlayer().setObjectCardUsed(true);
             nextState = objectCard.doAction(this);
         } else {
@@ -121,21 +137,27 @@ public class GameState {
      * @param currentPosition The point where the players wants to attack
      */
     public void attack(Point currentPosition) {
-    	boolean attackSuccessful = false;
+    	
+    	ArrayList<String> killedPlayers = new ArrayList<>();
 
     	for( GamePlayer player : mPlayers ) {
     		if( player.getCurrentPosition().equals(currentPosition) ) {
     			player.setCurrentState( new LoserState(this) );
-    			attackSuccessful = true;
+    			
+    			// FIXME: QUI SERVE IL NICKNAME!
+    			killedPlayers.add( null ); 
     		}
     	}
 
-    	if( attackSuccessful ) {
+    	// set the player as full if he has an alien role
+    	if( !killedPlayers.isEmpty() ) {
     		GamePlayer player = getCurrentPlayer();
     		if( player.isAlien() ) {
     			player.setFull(true);
     		}
     	}
+    	
+    	this.addToOutputQueue( new NetworkPacket(GameCommand.INFO_KILLED_PEOPLE, killedPlayers) );
     }
     
     /**
@@ -182,8 +204,8 @@ public class GameState {
     /* -----------------------------------------------*/
     
     public NetworkPacket getPacketFromQueue( ) {
-    	synchronized(mEventQueue) {
-            return mEventQueue.poll();
+    	synchronized(mInputQueue) {
+            return mInputQueue.poll();
         }
     }
     
@@ -196,8 +218,8 @@ public class GameState {
     }
     
     public void queuePacket(NetworkPacket pkt) {
-        synchronized(mEventQueue) {
-            mEventQueue.add(pkt);
+        synchronized(mInputQueue) {
+            mInputQueue.add(pkt);
         }
     }
     
@@ -260,6 +282,14 @@ public class GameState {
 		
 		// FIXME exception to be handled
 		return mTurnId;
+	}
+	
+	public void addToOutputQueue( NetworkPacket pkt ) {
+		mOutputQueue.add( pkt );
+	}
+	
+	public void addToOutputQueue( GameCommand command ) {
+		mOutputQueue.add( new NetworkPacket( command, (Serializable[])null ) );
 	}
 
 }

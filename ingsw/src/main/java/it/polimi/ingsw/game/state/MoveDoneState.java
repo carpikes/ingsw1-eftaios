@@ -44,7 +44,6 @@ public class MoveDoneState extends PlayerState {
         // If we actually received a command from the client...
         if( packet != null ) {
             if( packet.getOpcode() == GameCommand.CMD_CS_USE_OBJ_CARD ) {
-                // TODO where should I put this?
                 gameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
             } else {
                 // DANGEROUS: either draw a card OR attack

@@ -17,7 +17,7 @@ public class EndingTurnState extends PlayerState {
 
     public EndingTurnState(GameState state) {
         super(state);
-        // TODO Auto-generated constructor stub
+        state.getCurrentPlayer().sendPacket( GameCommand.CMD_SC_END_OF_TURN );
     }
 
     /* (non-Javadoc)
@@ -32,7 +32,6 @@ public class EndingTurnState extends PlayerState {
             if( packet.getOpcode() == GameCommand.CMD_CS_NOT_MY_TURN ) {
                 nextState = new NotMyTurnState(gameState);
             } else if( packet.getOpcode() == GameCommand.CMD_CS_USE_OBJ_CARD ) {
-                // TODO where should I put this?
                 gameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
             } else {
                 throw new IllegalStateOperationException("You can only use an object card or end here. Discarding packet.");

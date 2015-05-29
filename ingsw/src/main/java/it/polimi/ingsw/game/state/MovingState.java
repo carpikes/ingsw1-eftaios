@@ -53,12 +53,15 @@ public class MovingState extends PlayerState {
                 if(availableSectors.contains(chosenPos)) {
                     gameState.moveTo(chosenPos, null);
                     
+                    // notify all players that current players has just moved
+                    gameState.addToOutputQueue( GameCommand.INFO_HAS_MOVED );
+                    
                     Sector sector = map.getSectorAt( player.getCurrentPosition() );
                     // If we are on an hatch sector, draw an hatch card and act accordingly
                     if( sector.getId() == SectorBuilder.HATCH ) {
                         nextState = drawHatchCard( gameState );
                     } else {
-                        // tell the client it has choose what to do after moving
+                        // tell the client it has to choose what to do after moving
                         player.sendPacket( GameCommand.CMD_SC_MOVE_DONE );
                         nextState =  new MoveDoneState(gameState);
                     }
@@ -67,7 +70,6 @@ public class MovingState extends PlayerState {
                     player.sendPacket(GameCommand.CMD_SC_MOVE_INVALID);
                 }
             } else if( packet.getOpcode() == GameCommand.CMD_CS_USE_OBJ_CARD ) {
-                // TODO where should I put this?
                 gameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
             } else {
                 throw new IllegalStateOperationException("You can only move. Discarding command.");
@@ -86,6 +88,7 @@ public class MovingState extends PlayerState {
         
         // set current cell as no more accessible
         map.setType( player.getCurrentPosition(), SectorBuilder.USED_HATCH );
+        gameState.addToOutputQueue( new NetworkPacket( GameCommand.INFO_USED_HATCH, player.getCurrentPosition() ) );
         
         // draw an hatch card and choose accordingly
         int index = generator.nextInt( HatchCard.values().length );
@@ -93,13 +96,11 @@ public class MovingState extends PlayerState {
         
         switch( card ) {
         case RED_HATCH:
-            // OUCH! You cannot use that hatch!
-            player.sendPacket( GameCommand.CMD_SC_END_OF_TURN );
+            // OUCH! You cannot use that hatch anymore!
             nextState = new EndingTurnState(gameState);
             break;
 
         case GREEN_HATCH:
-            player.sendPacket( GameCommand.CMD_SC_WIN );
             nextState = new WinnerState(gameState);
             break;
             

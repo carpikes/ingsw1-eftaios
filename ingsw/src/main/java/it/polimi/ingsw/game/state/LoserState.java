@@ -3,6 +3,7 @@
  */
 package it.polimi.ingsw.game.state;
 
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
 
 /**
@@ -14,7 +15,8 @@ public class LoserState extends PlayerState {
     public LoserState(GameState state) {
         super(state);
 
-        // rimuovi da lista giocatori
+        state.addToOutputQueue( GameCommand.INFO_LOSER );
+        state.getCurrentPlayer().sendPacket( GameCommand.CMD_SC_LOSE );
     }
 
     /* (non-Javadoc)
