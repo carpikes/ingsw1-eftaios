@@ -2,7 +2,10 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.game.network.GameInfoContainer;
 
+import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -65,4 +68,6 @@ public interface View {
     
     /** Notify a closed connection */
     public void close();
+
+    public Point askMapPosition(Set<Point> enabledCells);
 }

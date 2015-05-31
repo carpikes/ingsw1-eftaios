@@ -2,9 +2,11 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.config.Config;
 
 import java.awt.Dimension;
+import java.awt.Point;
+import java.io.IOException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,11 +59,11 @@ public class GUIFrame extends JFrame {
         pack();
     }
     
-    public void switchToMap(GameMap map) {
+    public void switchToMap(GameMap map, Point startingPoint) {
         if(mLoginCanvas == null)
             throw new RuntimeException("Map is already loaded");
         try {
-            mMapCanvas = new MapCanvasPanel( map, WIDTH, HEIGHT);
+            mMapCanvas = new MapCanvasPanel( map, WIDTH, HEIGHT, startingPoint);
             mMapCanvas.setPreferredSize(mDimension);
         } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
             LOG.log(Level.SEVERE, "File is not well formatted: " + e);
@@ -73,4 +75,30 @@ public class GUIFrame extends JFrame {
         mLoginCanvas = null;
         pack();
     }
+
+    public Point getChosenMapCell() {
+        return mMapCanvas.getChosenMapCell();
+    }
+
+    public void enableMapCells(Set<Point> pnt) {
+        mMapCanvas.setEnabledCells(pnt);
+    }
+
+    public void resetChosenMapCell() {
+        mMapCanvas.setEnabledCells(null);
+    }
+    
+    public static void main(String[] args) throws IOException {
+        GUIFrame f = new GUIFrame();
+        GameMap map = GameMap.createFromId(1);
+        f.switchToMap(map, map.getStartingPoint(true));
+        f.setVisible(true);
+        Set<Point> pnt = map.getCellsWithMaxDistance(map.getStartingPoint(true), 2); 
+        f.enableMapCells(pnt);
+    }
+
+    public void setPlayerPosition(Point startingPoint) {
+        mMapCanvas.setPlayerPosition(startingPoint);
+    }
+    
 }

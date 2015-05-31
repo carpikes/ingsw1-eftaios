@@ -21,9 +21,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 public class GameMap implements Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOG = Logger.getLogger( GameMap.class.getName() );
@@ -40,17 +37,20 @@ public class GameMap implements Serializable {
 	
 	private Sector[][] board;
 	private String name;
+	private final Point humanStartingPoint, alienStartingPoint;
 	
 	// You can only construct a new map either from a .map file or by random generation 
-	private GameMap( String name, Sector[][] board ) {
+	private GameMap( String name, Sector[][] board, Point human, Point alien) {
 	    this.name = name;
 		this.board = board;
+		this.humanStartingPoint = human;
+		this.alienStartingPoint = alien;
 	} 
 
 	public static GameMap createFromMapFile( File file ) throws IOException {
 	    Sector[][] sectors = new Sector[ROWS][COLUMNS];
 	    String title = null;
-	    
+	    Point human=null, alien=null;
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
         Iterator<String> iterator = lines.iterator();
         
@@ -60,19 +60,26 @@ public class GameMap implements Serializable {
             String[] currentLine = iterator.next().split(" ");
             for( j = 0; j < currentLine.length; ++j ) {
                 sectors[i][j] = SectorBuilder.getSectorFor(Integer.parseInt(currentLine[j]));
+                if(sectors[i][j].getId() == SectorBuilder.ALIEN)
+                    alien = new Point(j,i);
+                else if(sectors[i][j].getId() == SectorBuilder.HUMAN)
+                    human = new Point(j,i);
             }
             ++i;
         }
         
+        if(human == null || alien == null)
+            throw new SectorException("Missing starting points");
+        
         if( i != ROWS || j != COLUMNS )
             throw new SectorException("Missing sector");
 		
-		return new GameMap(title, sectors);
+		return new GameMap(title, sectors, human, alien);
 	}
 	
 	public static GameMap generate() {
 		// TODO: advanced functionality to be implemented
-		return new GameMap(null, null);
+		return new GameMap(null, null, null, null);
 	}
 	
 	public Sector getSectorAt( int i, int j ) {
@@ -101,9 +108,10 @@ public class GameMap implements Serializable {
         return 1;
     }
 
-    public Point getStartingPoint(Role role) {
-        // TODO Auto-generated method stub
-        return null;
+    public Point getStartingPoint(boolean isHuman) {
+        if(isHuman)
+            return humanStartingPoint;
+        return alienStartingPoint;
     }
 
     public static String[] getListOfMaps() {
@@ -167,10 +175,13 @@ public class GameMap implements Serializable {
         		currentPoint = frontier.poll();
         		
         		if( currentPoint != null ) {
-        			sectors.add( currentPoint );
+        		    ArrayList<Point> neighbors = getNeighbourAccessibleSectors( currentPoint );
         			
-        			frontier.addAll( getNeighbourAccessibleSectors( currentPosition ) );
+        			frontier.addAll( neighbors );
         			frontier.add( delimiter );
+        			
+        			sectors.add( currentPoint );
+        			sectors.addAll(neighbors);
         		}
         	} while( currentPoint != null );
         	
@@ -178,7 +189,6 @@ public class GameMap implements Serializable {
         }
         
         sectors.remove( currentPosition );
-        
         return sectors;
     }
 
@@ -201,8 +211,8 @@ public class GameMap implements Serializable {
     	for( int i = -1; i <= 1; ++i ) {
     		for( int j = -1; j <= 1; ++j ) 
     			// exclude the - sectors
-    			if( i == 1 || ((i+j)!=0 && (i+j)!=-2) ) {
-    				Point p = new Point(x+i, y+j);
+    			if( (i == -1 && j == 0) || (i == 0 && j != 0) || (i == 1)) {
+    				Point p = new Point(x+i, y+j); //FIXME this should be (x+j;y+i) (i == rows, j == cols)
     				if( this.isWithinBounds( p ) && this.getSectorAt(p).isCrossable() )
     					sectors.add(p);
     			}

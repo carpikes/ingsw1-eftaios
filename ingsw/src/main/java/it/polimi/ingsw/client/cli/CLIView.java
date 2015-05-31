@@ -1,7 +1,10 @@
 package it.polimi.ingsw.client.cli;
 
+import java.awt.Point;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -128,5 +131,11 @@ public class CLIView implements View {
     public void close() {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public Point askMapPosition(Set<Point> enabledCells) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

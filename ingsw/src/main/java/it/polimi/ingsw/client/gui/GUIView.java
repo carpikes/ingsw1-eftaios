@@ -1,11 +1,15 @@
 package it.polimi.ingsw.client.gui;
 
+import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import it.polimi.ingsw.client.View;
+import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 
 /**
@@ -91,7 +95,8 @@ public class GUIView implements View {
      */
     @Override
     public void switchToMainScreen(GameInfoContainer container) {
-        mMainFrame.switchToMap(container.getMap());
+        GameMap map = container.getMap();
+        mMainFrame.switchToMap(map,map.getStartingPoint(container.isHuman()));
     }
 
     @Override
@@ -99,6 +104,17 @@ public class GUIView implements View {
         if(mMainFrame != null) {
             mMainFrame.setVisible(false);
         }
+    }
+
+    @Override
+    public Point askMapPosition(Set<Point> enabledCells) {
+        mMainFrame.enableMapCells(enabledCells);
+        Point p;
+        do {
+            p = mMainFrame.getChosenMapCell();
+        } while( p == null );
+        mMainFrame.resetChosenMapCell();
+        return null;
     }
 
 }

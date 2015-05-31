@@ -7,6 +7,7 @@ import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
+import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleFactory;
 import it.polimi.ingsw.game.state.DiscardingObjectCardState;
@@ -73,7 +74,7 @@ public class GameState {
         
         for(int i = 0;i<gameManager.getNumberOfPlayers(); i++) {
             Role role = roles.get(i);
-            GamePlayer player = new GamePlayer(i, role, mMap.getStartingPoint(role), gameManager.getPlayerConnection(i));
+            GamePlayer player = new GamePlayer(i, role, mMap.getStartingPoint((role instanceof Human)), gameManager.getPlayerConnection(i));
             mPlayers.add(player);
             
             if(i == mTurnId)
