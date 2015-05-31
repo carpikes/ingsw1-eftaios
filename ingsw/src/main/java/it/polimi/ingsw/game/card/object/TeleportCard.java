@@ -15,7 +15,7 @@ public class TeleportCard extends ObjectCard {
 		// TODO set correct sector
         Point humanSector = null;
         
-        gameState.moveTo( humanSector, null );
+        gameState.rawMoveTo( humanSector, null );
         return player.getCurrentState();
 	}
 

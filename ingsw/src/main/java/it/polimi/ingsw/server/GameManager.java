@@ -4,6 +4,7 @@ import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.config.Config;
+import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
@@ -155,15 +156,15 @@ public class GameManager {
 
             Collections.shuffle(mClients);
             
-            mState = new GameState(this, mChosenMapId, mClients);
+            mState = new GameState(this, mChosenMapId);
             
             LOG.log(Level.INFO, mClients.get(0).getUsername() + " is the first player");
             
             // Send infos to all players
-            String[] userList = new String[mClients.size()];
+            EnemyInfo[] userList = new EnemyInfo[mClients.size()];
             
             for(int i = 0; i < mClients.size(); i++)
-                userList[i] = mClients.get(i).getUsername();
+                userList[i] = new EnemyInfo(mClients.get(i).getUsername());
             
             for(int i = 0; i < mClients.size(); i++) {
                 GameInfoContainer info = mState.buildInfoContainer(userList, i);
@@ -212,7 +213,6 @@ public class GameManager {
         
         broadcastPacket(new NetworkPacket(GameCommand.CMD_SC_STAT, String.valueOf(mClients.size())));
         if(mClients.size() == 0 || (mClients.size() < Config.GAME_MIN_PLAYERS && mIsRunning)) {
-            broadcastPacket(GameCommand.CMD_SC_WIN);
             Server.getInstance().removeGame(this);
         } else {
             // Game is still alive
@@ -261,5 +261,14 @@ public class GameManager {
         }
         
         return false;
+    }
+    
+    /** Get a connection object
+     * 
+     * @param i Connection id
+     * @return
+     */
+    public Client getPlayerConnection(int i) {
+        return mClients.get(i);
     }
 }

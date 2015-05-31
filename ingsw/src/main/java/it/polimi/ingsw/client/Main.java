@@ -19,7 +19,7 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        Controller c = new Controller();
+        GameController c = new GameController();
         View v = new GUIView();
         
         c.setView(v);

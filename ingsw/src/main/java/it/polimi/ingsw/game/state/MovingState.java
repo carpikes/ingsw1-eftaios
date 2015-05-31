@@ -51,7 +51,7 @@ public class MovingState extends PlayerState {
             if( packet.getOpcode() == GameCommand.CMD_CS_MOVE ) {
                 Point chosenPos = (Point)packet.getArgs()[0];
                 if(availableSectors.contains(chosenPos)) {
-                    gameState.moveTo(chosenPos, null);
+                    gameState.rawMoveTo(chosenPos, null);
                     
                     // notify all players that current players has just moved
                     gameState.addToOutputQueue( GameCommand.INFO_HAS_MOVED );

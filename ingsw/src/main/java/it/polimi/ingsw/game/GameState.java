@@ -3,6 +3,7 @@ package it.polimi.ingsw.game;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.config.Config;
+import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
@@ -41,7 +42,7 @@ public class GameState {
     private final Queue<NetworkPacket> mOutputQueue;
     
     private final GameMap mMap;
-    private List<GamePlayer> mPlayers;
+    private ArrayList<GamePlayer> mPlayers;
     private int mTurnId = 0;
 
     /**
@@ -51,7 +52,7 @@ public class GameState {
      * @param clients List of connections of all players
      */
     // TODO Remove List<Client> argument 
-    public GameState(GameManager gameManager, int mapId, List<Client> clients) {
+    public GameState(GameManager gameManager, int mapId) {
         GameMap tmpMap;
         try {
             tmpMap = GameMap.createFromId(mapId);
@@ -67,11 +68,11 @@ public class GameState {
         mOutputQueue = new LinkedList<>();
         
         mPlayers = new ArrayList<>();
-        List<Role> roles = RoleFactory.generateRoles(clients.size());
+        List<Role> roles = RoleFactory.generateRoles(gameManager.getNumberOfPlayers());
         
-        for(int i = 0;i<clients.size(); i++) {
+        for(int i = 0;i<gameManager.getNumberOfPlayers(); i++) {
             Role role = roles.get(i);
-            GamePlayer player = new GamePlayer(i, role, mMap.getStartingPoint(role), clients.get(i));
+            GamePlayer player = new GamePlayer(i, role, mMap.getStartingPoint(role), gameManager.getPlayerConnection(i));
             mPlayers.add(player);
             
             if(i == mTurnId)
@@ -139,15 +140,14 @@ public class GameState {
      * @param currentPosition The point where the players wants to attack
      */
     public void attack(Point currentPosition) {
+    	ArrayList<Integer> killedPlayers = new ArrayList<>();
     	
-    	ArrayList<String> killedPlayers = new ArrayList<>();
-
-    	for( GamePlayer player : mPlayers ) {
-    		if( player.getCurrentPosition().equals(currentPosition) ) {
+    	for(int i = 0; i < mPlayers.size(); i++) {
+    	    GamePlayer player = mPlayers.get(i);
+    		if( player != getCurrentPlayer() && player.getCurrentPosition().equals(currentPosition) ) {
     			player.setCurrentState( new LoserState(this) );
     			
-    			// FIXME: QUI SERVE IL NICKNAME!
-    			killedPlayers.add( null ); 
+    			killedPlayers.add( i ); 
     		}
     	}
 
@@ -168,7 +168,7 @@ public class GameState {
      * @param src Where to move 
      * @param dest TODO
      */
-    public void moveTo(Point src, Point dest) {
+    public void rawMoveTo(Point src, Point dest) {
         if( getMap().isWithinBounds(src) && !src.equals(dest) ) {
         	this.getCurrentPlayer().setCurrentPosition(dest);
         }
@@ -204,13 +204,13 @@ public class GameState {
     	ArrayList<Point> sectors = getMap().getNeighbourAccessibleSectors(point);
         sectors.add(point);
         
-        ArrayList<String> caughtPlayers = new ArrayList<>();
+        ArrayList<Integer> caughtPlayers = new ArrayList<>();
         ArrayList<Point> playerPositions = new ArrayList<>();
         
-        for( GamePlayer player : mPlayers ) {
+        for(int i = 0; i < mPlayers.size(); i++) {
+            GamePlayer player = mPlayers.get(i);
         	if( sectors.contains( player.getCurrentPosition() ) ) {
-        		// TODO manca il nickname in gameplayer!
-        		caughtPlayers.add( null );
+        		caughtPlayers.add(i);
         		playerPositions.add( player.getCurrentPosition() );
         	}
         }
@@ -239,7 +239,7 @@ public class GameState {
         }
     }
     
-    public GameInfoContainer buildInfoContainer(String[] userList, int i) {
+    public GameInfoContainer buildInfoContainer(EnemyInfo[] userList, int i) {
         GameInfoContainer info = new GameInfoContainer(userList, mPlayers.get(i).isHuman(), mMap);
         return info;
     }
@@ -260,13 +260,12 @@ public class GameState {
     }
 
     /**
-     * Invoked when someone exceeds the MAX_NUMBER_OF_TURNS limit in a game.
+     * Invoked when someone exceeds the MAX_NUMBER_OF_TURNS limit in a game
+     * or there are no more players in game.
      * Kills all humans and make aliens winners.
      */
 	public void endGame() {
 		this.addToOutputQueue( GameCommand.INFO_END_GAME );
-		// FIXME completa qui
-		// chiudi connessioni e simili
 	}
 	
 	public boolean areTherePeopleStillPlaying() {
@@ -276,7 +275,7 @@ public class GameState {
 			if( p.getCurrentState().stillInGame() )
 				++counter;
 		
-		return counter >= 2;
+		return counter >= Config.GAME_MIN_PLAYERS;
 	}
 	
 	public void moveToNextPlayer() {
@@ -291,12 +290,11 @@ public class GameState {
 
 	private int findNextPlayer() {
 		for( int currId = mTurnId; currId < mTurnId + mPlayers.size(); ++mTurnId ) {
-			if( mPlayers.get(currId).getCurrentState() instanceof NotMyTurnState )
+			if( mPlayers.get(currId % mPlayers.size()).getCurrentState() instanceof NotMyTurnState )
 				return currId;
 		}
-		
-		// FIXME exception to be handled
-		return mTurnId;
+
+		throw new RuntimeException("No players. What's happening?");
 	}
 	
 	public void addToOutputQueue( NetworkPacket pkt ) {
@@ -304,7 +302,7 @@ public class GameState {
 	}
 	
 	public void addToOutputQueue( GameCommand command ) {
-		mOutputQueue.add( new NetworkPacket( command, (Serializable[])null ) );
+		mOutputQueue.add( new NetworkPacket( command ) );
 	}
 
 }

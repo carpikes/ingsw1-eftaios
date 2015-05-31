@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 18, 2015
  */
-public class Controller implements OnReceiveListener {
+public class GameController implements OnReceiveListener {
     /** The view */
     private View mView;
     
@@ -29,7 +29,7 @@ public class Controller implements OnReceiveListener {
     private boolean mStopEvent = false;
     
     /** The constructor */
-    public Controller() {
+    public GameController() {
         mQueue = new LinkedBlockingQueue<NetworkPacket>();
     }
     
@@ -44,9 +44,10 @@ public class Controller implements OnReceiveListener {
         
         int conn = mView.askConnectionType(connList);
         mConn = ConnectionFactory.getConnection(conn);
-        mConn.setOnReceiveListener(this);
         if(mConn == null)
             return;
+        
+        mConn.setOnReceiveListener(this);
         
         String host = mView.askHost();
         if(host == null || host.trim().length() == 0)
