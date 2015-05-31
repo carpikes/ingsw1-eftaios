@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -252,7 +253,7 @@ public class GameState {
         return gameManager;
     }
     
-    public ArrayList<Point> getCellsWithMaxDistance() {
+    public Set<Point> getCellsWithMaxDistance() {
         return getMap().getCellsWithMaxDistance( 
                 getCurrentPlayer().getCurrentPosition(), 
                 getCurrentPlayer().getMaxMoves()

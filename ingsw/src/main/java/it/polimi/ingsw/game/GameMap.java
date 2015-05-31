@@ -150,16 +150,36 @@ public class GameMap implements Serializable {
      * @param maxMoves
      * @return
      */
-    public ArrayList<Point> getCellsWithMaxDistance(Point currentPosition,
+    public Set<Point> getCellsWithMaxDistance(Point currentPosition,
             int maxMoves) {
-        /*Set<Point> sectors = new HashSet< >();
-        Queue<Point> frontier = new LinkedList<>();
+        Set<Point> sectors = new HashSet< >();
+        Queue<Point> frontier = new LinkedList<Point>();
         
+        Point currentPoint;
+        Point delimiter = null;
         
+        frontier.add( currentPosition );
+        frontier.add( delimiter );
         
-        return sectors;*/
-    	
-    	return null;
+        while( maxMoves > 0 ) {
+        	
+        	do {
+        		currentPoint = frontier.poll();
+        		
+        		if( currentPoint != null ) {
+        			sectors.add( currentPoint );
+        			
+        			frontier.addAll( getNeighbourAccessibleSectors( currentPosition ) );
+        			frontier.add( delimiter );
+        		}
+        	} while( currentPoint != null );
+        	
+        	--maxMoves;
+        }
+        
+        sectors.remove( currentPosition );
+        
+        return sectors;
     }
 
     /**
@@ -181,7 +201,7 @@ public class GameMap implements Serializable {
     	for( int i = -1; i <= 1; ++i ) {
     		for( int j = -1; j <= 1; ++j ) 
     			// exclude the - sectors
-    			if( i+j != 0 || j == 1 ) {
+    			if( i == 1 || ((i+j)!=0 && (i+j)!=-2) ) {
     				Point p = new Point(x+i, y+j);
     				if( this.isWithinBounds( p ) && this.getSectorAt(p).isCrossable() )
     					sectors.add(p);

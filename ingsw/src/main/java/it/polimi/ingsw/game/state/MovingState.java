@@ -15,8 +15,8 @@ import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class MovingState extends PlayerState {
 
     private static final Logger LOG = Logger.getLogger(MovingState.class.getName());
-    private ArrayList< Point > availableSectors;
+    private Set< Point > availableSectors;
     
     public MovingState(GameState state) {
         super(state);
