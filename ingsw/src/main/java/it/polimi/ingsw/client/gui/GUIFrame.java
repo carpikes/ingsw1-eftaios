@@ -88,13 +88,20 @@ public class GUIFrame extends JFrame {
         mMapCanvas.setEnabledCells(null);
     }
     
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         GUIFrame f = new GUIFrame();
         GameMap map = GameMap.createFromId(1);
         f.switchToMap(map, map.getStartingPoint(true));
         f.setVisible(true);
-        Set<Point> pnt = map.getCellsWithMaxDistance(map.getStartingPoint(true), 2); 
-        f.enableMapCells(pnt);
+        
+        while(true) {
+            Point chosen = f.getChosenMapCell();
+            if(chosen != null) {
+                Set<Point> pnt = map.getCellsWithMaxDistance(chosen, 1);
+                f.enableMapCells(pnt);
+            }
+            Thread.sleep(100);
+        }
     }
 
     public void setPlayerPosition(Point startingPoint) {

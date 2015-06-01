@@ -193,12 +193,12 @@ public class MapCanvasPanel extends JPanel {
     private void drawHexagons(Graphics2D g2d) { 
         DrawingMode dm;
         // Draw columns first since it's easier to do
-        for( int col = 0; col < GameMap.COLUMNS; ++col ) {
-            for( int row = 0; row < GameMap.ROWS; ++ row ) {
+        for( int i = 0; i < GameMap.ROWS; ++i ) {
+            for( int j = 0; j < GameMap.COLUMNS; ++j ) {
             	// draw only if it is a valid sector
-                Sector sector = gameMap.getSectorAt(row, col);
+                Sector sector = gameMap.getSectorAt(j, i);
                 if( sector.getId() != SectorBuilder.NOT_VALID) {
-                    Point pos = new Point(row, col);
+                    Point pos = new Point(j, i);
                     dm = DrawingMode.NORMAL;
                     if(sector.equals(mPlayerPosition)) {
                         boolean a = true;
@@ -238,13 +238,13 @@ public class MapCanvasPanel extends JPanel {
         Point2D.Double startPoint;
         
         // calculate point coordinates of upper-left corner of containing rectangle
-        startPoint =  new Point2D.Double(hexWidth*3/4*position.y, marginHeight + position.x * hexHeight + ( isEvenColumn(position.y)  ? 0 : hexHeight/2 ) );
+        startPoint =  new Point2D.Double(hexWidth*3/4*position.x, marginHeight + position.y * hexHeight + ( isEvenColumn(position.x)  ? 0 : hexHeight/2 ) );
         
         // create hexagon: center of it is distant (hexWidth/2, hexHeight/2) from the starting point
-        hexagons[position.x][position.y] = HexagonFactory.createHexagon(new Point2D.Double(startPoint.getX() + hexWidth/2, startPoint.getY() + hexHeight/2), hexWidth/2);
+        hexagons[position.y][position.x] = HexagonFactory.createHexagon(new Point2D.Double(startPoint.getX() + hexWidth/2, startPoint.getY() + hexHeight/2), hexWidth/2);
 
         // fill the shape according to sector type
-        currentSector = gameMap.getSectorAt(position.x, position.y);
+        currentSector = gameMap.getSectorAt(position);
         
         // TODO: add other drawing modes
         // some tweaks on color according to drawing mode
@@ -268,12 +268,12 @@ public class MapCanvasPanel extends JPanel {
                 throw new DrawingModeException("Drawing mode not supported");
         }
         
-        g2d.fill(hexagons[position.x][position.y].getPath());
+        g2d.fill(hexagons[position.y][position.x].getPath());
         
         // border
         if(drawStroke) {
             g2d.setColor(Color.DARK_GRAY);
-            g2d.draw(hexagons[position.x][position.y].getPath());
+            g2d.draw(hexagons[position.y][position.x].getPath());
         }
     }
     
@@ -297,8 +297,11 @@ public class MapCanvasPanel extends JPanel {
     }
 
     public Point getChosenMapCell() {
-        if(mClickedOnCell)
-            return currentHexCoordinates;
+        if(mClickedOnCell) {
+            mClickedOnCell = false;
+            if(currentHexCoordinates != null && (mEnabledCells == null || mEnabledCells.contains(currentHexCoordinates)))
+                return currentHexCoordinates;
+        }
         return null;
     }
 
@@ -312,8 +315,8 @@ public class MapCanvasPanel extends JPanel {
         for( int i = 0; i < hexagons.length; ++i )
             for( int j = 0; j < hexagons[i].length; ++j )
                 if( hexagons[i][j] != null && hexagons[i][j].getPath().contains( p ))
-                    if(gameMap.getSectorAt(i, j).isCrossable())
-                        return new Point( i, j );
+                    if(gameMap.getSectorAt(j, i).isCrossable())
+                        return new Point( j, i );
                     else
                         return null;
         

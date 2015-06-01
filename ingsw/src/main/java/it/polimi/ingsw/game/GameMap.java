@@ -51,6 +51,7 @@ public class GameMap implements Serializable {
 	    Sector[][] sectors = new Sector[ROWS][COLUMNS];
 	    String title = null;
 	    Point human=null, alien=null;
+	    
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
         Iterator<String> iterator = lines.iterator();
         
@@ -82,8 +83,8 @@ public class GameMap implements Serializable {
 		return new GameMap(null, null, null, null);
 	}
 	
-	public Sector getSectorAt( int i, int j ) {
-	    return board[i][j];
+	public Sector getSectorAt( int x, int y ) {
+	    return board[y][x];
 	}
 	
 	public Sector getSectorAt( Point point ) {
@@ -95,7 +96,7 @@ public class GameMap implements Serializable {
      * @return
      */
     public boolean isWithinBounds(Point p) {
-        return ( p.x >= 0 && p.y >= 0 && p.x < ROWS && p.y < COLUMNS ); 
+        return ( p.x >= 0 && p.y >= 0 && p.x < COLUMNS && p.y < ROWS ); 
     }
 
     /** Calculate how many hexagons are there between A and B
@@ -149,7 +150,7 @@ public class GameMap implements Serializable {
      */
     public void setType(Point point, int type) {
         if( isWithinBounds(point) ) {
-            board[point.x][point.y] = SectorBuilder.getSectorFor(type);
+            board[point.y][point.x] = SectorBuilder.getSectorFor(type);
         }
     }
 
@@ -194,10 +195,14 @@ public class GameMap implements Serializable {
 
     /**
      * Get neighbour cells starting from the given position. Note that only dangerous, not dangerous and hatch sectors
-     * are given. Remember that in a mxn matrix, these (x) are the sectors accessible from O:
+     * are given. Remember that in a mxn matrix, these (x) are the sectors accessible from O is the column is even:
      * - x -
      * x O x
      * x x x
+     * otherwise, if the column is odd:
+     * x x x
+     * x O x
+     * - x -
      * @param currentPosition The starting sector
      * @return A list of all neighbours
      */
@@ -207,15 +212,23 @@ public class GameMap implements Serializable {
     	int y = currentPosition.y;
     	
     	ArrayList<Point> sectors = new ArrayList< >();
-    	
+
     	for( int i = -1; i <= 1; ++i ) {
-    		for( int j = -1; j <= 1; ++j ) 
-    			// exclude the - sectors
-    			if( (i == -1 && j == 0) || (i == 0 && j != 0) || (i == 1)) {
-    				Point p = new Point(x+i, y+j); //FIXME this should be (x+j;y+i) (i == rows, j == cols)
+    		for( int j = -1; j <= 1; ++j ) {
+    		    
+                // exclude the - sectors
+    		    boolean isValid = (i == 0 && j != 0);
+    		    if(currentPosition.x % 2 == 0) 
+    		        isValid |= (i == 1 && j == 0) || (i == -1);
+    		    else
+    		        isValid |= (i == -1 && j == 0) || (i == 1);
+    		    
+    			if( isValid ) {
+    				Point p = new Point(x+j, y+i);
     				if( this.isWithinBounds( p ) && this.getSectorAt(p).isCrossable() )
     					sectors.add(p);
     			}
+    		}
     	}
     	
     	return sectors;
