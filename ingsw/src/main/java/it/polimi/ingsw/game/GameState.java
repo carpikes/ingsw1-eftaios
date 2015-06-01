@@ -115,7 +115,32 @@ public class GameState {
     // TODO: refactoring of the following methods
     /* -----------------------------------------------*/
     
-
+    /**
+     * Method invoked when a player draws an object card.  
+     * @return Next PlayerState for current player
+     */
+    public PlayerState getObjectCard( ) {
+        GamePlayer player = getCurrentPlayer();
+        ObjectCard newCard = ObjectCard.getRandomCard();
+        PlayerState nextState;
+        
+        // Send card just obtained
+        player.getObjectCards().add( newCard );
+        getCurrentPlayer().sendPacket( new NetworkPacket(GameCommand.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
+        
+        // We're ok, proceed
+        if( player.getNumberOfCards() < Config.MAX_NUMBER_OF_OBJ_CARDS ) {
+            this.addToOutputQueue( GameCommand.INFO_GOT_A_NEW_OBJ_CARD );
+            nextState = new EndingTurnState(this);
+        } else {
+            // tell the user he has to drop or use a card
+            player.sendPacket( GameCommand.CMD_SC_DISCARD_OBJECT_CARD );
+            nextState = new DiscardingObjectCardState(this);
+        }
+        
+        return nextState;
+    }
+    
 	/** Method invoked when someone sends a CMD_CS_USE_OBJ_CARD command. Invoke the correct underlying method 
      * (attack() for Attack card..., moveTo() for Teleport card...)
      * @param objectCard The card the user wants to use
@@ -174,29 +199,6 @@ public class GameState {
         if( getMap().isWithinBounds(src) && !src.equals(dest) ) {
         	this.getCurrentPlayer().setCurrentPosition(dest);
         }
-    }
-    
-    /**
-     * Method invoked when a player draws an object card.  
-     * @return Next PlayerState for current player
-     */
-    public PlayerState getObjectCard( ) {
-        GamePlayer player = getCurrentPlayer();
-        ObjectCard newCard = ObjectCard.getRandomCard();
-        PlayerState nextState;
-        
-        if( player.getNumberOfCards() < Config.MAX_NUMBER_OF_OBJ_CARDS ) {
-            player.getObjectCards().add( newCard );
-            
-            getCurrentPlayer().sendPacket( new NetworkPacket(GameCommand.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
-            this.addToOutputQueue( GameCommand.INFO_GOT_A_NEW_OBJ_CARD );
-            nextState = new EndingTurnState(this);
-        } else {
-            player.sendPacket( GameCommand.CMD_SC_DISCARD_OBJECT_CARD );
-            nextState = new DiscardingObjectCardState(this);
-        }
-        
-        return nextState;
     }
     
     /** Invoked in SpotLightCardState. It lists all people in the set position and in the 6 surrounding it.

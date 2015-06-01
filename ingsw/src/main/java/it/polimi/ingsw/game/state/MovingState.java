@@ -50,18 +50,7 @@ public class MovingState extends PlayerState {
             if( packet.getOpcode() == GameCommand.CMD_CS_MOVE ) {
                 Point chosenPos = (Point)packet.getArgs()[0];
                 if(availableSectors.contains(chosenPos)) {
-                    gameState.rawMoveTo(player.getCurrentPosition(), chosenPos);
-                    
-                    // notify all players that current players has just moved
-                    gameState.addToOutputQueue( GameCommand.INFO_HAS_MOVED );
-                    
-                    Sector sector = map.getSectorAt( player.getCurrentPosition() );
-                    // If we are on an hatch sector, draw an hatch card and act accordingly
-                    if( sector.getId() == SectorBuilder.HATCH ) {
-                        nextState = drawHatchCard( gameState );
-                    } else {
-                        nextState =  new MoveDoneState(gameState);
-                    }
+                    nextState = handleMove(player, map, chosenPos);
                 } else {
                     //invalid position
                     player.sendPacket(GameCommand.CMD_SC_MOVE_INVALID);
@@ -73,6 +62,24 @@ public class MovingState extends PlayerState {
             }
         }
         
+        return nextState;
+    }
+
+    private PlayerState handleMove(GamePlayer player, GameMap map,
+            Point chosenPos) {
+        PlayerState nextState;
+        gameState.rawMoveTo(player.getCurrentPosition(), chosenPos);
+        
+        // notify all players that current players has just moved
+        gameState.addToOutputQueue( GameCommand.INFO_HAS_MOVED );
+        
+        Sector sector = map.getSectorAt( player.getCurrentPosition() );
+        // If we are on an hatch sector, draw an hatch card and act accordingly
+        if( sector.getId() == SectorBuilder.HATCH ) {
+            nextState = drawHatchCard( gameState );
+        } else {
+            nextState =  new MoveDoneState(gameState);
+        }
         return nextState;
     }
 

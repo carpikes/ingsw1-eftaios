@@ -60,7 +60,7 @@ public class MoveDoneState extends PlayerState {
                     // NOT DANGEROUS: either attack or pass
                     if( packet.getOpcode() == GameCommand.CMD_CS_NOT_MY_TURN ) {
                         nextState = new NotMyTurnState(gameState);
-                    } else if( packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
+                    } else if( player.isAlien() && packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
                         gameState.attack( player.getCurrentPosition() );
                         nextState = new EndingTurnState(gameState);
                     } else {
