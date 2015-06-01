@@ -11,12 +11,10 @@ public class SilenceCard extends DangerousCard {
 
 	@Override
 	public PlayerState doAction(GameState gameState) {
-	    GamePlayer player = gameState.getCurrentPlayer();
-	    
-	    player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.SILENCE) );
-        gameState.addToOutputQueue( GameCommand.INFO_SILENCE );
+	    gameState.sendPacketToCurrentPlayer( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.SILENCE) );
+        gameState.broadcastPacket( GameCommand.INFO_SILENCE );
         
-        return new EndingTurnState(gameState);
+        return new EndingTurnState(gameState, gameState.getCurrentPlayer());
 	}
 
 }

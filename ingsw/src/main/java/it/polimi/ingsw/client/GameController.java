@@ -138,16 +138,17 @@ public class GameController implements OnReceiveListener {
                     case CMD_SC_LOSE:
                         break;
                     case CMD_SC_MOVE_DONE:
-                        break;
-                    case CMD_SC_MOVE_INVALID:
+                        
                         break;
                     case CMD_SC_OBJECT_CARD_OBTAINED:
                         break;
+                    case CMD_SC_MOVE_INVALID:
                     case CMD_SC_START_TURN:
                         Point curPos = (Point) cmd.getArgs()[0];
                         int maxMoves = (int) cmd.getArgs()[1];
                         Set<Point> enabledCells = mGameInfo.getMap().getCellsWithMaxDistance(curPos, maxMoves);
                         Point pos = mView.askMapPosition(enabledCells);
+                        mConn.sendPacket(new NetworkPacket(GameCommand.CMD_CS_MOVE, pos));
                         break;
                     case CMD_SC_UPDATE_LOCAL_INFO:
                         break;

@@ -4,6 +4,7 @@
 package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.player.GamePlayer;
 
 /**
  * @author Michele
@@ -11,8 +12,8 @@ import it.polimi.ingsw.game.GameState;
  */
 public class NotMyTurnState extends PlayerState {
 
-    public NotMyTurnState(GameState state) {
-        super(state);
+    public NotMyTurnState(GameState state, GamePlayer player) {
+        super(state, player);
         
         state.moveToNextPlayer();
     }

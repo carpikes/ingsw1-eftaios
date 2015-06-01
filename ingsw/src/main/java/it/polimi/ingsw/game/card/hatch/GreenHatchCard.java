@@ -8,7 +8,7 @@ public class GreenHatchCard extends HatchCard {
 
 	@Override
 	public PlayerState getNextState(GameState gameState) {
-	    return new WinnerState(gameState);
+	    return new WinnerState(gameState, gameState.getCurrentPlayer());
 	}
 
 }

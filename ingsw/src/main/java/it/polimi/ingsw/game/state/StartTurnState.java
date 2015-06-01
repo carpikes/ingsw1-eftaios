@@ -18,10 +18,9 @@ import java.util.ArrayList;
  */
 public class StartTurnState extends PlayerState {
 
-    public StartTurnState(GameState state) {
-        super(state);
-        
-        GamePlayer player = gameState.getCurrentPlayer();        
+    public StartTurnState(GameState state, GamePlayer player) {
+        super(state, player);
+      
         player.resetValues();
         player.incrementMoveCounter();
         
@@ -29,7 +28,7 @@ public class StartTurnState extends PlayerState {
         	state.endGame();
         } else {
         	// tell everybody I'm starting playing!
-        	state.addToOutputQueue( GameCommand.INFO_START_TURN );
+        	state.broadcastPacket( GameCommand.INFO_START_TURN );
         }
     }
 
@@ -38,11 +37,11 @@ public class StartTurnState extends PlayerState {
      */
     @Override
     public PlayerState update() {
-        GamePlayer player = gameState.getCurrentPlayer();
+        mGameState.sendPacketToCurrentPlayer( 
+                new NetworkPacket(GameCommand.CMD_SC_START_TURN, mGamePlayer.getCurrentPosition(), mGamePlayer.getMaxMoves()) 
+        );
         
-        player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_START_TURN, player.getCurrentPosition(), player.getMaxMoves()) );
-        
-        return new MovingState(gameState);
+        return new MovingState(mGameState, mGamePlayer);
     }
     
     @Override

@@ -7,6 +7,7 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.player.GamePlayer;
 
 import java.awt.Point;
 
@@ -16,8 +17,8 @@ import java.awt.Point;
  */
 public class SpotlightCardState extends PlayerState {
 
-    public SpotlightCardState(GameState state) {
-        super(state);
+    public SpotlightCardState(GameState state, GamePlayer player) {
+        super(state, player);
     }
 
     /* (non-Javadoc)
@@ -25,15 +26,15 @@ public class SpotlightCardState extends PlayerState {
      */
     @Override
     public PlayerState update() {
-        NetworkPacket packet = gameState.getPacketFromQueue();
+        NetworkPacket packet = mGameState.getPacketFromQueue();
         
         PlayerState nextState = this;
         if( packet != null ) {
             if( packet.getOpcode() == GameCommand.CMD_CS_SET_POSITION ) {
-                gameState.light( (Point)packet.getArgs()[0] );
+                mGameState.light( (Point)packet.getArgs()[0] );
                 
-                nextState = gameState.getCurrentPlayer().getStateBeforeSpotlightCard();
-                gameState.getCurrentPlayer().setStateBeforeSpotlightCard(null);
+                nextState = mGamePlayer.getStateBeforeSpotlightCard();
+                mGamePlayer.setStateBeforeSpotlightCard(null);
             } else {
                 throw new IllegalStateOperationException("You can only choose a position here. Discarding packet.");
             }

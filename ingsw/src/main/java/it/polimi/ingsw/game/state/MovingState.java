@@ -15,7 +15,6 @@ import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.awt.Point;
-import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -28,8 +27,8 @@ public class MovingState extends PlayerState {
     private static final Logger LOG = Logger.getLogger(MovingState.class.getName());
     private Set< Point > availableSectors;
     
-    public MovingState(GameState state) {
-        super(state);
+    public MovingState(GameState state, GamePlayer player) {
+        super(state, player);
         availableSectors = state.getCellsWithMaxDistance();
     }
     
@@ -38,9 +37,8 @@ public class MovingState extends PlayerState {
      */
     @Override
     public PlayerState update() {
-        GamePlayer player = gameState.getCurrentPlayer();
-        NetworkPacket packet = gameState.getPacketFromQueue();
-        GameMap map = gameState.getMap();
+        NetworkPacket packet = mGameState.getPacketFromQueue();
+        GameMap map = mGameState.getMap();
         
         PlayerState nextState = this;
         
@@ -48,15 +46,17 @@ public class MovingState extends PlayerState {
         if( packet != null ) {
             // If the user said he wanted to move..
             if( packet.getOpcode() == GameCommand.CMD_CS_MOVE ) {
-                Point chosenPos = (Point)packet.getArgs()[0];
-                if(availableSectors.contains(chosenPos)) {
-                    nextState = handleMove(player, map, chosenPos);
-                } else {
-                    //invalid position
-                    player.sendPacket(GameCommand.CMD_SC_MOVE_INVALID);
-                }
+                Object obj = packet.getArgs()[0];
+                if(obj != null && obj instanceof Point) {
+                    Point chosenPos = (Point) obj;
+                    if(chosenPos != null && availableSectors.contains(chosenPos)) {
+                        nextState = handleMove(mGamePlayer, map, chosenPos);
+                    } else // invalid position
+                        mGameState.sendPacketToCurrentPlayer(GameCommand.CMD_SC_MOVE_INVALID);
+                } else
+                    mGameState.sendPacketToCurrentPlayer(GameCommand.CMD_SC_MOVE_INVALID);
             } else if( packet.getOpcode() == GameCommand.CMD_CS_USE_OBJ_CARD ) {
-                gameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
+                mGameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
             } else {
                 throw new IllegalStateOperationException("You can only move. Discarding command.");
             }
@@ -68,28 +68,27 @@ public class MovingState extends PlayerState {
     private PlayerState handleMove(GamePlayer player, GameMap map,
             Point chosenPos) {
         PlayerState nextState;
-        gameState.rawMoveTo(player.getCurrentPosition(), chosenPos);
+        mGameState.rawMoveTo(player.getCurrentPosition(), chosenPos);
         
         // notify all players that current players has just moved
-        gameState.addToOutputQueue( GameCommand.INFO_HAS_MOVED );
+        mGameState.broadcastPacket( GameCommand.INFO_HAS_MOVED );
         
         Sector sector = map.getSectorAt( player.getCurrentPosition() );
         // If we are on an hatch sector, draw an hatch card and act accordingly
         if( sector.getId() == SectorBuilder.HATCH ) {
-            nextState = drawHatchCard( gameState );
+            nextState = drawHatchCard( mGameState );
         } else {
-            nextState =  new MoveDoneState(gameState);
+            nextState =  new MoveDoneState(mGameState, mGamePlayer);
         }
         return nextState;
     }
 
     private PlayerState drawHatchCard(GameState gameState) {
-        GamePlayer player = gameState.getCurrentPlayer();
         GameMap map = gameState.getMap();
         
         // set current cell as no more accessible
-        map.setType( player.getCurrentPosition(), SectorBuilder.USED_HATCH );
-        gameState.addToOutputQueue( new NetworkPacket( GameCommand.INFO_USED_HATCH, player.getCurrentPosition() ) );
+        map.setType( mGamePlayer.getCurrentPosition(), SectorBuilder.USED_HATCH );
+        gameState.broadcastPacket( new NetworkPacket( GameCommand.INFO_USED_HATCH, mGamePlayer.getCurrentPosition() ) );
         
         return HatchCard.getRandomCard().getNextState( gameState );
     }

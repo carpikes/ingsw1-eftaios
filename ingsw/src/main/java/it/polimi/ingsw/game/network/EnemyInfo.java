@@ -1,6 +1,12 @@
 package it.polimi.ingsw.game.network;
 
-public class EnemyInfo {
+import java.io.Serializable;
+
+public class EnemyInfo implements Serializable{
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private String mUsername;
     private int mNumberOfCards;
     

@@ -110,9 +110,12 @@ public class GUIView implements View {
     public Point askMapPosition(Set<Point> enabledCells) {
         mMainFrame.enableMapCells(enabledCells);
         Point p;
-        do {
-            p = mMainFrame.getChosenMapCell();
-        } while( p == null );
+        try {
+            do {
+                p = mMainFrame.getChosenMapCell();
+                Thread.sleep(150);
+            } while( p == null );
+        } catch( InterruptedException e) {}
         mMainFrame.resetChosenMapCell();
         return null;
     }

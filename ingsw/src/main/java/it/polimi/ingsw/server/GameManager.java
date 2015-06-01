@@ -271,4 +271,8 @@ public class GameManager {
     public Client getPlayerConnection(int i) {
         return mClients.get(i);
     }
+
+    public void sendDirectPacket(int id, NetworkPacket networkPacket) {
+        mClients.get(id).sendPacket(networkPacket);
+    }
 }

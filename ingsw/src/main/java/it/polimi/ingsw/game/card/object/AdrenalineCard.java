@@ -16,7 +16,7 @@ public class AdrenalineCard extends ObjectCard {
 		if( player.getCurrentState() instanceof MovingState ) {
             player.setAdrenaline(true);
         } else {
-            player.sendPacket( GameCommand.CMD_SC_ADRENALINE_WRONG_STATE ); 
+            gameState.sendPacketToCurrentPlayer( GameCommand.CMD_SC_ADRENALINE_WRONG_STATE ); 
         }
 		
 		return player.getCurrentState();

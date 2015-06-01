@@ -12,8 +12,8 @@ public class NoiseInYourSectorCard extends DangerousCard {
 	public PlayerState doAction(GameState gameState) {
 	    GamePlayer player = gameState.getCurrentPlayer();
 	    
-	    player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_YOUR_SECTOR) );
-        gameState.addToOutputQueue( new NetworkPacket(GameCommand.INFO_NOISE, player.getCurrentPosition()) );
+	    gameState.sendPacketToCurrentPlayer( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_YOUR_SECTOR) );
+        gameState.broadcastPacket( new NetworkPacket(GameCommand.INFO_NOISE, player.getCurrentPosition()) );
         
         return gameState.getObjectCard( );
 	}

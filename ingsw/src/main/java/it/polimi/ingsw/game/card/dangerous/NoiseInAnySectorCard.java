@@ -11,10 +11,8 @@ public class NoiseInAnySectorCard extends DangerousCard {
 
 	@Override
 	public PlayerState doAction(GameState gameState) {
-	    GamePlayer player = gameState.getCurrentPlayer();
-	    
-	    player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_ANY_SECTOR) );
-        return new NoiseInAnySectorState(gameState);
+	    gameState.sendPacketToCurrentPlayer(new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_ANY_SECTOR) );
+        return new NoiseInAnySectorState(gameState, gameState.getCurrentPlayer());
 	}
 
 }

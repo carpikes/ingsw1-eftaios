@@ -1,11 +1,13 @@
 package it.polimi.ingsw.game.player;
 
 import it.polimi.ingsw.game.GameCommand;
+import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.object.DefenseCard;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
-import it.polimi.ingsw.server.Client;
+import it.polimi.ingsw.game.state.StartTurnState;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.ArrayList;
 public class GamePlayer {
     
     /** Position on board */
-    private Point position;
+    private Point mPosition;
     
     /** Defense enabled? (defense card used or not) */
     private boolean defense;
@@ -41,14 +43,14 @@ public class GamePlayer {
     /** State before using SpotlightCard */
     private PlayerState stateBeforeSpotlightCard;
     
-    /** Connection to client */
-    private Client connection;
-    
     /** ID in game */
-    private int id;
+    private int mId;
     
     /** Number of current move */
     private int moveCounter;
+
+    /** The game manager */
+    private GameState mGame;
     
     public int getMoveCounter() {
 		return moveCounter;
@@ -58,15 +60,20 @@ public class GamePlayer {
 		++moveCounter;
 	}
 
-	public GamePlayer( int id, Role playerRole, Point startPosition, Client connection) {
+	public GamePlayer( int id, Role playerRole, Point startPosition, GameState game, boolean isMyTurn) {
         resetValues();
     	objectCards = new ArrayList<>();
         role = playerRole;
 
-        position = startPosition; 
-        this.connection = connection;
-        this.id = id; 
+        mPosition = startPosition; 
+        mId = id; 
         moveCounter = 0;
+        mGame = game;
+        
+        if(isMyTurn)
+            setCurrentState(new StartTurnState(game, this));
+        else
+            setCurrentState(new NotMyTurnState(game, this));
     }
 
     public PlayerState getCurrentState() {
@@ -89,7 +96,7 @@ public class GamePlayer {
      * @return
      */
     public Point getCurrentPosition() {
-        return position;
+        return mPosition;
     }
 
     /**
@@ -104,7 +111,7 @@ public class GamePlayer {
      * @param destination
      */
     public void setCurrentPosition(Point position) {
-        this.position = position;
+        this.mPosition = position;
     }
 
     /**
@@ -136,24 +143,6 @@ public class GamePlayer {
         return role instanceof Human;
     }
 
-    public Client getConnection() {
-        return connection;
-    }
-
-    /**
-     * @param i
-     */
-    public void sendPacket(GameCommand opcode) {
-        connection.sendPacket(opcode);
-    }
-
-    /**
-     * @param networkPacket
-     */
-    public void sendPacket(NetworkPacket networkPacket) {
-        connection.sendPacket(networkPacket);
-    }
-
     public ArrayList<ObjectCard> getObjectCards() {
         return objectCards;
     }
@@ -174,7 +163,7 @@ public class GamePlayer {
      * @return
      */
     public int getId() {
-        return id;
+        return mId;
     }
     
     // TODO: AGGIUNGERE IL CONTROLLO PRIMA DI OGNI PRELIEVO CARTA 
@@ -203,6 +192,8 @@ public class GamePlayer {
     }
 
 	private boolean hasDefenseCard() {
+	    if(objectCards == null)
+	        return false;
 		for( ObjectCard card : objectCards ) 
 			if( card instanceof DefenseCard )
 				return true;

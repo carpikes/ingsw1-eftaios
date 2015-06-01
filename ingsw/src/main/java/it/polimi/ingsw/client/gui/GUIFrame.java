@@ -97,7 +97,7 @@ public class GUIFrame extends JFrame {
         while(true) {
             Point chosen = f.getChosenMapCell();
             if(chosen != null) {
-                Set<Point> pnt = map.getCellsWithMaxDistance(chosen, 1);
+                Set<Point> pnt = map.getCellsWithMaxDistance(chosen, 2);
                 f.enableMapCells(pnt);
             }
             Thread.sleep(100);

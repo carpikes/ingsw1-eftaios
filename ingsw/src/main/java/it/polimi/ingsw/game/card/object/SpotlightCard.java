@@ -13,7 +13,7 @@ public class SpotlightCard extends ObjectCard {
 		GamePlayer player = gameState.getCurrentPlayer();
         player.setStateBeforeSpotlightCard( player.getCurrentState() );
         
-        return new SpotlightCardState( gameState );
+        return new SpotlightCardState( gameState, gameState.getCurrentPlayer() );
 	}
 
 }

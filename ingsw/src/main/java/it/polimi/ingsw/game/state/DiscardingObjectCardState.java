@@ -9,6 +9,7 @@ import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.player.GamePlayer;
 
 /**
  * @author Michele
@@ -16,8 +17,8 @@ import it.polimi.ingsw.game.network.NetworkPacket;
  */
 public class DiscardingObjectCardState extends PlayerState {
 
-    public DiscardingObjectCardState(GameState state) {
-        super(state);
+    public DiscardingObjectCardState(GameState state, GamePlayer player) {
+        super(state, player);
         // TODO Auto-generated constructor stub
     }
 
@@ -26,11 +27,11 @@ public class DiscardingObjectCardState extends PlayerState {
      */
     @Override
     public PlayerState update() {
-        NetworkPacket packet = gameState.getPacketFromQueue();
+        NetworkPacket packet = mGameState.getPacketFromQueue();
 
         PlayerState nextState = this;
         if( packet != null ) {
-            if ( gameState.getCurrentPlayer().isObjectCardUsed() ) {
+            if ( mGamePlayer.isObjectCardUsed() ) {
                 if( packet.getOpcode() == GameCommand.CMD_SC_DISCARD_OBJECT_CARD ) {
                     nextState = discardObjectCard(packet, nextState);
                 } else {
@@ -40,7 +41,7 @@ public class DiscardingObjectCardState extends PlayerState {
                 if( packet.getOpcode() == GameCommand.CMD_SC_DISCARD_OBJECT_CARD ) {
                     nextState = discardObjectCard(packet, nextState);
                 } else if( packet.getOpcode() == GameCommand.CMD_CS_USE_OBJ_CARD ) {
-                    nextState = gameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
+                    nextState = mGameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
                 } else {
                     throw new IllegalStateOperationException("You can only choose a card to use or discard. Discarding packet.");
                 }
@@ -54,8 +55,8 @@ public class DiscardingObjectCardState extends PlayerState {
             PlayerState nextState) {
         int index = (int)packet.getArgs()[0];
         if( index > 0 && index <= Config.MAX_NUMBER_OF_OBJ_CARDS ) { // <=, not <, because here we have a card over the limit 
-            gameState.getCurrentPlayer().getObjectCards().remove(index);
-            nextState = new EndingTurnState(gameState);
+            mGamePlayer.getObjectCards().remove(index);
+            nextState = new EndingTurnState(mGameState, mGamePlayer);
         } else {
             throw new IllegalStateOperationException("Wrong index for card. Discarding packet.");
         }

@@ -22,26 +22,28 @@ import it.polimi.ingsw.server.GameManager;
 import java.awt.Point;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Class representing the current state of the game. It is the beating heart of the game: it holds
- * a list of all players, the gameManager and an event queue of messages coming from the clients.
+ * a list of all players, the mGameManager and an event queue of messages coming from the clients.
  * @author Michele Albanese (michele.albanese@mail.polimi.it) 
  * @since  May 21, 2015
  */
 public class GameState {
     private static final Logger LOG = Logger.getLogger(GameState.class.getName());
     
-    private final GameManager gameManager;
+    private final GameManager mGameManager;
     
     private final Queue<NetworkPacket> mInputQueue;
-    private final Queue<NetworkPacket> mOutputQueue;
+    private final Queue<Map.Entry<Integer,NetworkPacket>> mOutputQueue;
     
     private final GameMap mMap;
     private ArrayList<GamePlayer> mPlayers;
@@ -64,7 +66,7 @@ public class GameState {
         }
         mMap = tmpMap;
         
-        this.gameManager = gameManager;
+        mGameManager = gameManager;
         
         mInputQueue = new LinkedList<>();
         mOutputQueue = new LinkedList<>();
@@ -74,13 +76,8 @@ public class GameState {
         
         for(int i = 0;i<gameManager.getNumberOfPlayers(); i++) {
             Role role = roles.get(i);
-            GamePlayer player = new GamePlayer(i, role, mMap.getStartingPoint((role instanceof Human)), gameManager.getPlayerConnection(i));
+            GamePlayer player = new GamePlayer(i, role, mMap.getStartingPoint((role instanceof Human)), this, (i == mTurnId));
             mPlayers.add(player);
-            
-            if(i == mTurnId)
-                player.setCurrentState(new StartTurnState(this));
-            else
-                player.setCurrentState(new NotMyTurnState(this));
         }
     }
     
@@ -88,6 +85,9 @@ public class GameState {
      * Method called by the server hosting the games. According to the current player's state, it lets the game flow.
      */
     public void update() {
+        if(!mGameManager.isRunning())
+            return;
+        
         GamePlayer player = getCurrentPlayer();
                 
         try {
@@ -105,8 +105,11 @@ public class GameState {
     private void flushOutputQueue() {
 		if( !mOutputQueue.isEmpty() ) {
 			
-			for( NetworkPacket pkt : mOutputQueue )
-				gameManager.broadcastPacket(pkt);
+			for( Map.Entry<Integer, NetworkPacket> pkt : mOutputQueue )
+			    if(pkt.getKey() == -1)
+			        mGameManager.broadcastPacket(pkt.getValue());
+			    else
+			        mGameManager.sendDirectPacket(pkt.getKey(), pkt.getValue());
 			
 			mOutputQueue.clear();
 		}
@@ -126,16 +129,16 @@ public class GameState {
         
         // Send card just obtained
         player.getObjectCards().add( newCard );
-        getCurrentPlayer().sendPacket( new NetworkPacket(GameCommand.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
+        sendPacketToCurrentPlayer( new NetworkPacket(GameCommand.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
         
         // We're ok, proceed
         if( player.getNumberOfCards() < Config.MAX_NUMBER_OF_OBJ_CARDS ) {
-            this.addToOutputQueue( GameCommand.INFO_GOT_A_NEW_OBJ_CARD );
-            nextState = new EndingTurnState(this);
+            broadcastPacket( GameCommand.INFO_GOT_A_NEW_OBJ_CARD );
+            nextState = new EndingTurnState(this, getCurrentPlayer());
         } else {
             // tell the user he has to drop or use a card
-            player.sendPacket( GameCommand.CMD_SC_DISCARD_OBJECT_CARD );
-            nextState = new DiscardingObjectCardState(this);
+            sendPacketToCurrentPlayer( GameCommand.CMD_SC_DISCARD_OBJECT_CARD );
+            nextState = new DiscardingObjectCardState(this, getCurrentPlayer());
         }
         
         return nextState;
@@ -151,12 +154,12 @@ public class GameState {
         PlayerState nextState = player.getCurrentState();
         
         if( player.isHuman() && !player.isObjectCardUsed() ) {        	
-        	this.addToOutputQueue( new NetworkPacket(GameCommand.INFO_OBJ_CARD_USED, objectCard.toString()) );
+        	this.broadcastPacket( new NetworkPacket(GameCommand.INFO_OBJ_CARD_USED, objectCard.toString()) );
         	
             getCurrentPlayer().setObjectCardUsed(true);
             nextState = objectCard.doAction(this);
         } else {
-            player.sendPacket( GameCommand.CMD_SC_CANNOT_USE_OBJ_CARD ); 
+            sendPacketToCurrentPlayer( GameCommand.CMD_SC_CANNOT_USE_OBJ_CARD ); 
         }
         
         return nextState;
@@ -172,7 +175,7 @@ public class GameState {
     	for(int i = 0; i < mPlayers.size(); i++) {
     	    GamePlayer player = mPlayers.get(i);
     		if( player != getCurrentPlayer() && player.getCurrentPosition().equals(currentPosition) ) {
-    			player.setCurrentState( new LoserState(this) );
+    			player.setCurrentState( new LoserState(this, player) );
     			
     			killedPlayers.add( i ); 
     		}
@@ -186,7 +189,7 @@ public class GameState {
     		}
     	}
     	
-    	this.addToOutputQueue( new NetworkPacket(GameCommand.INFO_KILLED_PEOPLE, killedPlayers) );
+    	broadcastPacket( new NetworkPacket(GameCommand.INFO_KILLED_PEOPLE, killedPlayers) );
     }
     
     /**
@@ -197,7 +200,7 @@ public class GameState {
      */
     public void rawMoveTo(Point src, Point dest) {
         if( getMap().isWithinBounds(src) && !src.equals(dest) ) {
-        	this.getCurrentPlayer().setCurrentPosition(dest);
+        	getCurrentPlayer().setCurrentPosition(dest);
         }
     }
     
@@ -219,7 +222,7 @@ public class GameState {
         	}
         }
         
-        addToOutputQueue( new NetworkPacket( GameCommand.INFO_SPOTLIGHT, caughtPlayers, playerPositions ) );
+        broadcastPacket( new NetworkPacket( GameCommand.INFO_SPOTLIGHT, caughtPlayers, playerPositions ) );
     }
     /* -----------------------------------------------*/
     
@@ -229,6 +232,10 @@ public class GameState {
         }
     }
     
+    // TODO: Change this guy from Public to Private.
+    // This will cause another little change: 
+    // each constructor of {Dangerous,Hatch,Object}Card
+    // should contain a new parameter (PlayerState)
     public synchronized GamePlayer getCurrentPlayer() {
         return mPlayers.get( mTurnId ); 
     }
@@ -253,7 +260,7 @@ public class GameState {
     }
 
     public GameManager getGameManager() {
-        return gameManager;
+        return mGameManager;
     }
     
     public Set<Point> getCellsWithMaxDistance() {
@@ -269,7 +276,7 @@ public class GameState {
      * Kills all humans and make aliens winners.
      */
 	public void endGame() {
-		this.addToOutputQueue( GameCommand.INFO_END_GAME );
+		this.broadcastPacket( GameCommand.INFO_END_GAME );
 	}
 	
 	public boolean areTherePeopleStillPlaying() {
@@ -285,7 +292,8 @@ public class GameState {
 	public void moveToNextPlayer() {
 		if( areTherePeopleStillPlaying() ) {
 			mTurnId = findNextPlayer();
-			mPlayers.get(mTurnId).setCurrentState( new StartTurnState( this ) );
+			GamePlayer nextPlayer = mPlayers.get(mTurnId);
+			nextPlayer.setCurrentState( new StartTurnState( this, nextPlayer) );
 		} else {
 			// just one or zero players left -> the game has ended
 			endGame();
@@ -301,12 +309,20 @@ public class GameState {
 		throw new RuntimeException("No players. What's happening?");
 	}
 	
-	public void addToOutputQueue( NetworkPacket pkt ) {
-		mOutputQueue.add( pkt );
+	public void broadcastPacket( NetworkPacket pkt ) {
+		mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,NetworkPacket>(-1,pkt) );
 	}
 	
-	public void addToOutputQueue( GameCommand command ) {
-		mOutputQueue.add( new NetworkPacket( command ) );
+	public void broadcastPacket( GameCommand command ) {
+	    broadcastPacket( new NetworkPacket( command ) );
 	}
+
+    public void sendPacketToCurrentPlayer(GameCommand command) {
+        sendPacketToCurrentPlayer(new NetworkPacket(command));
+    }
+
+    public void sendPacketToCurrentPlayer(NetworkPacket networkPacket) {
+        mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,NetworkPacket>(mTurnId, networkPacket));
+    }
 
 }

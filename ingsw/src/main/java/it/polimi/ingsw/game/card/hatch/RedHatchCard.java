@@ -9,7 +9,7 @@ public class RedHatchCard extends HatchCard {
 
 	@Override
 	public PlayerState getNextState(GameState gameState) {
-	    return new EndingTurnState(gameState);
+	    return new EndingTurnState(gameState, gameState.getCurrentPlayer());
 	}
 
 }

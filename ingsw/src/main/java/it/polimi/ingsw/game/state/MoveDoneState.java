@@ -21,11 +21,11 @@ import java.util.logging.Logger;
  */
 public class MoveDoneState extends PlayerState {
     
-    public MoveDoneState(GameState state) {
-        super(state);
+    public MoveDoneState(GameState state, GamePlayer player) {
+        super(state, player);
 
         // tell the client it has to choose what to do after moving
-        state.getCurrentPlayer().sendPacket( GameCommand.CMD_SC_MOVE_DONE );
+        mGameState.sendPacketToCurrentPlayer( GameCommand.CMD_SC_MOVE_DONE );
     }
 
     private static final Logger LOG = Logger.getLogger(MoveDoneState.class.getName());
@@ -35,34 +35,33 @@ public class MoveDoneState extends PlayerState {
      */
     @Override
     public PlayerState update() {
-        GamePlayer player = gameState.getCurrentPlayer();
-        NetworkPacket packet = gameState.getPacketFromQueue();
-        GameMap map = gameState.getMap();
+        NetworkPacket packet = mGameState.getPacketFromQueue();
+        GameMap map = mGameState.getMap();
 
         PlayerState nextState = this;
 
         // If we actually received a command from the client...
         if( packet != null ) {
             if( packet.getOpcode() == GameCommand.CMD_CS_USE_OBJ_CARD ) {
-                gameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
+                mGameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
             } else {
                 // DANGEROUS: either draw a card OR attack
-                if( map.getSectorAt( player.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS ) { 
+                if( map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS ) { 
                     if( packet.getOpcode() == GameCommand.CMD_CS_DRAW_DANGEROUS_CARD ) {
-                        nextState = drawDangerousCard( gameState );
-                    } else if( player.isAlien() && packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
-                        gameState.attack( player.getCurrentPosition() );
-                        nextState = new EndingTurnState(gameState);
+                        nextState = drawDangerousCard( mGameState );
+                    } else if( mGamePlayer.isAlien() && packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
+                        mGameState.attack( mGamePlayer.getCurrentPosition() );
+                        nextState = new EndingTurnState(mGameState, mGamePlayer);
                     } else {
                         throw new IllegalStateOperationException("Discarding command.");
                     }
                 } else {
                     // NOT DANGEROUS: either attack or pass
                     if( packet.getOpcode() == GameCommand.CMD_CS_NOT_MY_TURN ) {
-                        nextState = new NotMyTurnState(gameState);
-                    } else if( player.isAlien() && packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
-                        gameState.attack( player.getCurrentPosition() );
-                        nextState = new EndingTurnState(gameState);
+                        nextState = new NotMyTurnState(mGameState, mGamePlayer);
+                    } else if( mGamePlayer.isAlien() && packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
+                        mGameState.attack( mGamePlayer.getCurrentPosition() );
+                        nextState = new EndingTurnState(mGameState, mGamePlayer);
                     } else {
                         throw new IllegalStateOperationException("You can only attack or pass. Discarding command.");
                     }
@@ -74,7 +73,7 @@ public class MoveDoneState extends PlayerState {
     }
 
     /**
-     * @param gameState
+     * @param mGameState
      * @return 
      */
     private PlayerState drawDangerousCard(GameState gameState) {                

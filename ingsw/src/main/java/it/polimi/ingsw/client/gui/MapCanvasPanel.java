@@ -87,7 +87,7 @@ public class MapCanvasPanel extends JPanel {
         // set colors for every sector
         createSectorColorsMap();
         
-        new Timer(15, new ActionListener() {
+        new Timer(25, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
