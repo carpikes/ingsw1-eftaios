@@ -13,8 +13,6 @@ import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
-import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -79,43 +77,8 @@ public class MoveDoneState extends PlayerState {
      * @param gameState
      * @return 
      */
-    private PlayerState drawDangerousCard(GameState gameState) {
-        GamePlayer player = gameState.getCurrentPlayer();
-        
-        // get a random dangerous card
-        Random generator = new Random();
-        int index = generator.nextInt( DangerousCard.values().length );
-        DangerousCard card = DangerousCard.getCardAt(index);
-        
-        PlayerState nextState;
-        
-        // according to type, choose what to do next
-        switch( card ) {
-        case NOISE_IN_YOUR_SECTOR: // noise in your sector
-            player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_YOUR_SECTOR) );
-            gameState.addToOutputQueue( new NetworkPacket(GameCommand.INFO_NOISE, player.getCurrentPosition()) );
-            
-            nextState = gameState.getObjectCard( );
-            break;
-            
-        case NOISE_IN_ANY_SECTOR: // noise in any sector
-            player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_ANY_SECTOR) );
-            nextState = new NoiseInAnySectorState(gameState);
-            break;
-            
-        case SILENCE: // silence
-            player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.SILENCE) );
-            gameState.addToOutputQueue( GameCommand.INFO_SILENCE );
-            
-            nextState = new EndingTurnState(gameState);
-            break;
-            
-        default:
-            LOG.log(Level.SEVERE, "Unknown dangerous card. You should never get here!");
-            nextState = new EndingTurnState(gameState); // end gracefully
-        }
-        
-        return nextState;
+    private PlayerState drawDangerousCard(GameState gameState) {                
+        return DangerousCard.getRandomCard().doAction( gameState );
     }
     
     @Override

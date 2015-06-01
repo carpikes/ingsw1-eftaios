@@ -17,7 +17,6 @@ import it.polimi.ingsw.game.sector.SectorBuilder;
 import java.awt.Point;
 import java.util.Random;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -78,36 +77,14 @@ public class MovingState extends PlayerState {
     }
 
     private PlayerState drawHatchCard(GameState gameState) {
-        Random generator = new Random();
         GamePlayer player = gameState.getCurrentPlayer();
         GameMap map = gameState.getMap();
-        
-        PlayerState nextState;
         
         // set current cell as no more accessible
         map.setType( player.getCurrentPosition(), SectorBuilder.USED_HATCH );
         gameState.addToOutputQueue( new NetworkPacket( GameCommand.INFO_USED_HATCH, player.getCurrentPosition() ) );
         
-        // draw an hatch card and choose accordingly
-        int index = generator.nextInt( HatchCard.values().length );
-        HatchCard card = HatchCard.getCardAt(index);
-        
-        switch( card ) {
-        case RED_HATCH:
-            // OUCH! You cannot use that hatch anymore!
-            nextState = new EndingTurnState(gameState);
-            break;
-
-        case GREEN_HATCH:
-            nextState = new WinnerState(gameState);
-            break;
-            
-        default:
-            LOG.log(Level.SEVERE, "Unknown dangerous card. You should never get here!");
-            nextState = new EndingTurnState(gameState); // end gracefully
-        }
-        
-        return nextState;
+        return HatchCard.getRandomCard().getNextState( gameState );
     }
     
     @Override
