@@ -1,86 +1,70 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.exception.DrawingModeException;
-import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
-import java.util.HashMap;
 
-/** Class for Hexagon view. Contains center, size, and shape to be drawn on screen.
+/** Class for Hexagon view. Contains mCenter, mSize, and shape to be drawn on screen.
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  *
  */
 public class Hexagon {
     private static final Color PLAYER_ON = Color.RED;
-    private Point center;
-    private double size;
-    private Polygon path;
-    private Color color;
+    private Point mCenter;
+    private double mSize;
+    private Polygon mPath;
+    private Color mColor;
     
     /**
      * Instantiates a new hexagon view.
      *
-     * @param center Coordinates of center
-     * @param size Radius Size
+     * @param mCenter Coordinates of mCenter
+     * @param mSize Radius Size
      * @param hexagonPath Shape of hexagon
      */
     public Hexagon(Point center, int size, Polygon hexagonPath, int type) {
-        this.center = center;
-        this.size = size;
-        this.path = hexagonPath;
+        this.mCenter = center;
+        this.mSize = size;
+        this.mPath = hexagonPath;
 
         switch(type) {
-            case SectorBuilder.ALIEN:         color = new Color(0,50,0); break;
-            case SectorBuilder.DANGEROUS:     color = new Color(150,150,150); break;
-            case SectorBuilder.NOT_DANGEROUS: color = new Color(255,255,255); break;
-            case SectorBuilder.HATCH:         color = new Color(47,53,87); break;
-            case SectorBuilder.HUMAN:         color = new Color(50,0,0); break;
-            case SectorBuilder.NOT_VALID:     color = null; 
+            case SectorBuilder.ALIEN:         mColor = new Color(0,50,0); break;
+            case SectorBuilder.DANGEROUS:     mColor = new Color(150,150,150); break;
+            case SectorBuilder.NOT_DANGEROUS: mColor = new Color(255,255,255); break;
+            case SectorBuilder.HATCH:         mColor = new Color(47,53,87); break;
+            case SectorBuilder.HUMAN:         mColor = new Color(50,0,0); break;
+            case SectorBuilder.NOT_VALID:     mColor = null; 
         }
     }
     
     /**
-     * Gets the path.
+     * Gets the mPath.
      *
-     * @return the path
+     * @return the mPath
      */
     public Polygon getPath() {
-        return path;
+        return mPath;
     }
     
     /**
-     * Gets the center.
+     * Gets the mCenter.
      *
-     * @return the center
+     * @return the mCenter
      */
     public Point getCenter() {
-        return center;
+        return mCenter;
     }
 
     /**
-     * Gets the size.
+     * Gets the mSize.
      *
-     * @return the size
+     * @return the mSize
      */
     public double getSize() {
-        return size;
-    }
-    
-    
-    /**
-     * The Enum DrawingMode. Used by {@link MapCanvasPanel#drawHexAt(Graphics2D, Point, DrawingMode)}
-     */
-    private enum DrawingMode {
-        NORMAL,             // set color from sectorColors map
-        SELECTED_HEX,       // hover color
-        DISABLED            // grey
+        return mSize;
     }
     
     /**
@@ -93,12 +77,12 @@ public class Hexagon {
      */
 
     public void draw(Graphics2D g2d, boolean playerOn, boolean enabled, boolean mouseOnThis) {
-        if( color == null )
+        if( mColor == null )
             return;
 
         boolean drawStroke = true;
 
-        Color real = color;
+        Color real = mColor;
         if(playerOn)
             real = PLAYER_ON;
         

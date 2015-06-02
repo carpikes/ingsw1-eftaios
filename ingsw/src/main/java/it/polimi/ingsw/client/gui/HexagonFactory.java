@@ -2,8 +2,6 @@ package it.polimi.ingsw.client.gui;
 
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
 
 /** Class for creating and returning a new hexagon according to values given.
  * @author Michele Albanese (michele.albanese@mail.polimi.it)

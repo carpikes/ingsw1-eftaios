@@ -1,9 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.exception.DrawingModeException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.sector.Sector;
-import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -16,8 +14,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JPanel;
@@ -31,31 +27,28 @@ public class MapCanvasPanel extends JPanel {
     private static final long serialVersionUID = -5583245069814214909L;
     
     // the map being loaded
-    private GameMap gameMap;
+    private GameMap mGameMap;
 
-    // the array of all drawn hexagons
-    private Hexagon[][] hexagons;
+    // the array of all drawn mHexagons
+    private Hexagon[][] mHexagons;
 
-    // Color bindings
-    private Map<Integer, Color> sectorColors;
-
-    // Selected hex: contains indexes i and j in hexagons[][] array
-    private Point curHexCoords;
+    // Selected hex: contains indexes i and j in mHexagons[][] array
+    private Point mCurHexCoords;
 
     // Values for every hexagon
-    private int hexWidth;
-    private int hexHeight;
-    private int marginHeight;
+    private int mHexWidth;
+    private int mHexHeight;
+    private int mMarginHeight;
     
     // canvas width and height
-    private int canvasWidth;
-    private int canvasHeight;
+    private int mCanvasWidth;
+    private int mCanvasHeight;
 
     private Set<Point> mEnabledCells = null;
 
     private boolean mClickedOnCell = false;
     
-    private final Object renderLoopMutex = new Object();
+    private final Object mRenderLoopMutex = new Object();
 
     private Point mPlayerPosition;
     
@@ -63,16 +56,16 @@ public class MapCanvasPanel extends JPanel {
      * Instantiates a new map canvas panel.
      *
      * @param map the map to be drawn
-     * @param canvasWidth the canvas width
-     * @param canvasHeight the canvas height
+     * @param mCanvasWidth the canvas width
+     * @param mCanvasHeight the canvas height
      */
     public MapCanvasPanel( GameMap map, int canvasWidth, int canvasHeight , Point playerPosition) {
         // initialization 
-        this.canvasWidth = canvasWidth;
-        this.canvasHeight = canvasHeight;
-        hexagons = new Hexagon[GameMap.ROWS][GameMap.COLUMNS];
-        gameMap = map;
-        curHexCoords = null;
+        this.mCanvasWidth = canvasWidth;
+        this.mCanvasHeight = canvasHeight;
+        mHexagons = new Hexagon[GameMap.ROWS][GameMap.COLUMNS];
+        mGameMap = map;
+        mCurHexCoords = null;
         mPlayerPosition = playerPosition;
         
         // add listeners
@@ -83,12 +76,12 @@ public class MapCanvasPanel extends JPanel {
 
         for( int i = 0; i < GameMap.ROWS; ++i ) {
             for( int j = 0; j < GameMap.COLUMNS; ++j ) {
-                Sector sector = gameMap.getSectorAt(j, i);
-                int startX = (int)(hexWidth*3/4.0*j);
-                int startY = (int)(marginHeight + i * hexHeight + ( isEvenColumn(j)  ? 0 : hexHeight/2 ) );
-                // create hexagon: center of it is distant (hexWidth/2, hexHeight/2) from the starting point
-                hexagons[i][j] = HexagonFactory.createHexagon( 
-                        new Point(startX + hexWidth/2, startY + hexHeight/2), hexWidth/2, sector.getId());
+                Sector sector = mGameMap.getSectorAt(j, i);
+                int startX = (int)(mHexWidth*3/4.0*j);
+                int startY = (int)(mMarginHeight + i * mHexHeight + ( isEvenColumn(j)  ? 0 : mHexHeight/2 ) );
+                // create hexagon: center of it is distant (mHexWidth/2, mHexHeight/2) from the starting point
+                mHexagons[i][j] = HexagonFactory.createHexagon( 
+                        new Point(startX + mHexWidth/2, startY + mHexHeight/2), mHexWidth/2, sector.getId());
             }
         }
         
@@ -131,11 +124,11 @@ public class MapCanvasPanel extends JPanel {
             public void mouseMoved(MouseEvent e) {
                 Point cell = getCell(e.getPoint());
                 
-                synchronized(renderLoopMutex) {
+                synchronized(mRenderLoopMutex) {
                     if(mEnabledCells == null || mEnabledCells.contains(cell))    
-                        curHexCoords = cell;
+                        mCurHexCoords = cell;
                     else
-                        curHexCoords = null;
+                        mCurHexCoords = null;
                 }
             }
 
@@ -146,13 +139,13 @@ public class MapCanvasPanel extends JPanel {
 
 
     /**
-     * Calculate values for hexagons.
+     * Calculate values for mHexagons.
      */
     private void calculateValuesForHexagons() {
-        // Reference: http://www.redblobgames.com/grids/hexagons/
-        hexWidth = (int)(canvasWidth / ( 0.75 * (GameMap.COLUMNS-1) + 1 ));
-        hexHeight =  (int)(hexWidth * Math.sqrt(3)/2);
-        marginHeight = (int)((canvasHeight - hexHeight * ( GameMap.ROWS + 0.5 )) / 2.0);
+        // Reference: http://www.redblobgames.com/grids/mHexagons/
+        mHexWidth = (int)(mCanvasWidth / ( 0.75 * (GameMap.COLUMNS-1) + 1 ));
+        mHexHeight =  (int)(mHexWidth * Math.sqrt(3)/2);
+        mMarginHeight = (int)((mCanvasHeight - mHexHeight * ( GameMap.ROWS + 0.5 )) / 2.0);
     }
 
     /* (non-Javadoc)
@@ -167,29 +160,29 @@ public class MapCanvasPanel extends JPanel {
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // Background
-        int x = -canvasWidth; // too much?
+        int x = -mCanvasWidth; // too much?
         g2d.setColor(Color.LIGHT_GRAY);
         g2d.setStroke(new BasicStroke(1.2f));
-        while(x < canvasWidth) {
-            g2d.drawLine(x, 0, x + (int)(Math.cos(Math.PI/360*60)*canvasHeight), canvasHeight);
+        while(x < mCanvasWidth) {
+            g2d.drawLine(x, 0, x + (int)(Math.cos(Math.PI/360*60)*mCanvasHeight), mCanvasHeight);
             x += 30;
         }
         
         g2d.setStroke(new BasicStroke(2f));
-        synchronized(renderLoopMutex) {
+        synchronized(mRenderLoopMutex) {
             drawHexagons(g2d);
         }
     }
 
     /**
-     * Draw hexagons.
+     * Draw mHexagons.
      *
      * @param g2d The Graphics2D object where to draw on
      */
     private void drawHexagons(Graphics2D g2d) { 
         for( int i = 0; i <= GameMap.ROWS; ++i ) 
             for( int j = 0; j < GameMap.COLUMNS; ++j ) {
-                Point p = curHexCoords;
+                Point p = mCurHexCoords;
                 if(i != GameMap.ROWS)
                     p = new Point(j,i);
                 
@@ -198,7 +191,7 @@ public class MapCanvasPanel extends JPanel {
                 
                 boolean isPlayerHere = p.equals(mPlayerPosition);
                 boolean enabled = mEnabledCells == null || mEnabledCells.contains(p);
-                hexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, (i == GameMap.ROWS));
+                mHexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, (i == GameMap.ROWS));
             }
     }
     
@@ -215,23 +208,23 @@ public class MapCanvasPanel extends JPanel {
     public Point getChosenMapCell() {
         if(mClickedOnCell) {
             mClickedOnCell = false;
-            if(curHexCoords != null && (mEnabledCells == null || mEnabledCells.contains(curHexCoords)))
-                return curHexCoords;
+            if(mCurHexCoords != null && (mEnabledCells == null || mEnabledCells.contains(mCurHexCoords)))
+                return mCurHexCoords;
         }
         return null;
     }
 
     public void setEnabledCells(Set<Point> pnt) {
-        synchronized(renderLoopMutex) {
+        synchronized(mRenderLoopMutex) {
             mEnabledCells = pnt;
         }
     }
     
     private Point getCell(Point p) {
-        for( int i = 0; i < hexagons.length; ++i )
-            for( int j = 0; j < hexagons[i].length; ++j )
-                if( hexagons[i][j] != null && hexagons[i][j].getPath().contains( p ))
-                    if(gameMap.getSectorAt(j, i).isCrossable())
+        for( int i = 0; i < mHexagons.length; ++i )
+            for( int j = 0; j < mHexagons[i].length; ++j )
+                if( mHexagons[i][j] != null && mHexagons[i][j].getPath().contains( p ))
+                    if(mGameMap.getSectorAt(j, i).isCrossable())
                         return new Point( j, i );
                     else
                         return null;

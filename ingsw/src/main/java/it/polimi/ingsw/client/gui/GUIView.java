@@ -1,12 +1,9 @@
 package it.polimi.ingsw.client.gui;
 
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
