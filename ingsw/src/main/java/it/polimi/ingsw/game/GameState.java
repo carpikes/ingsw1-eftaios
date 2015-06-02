@@ -172,9 +172,13 @@ public class GameState {
     	for(int i = 0; i < mPlayers.size(); i++) {
     	    GamePlayer player = mPlayers.get(i);
     		if( player != getCurrentPlayer() && player.getCurrentPosition().equals(currentPosition) ) {
-    			player.setCurrentState( new LoserState(this, player) );
-    			
-    			killedPlayers.add( i ); 
+    			if( player.isDefenseEnabled() ) {
+    			    // TODO: VUOI AVVISARE in modo speciale il giocatore?
+    			    player.dropDefense();
+    			} else {
+                    player.setCurrentState( new LoserState(this, player) );        
+                    killedPlayers.add( i ); 
+    			}
     		}
     	}
 

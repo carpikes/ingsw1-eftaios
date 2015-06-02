@@ -8,12 +8,13 @@ public class DefenseCard extends ObjectCard {
 
 	public DefenseCard(GameState state, GamePlayer player) {
         super(state, player);
-        // TODO Auto-generated constructor stub
+        
+        player.setDefense(true);
     }
 
     @Override
 	public PlayerState doAction() {
-		
+            
 		return null;
 	}
 

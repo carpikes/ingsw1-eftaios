@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game.player;
 
+import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.object.DefenseCard;
 import it.polimi.ingsw.game.card.object.ObjectCard;
@@ -82,7 +83,7 @@ public class GamePlayer {
         this.currentState = currentState;
     }
     
-    public boolean isDefenseEnable() {
+    public boolean isDefenseEnabled() {
         return defense;
     }
 
@@ -219,5 +220,21 @@ public class GamePlayer {
 		if( role instanceof Human) 
 			((Human) role).setAdrenaline(adrenaline);
 	}
+
+    /**
+     * 
+     */
+    public void dropDefense() {
+        setDefense(false);
+        
+        for( int i = 0; i < objectCards.size(); ++i ) {
+            if( objectCards.get(i) instanceof DefenseCard ) {
+                objectCards.remove(i);
+                return;
+            }
+        } 
+        
+        throw new IllegalStateOperationException("Defense enabled but no defense cards in the deck. Something is badly badly wrong.");
+    }
     
 }
