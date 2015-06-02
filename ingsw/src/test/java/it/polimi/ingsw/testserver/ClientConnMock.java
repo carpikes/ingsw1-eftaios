@@ -14,12 +14,6 @@ import java.util.Queue;
 
 public class ClientConnMock extends ClientConn {
 
-    private Queue<NetworkPacket> localPacketQueue;
-    
-    public ClientConnMock() {
-        localPacketQueue = new LinkedList<>();
-    }
-    
     @Override
     public void run() {
         mIsConnected = true;
@@ -28,7 +22,7 @@ public class ClientConnMock extends ClientConn {
 
     @Override
     public void sendPacket(NetworkPacket pkt) {
-        localPacketQueue.add(pkt);
+        return;
     }
 
     @Override

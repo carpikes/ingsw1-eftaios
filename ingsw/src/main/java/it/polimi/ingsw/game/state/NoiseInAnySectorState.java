@@ -9,6 +9,8 @@ import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 
+import java.awt.Point;
+
 /**
  * @author Michele
  * @since 25 May 2015
@@ -29,8 +31,9 @@ public class NoiseInAnySectorState extends PlayerState {
 
         PlayerState nextState = this;
         if( packet != null ) {
-            if( packet.getOpcode() == GameCommand.CMD_CS_NOISE_IN_ANY_SECTOR_POSITION ) {
-            	mGameState.broadcastPacket( new NetworkPacket(GameCommand.INFO_NOISE, packet.getArgs() ) );
+            // FIXME controlli + stringenti qui
+            if( packet.getOpcode() == GameCommand.CMD_CS_NOISE_IN_ANY_SECTOR_POSITION && mGameState.getMap().isWithinBounds((Point)packet.getArgs()[0]) ) {
+            	mGameState.broadcastPacket( new NetworkPacket(GameCommand.INFO_NOISE, packet.getArgs()[0] ) );
                 nextState = mGameState.getObjectCard( );
             } else {
                 throw new IllegalStateOperationException("You can only choose a position here. Discarding packet.");

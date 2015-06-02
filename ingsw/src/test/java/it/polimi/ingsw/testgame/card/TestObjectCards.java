@@ -12,6 +12,7 @@ import it.polimi.ingsw.game.card.object.AdrenalineCard;
 import it.polimi.ingsw.game.card.object.AttackCard;
 import it.polimi.ingsw.game.card.object.DefenseCard;
 import it.polimi.ingsw.game.card.object.ObjectCard;
+import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import it.polimi.ingsw.game.card.object.SedativesCard;
 import it.polimi.ingsw.game.card.object.SpotlightCard;
 import it.polimi.ingsw.game.card.object.TeleportCard;
@@ -184,4 +185,5 @@ public class TestObjectCards {
         
         assertEquals( human.getCurrentPosition(), humanStart );
     }
+
 }
