@@ -31,6 +31,7 @@ public class TestServer {
     /**
      * @throws java.lang.Exception Throws exception if something is wrong
      */
+    @Ignore
     @BeforeClass
     public static void setUp() throws Exception {
         new Thread(new Runnable() { public void run() { Server.getInstance().runServer(); } }).start();
@@ -39,6 +40,7 @@ public class TestServer {
         }
     }
     
+    @Ignore
     @Test
     public void testGame() {
         
@@ -114,6 +116,7 @@ public class TestServer {
     /**
      * Test method for {@link it.polimi.ingsw.server.Server#addClient(it.polimi.ingsw.server.ClientConn)}.
      */
+    @Ignore
     @Test
     public void testClient() {
         ClientConnMock conn = new ClientConnMock();
@@ -148,6 +151,7 @@ public class TestServer {
         assertEquals(Server.getInstance().getConnectedClients(), clientsBefore);
     }
     
+    @Ignore
     @Test
     public void testTCP() {
         TCPConnection conn = new TCPConnection();
@@ -166,6 +170,7 @@ public class TestServer {
     /**
      * @throws java.lang.Exception Throws exception if something is wrong
      */
+    @Ignore
     @AfterClass
     public static void tearDown() throws Exception {
         //System.out.println("------------------Tearing down------------------");
