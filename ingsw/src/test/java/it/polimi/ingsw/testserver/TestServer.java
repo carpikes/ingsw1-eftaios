@@ -42,10 +42,10 @@ public class TestServer {
     @Test
     public void testGame() {
         
-        ClientConnTest[] conns = new ClientConnTest[Config.GAME_MAX_PLAYERS];
+        ClientConnMock[] conns = new ClientConnMock[Config.GAME_MAX_PLAYERS];
         
         for(int i=0;i<Config.GAME_MAX_PLAYERS;i++) {
-            conns[i] = new ClientConnTest();
+            conns[i] = new ClientConnMock();
             conns[i].run();
             assertTrue(Server.getInstance().addClient(conns[i]));
             conns[i].emulateReadPacket(new NetworkPacket(GameCommand.CMD_CS_USERNAME, "test_" + i));
@@ -54,12 +54,12 @@ public class TestServer {
         try {
             Thread.sleep(500);
         } catch( InterruptedException e) { }
-        for(ClientConnTest i : conns) {
+        for(ClientConnMock i : conns) {
             assertTrue(i.exposeClient().hasUsername());
             i.emulateReadPacket(new NetworkPacket(GameCommand.CMD_PING));
         }
 
-        for(ClientConnTest i : conns)
+        for(ClientConnMock i : conns)
             i.emulateDisconnect();
         
     }
@@ -116,8 +116,8 @@ public class TestServer {
      */
     @Test
     public void testClient() {
-        ClientConnTest conn = new ClientConnTest();
-        ClientConnTest conn2 = new ClientConnTest(); 
+        ClientConnMock conn = new ClientConnMock();
+        ClientConnMock conn2 = new ClientConnMock(); 
         
         conn.run();
         conn2.run();

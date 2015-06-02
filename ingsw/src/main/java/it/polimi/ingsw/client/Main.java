@@ -1,10 +1,6 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.client.cli.CLIView;
-import it.polimi.ingsw.client.gui.GUIFrame;
 import it.polimi.ingsw.client.gui.GUIView;
-import it.polimi.ingsw.client.gui.GUIFrame;
-import it.polimi.ingsw.client.network.ConnectionFactory;
 
 /** Client launcher
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -19,7 +15,7 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        Controller c = new Controller();
+        GameController c = new GameController();
         View v = new GUIView();
         
         c.setView(v);

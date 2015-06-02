@@ -7,6 +7,7 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.player.GamePlayer;
 
 /**
  * @author Michele
@@ -14,8 +15,8 @@ import it.polimi.ingsw.game.network.NetworkPacket;
  */
 public class NoiseInAnySectorState extends PlayerState {
 
-    public NoiseInAnySectorState(GameState state) {
-        super(state);
+    public NoiseInAnySectorState(GameState state, GamePlayer player) {
+        super(state, player);
         // TODO Auto-generated constructor stub
     }
 
@@ -24,13 +25,13 @@ public class NoiseInAnySectorState extends PlayerState {
      */
     @Override
     public PlayerState update() {
-        NetworkPacket packet = gameState.getPacketFromQueue();
+        NetworkPacket packet = mGameState.getPacketFromQueue();
 
         PlayerState nextState = this;
         if( packet != null ) {
             if( packet.getOpcode() == GameCommand.CMD_CS_NOISE_IN_ANY_SECTOR_POSITION ) {
-                gameState.getGameManager().broadcastPacket( new NetworkPacket(GameCommand.CMD_SC_NOISE, packet.getArgs() ) );
-                nextState = gameState.getObjectCard( );
+            	mGameState.broadcastPacket( new NetworkPacket(GameCommand.INFO_NOISE, packet.getArgs() ) );
+                nextState = mGameState.getObjectCard( );
             } else {
                 throw new IllegalStateOperationException("You can only choose a position here. Discarding packet.");
             }
@@ -38,5 +39,10 @@ public class NoiseInAnySectorState extends PlayerState {
         
         return nextState;
     }
+    
+    @Override
+	public boolean stillInGame() {
+		return true;
+	}
     
 }

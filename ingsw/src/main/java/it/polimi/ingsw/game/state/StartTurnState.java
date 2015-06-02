@@ -5,6 +5,7 @@ package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 
@@ -17,14 +18,18 @@ import java.util.ArrayList;
  */
 public class StartTurnState extends PlayerState {
 
-    public StartTurnState(GameState state) {
-        super(state);
-        GamePlayer me = state.getCurrentPlayer();
+    public StartTurnState(GameState state, GamePlayer player) {
+        super(state, player);
+      
+        player.resetValues();
+        player.incrementMoveCounter();
         
-        //FIXME What if alien is sated?
-        me.setMaxMoves(me.getRole().getMaxMoves());
-        me.setObjectCardUsed(false);
-        me.setStateBeforeSpotlightCard(null);
+        if( player.getMoveCounter() >= Config.MAX_NUMBER_OF_TURNS ) {
+        	state.endGame();
+        } else {
+        	// tell everybody I'm starting playing!
+        	state.broadcastPacket( GameCommand.INFO_START_TURN );
+        }
     }
 
     /* (non-Javadoc)
@@ -32,10 +37,15 @@ public class StartTurnState extends PlayerState {
      */
     @Override
     public PlayerState update() {
-        GamePlayer player = gameState.getCurrentPlayer();
+        mGameState.sendPacketToCurrentPlayer( 
+                new NetworkPacket(GameCommand.CMD_SC_START_TURN, mGamePlayer.getCurrentPosition(), mGamePlayer.getMaxMoves()) 
+        );
         
-        player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_START_TURN, player.getCurrentPosition(), player.getMaxMoves()) );
-        
-        return new MovingState(gameState);
+        return new MovingState(mGameState, mGamePlayer);
     }
+    
+    @Override
+	public boolean stillInGame() {
+		return true;
+	}
 }

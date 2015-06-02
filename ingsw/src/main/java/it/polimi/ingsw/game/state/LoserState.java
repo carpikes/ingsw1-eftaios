@@ -3,7 +3,9 @@
  */
 package it.polimi.ingsw.game.state;
 
+import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.player.GamePlayer;
 
 /**
  * @author Michele
@@ -11,9 +13,11 @@ import it.polimi.ingsw.game.GameState;
  */
 public class LoserState extends PlayerState {
 
-    public LoserState(GameState state) {
-        super(state);
-        // TODO Auto-generated constructor stub
+    public LoserState(GameState state, GamePlayer player) {
+        super(state, player);
+
+        state.broadcastPacket( GameCommand.INFO_LOSER );
+        mGameState.sendPacketToCurrentPlayer( GameCommand.CMD_SC_LOSE );
     }
 
     /* (non-Javadoc)
@@ -23,4 +27,9 @@ public class LoserState extends PlayerState {
     public PlayerState update() {
         return this;
     }
+    
+    @Override
+	public boolean stillInGame() {
+		return false;
+	}
 }

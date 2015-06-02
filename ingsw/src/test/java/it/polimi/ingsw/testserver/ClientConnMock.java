@@ -9,7 +9,7 @@ import it.polimi.ingsw.server.ClientConn;
  * @since  May 18, 2015
  */
 
-public class ClientConnTest extends ClientConn{
+public class ClientConnMock extends ClientConn {
 
     @Override
     public void run() {

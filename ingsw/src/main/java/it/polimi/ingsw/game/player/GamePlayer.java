@@ -1,10 +1,12 @@
 package it.polimi.ingsw.game.player;
 
-import it.polimi.ingsw.game.GameCommand;
-import it.polimi.ingsw.game.card.ObjectCard;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.exception.IllegalStateOperationException;
+import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.card.object.DefenseCard;
+import it.polimi.ingsw.game.card.object.ObjectCard;
+import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
-import it.polimi.ingsw.server.Client;
+import it.polimi.ingsw.game.state.StartTurnState;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import java.util.ArrayList;
 public class GamePlayer {
     
     /** Position on board */
-    private Point position;
+    private Point mPosition;
     
     /** Defense enabled? (defense card used or not) */
     private boolean defense;
@@ -31,9 +33,6 @@ public class GamePlayer {
     /** Object cards the player owns */
     private ArrayList < ObjectCard > objectCards;
     
-    /** How many sectors can I cross in total? */
-    private int maxMoves;
-    
     /** Alien or human? */
     private final Role role;
     
@@ -43,24 +42,37 @@ public class GamePlayer {
     /** State before using SpotlightCard */
     private PlayerState stateBeforeSpotlightCard;
     
-    /** Connection to client */
-    private Client connection;
-    
     /** ID in game */
-    private int id;
+    private int mId;
     
-    public GamePlayer( Role playerRole, Point startPosition, Client connection) {
-        objectCards = new ArrayList<>();
+    /** Number of current move */
+    private int moveCounter;
+
+    /** The game manager */
+    private GameState mGame;
+    
+    public int getMoveCounter() {
+		return moveCounter;
+	}
+
+	public void incrementMoveCounter( ) {
+		++moveCounter;
+	}
+
+	public GamePlayer( int id, Role playerRole, GameState game, boolean isMyTurn) {
+        resetValues();
+    	objectCards = new ArrayList<>();
         role = playerRole;
-        // state = 
-        // stateBeforeObjectCard = 
-        defense = false;
-        maxMoves = role.getMaxMoves();
-        position = startPosition; 
-        objectCardUsed = false;
-        this.connection = connection;
-        // id = 
-        drawDangerousCard = true;
+
+        mPosition = game.getMap().getStartingPoint(role instanceof Human); 
+        mId = id; 
+        moveCounter = 0;
+        mGame = game;
+        
+        if(isMyTurn)
+            setCurrentState(new StartTurnState(game, this));
+        else
+            setCurrentState(new NotMyTurnState(game, this));
     }
 
     public PlayerState getCurrentState() {
@@ -71,7 +83,7 @@ public class GamePlayer {
         this.currentState = currentState;
     }
     
-    public boolean isDefenseEnable() {
+    public boolean isDefenseEnabled() {
         return defense;
     }
 
@@ -82,15 +94,8 @@ public class GamePlayer {
     /**
      * @return
      */
-    public int getMaxMoves() {
-        return maxMoves;
-    }
-
-    /**
-     * @return
-     */
     public Point getCurrentPosition() {
-        return position;
+        return mPosition;
     }
 
     /**
@@ -105,7 +110,7 @@ public class GamePlayer {
      * @param destination
      */
     public void setCurrentPosition(Point position) {
-        this.position = position;
+        this.mPosition = position;
     }
 
     /**
@@ -137,24 +142,6 @@ public class GamePlayer {
         return role instanceof Human;
     }
 
-    public Client getConnection() {
-        return connection;
-    }
-
-    /**
-     * @param i
-     */
-    public void sendPacket(GameCommand opcode) {
-        connection.sendPacket(opcode);
-    }
-
-    /**
-     * @param networkPacket
-     */
-    public void sendPacket(NetworkPacket networkPacket) {
-        connection.sendPacket(networkPacket);
-    }
-
     public ArrayList<ObjectCard> getObjectCards() {
         return objectCards;
     }
@@ -175,11 +162,7 @@ public class GamePlayer {
      * @return
      */
     public int getId() {
-        return id;
-    }
-
-    public void setMaxMoves(int maxMoves) {
-        this.maxMoves = maxMoves;
+        return mId;
     }
     
     // TODO: AGGIUNGERE IL CONTROLLO PRIMA DI OGNI PRELIEVO CARTA 
@@ -199,5 +182,59 @@ public class GamePlayer {
         this.stateBeforeSpotlightCard = stateBefore;
     }
     
+    public void resetValues() {
+    	defense = hasDefenseCard();
+    	objectCardUsed = false;
+    	drawDangerousCard = true;
+    	stateBeforeSpotlightCard = null;
+    	setAdrenaline(false);
+    }
+
+	private boolean hasDefenseCard() {
+	    if(objectCards == null)
+	        return false;
+		for( ObjectCard card : objectCards ) 
+			if( card instanceof DefenseCard )
+				return true;
+		
+		return false;
+	}
+	
+	public int getMaxMoves() {
+		return role.getMaxMoves();
+	}
+    
+	public boolean isFull() {
+		if( role instanceof Alien )
+			return ((Alien) role).hasEaten();
+		else
+			return false;
+	}
+	
+	public void setFull(boolean isFull) {
+		if( role instanceof Alien )
+			((Alien) role).setHasEaten(isFull);
+	}
+	
+	public void setAdrenaline(boolean adrenaline) {
+		if( role instanceof Human) 
+			((Human) role).setAdrenaline(adrenaline);
+	}
+
+    /**
+     * 
+     */
+    public void dropDefense() {
+        setDefense(false);
+        
+        for( int i = 0; i < objectCards.size(); ++i ) {
+            if( objectCards.get(i) instanceof DefenseCard ) {
+                objectCards.remove(i);
+                return;
+            }
+        } 
+        
+        throw new IllegalStateOperationException("Defense enabled but no defense cards in the deck. Something is badly badly wrong.");
+    }
     
 }

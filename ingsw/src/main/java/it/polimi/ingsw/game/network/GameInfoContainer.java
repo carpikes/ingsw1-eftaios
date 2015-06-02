@@ -14,13 +14,13 @@ public class GameInfoContainer implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** List of player usernames (and id!) */
-	private final String[] mUsers;
+	private final EnemyInfo[] mUsers;
 	
 	/** Are you human or alien? */
 	private final boolean mHuman;
 	private final GameMap mMap;
 	
-	public GameInfoContainer(String[] usernames, boolean isHuman, GameMap map) {
+	public GameInfoContainer(EnemyInfo[] usernames, boolean isHuman, GameMap map) {
 		mUsers = usernames;
 		mHuman = isHuman;
 		mMap = map;
@@ -29,7 +29,7 @@ public class GameInfoContainer implements Serializable {
 	/**
 	 * @return the mUsers
 	 */
-	public String[] getPlayersList() {
+	public EnemyInfo[] getPlayersList() {
 		return mUsers;
 	}
 

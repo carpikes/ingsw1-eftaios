@@ -1,10 +1,17 @@
 package it.polimi.ingsw.game.player;
 
+import it.polimi.ingsw.game.config.Config;
+
 public class Alien implements Role {
+	
+    private boolean hasEaten;
     
-    public static final int MAX_MOVES = 2;
-    
-    @Override
+    public Alien( ) {
+		super();
+		this.hasEaten = false;
+	}
+
+	@Override
     public void move() {
         // TODO Auto-generated method stub
 
@@ -15,8 +22,20 @@ public class Alien implements Role {
      */
     @Override
     public int getMaxMoves() {
-        // TODO Auto-generated method stub
-        return MAX_MOVES;
+        if( hasEaten ) 
+        	return Config.MAX_ALIEN_FULL_MOVES;
+        else
+        	return Config.MAX_ALIEN_MOVES;
     }
+
+	public boolean hasEaten() {
+		return hasEaten;
+	}
+
+	public void setHasEaten(boolean hasEaten) {
+		this.hasEaten = hasEaten;
+	}
+    
+    
 
 }

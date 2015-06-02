@@ -12,14 +12,15 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class GameMap implements Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOG = Logger.getLogger( GameMap.class.getName() );
@@ -36,16 +37,20 @@ public class GameMap implements Serializable {
 	
 	private Sector[][] board;
 	private String name;
+	private final Point humanStartingPoint, alienStartingPoint;
 	
 	// You can only construct a new map either from a .map file or by random generation 
-	private GameMap( String name, Sector[][] board ) {
+	private GameMap( String name, Sector[][] board, Point human, Point alien) {
 	    this.name = name;
 		this.board = board;
+		this.humanStartingPoint = human;
+		this.alienStartingPoint = alien;
 	} 
 
 	public static GameMap createFromMapFile( File file ) throws IOException {
 	    Sector[][] sectors = new Sector[ROWS][COLUMNS];
 	    String title = null;
+	    Point human=null, alien=null;
 	    
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
         Iterator<String> iterator = lines.iterator();
@@ -56,23 +61,30 @@ public class GameMap implements Serializable {
             String[] currentLine = iterator.next().split(" ");
             for( j = 0; j < currentLine.length; ++j ) {
                 sectors[i][j] = SectorBuilder.getSectorFor(Integer.parseInt(currentLine[j]));
+                if(sectors[i][j].getId() == SectorBuilder.ALIEN)
+                    alien = new Point(j,i);
+                else if(sectors[i][j].getId() == SectorBuilder.HUMAN)
+                    human = new Point(j,i);
             }
             ++i;
         }
         
+        if(human == null || alien == null)
+            throw new SectorException("Missing starting points");
+        
         if( i != ROWS || j != COLUMNS )
             throw new SectorException("Missing sector");
 		
-		return new GameMap(title, sectors);
+		return new GameMap(title, sectors, human, alien);
 	}
 	
 	public static GameMap generate() {
 		// TODO: advanced functionality to be implemented
-		return new GameMap(null, null);
+		return new GameMap(null, null, null, null);
 	}
 	
-	public Sector getSectorAt( int i, int j ) {
-	    return board[i][j];
+	public Sector getSectorAt( int x, int y ) {
+	    return board[y][x];
 	}
 	
 	public Sector getSectorAt( Point point ) {
@@ -84,22 +96,13 @@ public class GameMap implements Serializable {
      * @return
      */
     public boolean isWithinBounds(Point p) {
-        return ( p.x >= 0 && p.y >= 0 && p.x < ROWS && p.y < COLUMNS ); 
+        return ( p.x >= 0 && p.y >= 0 && p.x < COLUMNS && p.y < ROWS ); 
     }
 
-    /** Calculate how many hexagons are there between A and B
-     * @param source Where you start 
-     * @param destination Where you end in
-     * @return 
-     */
-    public int distance(Point currentPosition, Point destination) {
-        // TODO: IMPLEMENTAMI! <- stai calmo lol
-        return 1;
-    }
-
-    public Point getStartingPoint(Role role) {
-        // TODO Auto-generated method stub
-        return null;
+    public Point getStartingPoint(boolean isHuman) {
+        if(isHuman)
+            return humanStartingPoint;
+        return alienStartingPoint;
     }
 
     public static String[] getListOfMaps() {
@@ -137,7 +140,7 @@ public class GameMap implements Serializable {
      */
     public void setType(Point point, int type) {
         if( isWithinBounds(point) ) {
-            board[point.x][point.y] = SectorBuilder.getSectorFor(type);
+            board[point.y][point.x] = SectorBuilder.getSectorFor(type);
         }
     }
 
@@ -146,12 +149,78 @@ public class GameMap implements Serializable {
      * @param maxMoves
      * @return
      */
-    public ArrayList<Point> getCellsWithMaxDistance(Point currentPosition,
+    public Set<Point> getCellsWithMaxDistance(Point currentPosition,
             int maxMoves) {
-        // TODO Not implemented yet: it always returns Point (0,0)
-        ArrayList<Point> sectors = new ArrayList< >();
+        Set<Point> sectors = new HashSet< >();
+        Queue<Point> frontier = new LinkedList<Point>();
         
-        sectors.add( new Point(0,0) );
+        Point currentPoint;
+        Point delimiter = null;
+        
+        frontier.add( currentPosition );
+        frontier.add( delimiter );
+        
+        while( maxMoves > 0 ) {
+        	
+        	do {
+        		currentPoint = frontier.poll();
+        		
+        		if( currentPoint != null ) {
+        		    ArrayList<Point> neighbors = getNeighbourAccessibleSectors( currentPoint );
+        			
+        			frontier.addAll( neighbors );
+        			frontier.add( delimiter );
+        			
+        			sectors.add( currentPoint );
+        			sectors.addAll(neighbors);
+        		}
+        	} while( currentPoint != null );
+        	
+        	--maxMoves;
+        }
+        
+        sectors.remove( currentPosition );
         return sectors;
+    }
+
+    /**
+     * Get neighbour cells starting from the given position. Note that only dangerous, not dangerous and hatch sectors
+     * are given. Remember that in a mxn matrix, these (x) are the sectors accessible from O is the column is even:
+     * - x -
+     * x O x
+     * x x x
+     * otherwise, if the column is odd:
+     * x x x
+     * x O x
+     * - x -
+     * @param currentPosition The starting sector
+     * @return A list of all neighbours
+     */
+    public ArrayList<Point> getNeighbourAccessibleSectors( Point currentPosition ) {
+    	// get x and y for simplicity's sake
+    	int x = currentPosition.x;
+    	int y = currentPosition.y;
+    	
+    	ArrayList<Point> sectors = new ArrayList< >();
+
+    	for( int i = -1; i <= 1; ++i ) {
+    		for( int j = -1; j <= 1; ++j ) {
+    		    
+                // exclude the - sectors
+    		    boolean isValid = (i == 0 && j != 0);
+    		    if(currentPosition.x % 2 == 0) 
+    		        isValid |= (i == 1 && j == 0) || (i == -1);
+    		    else
+    		        isValid |= (i == -1 && j == 0) || (i == 1);
+    		    
+    			if( isValid ) {
+    				Point p = new Point(x+j, y+i);
+    				if( this.isWithinBounds( p ) && this.getSectorAt(p).isCrossable() )
+    					sectors.add(p);
+    			}
+    		}
+    	}
+    	
+    	return sectors;
     }
 }

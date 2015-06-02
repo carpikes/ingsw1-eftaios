@@ -5,10 +5,13 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /**
  * @author Alain
@@ -25,6 +28,17 @@ class LoginCanvasPanel extends JPanel {
     public LoginCanvasPanel() {
         mBigFont = new Font("Helvetica", Font.PLAIN, 48);
         mSmallFont = new Font("Helvetica", Font.PLAIN, 24);
+        
+        new Timer(25, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                LoginCanvasPanel m = LoginCanvasPanel.this;
+                if(m != null)
+                    m.repaint();
+            }
+            
+        }).start();
     }
     
     @Override
@@ -45,8 +59,6 @@ class LoginCanvasPanel extends JPanel {
             nextY = drawCentered(g2d, mSmallFont, "Remaining time: " + dt + "s",nextY);
         else
             nextY = drawCentered(g2d, mSmallFont, "Starting...",nextY);
-        
-        repaint();
     }
     
     private int drawCentered(Graphics2D g, Font font, String str, int y) {

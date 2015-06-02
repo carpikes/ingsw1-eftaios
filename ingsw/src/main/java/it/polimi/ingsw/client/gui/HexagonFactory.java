@@ -23,7 +23,7 @@ public class HexagonFactory  {
 	 * @param size radius of hex
 	 * @return the hexagon
 	 */
-	public static Hexagon createHexagon( Point2D.Double center, double size ) {
+	public static Hexagon createHexagon( Point2D.Double center, double size) {
 	    Path2D.Double hexagonPath = new Path2D.Double();
 	     
 	    hexagonPath.moveTo(center.getX()+size, center.getY());

@@ -7,7 +7,10 @@ import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
+import java.awt.Point;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -15,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 18, 2015
  */
-public class Controller implements OnReceiveListener {
+public class GameController implements OnReceiveListener {
     /** The view */
     private View mView;
     
@@ -28,8 +31,10 @@ public class Controller implements OnReceiveListener {
     /** True if the client must be shutted down */
     private boolean mStopEvent = false;
     
+    private GameInfoContainer mGameInfo = null;
+    
     /** The constructor */
-    public Controller() {
+    public GameController() {
         mQueue = new LinkedBlockingQueue<NetworkPacket>();
     }
     
@@ -44,9 +49,10 @@ public class Controller implements OnReceiveListener {
         
         int conn = mView.askConnectionType(connList);
         mConn = ConnectionFactory.getConnection(conn);
-        mConn.setOnReceiveListener(this);
         if(mConn == null)
             return;
+        
+        mConn.setOnReceiveListener(this);
         
         String host = mView.askHost();
         if(host == null || host.trim().length() == 0)
@@ -97,7 +103,7 @@ public class Controller implements OnReceiveListener {
                     case CMD_SC_CHOOSEMAP:
                         Integer chosenMap;
                         do {
-                        chosenMap = mView.askMap((String[])cmd.getArgs());
+                            chosenMap = mView.askMap((String[])cmd.getArgs());
                         } while(chosenMap == null);
                         
                         mConn.sendPacket(new NetworkPacket(GameCommand.CMD_CS_LOADMAP, chosenMap));
@@ -105,11 +111,76 @@ public class Controller implements OnReceiveListener {
                     case CMD_SC_MAPOK:
                         break;
                     case CMD_SC_RUN:
-                        mView.switchToMainScreen((GameInfoContainer)(cmd.getArgs()[0]));
+                        mGameInfo = (GameInfoContainer) cmd.getArgs()[0];
+                        mView.switchToMainScreen(mGameInfo);
                         break;
                     case CMD_BYE:
+                        mStopEvent = true;
                         break;
-
+                        
+                    /* TODO These commmands below are sent while game is running
+                     * and the map is loaded. Add a check into each state if the
+                     * used variables are initialized. Or, instead, a giant try-catch
+                     * might be useful.
+                     */
+                    case CMD_SC_ADRENALINE_WRONG_STATE:
+                        break;
+                    case CMD_SC_CANNOT_USE_OBJ_CARD:
+                        break;
+                    case CMD_SC_DANGEROUS_CARD_DRAWN:
+                        break;
+                    case CMD_SC_DISCARD_OBJECT_CARD:
+                        break;
+                    case CMD_SC_END_OF_TURN:
+                        break;
+                    case CMD_SC_FULL:
+                        break;
+                    case CMD_SC_LOSE:
+                        break;
+                    case CMD_SC_MOVE_DONE:
+                        
+                        break;
+                    case CMD_SC_OBJECT_CARD_OBTAINED:
+                        break;
+                    case CMD_SC_MOVE_INVALID:
+                    case CMD_SC_START_TURN:
+                        Point curPos = (Point) cmd.getArgs()[0];
+                        int maxMoves = (int) cmd.getArgs()[1];
+                        Set<Point> enabledCells = mGameInfo.getMap().getCellsWithMaxDistance(curPos, maxMoves);
+                        Point pos = mView.askMapPosition(enabledCells);
+                        mConn.sendPacket(new NetworkPacket(GameCommand.CMD_CS_MOVE, pos));
+                        break;
+                    case CMD_SC_UPDATE_LOCAL_INFO:
+                        break;
+                    case CMD_SC_WIN:
+                        break;
+                        
+                    case INFO_END_GAME:
+                        break;
+                    case INFO_GOT_A_NEW_OBJ_CARD:
+                        break;
+                    case INFO_HAS_MOVED:
+                        break;
+                    case INFO_KILLED_PEOPLE:
+                        break;
+                    case INFO_LOSER:
+                        break;
+                    case INFO_NOISE:
+                        break;
+                    case INFO_OBJ_CARD_USED:
+                        break;
+                    case INFO_SILENCE:
+                        break;
+                    case INFO_SPOTLIGHT:
+                        break;
+                    case INFO_START_TURN:
+                        break;
+                    case INFO_USED_HATCH:
+                        break;
+                    case INFO_WINNER:
+                        break;
+                    default:
+                        break;
                 };
             } catch(InterruptedException e) {
                 mStopEvent = true;

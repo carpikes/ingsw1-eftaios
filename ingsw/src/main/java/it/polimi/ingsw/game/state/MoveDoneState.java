@@ -7,14 +7,12 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.card.DangerousCard;
-import it.polimi.ingsw.game.card.ObjectCard;
+import it.polimi.ingsw.game.card.dangerous.DangerousCardBuilder;
+import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
-import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -23,9 +21,11 @@ import java.util.logging.Logger;
  */
 public class MoveDoneState extends PlayerState {
     
-    public MoveDoneState(GameState state) {
-        super(state);
-        // TODO Auto-generated constructor stub
+    public MoveDoneState(GameState state, GamePlayer player) {
+        super(state, player);
+
+        // tell the client it has to choose what to do after moving
+        mGameState.sendPacketToCurrentPlayer( GameCommand.CMD_SC_MOVE_DONE );
     }
 
     private static final Logger LOG = Logger.getLogger(MoveDoneState.class.getName());
@@ -35,35 +35,33 @@ public class MoveDoneState extends PlayerState {
      */
     @Override
     public PlayerState update() {
-        GamePlayer player = gameState.getCurrentPlayer();
-        NetworkPacket packet = gameState.getPacketFromQueue();
-        GameMap map = gameState.getMap();
+        NetworkPacket packet = mGameState.getPacketFromQueue();
+        GameMap map = mGameState.getMap();
 
         PlayerState nextState = this;
 
         // If we actually received a command from the client...
         if( packet != null ) {
             if( packet.getOpcode() == GameCommand.CMD_CS_USE_OBJ_CARD ) {
-                // TODO where should I put this?
-                gameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
+                mGameState.startUsingObjectCard( (ObjectCard)packet.getArgs()[0] );
             } else {
                 // DANGEROUS: either draw a card OR attack
-                if( map.getSectorAt( player.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS ) { 
+                if( map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS ) { 
                     if( packet.getOpcode() == GameCommand.CMD_CS_DRAW_DANGEROUS_CARD ) {
-                        nextState = drawDangerousCard( gameState );
-                    } else if( player.isAlien() && packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
-                        gameState.attack( player.getCurrentPosition() );
-                        nextState = new EndingTurnState(gameState);
+                        nextState = drawDangerousCard( );
+                    } else if( mGamePlayer.isAlien() && packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
+                        mGameState.attack( mGamePlayer.getCurrentPosition() );
+                        nextState = new EndingTurnState(mGameState, mGamePlayer);
                     } else {
                         throw new IllegalStateOperationException("Discarding command.");
                     }
                 } else {
                     // NOT DANGEROUS: either attack or pass
                     if( packet.getOpcode() == GameCommand.CMD_CS_NOT_MY_TURN ) {
-                        nextState = new NotMyTurnState(gameState);
-                    } else if( packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
-                        gameState.attack( player.getCurrentPosition() );
-                        nextState = new EndingTurnState(gameState);
+                        nextState = new NotMyTurnState(mGameState, mGamePlayer);
+                    } else if( mGamePlayer.isAlien() && packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
+                        mGameState.attack( mGamePlayer.getCurrentPosition() );
+                        nextState = new EndingTurnState(mGameState, mGamePlayer);
                     } else {
                         throw new IllegalStateOperationException("You can only attack or pass. Discarding command.");
                     }
@@ -75,45 +73,15 @@ public class MoveDoneState extends PlayerState {
     }
 
     /**
-     * @param gameState
+     * @param data.mGameState
      * @return 
      */
-    private PlayerState drawDangerousCard(GameState gameState) {
-        GamePlayer player = gameState.getCurrentPlayer();
-        
-        // get a random dangerous card
-        Random generator = new Random();
-        int index = generator.nextInt( DangerousCard.values().length );
-        DangerousCard card = DangerousCard.getCardAt(index);
-        
-        PlayerState nextState;
-        
-        // according to type, choose what to do next
-        switch( card ) {
-        case NOISE_IN_YOUR_SECTOR: // noise in your sector
-            player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_YOUR_SECTOR) );
-            gameState.getGameManager().broadcastPacket( new NetworkPacket(GameCommand.CMD_SC_NOISE, player.getCurrentPosition()) );
-            
-            nextState = gameState.getObjectCard( );
-            break;
-            
-        case NOISE_IN_ANY_SECTOR: // noise in any sector
-            player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_ANY_SECTOR) );
-            nextState = new NoiseInAnySectorState(gameState);
-            break;
-            
-        case SILENCE: // silence
-            player.sendPacket( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.SILENCE) );
-            gameState.getGameManager().broadcastPacket( GameCommand.CMD_SC_SILENCE );
-            
-            nextState = new EndingTurnState(gameState);
-            break;
-            
-        default:
-            LOG.log(Level.SEVERE, "Unknown dangerous card. You should never get here!");
-            nextState = new EndingTurnState(gameState); // end gracefully
-        }
-        
-        return nextState;
+    private PlayerState drawDangerousCard( ) {                
+        return DangerousCardBuilder.getRandomCard(mGameState, mGamePlayer).doAction( );
     }
+    
+    @Override
+	public boolean stillInGame() {
+		return true;
+	}
 }
