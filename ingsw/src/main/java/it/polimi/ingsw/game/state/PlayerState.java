@@ -14,7 +14,7 @@ public abstract class PlayerState {
     protected final GameState mGameState;
     protected final GamePlayer mGamePlayer;
     
-    public PlayerState(GameState state, GamePlayer player) {
+    protected PlayerState(GameState state, GamePlayer player) {
         mGameState = state;
         mGamePlayer = player;
     } 

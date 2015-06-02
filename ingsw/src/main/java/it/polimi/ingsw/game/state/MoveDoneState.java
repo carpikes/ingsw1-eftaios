@@ -7,7 +7,7 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.card.dangerous.DangerousCard;
+import it.polimi.ingsw.game.card.dangerous.DangerousCardBuilder;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
@@ -48,7 +48,7 @@ public class MoveDoneState extends PlayerState {
                 // DANGEROUS: either draw a card OR attack
                 if( map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS ) { 
                     if( packet.getOpcode() == GameCommand.CMD_CS_DRAW_DANGEROUS_CARD ) {
-                        nextState = drawDangerousCard( mGameState );
+                        nextState = drawDangerousCard( );
                     } else if( mGamePlayer.isAlien() && packet.getOpcode() == GameCommand.CMD_CS_ATTACK ) {
                         mGameState.attack( mGamePlayer.getCurrentPosition() );
                         nextState = new EndingTurnState(mGameState, mGamePlayer);
@@ -73,11 +73,11 @@ public class MoveDoneState extends PlayerState {
     }
 
     /**
-     * @param mGameState
+     * @param data.mGameState
      * @return 
      */
-    private PlayerState drawDangerousCard(GameState gameState) {                
-        return DangerousCard.getRandomCard().doAction( gameState );
+    private PlayerState drawDangerousCard( ) {                
+        return DangerousCardBuilder.getRandomCard(mGameState, mGamePlayer).doAction( );
     }
     
     @Override

@@ -99,16 +99,6 @@ public class GameMap implements Serializable {
         return ( p.x >= 0 && p.y >= 0 && p.x < COLUMNS && p.y < ROWS ); 
     }
 
-    /** Calculate how many hexagons are there between A and B
-     * @param source Where you start 
-     * @param destination Where you end in
-     * @return 
-     */
-    public int distance(Point currentPosition, Point destination) {
-        // TODO: IMPLEMENTAMI! <- stai calmo lol
-        return 1;
-    }
-
     public Point getStartingPoint(boolean isHuman) {
         if(isHuman)
             return humanStartingPoint;

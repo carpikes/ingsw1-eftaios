@@ -2,12 +2,12 @@ package it.polimi.ingsw.game;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.card.object.ObjectCard;
+import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
-import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleFactory;
 import it.polimi.ingsw.game.state.DiscardingObjectCardState;
@@ -16,12 +16,10 @@ import it.polimi.ingsw.game.state.LoserState;
 import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.StartTurnState;
-import it.polimi.ingsw.server.Client;
 import it.polimi.ingsw.server.GameManager;
 
 import java.awt.Point;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -55,7 +53,6 @@ public class GameState {
      * @param mapId Id of the map
      * @param clients List of connections of all players
      */
-    // TODO Remove List<Client> argument 
     public GameState(GameManager gameManager, int mapId) {
         GameMap tmpMap;
         try {
@@ -76,7 +73,7 @@ public class GameState {
         
         for(int i = 0;i<gameManager.getNumberOfPlayers(); i++) {
             Role role = roles.get(i);
-            GamePlayer player = new GamePlayer(i, role, mMap.getStartingPoint((role instanceof Human)), this, (i == mTurnId));
+            GamePlayer player = new GamePlayer(i, role, this, (i == mTurnId));
             mPlayers.add(player);
         }
     }
@@ -124,7 +121,7 @@ public class GameState {
      */
     public PlayerState getObjectCard( ) {
         GamePlayer player = getCurrentPlayer();
-        ObjectCard newCard = ObjectCard.getRandomCard();
+        ObjectCard newCard = ObjectCardBuilder.getRandomCard( this, getCurrentPlayer() );
         PlayerState nextState;
         
         // Send card just obtained
@@ -157,7 +154,7 @@ public class GameState {
         	this.broadcastPacket( new NetworkPacket(GameCommand.INFO_OBJ_CARD_USED, objectCard.toString()) );
         	
             getCurrentPlayer().setObjectCardUsed(true);
-            nextState = objectCard.doAction(this);
+            nextState = objectCard.doAction();
         } else {
             sendPacketToCurrentPlayer( GameCommand.CMD_SC_CANNOT_USE_OBJ_CARD ); 
         }
@@ -207,7 +204,7 @@ public class GameState {
     /** Invoked in SpotLightCardState. It lists all people in the set position and in the 6 surrounding it.
      * @param point The position where the card takes effect.
      */
-    public void light(Point point) {
+    public void spotlightAction(Point point) {
     	ArrayList<Point> sectors = getMap().getNeighbourAccessibleSectors(point);
         sectors.add(point);
         
@@ -232,11 +229,7 @@ public class GameState {
         }
     }
     
-    // TODO: Change this guy from Public to Private.
-    // This will cause another little change: 
-    // each constructor of {Dangerous,Hatch,Object}Card
-    // should contain a new parameter (PlayerState)
-    public synchronized GamePlayer getCurrentPlayer() {
+    private synchronized GamePlayer getCurrentPlayer() {
         return mPlayers.get( mTurnId ); 
     }
 

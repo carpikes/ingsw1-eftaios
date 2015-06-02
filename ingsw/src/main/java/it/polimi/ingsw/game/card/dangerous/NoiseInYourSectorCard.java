@@ -8,14 +8,17 @@ import it.polimi.ingsw.game.state.PlayerState;
 
 public class NoiseInYourSectorCard extends DangerousCard {
 
-	@Override
-	public PlayerState doAction(GameState gameState) {
-	    GamePlayer player = gameState.getCurrentPlayer();
-	    
-	    gameState.sendPacketToCurrentPlayer( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCard.NOISE_IN_YOUR_SECTOR) );
-        gameState.broadcastPacket( new NetworkPacket(GameCommand.INFO_NOISE, player.getCurrentPosition()) );
+	public NoiseInYourSectorCard(GameState state, GamePlayer player) {
+        super(state, player);
+        // TODO Auto-generated constructor stub
+    }
+
+    @Override
+	public PlayerState doAction() {	    
+	    mGameState.sendPacketToCurrentPlayer( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardBuilder.NOISE_IN_YOUR_SECTOR) );
+        mGameState.broadcastPacket( new NetworkPacket(GameCommand.INFO_NOISE, mGamePlayer.getCurrentPosition()) );
         
-        return gameState.getObjectCard( );
+        return mGameState.getObjectCard( );
 	}
 
 }

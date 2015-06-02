@@ -7,16 +7,19 @@ import it.polimi.ingsw.game.state.PlayerState;
 import java.awt.Point;
 
 public class TeleportCard extends ObjectCard {
+    
+	public TeleportCard(GameState state, GamePlayer player) {
+        super(state, player);
+        // TODO Auto-generated constructor stub
+    }
 
-	@Override
-	public PlayerState doAction(GameState gameState) {
-		GamePlayer player = gameState.getCurrentPlayer();
-		
+    @Override
+	public PlayerState doAction() {
 		// TODO set correct sector
         Point humanSector = null;
         
-        gameState.rawMoveTo( humanSector, null );
-        return player.getCurrentState();
+        mGameState.rawMoveTo( humanSector, null );
+        return mGamePlayer.getCurrentState();
 	}
 
 }

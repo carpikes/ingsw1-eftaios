@@ -7,7 +7,7 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.card.hatch.HatchCard;
+import it.polimi.ingsw.game.card.hatch.HatchCardBuilder;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
@@ -76,21 +76,21 @@ public class MovingState extends PlayerState {
         Sector sector = map.getSectorAt( player.getCurrentPosition() );
         // If we are on an hatch sector, draw an hatch card and act accordingly
         if( sector.getId() == SectorBuilder.HATCH ) {
-            nextState = drawHatchCard( mGameState );
+            nextState = drawHatchCard( );
         } else {
             nextState =  new MoveDoneState(mGameState, mGamePlayer);
         }
         return nextState;
     }
 
-    private PlayerState drawHatchCard(GameState gameState) {
-        GameMap map = gameState.getMap();
+    private PlayerState drawHatchCard( ) {
+        GameMap map = mGameState.getMap();
         
         // set current cell as no more accessible
         map.setType( mGamePlayer.getCurrentPosition(), SectorBuilder.USED_HATCH );
-        gameState.broadcastPacket( new NetworkPacket( GameCommand.INFO_USED_HATCH, mGamePlayer.getCurrentPosition() ) );
+        mGameState.broadcastPacket( new NetworkPacket( GameCommand.INFO_USED_HATCH, mGamePlayer.getCurrentPosition() ) );
         
-        return HatchCard.getRandomCard().getNextState( gameState );
+        return HatchCardBuilder.getRandomCard(mGameState, mGamePlayer).getNextState( );
     }
     
     @Override

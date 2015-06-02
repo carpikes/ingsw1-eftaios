@@ -6,12 +6,16 @@ import it.polimi.ingsw.game.state.PlayerState;
 
 public class AttackCard extends ObjectCard {
 
-	@Override
-	public PlayerState doAction(GameState gameState) {
-		GamePlayer player = gameState.getCurrentPlayer();
-		gameState.attack( player.getCurrentPosition() );
+	public AttackCard(GameState state, GamePlayer player) {
+        super(state, player);
+        // TODO Auto-generated constructor stub
+    }
+
+    @Override
+	public PlayerState doAction() {
+		mGameState.attack( mGamePlayer.getCurrentPosition() );
 		
-		return player.getCurrentState();
+		return mGamePlayer.getCurrentState();
 	}
 
 }

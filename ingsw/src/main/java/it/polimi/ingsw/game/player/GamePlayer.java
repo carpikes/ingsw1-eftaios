@@ -1,10 +1,8 @@
 package it.polimi.ingsw.game.player;
 
-import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.object.DefenseCard;
 import it.polimi.ingsw.game.card.object.ObjectCard;
-import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.StartTurnState;
@@ -60,12 +58,12 @@ public class GamePlayer {
 		++moveCounter;
 	}
 
-	public GamePlayer( int id, Role playerRole, Point startPosition, GameState game, boolean isMyTurn) {
+	public GamePlayer( int id, Role playerRole, GameState game, boolean isMyTurn) {
         resetValues();
     	objectCards = new ArrayList<>();
         role = playerRole;
 
-        mPosition = startPosition; 
+        mPosition = game.getMap().getStartingPoint(role instanceof Human); 
         mId = id; 
         moveCounter = 0;
         mGame = game;

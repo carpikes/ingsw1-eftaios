@@ -31,7 +31,7 @@ public class SpotlightCardState extends PlayerState {
         PlayerState nextState = this;
         if( packet != null ) {
             if( packet.getOpcode() == GameCommand.CMD_CS_SET_POSITION ) {
-                mGameState.light( (Point)packet.getArgs()[0] );
+                mGameState.spotlightAction( (Point)packet.getArgs()[0] );
                 
                 nextState = mGamePlayer.getStateBeforeSpotlightCard();
                 mGamePlayer.setStateBeforeSpotlightCard(null);
