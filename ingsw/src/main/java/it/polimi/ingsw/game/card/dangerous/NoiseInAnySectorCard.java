@@ -7,12 +7,20 @@ import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.NoiseInAnySectorState;
 import it.polimi.ingsw.game.state.PlayerState;
 
+/**
+ * Noise in any sector Dangerous Card. Tell everyone a position (noise in any sector)  
+ * @author Michele
+ * @since 2 Jun 2015
+ */
 public class NoiseInAnySectorCard extends DangerousCard {
 
 	public NoiseInAnySectorCard(GameState state, GamePlayer player) {
         super(state, player);
     }
 
+	/** 
+	 * Send info to current player about the card and then move to NoiseInAnySectorState for next interactions with the user
+	 */
     @Override
 	public PlayerState doAction() {
 	    mGameState.sendPacketToCurrentPlayer(new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardBuilder.NOISE_IN_ANY_SECTOR) );

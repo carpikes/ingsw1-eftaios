@@ -6,6 +6,11 @@ import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 
+/**
+ *  Noise in your sector Dangerous Card. Tell everyone your position
+ * @author Michele
+ * @since 2 Jun 2015
+ */
 public class NoiseInYourSectorCard extends DangerousCard {
 
 	public NoiseInYourSectorCard(GameState state, GamePlayer player) {
@@ -13,6 +18,9 @@ public class NoiseInYourSectorCard extends DangerousCard {
         // TODO Auto-generated constructor stub
     }
 
+	/**
+	 * Send info to current player about the card and then get a new object card
+	 */
     @Override
 	public PlayerState doAction() {	    
 	    mGameState.sendPacketToCurrentPlayer( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardBuilder.NOISE_IN_YOUR_SECTOR) );

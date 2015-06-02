@@ -125,7 +125,7 @@ public class GameState {
         ObjectCard newCard = ObjectCardBuilder.getRandomCard( this, getCurrentPlayer() );
         PlayerState nextState;
         
-        // Send card just obtained
+        // FIXME maybe an id is better here!
         player.getObjectCards().add( newCard );
         sendPacketToCurrentPlayer( new NetworkPacket(GameCommand.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
         

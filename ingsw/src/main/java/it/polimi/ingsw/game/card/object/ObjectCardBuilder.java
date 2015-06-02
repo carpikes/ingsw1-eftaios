@@ -10,6 +10,7 @@ import it.polimi.ingsw.game.player.GamePlayer;
 import java.util.Random;
 
 /**
+ * Class for getting a random Object Card.
  * @author Michele
  * @since 2 Jun 2015
  */
@@ -23,6 +24,12 @@ public class ObjectCardBuilder {
     private static final int SPOTLIGHT_CARD = 4;
     private static final int TELEPORT_CARD = 5;
     
+    /**
+     * Get a new random Object Card
+     * @param game Current GameState
+     * @param player The Player who wants to get an object card
+     * @return The object card
+     */
     public static ObjectCard getRandomCard(GameState game, GamePlayer player) {
         Random generator = new Random();
         

@@ -9,7 +9,7 @@ import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.player.GamePlayer;
 
-/**
+/** Class used to get a random Dangerous Card.
  * @author  Michele
  * @since  2 Jun 2015
  */
@@ -20,6 +20,14 @@ public class DangerousCardBuilder {
     public static final int NOISE_IN_ANY_SECTOR = 1;
     public static final int SILENCE = 2;
     
+    private DangerousCardBuilder() { }
+    
+    /** 
+     * Get a random Dangerous Sector Card and give it to the player.
+     * @param gameState Current GameState
+     * @param gamePlayer The Player who is getting the card
+     * @return A dangerous sector card
+     */
     public static DangerousCard getRandomCard( GameState gameState, GamePlayer gamePlayer ) {
         Random generator = new Random();
         

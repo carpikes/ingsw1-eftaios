@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 
 /**
+ * Abstract class for a generic Object Card. Always drawn by a human after using some sorts of Dangerous Cards.
  * @author Michele
  * @since 23 May 2015
  */
@@ -25,5 +26,9 @@ public abstract class ObjectCard implements Serializable {
         mGamePlayer = player;
     } 
 	
+    /**
+     * Resolve the effect of the card.
+     * @return Next state for the invoker
+     */
 	public abstract PlayerState doAction();
 }
