@@ -68,7 +68,7 @@ public class MovingState extends PlayerState {
     private PlayerState handleMove(GamePlayer player, GameMap map,
             Point chosenPos) {
         PlayerState nextState;
-        mGameState.rawMoveTo(player.getCurrentPosition(), chosenPos);
+        mGameState.rawMoveTo(player, chosenPos);
         
         // notify all players that current players has just moved
         mGameState.broadcastPacket( GameCommand.INFO_HAS_MOVED );

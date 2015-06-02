@@ -9,11 +9,9 @@ import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -275,4 +273,9 @@ public class GameManager {
     public void sendDirectPacket(int id, NetworkPacket networkPacket) {
         mClients.get(id).sendPacket(networkPacket);
     }
+
+    public GameState getGameState() {
+        return mState;
+    }
+    
 }

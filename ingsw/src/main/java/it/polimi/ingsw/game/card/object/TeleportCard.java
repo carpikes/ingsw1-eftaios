@@ -13,7 +13,7 @@ public class TeleportCard extends ObjectCard {
 
     @Override
 	public PlayerState doAction() {        
-        mGameState.rawMoveTo( mGameState.getMap().getStartingPoint(true), null );
+        mGameState.rawMoveTo( mGamePlayer, mGameState.getMap().getStartingPoint(true) );
         return mGamePlayer.getCurrentState();
 	}
 

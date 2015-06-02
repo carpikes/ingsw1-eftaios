@@ -14,7 +14,7 @@ public class RoleFactory {
             throw new RuntimeException("Too few players (" + numberOfPlayers + ")");
         
         for(int i = 0; i < numberOfPlayers; i++)
-            if(i < numberOfPlayers/2)
+            if(i % 2 == 0)
                 roles.add(new Alien());
             else
                 roles.add(new Human());

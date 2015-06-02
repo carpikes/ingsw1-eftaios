@@ -11,12 +11,6 @@ public class Alien implements Role {
 		this.hasEaten = false;
 	}
 
-	@Override
-    public void move() {
-        // TODO Auto-generated method stub
-
-    }
-
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.player.Role#getMaxMoves()
      */
@@ -35,7 +29,5 @@ public class Alien implements Role {
 	public void setHasEaten(boolean hasEaten) {
 		this.hasEaten = hasEaten;
 	}
-    
-    
 
 }

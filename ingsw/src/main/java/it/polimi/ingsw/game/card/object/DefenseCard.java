@@ -14,7 +14,6 @@ public class DefenseCard extends ObjectCard {
 
     @Override
 	public PlayerState doAction() {
-            
 		return null;
 	}
 

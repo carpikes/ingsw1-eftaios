@@ -20,6 +20,7 @@ public abstract class ObjectCard implements Serializable {
     protected GamePlayer mGamePlayer;
     
     protected ObjectCard(GameState state, GamePlayer player) {
+        // FIXME AGGIUNGI CONTROLLO: Player dev'essere umano
         mGameState = state;
         mGamePlayer = player;
     } 

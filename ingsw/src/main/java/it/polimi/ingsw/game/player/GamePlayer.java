@@ -237,4 +237,15 @@ public class GamePlayer {
         throw new IllegalStateOperationException("Defense enabled but no defense cards in the deck. Something is badly badly wrong.");
     }
     
+    public void forceState( PlayerState newState ) {
+        currentState = newState;
+    }
+
+    /**
+     * @return
+     */
+    public boolean stillInGame() {
+        return currentState.stillInGame();
+    }
+    
 }

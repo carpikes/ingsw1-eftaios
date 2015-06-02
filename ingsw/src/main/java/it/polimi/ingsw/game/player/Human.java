@@ -10,12 +10,6 @@ public class Human implements Role {
 		super();
 		this.adrenalineUsed = false;
 	}
-    
-    @Override
-    public void move() {
-        // TODO Auto-generated method stub
-
-    }
 
     @Override
     public int getMaxMoves() {

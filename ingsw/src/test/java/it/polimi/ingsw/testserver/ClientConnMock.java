@@ -4,6 +4,9 @@ import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.server.Client;
 import it.polimi.ingsw.server.ClientConn;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 18, 2015
@@ -11,6 +14,12 @@ import it.polimi.ingsw.server.ClientConn;
 
 public class ClientConnMock extends ClientConn {
 
+    private Queue<NetworkPacket> localPacketQueue;
+    
+    public ClientConnMock() {
+        localPacketQueue = new LinkedList<>();
+    }
+    
     @Override
     public void run() {
         mIsConnected = true;
@@ -19,7 +28,7 @@ public class ClientConnMock extends ClientConn {
 
     @Override
     public void sendPacket(NetworkPacket pkt) {
-        return;
+        localPacketQueue.add(pkt);
     }
 
     @Override

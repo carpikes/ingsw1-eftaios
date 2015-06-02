@@ -8,6 +8,7 @@ import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameInfoContainer;
 import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
+import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleFactory;
 import it.polimi.ingsw.game.state.DiscardingObjectCardState;
@@ -196,12 +197,11 @@ public class GameState {
     /**
      * Moves current player in a position. It is used by the Teleport card and when moving during
      * the normal flow of the game.
-     * @param src Where to move 
-     * @param dest TODO
+     * @param dest Where to move 
      */
-    public void rawMoveTo(Point src, Point dest) {
-        if( getMap().isWithinBounds(src) && !src.equals(dest) ) {
-        	getCurrentPlayer().setCurrentPosition(dest);
+    public void rawMoveTo(GamePlayer player, Point dest) {
+        if( getMap().isWithinBounds(dest) && !player.getCurrentPosition().equals(dest) ) {
+        	player.setCurrentPosition(dest);
         }
     }
     
@@ -280,7 +280,7 @@ public class GameState {
 		int counter = 0;
 		
 		for( GamePlayer p : mPlayers )
-			if( p.getCurrentState().stillInGame() )
+			if( p.stillInGame() )
 				++counter;
 		
 		return counter >= Config.GAME_MIN_PLAYERS;
@@ -320,6 +320,16 @@ public class GameState {
 
     public void sendPacketToCurrentPlayer(NetworkPacket networkPacket) {
         mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,NetworkPacket>(mTurnId, networkPacket));
+    }
+    
+    public int getNumberOfPlayersInSector( Point p ) {
+        int counter = 0;
+        
+        for( GamePlayer player : mPlayers )
+            if( player.stillInGame() && player.getCurrentPosition().equals(p) )
+                counter++;
+        
+        return counter;
     }
 
 }
