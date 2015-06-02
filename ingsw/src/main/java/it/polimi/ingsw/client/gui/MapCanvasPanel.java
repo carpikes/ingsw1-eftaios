@@ -16,8 +16,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -42,12 +40,12 @@ public class MapCanvasPanel extends JPanel {
     private Map<Integer, Color> sectorColors;
 
     // Selected hex: contains indexes i and j in hexagons[][] array
-    private Point currentHexCoordinates;
+    private Point curHexCoords;
 
     // Values for every hexagon
-    private double hexWidth;
-    private double hexHeight;
-    private double marginHeight;
+    private int hexWidth;
+    private int hexHeight;
+    private int marginHeight;
     
     // canvas width and height
     private int canvasWidth;
@@ -74,9 +72,8 @@ public class MapCanvasPanel extends JPanel {
         this.canvasHeight = canvasHeight;
         hexagons = new Hexagon[GameMap.ROWS][GameMap.COLUMNS];
         gameMap = map;
-        currentHexCoordinates = null;
+        curHexCoords = null;
         mPlayerPosition = playerPosition;
-
         
         // add listeners
         addMouseListeners();
@@ -84,10 +81,19 @@ public class MapCanvasPanel extends JPanel {
         // calc width, height and margins according to size
         calculateValuesForHexagons();
 
-        // set colors for every sector
-        createSectorColorsMap();
+        for( int i = 0; i < GameMap.ROWS; ++i ) {
+            for( int j = 0; j < GameMap.COLUMNS; ++j ) {
+                Sector sector = gameMap.getSectorAt(j, i);
+                int startX = (int)(hexWidth*3/4.0*j);
+                int startY = (int)(marginHeight + i * hexHeight + ( isEvenColumn(j)  ? 0 : hexHeight/2 ) );
+                // create hexagon: center of it is distant (hexWidth/2, hexHeight/2) from the starting point
+                hexagons[i][j] = HexagonFactory.createHexagon( 
+                        new Point(startX + hexWidth/2, startY + hexHeight/2), hexWidth/2, sector.getId());
+            }
+        }
         
-        new Timer(25, new ActionListener() {
+
+        new Timer(35, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -121,14 +127,15 @@ public class MapCanvasPanel extends JPanel {
         });
         
         addMouseMotionListener( new MouseMotionListener() {
-            // FIXME: ignore not selectable sectors
-            // get current hex by inspecting each shape area
             @Override
             public void mouseMoved(MouseEvent e) {
                 Point cell = getCell(e.getPoint());
                 
                 synchronized(renderLoopMutex) {
-                    currentHexCoordinates = cell;
+                    if(mEnabledCells == null || mEnabledCells.contains(cell))    
+                        curHexCoords = cell;
+                    else
+                        curHexCoords = null;
                 }
             }
 
@@ -137,28 +144,15 @@ public class MapCanvasPanel extends JPanel {
         });
     }
 
-    /**
-     * Creates the sector colors map.
-     */
-    private void createSectorColorsMap() {
-        sectorColors = new HashMap<>();   
-
-        sectorColors.put(SectorBuilder.ALIEN, new Color(0,50,0));
-        sectorColors.put(SectorBuilder.DANGEROUS, new Color(150,150,150));
-        sectorColors.put(SectorBuilder.NOT_DANGEROUS, new Color(255,255,255));
-        sectorColors.put(SectorBuilder.HATCH, new Color(47,53,87));
-        sectorColors.put(SectorBuilder.HUMAN, new Color(50,0,0));
-        sectorColors.put(SectorBuilder.NOT_VALID, null); 
-    }
 
     /**
      * Calculate values for hexagons.
      */
     private void calculateValuesForHexagons() {
         // Reference: http://www.redblobgames.com/grids/hexagons/
-        hexWidth = canvasWidth / ( 0.75 * (GameMap.COLUMNS-1) + 1 );
-        hexHeight =  hexWidth * Math.sqrt(3)/2;
-        marginHeight = (canvasHeight - hexHeight * ( GameMap.ROWS + 0.5 )) / 2;
+        hexWidth = (int)(canvasWidth / ( 0.75 * (GameMap.COLUMNS-1) + 1 ));
+        hexHeight =  (int)(hexWidth * Math.sqrt(3)/2);
+        marginHeight = (int)((canvasHeight - hexHeight * ( GameMap.ROWS + 0.5 )) / 2.0);
     }
 
     /* (non-Javadoc)
@@ -172,14 +166,16 @@ public class MapCanvasPanel extends JPanel {
         setBackground(Color.WHITE);  // set background color for this JPanel
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
+        // Background
         int x = -canvasWidth; // too much?
         g2d.setColor(Color.LIGHT_GRAY);
-        g2d.setStroke(new BasicStroke(1.5f));
+        g2d.setStroke(new BasicStroke(1.2f));
         while(x < canvasWidth) {
             g2d.drawLine(x, 0, x + (int)(Math.cos(Math.PI/360*60)*canvasHeight), canvasHeight);
             x += 30;
         }
+        
+        g2d.setStroke(new BasicStroke(2f));
         synchronized(renderLoopMutex) {
             drawHexagons(g2d);
         }
@@ -191,90 +187,19 @@ public class MapCanvasPanel extends JPanel {
      * @param g2d The Graphics2D object where to draw on
      */
     private void drawHexagons(Graphics2D g2d) { 
-        DrawingMode dm;
-        // Draw columns first since it's easier to do
-        for( int i = 0; i < GameMap.ROWS; ++i ) {
+        for( int i = 0; i <= GameMap.ROWS; ++i ) 
             for( int j = 0; j < GameMap.COLUMNS; ++j ) {
-            	// draw only if it is a valid sector
-                Sector sector = gameMap.getSectorAt(j, i);
-                if( sector.getId() != SectorBuilder.NOT_VALID) {
-                    Point pos = new Point(j, i);
-                    dm = DrawingMode.NORMAL;
-                    if(sector.equals(mPlayerPosition)) {
-                        boolean a = true;
-                        a =!a;
-                    }
-                    if(!sector.equals(mPlayerPosition) && mEnabledCells != null && !mEnabledCells.contains(pos))
-                        dm = DrawingMode.DISABLED;
-                    
-                    if(!pos.equals(currentHexCoordinates))
-                        drawHexAt(g2d, pos, dm);
-                }
+                Point p = curHexCoords;
+                if(i != GameMap.ROWS)
+                    p = new Point(j,i);
+                
+                if(p == null)
+                    continue;
+                
+                boolean isPlayerHere = p.equals(mPlayerPosition);
+                boolean enabled = mEnabledCells == null || mEnabledCells.contains(p);
+                hexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, (i == GameMap.ROWS));
             }
-        }
-        
-        if( currentHexCoordinates != null ) {
-            Sector sector = gameMap.getSectorAt(currentHexCoordinates);
-            if(mEnabledCells != null && !mEnabledCells.contains(currentHexCoordinates))
-                dm = DrawingMode.DISABLED;
-            else if(!sector.isCrossable())
-                dm = DrawingMode.NORMAL;
-            else
-                dm = DrawingMode.SELECTED_HEX;
-            
-            drawHexAt(g2d, currentHexCoordinates, dm);
-        }
-    }
-
-    /**
-     * Draw hex at given coordinates.
-     *
-     * @param g2d The Graphics2D object where to draw on
-     * @param position the position(i,j) in array of hexagons
-     * @param mode {@link DrawingMode} to use
-     */
-    private void drawHexAt(Graphics2D g2d, Point position, DrawingMode mode) {
-        Sector currentSector;
-        Point2D.Double startPoint;
-        
-        // calculate point coordinates of upper-left corner of containing rectangle
-        startPoint =  new Point2D.Double(hexWidth*3/4*position.x, marginHeight + position.y * hexHeight + ( isEvenColumn(position.x)  ? 0 : hexHeight/2 ) );
-        
-        // create hexagon: center of it is distant (hexWidth/2, hexHeight/2) from the starting point
-        hexagons[position.y][position.x] = HexagonFactory.createHexagon(new Point2D.Double(startPoint.getX() + hexWidth/2, startPoint.getY() + hexHeight/2), hexWidth/2);
-
-        // fill the shape according to sector type
-        currentSector = gameMap.getSectorAt(position);
-        
-        // TODO: add other drawing modes
-        // some tweaks on color according to drawing mode
-        boolean drawStroke = true;
-        switch( mode ) {
-            case NORMAL:
-                g2d.setColor( sectorColors.get( currentSector.getId() ) );
-                break;
-                
-            case SELECTED_HEX:
-                g2d.setColor( Color.CYAN ); // FIXME color hardcoded
-                break;
-                
-            case DISABLED:
-                Color real = sectorColors.get( currentSector.getId() );
-                drawStroke = false;
-                g2d.setColor( new Color(real.getRed()/2, real.getGreen()/2, real.getBlue()/2, 0xa0)); // FIXME color hardcoded
-                break;
-                
-            default:
-                throw new DrawingModeException("Drawing mode not supported");
-        }
-        
-        g2d.fill(hexagons[position.y][position.x].getPath());
-        
-        // border
-        if(drawStroke) {
-            g2d.setColor(Color.DARK_GRAY);
-            g2d.draw(hexagons[position.y][position.x].getPath());
-        }
     }
     
     /**
@@ -287,20 +212,11 @@ public class MapCanvasPanel extends JPanel {
         return col % 2 == 0;
     }
     
-    /**
-     * The Enum DrawingMode. Used by {@link MapCanvasPanel#drawHexAt(Graphics2D, Point, DrawingMode)}
-     */
-    private enum DrawingMode {
-        NORMAL,             // set color from sectorColors map
-        SELECTED_HEX,       // hover color
-        DISABLED            // grey
-    }
-
     public Point getChosenMapCell() {
         if(mClickedOnCell) {
             mClickedOnCell = false;
-            if(currentHexCoordinates != null && (mEnabledCells == null || mEnabledCells.contains(currentHexCoordinates)))
-                return currentHexCoordinates;
+            if(curHexCoords != null && (mEnabledCells == null || mEnabledCells.contains(curHexCoords)))
+                return curHexCoords;
         }
         return null;
     }

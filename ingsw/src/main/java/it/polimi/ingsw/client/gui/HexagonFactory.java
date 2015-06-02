@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
@@ -23,19 +25,14 @@ public class HexagonFactory  {
 	 * @param size radius of hex
 	 * @return the hexagon
 	 */
-	public static Hexagon createHexagon( Point2D.Double center, double size) {
-	    Path2D.Double hexagonPath = new Path2D.Double();
+	public static Hexagon createHexagon( Point center, int size, int type) {
+	    Polygon hexagonPath = new Polygon();
 	     
-	    hexagonPath.moveTo(center.getX()+size, center.getY());
-
         // get vertices by simply rotating by PI/6 every time
-        for( int i = 1; i < NUMBER_OF_VERTICES; ++i ) {
-            hexagonPath.lineTo(center.getX() + size * Math.cos(i*Math.PI/3), center.getY() + size * Math.sin(i*Math.PI/3));
-        }
-        hexagonPath.lineTo(center.getX()+size, center.getY());
-        
-        hexagonPath.closePath();
+        for( int i = 0; i < NUMBER_OF_VERTICES; ++i )
+            hexagonPath.addPoint((int)(center.getX() + size * Math.cos(i*Math.PI/3)),
+                                 (int)(center.getY() + size * Math.sin(i*Math.PI/3)));
 
-	    return new Hexagon( center, size, hexagonPath );
+	    return new Hexagon( center, size, hexagonPath, type);
     }
 }
