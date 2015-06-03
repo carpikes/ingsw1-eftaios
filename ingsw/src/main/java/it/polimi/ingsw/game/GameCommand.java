@@ -1,10 +1,13 @@
 package it.polimi.ingsw.game;
 
 /**
+ * A list of all commands that can be sent all over the network. There are three types of command:
+ * - CMD_SC_* : from server to one client
+ * - CMD_CS_* : from one client to server
+ * - CMD_INFO : from server to all clients
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 17, 2015
  */
-
 public enum GameCommand {
     /** LOGIN COMMANDS */
     CMD_INVALID,

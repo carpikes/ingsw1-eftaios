@@ -2,6 +2,11 @@ package it.polimi.ingsw.game.sector;
 
 import it.polimi.ingsw.exception.SectorException;
 
+/**
+ * Builder for sectors. Create a new sector based on ID.
+ * @author Michele
+ * @since 3 Jun 2015
+ */
 public class SectorBuilder {
     
     public static final int NOT_VALID = 0;
@@ -14,7 +19,12 @@ public class SectorBuilder {
     
     private SectorBuilder() {}
     
-    // Parameterized factory method
+    /**
+     * Create a new sector according to the ID given.
+     * @param id The type of sector
+     * @return A new sector
+     * @throws SectorException Thrown when sector ID not valid
+     */
     public static Sector getSectorFor(int id) throws SectorException  {
         switch(id) {
             case ALIEN:              return new Sector(ALIEN, false);

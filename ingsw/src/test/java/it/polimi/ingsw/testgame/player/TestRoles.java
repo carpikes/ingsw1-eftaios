@@ -6,7 +6,7 @@ package it.polimi.ingsw.testgame.player;
 import static org.junit.Assert.*;
 import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
-import it.polimi.ingsw.game.player.RoleFactory;
+import it.polimi.ingsw.game.player.RoleBuilder;
 
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +30,7 @@ public class TestRoles {
         int humans = 0; 
         int aliens = 0;
         
-        List<Role> roles = RoleFactory.generateRoles( numberOfPlayers );
+        List<Role> roles = RoleBuilder.generateRoles( numberOfPlayers );
         Iterator<Role> it = roles.iterator();
         
         while( it.hasNext() ) {

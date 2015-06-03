@@ -14,6 +14,12 @@ import java.util.Queue;
 
 public class ClientConnMock extends ClientConn {
 
+    Queue<NetworkPacket> fakeIncomingPackets;
+    
+    public ClientConnMock() {
+        fakeIncomingPackets = new LinkedList<>();
+    }
+    
     @Override
     public void run() {
         mIsConnected = true;
@@ -22,7 +28,7 @@ public class ClientConnMock extends ClientConn {
 
     @Override
     public void sendPacket(NetworkPacket pkt) {
-        return;
+        fakeIncomingPackets.add( pkt );
     }
 
     @Override
@@ -42,5 +48,16 @@ public class ClientConnMock extends ClientConn {
     
     public Client exposeClient() {
         return mClient;
+    }
+    
+    public NetworkPacket getPacketFromList() {
+        if( !fakeIncomingPackets.isEmpty() )
+            return fakeIncomingPackets.poll();
+        else
+            return null;
+    }
+    
+    public void clearIncomingPacketQueue() {
+        fakeIncomingPackets.clear();
     }
 }

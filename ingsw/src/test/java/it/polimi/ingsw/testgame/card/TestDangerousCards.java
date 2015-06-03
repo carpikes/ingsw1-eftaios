@@ -74,9 +74,9 @@ public class TestDangerousCards {
     public void testNoiseInAnySectorCard() {
         human.resetValues();
         
-        human.forceState( new MoveDoneState(game, human) );
+        human.setCurrentState( new MoveDoneState(game, human) );
         DangerousCard card = new NoiseInAnySectorCard(game, human);
-        human.forceState( card.doAction() ); // move to NoiseInAnySectorState
+        human.setCurrentState( card.doAction() ); // move to NoiseInAnySectorState
         
         assertTrue( human.getCurrentState() instanceof NoiseInAnySectorState );
         
@@ -87,9 +87,9 @@ public class TestDangerousCards {
     public void testNoiseInYourSectorCard() {
         human.resetValues();
         
-        human.forceState( new MoveDoneState(game, human) );
+        human.setCurrentState( new MoveDoneState(game, human) );
         DangerousCard card = new NoiseInYourSectorCard(game, human);
-        human.forceState( card.doAction() );
+        human.setCurrentState( card.doAction() );
         
         // object card routine already passed too
         assertTrue( human.getCurrentState() instanceof EndingTurnState );
@@ -99,9 +99,9 @@ public class TestDangerousCards {
     public void testSilenceSectorCard() {
         human.resetValues();
         
-        human.forceState( new MoveDoneState(game, human) );
+        human.setCurrentState( new MoveDoneState(game, human) );
         DangerousCard card = new SilenceCard(game, human);
-        human.forceState( card.doAction() );
+        human.setCurrentState( card.doAction() );
         
         // object card routine already passed too
         assertTrue( human.getCurrentState() instanceof EndingTurnState );

@@ -85,7 +85,7 @@ public class TestObjectCards {
     public void testGoodAdrenalineCard() { 
         human.resetValues();
         
-        human.forceState( new MovingState(game, human) );
+        human.setCurrentState( new MovingState(game, human) );
         ObjectCard card = new AdrenalineCard(game, human);
         card.doAction();
         
@@ -99,7 +99,7 @@ public class TestObjectCards {
     public void testBadAdrenalineCard() { 
         human.resetValues();
         
-        human.forceState( new MoveDoneState(game, human) );
+        human.setCurrentState( new MoveDoneState(game, human) );
         
         ObjectCard card = new AdrenalineCard(game, human);
         card.doAction();
@@ -163,7 +163,7 @@ public class TestObjectCards {
         game.rawMoveTo( human, testValidPosition );
         game.rawMoveTo( alien, testValidPosition );
         
-        human.forceState( new MoveDoneState(game, human) );
+        human.setCurrentState( new MoveDoneState(game, human) );
         
         ObjectCard card = new SpotlightCard(game, human);
         game.queuePacket( new NetworkPacket( GameCommand.CMD_CS_SET_POSITION, testValidPosition ) );

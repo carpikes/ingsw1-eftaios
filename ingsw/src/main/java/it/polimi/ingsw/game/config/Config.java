@@ -5,9 +5,12 @@ package it.polimi.ingsw.game.config;
  * @since  May 17, 2015
  */
 
+/**
+ * Configuration class: a list of constants for game and connections
+ * @author Michele
+ * @since 3 Jun 2015
+ */
 public class Config {
-    
-    private Config() {}
     
     // Game configuration here
     public static final int GAME_MIN_PLAYERS                = 2;
@@ -38,5 +41,5 @@ public class Config {
     // Client configuration here
     public static final long CLIENT_TCP_PING_TIME           = 5000;
 	
-
+    private Config() {}
 }

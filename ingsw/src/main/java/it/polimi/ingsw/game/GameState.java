@@ -10,7 +10,7 @@ import it.polimi.ingsw.game.network.NetworkPacket;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
-import it.polimi.ingsw.game.player.RoleFactory;
+import it.polimi.ingsw.game.player.RoleBuilder;
 import it.polimi.ingsw.game.state.DiscardingObjectCardState;
 import it.polimi.ingsw.game.state.EndingTurnState;
 import it.polimi.ingsw.game.state.LoserState;
@@ -70,7 +70,7 @@ public class GameState {
         mOutputQueue = new LinkedList<>();
         
         mPlayers = new ArrayList<>();
-        List<Role> roles = RoleFactory.generateRoles(gameManager.getNumberOfPlayers());
+        List<Role> roles = RoleBuilder.generateRoles(gameManager.getNumberOfPlayers());
         
         for(int i = 0;i<gameManager.getNumberOfPlayers(); i++) {
             Role role = roles.get(i);
@@ -100,7 +100,7 @@ public class GameState {
     }
     
     
-    private void flushOutputQueue() {
+    public void flushOutputQueue() {
 		if( !mOutputQueue.isEmpty() ) {
 			
 			for( Map.Entry<Integer, NetworkPacket> pkt : mOutputQueue )

@@ -138,4 +138,8 @@ public class Client {
             handleDisconnect();
         }
     }
+    
+    public ClientConn getConnection() {
+        return mConn;
+    }
 }
