@@ -4,7 +4,9 @@ import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameOpcode;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,9 +46,12 @@ public class Server {
     /** This game is waiting for new players */
     private GameManager mCurGame = null;
 
+	private Queue<GameManager> mGamesToRemove;
+
     private Server() { 
         mServers = new ArrayList<Listener>();
         mGamesRunning = new ArrayList<GameManager>();
+        mGamesToRemove = new LinkedList<GameManager>();
         mConnectedClients = 0;
 
         ServerTCP tcp = new ServerTCP(Config.SERVER_TCP_LISTEN_PORT);
@@ -105,12 +110,12 @@ public class Server {
      * 
      * @param game  Game you want to remove
      */
-    public void removeGame(GameManager game) {
+    public void enqueueRemoveGame(GameManager game) {
         synchronized(mGamesRunning) {
             if(mCurGame != null && game.equals(mCurGame))
                 mCurGame = null;
             else
-                mGamesRunning.remove(game);
+                mGamesToRemove.add(game);
         }
     }
 
@@ -134,6 +139,11 @@ public class Server {
                 synchronized(mGamesRunning) {
                     for (GameManager g : mGamesRunning)
                         g.update();
+                    
+                    while(!mGamesToRemove.isEmpty()) {
+                    	GameManager g = mGamesToRemove.remove();
+                    	mGamesRunning.remove(g);
+                    }
                 }
                 
                 Thread.sleep(100);

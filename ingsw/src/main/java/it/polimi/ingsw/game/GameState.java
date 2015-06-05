@@ -9,7 +9,6 @@ import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.player.GamePlayer;
-import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleBuilder;
 import it.polimi.ingsw.game.state.DiscardingObjectCardState;
@@ -242,9 +241,9 @@ public class GameState {
         return mMap;
     }
     
-    public void queuePacket(GameCommand pkt) {
+    public void queuePacket(GameCommand gameCommand) {
         synchronized(mInputQueue) {
-            mInputQueue.add(pkt);
+            mInputQueue.add(gameCommand);
         }
     }
     
@@ -332,5 +331,9 @@ public class GameState {
         
         return counter;
     }
+
+	public int getTurnId() {
+		return mTurnId;
+	}
 
 }

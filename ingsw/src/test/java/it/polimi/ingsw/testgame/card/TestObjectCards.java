@@ -6,7 +6,6 @@ package it.polimi.ingsw.testgame.card;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.object.AdrenalineCard;
 import it.polimi.ingsw.game.card.object.AttackCard;
@@ -17,7 +16,8 @@ import it.polimi.ingsw.game.card.object.SedativesCard;
 import it.polimi.ingsw.game.card.object.SpotlightCard;
 import it.polimi.ingsw.game.card.object.TeleportCard;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.MoveDoneState;
 import it.polimi.ingsw.game.state.MovingState;
@@ -166,7 +166,7 @@ public class TestObjectCards {
         human.setCurrentState( new MoveDoneState(game, human) );
         
         ObjectCard card = new SpotlightCard(game, human);
-        game.queuePacket( new NetworkPacket( GameCommand.CMD_CS_SET_POSITION, testValidPosition ) );
+        game.queuePacket( new GameCommand( GameOpcode.CMD_CS_SET_POSITION, testValidPosition ) );
         card.doAction();
         
         // ...

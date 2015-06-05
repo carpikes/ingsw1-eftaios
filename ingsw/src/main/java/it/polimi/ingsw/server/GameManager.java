@@ -169,6 +169,7 @@ public class GameManager {
                 mClients.get(i).sendPacket(new GameCommand(GameOpcode.CMD_SC_RUN, info));
             }
             
+            mCurTurn = 0;
             mIsRunning = true;
         } else {
             if(mState != null)
@@ -211,7 +212,7 @@ public class GameManager {
         
         broadcastPacket(new GameCommand(GameOpcode.CMD_SC_STAT, String.valueOf(mClients.size())));
         if(mClients.size() == 0 || (mClients.size() < Config.GAME_MIN_PLAYERS && mIsRunning)) {
-            Server.getInstance().removeGame(this);
+            Server.getInstance().enqueueRemoveGame(this);
         } else {
             // Game is still alive
             if(mustAskForMap && mClients.size()>0)
@@ -238,9 +239,12 @@ public class GameManager {
         if(!mIsRunning)
             LOG.log(Level.SEVERE, "Game is not started yet. What's happening?");
         
-        if(mCurTurn != null && mCurTurn.equals(client) && mState != null) {
+        if(mState == null)
+        	return;
+        
+        int turnId = mState.getTurnId();
+        if(turnId >=0 && turnId <= mClients.size() && mClients.get(turnId).equals(client))
             mState.queuePacket(pkt);
-        }
     }
 
     /** Save the map chosen by the first player

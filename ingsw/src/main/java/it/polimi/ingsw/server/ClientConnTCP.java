@@ -45,6 +45,9 @@ public class ClientConnTCP extends ClientConn {
                 Object obj = mIn.readObject();
                 if(obj != null && mClient != null && obj instanceof GameCommand) {
                     resetTimeoutTimer();
+                    
+                    if(((GameCommand)obj).getOpcode() == GameOpcode.CMD_PING)
+                    	continue;
                     mClient.handlePacket((GameCommand)obj);
                 }
             }
