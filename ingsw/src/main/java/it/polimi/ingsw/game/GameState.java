@@ -9,8 +9,9 @@ import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.player.GamePlayer;
+import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
-import it.polimi.ingsw.game.player.RoleFactory;
+import it.polimi.ingsw.game.player.RoleBuilder;
 import it.polimi.ingsw.game.state.DiscardingObjectCardState;
 import it.polimi.ingsw.game.state.EndingTurnState;
 import it.polimi.ingsw.game.state.LoserState;
@@ -70,7 +71,7 @@ public class GameState {
         mOutputQueue = new LinkedList<>();
         
         mPlayers = new ArrayList<>();
-        List<Role> roles = RoleFactory.generateRoles(gameManager.getNumberOfPlayers());
+        List<Role> roles = RoleBuilder.generateRoles(gameManager.getNumberOfPlayers());
         
         for(int i = 0;i<gameManager.getNumberOfPlayers(); i++) {
             Role role = roles.get(i);
@@ -100,7 +101,7 @@ public class GameState {
     }
     
     
-    private void flushOutputQueue() {
+    public void flushOutputQueue() {
 		if( !mOutputQueue.isEmpty() ) {
 			
 			for( Map.Entry<Integer, GameCommand> pkt : mOutputQueue )
@@ -125,7 +126,7 @@ public class GameState {
         ObjectCard newCard = ObjectCardBuilder.getRandomCard( this, getCurrentPlayer() );
         PlayerState nextState;
         
-        // Send card just obtained
+        // FIXME maybe an id is better here!
         player.getObjectCards().add( newCard );
         sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
         
@@ -197,12 +198,11 @@ public class GameState {
     /**
      * Moves current player in a position. It is used by the Teleport card and when moving during
      * the normal flow of the game.
-     * @param src Where to move 
-     * @param dest TODO
+     * @param dest Where to move 
      */
-    public void rawMoveTo(Point src, Point dest) {
-        if( getMap().isWithinBounds(src) && !src.equals(dest) ) {
-        	getCurrentPlayer().setCurrentPosition(dest);
+    public void rawMoveTo(GamePlayer player, Point dest) {
+        if( getMap().isWithinBounds(dest) && !player.getCurrentPosition().equals(dest) ) {
+        	player.setCurrentPosition(dest);
         }
     }
     
@@ -281,7 +281,7 @@ public class GameState {
 		int counter = 0;
 		
 		for( GamePlayer p : mPlayers )
-			if( p.getCurrentState().stillInGame() )
+			if( p.stillInGame() )
 				++counter;
 		
 		return counter >= Config.GAME_MIN_PLAYERS;
@@ -321,6 +321,16 @@ public class GameState {
 
     public void sendPacketToCurrentPlayer(GameCommand networkPacket) {
         mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(mTurnId, networkPacket));
+    }
+    
+    public int getNumberOfPlayersInSector( Point p ) {
+        int counter = 0;
+        
+        for( GamePlayer player : mPlayers )
+            if( player.stillInGame() && player.getCurrentPosition().equals(p) )
+                counter++;
+        
+        return counter;
     }
 
 }

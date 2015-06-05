@@ -5,6 +5,11 @@ import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.SpotlightCardState;
 
+/**
+ * Spotlight Object Card: after choosing a position, tell everyone who is there and in the surrounding sectors
+ * @author Michele
+ * @since 2 Jun 2015
+ */
 public class SpotlightCard extends ObjectCard {
 
 	public SpotlightCard(GameState state, GamePlayer player) {
@@ -12,9 +17,11 @@ public class SpotlightCard extends ObjectCard {
         // TODO Auto-generated constructor stub
     }
 
+	/** 
+	 * Move to SpotlightCardState
+	 */
     @Override
 	public PlayerState doAction() {
-		// another possibility here: add a second argument with the desired position, in order to make it all in one state
         mGamePlayer.setStateBeforeSpotlightCard( mGamePlayer.getCurrentState() );
         
         return new SpotlightCardState( mGameState, mGamePlayer );

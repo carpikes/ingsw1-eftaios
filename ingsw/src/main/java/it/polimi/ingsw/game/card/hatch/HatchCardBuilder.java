@@ -10,6 +10,7 @@ import it.polimi.ingsw.game.player.GamePlayer;
 import java.util.Random;
 
 /**
+ * Class for getting a random hatch card.
  * @author Michele
  * @since 2 Jun 2015
  */
@@ -20,6 +21,12 @@ public class HatchCardBuilder {
     public static final int GREEN_HATCH_CARD = 0;
     public static final int RED_HATCH_CARD = 1;
     
+    /**
+     * Give a random hatch card to set player
+     * @param state GameState of the player
+     * @param player Player who draws the card
+     * @return An Hatch Card
+     */
     public static HatchCard getRandomCard( GameState state, GamePlayer player ) {
         Random generator = new Random();
         

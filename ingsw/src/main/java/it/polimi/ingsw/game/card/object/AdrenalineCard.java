@@ -6,6 +6,11 @@ import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.MovingState;
 import it.polimi.ingsw.game.state.PlayerState;
 
+/**
+ * Adrenaline Object card: the player can move up to 2 sectors during this turn 
+ * @author Michele
+ * @since 2 Jun 2015
+ */
 public class AdrenalineCard extends ObjectCard {
 
 	public AdrenalineCard(GameState state, GamePlayer player) {
@@ -13,6 +18,9 @@ public class AdrenalineCard extends ObjectCard {
         // TODO Auto-generated constructor stub
     }
 
+	/** 
+	 * Set adrenaline to true to the set player
+	 */
     @Override
 	public PlayerState doAction() {
 	

@@ -13,6 +13,8 @@ import it.polimi.ingsw.game.network.GameViewCommand;
 import it.polimi.ingsw.game.network.GameViewOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 
+import java.awt.Point;
+
 /**
  * @author Michele
  * @since 25 May 2015
@@ -41,8 +43,8 @@ public class NoiseInAnySectorState extends PlayerState {
 
         PlayerState nextState = this;
         if( packet != null ) {
-            if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_MAP_POSITION ) {
-            	mGameState.broadcastPacket( new GameCommand(GameOpcode.INFO_NOISE, packet.getArgs() ) );
+            if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_MAP_POSITION  && mGameState.getMap().isWithinBounds((Point)packet.getArgs()[0])) {
+            	mGameState.broadcastPacket( new GameCommand(GameOpcode.INFO_NOISE, packet.getArgs()[0] ) );
                 nextState = mGameState.getObjectCard( );
             } else {
                 throw new IllegalStateOperationException("You can only choose a position here. Discarding packet.");

@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 
 /**
+ * Abstract class for a generic Hatch card.
  * @author Michele
  * @since 23 May 2015
  */
@@ -24,5 +25,9 @@ public abstract class HatchCard implements Serializable {
         mGamePlayer = player;
     } 
     
+    /**
+     * Get next state after using this card
+     * @return Next state
+     */
 	public abstract PlayerState getNextState();
 }

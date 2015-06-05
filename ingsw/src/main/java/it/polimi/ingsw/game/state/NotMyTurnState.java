@@ -15,7 +15,7 @@ public class NotMyTurnState extends PlayerState {
     public NotMyTurnState(GameState state, GamePlayer player) {
         super(state, player);
         
-        state.moveToNextPlayer();
+        //state.moveToNextPlayer();
     }
 
     /* (non-Javadoc)

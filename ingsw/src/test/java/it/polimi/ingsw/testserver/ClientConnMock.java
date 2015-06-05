@@ -4,6 +4,9 @@ import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.server.Client;
 import it.polimi.ingsw.server.ClientConn;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 18, 2015
@@ -11,6 +14,12 @@ import it.polimi.ingsw.server.ClientConn;
 
 public class ClientConnMock extends ClientConn {
 
+    Queue<GameCommand> fakeIncomingPackets;
+    
+    public ClientConnMock() {
+        fakeIncomingPackets = new LinkedList<>();
+    }
+    
     @Override
     public void run() {
         mIsConnected = true;
@@ -18,8 +27,9 @@ public class ClientConnMock extends ClientConn {
     }
 
     @Override
+
     public void sendPacket(GameCommand pkt) {
-        return;
+        fakeIncomingPackets.add( pkt );
     }
 
     @Override
@@ -39,5 +49,16 @@ public class ClientConnMock extends ClientConn {
     
     public Client exposeClient() {
         return mClient;
+    }
+    
+    public GameCommand getPacketFromList() {
+        if( !fakeIncomingPackets.isEmpty() )
+            return fakeIncomingPackets.poll();
+        else
+            return null;
+    }
+    
+    public void clearIncomingPacketQueue() {
+        fakeIncomingPackets.clear();
     }
 }
