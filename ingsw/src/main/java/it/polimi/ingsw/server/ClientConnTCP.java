@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.GameCommand;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameCommand;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -43,9 +43,9 @@ public class ClientConnTCP extends ClientConn {
         try {
             while(mSocket.isConnected()) {
                 Object obj = mIn.readObject();
-                if(obj != null && mClient != null && obj instanceof NetworkPacket) {
+                if(obj != null && mClient != null && obj instanceof GameCommand) {
                     resetTimeoutTimer();
-                    mClient.handlePacket((NetworkPacket)obj);
+                    mClient.handlePacket((GameCommand)obj);
                 }
             }
         } catch(IOException | ClassNotFoundException e) {
@@ -60,7 +60,7 @@ public class ClientConnTCP extends ClientConn {
      * @param pkt The packet
      */
     @Override
-    public synchronized void sendPacket(NetworkPacket pkt) {
+    public synchronized void sendPacket(GameCommand pkt) {
         try {
             mOut.writeObject(pkt);
             mOut.flush();
@@ -75,7 +75,7 @@ public class ClientConnTCP extends ClientConn {
     public synchronized void disconnect() {
         if(mOut != null) {
             try {
-                mOut.writeObject(new NetworkPacket(GameCommand.CMD_BYE));
+                mOut.writeObject(new GameCommand(GameOpcode.CMD_BYE));
                 mOut.flush();
             } catch(IOException e) {
                 LOG.log(Level.FINER, e.toString(), e);

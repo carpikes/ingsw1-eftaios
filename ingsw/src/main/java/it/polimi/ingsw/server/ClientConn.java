@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameCommand;
 
 /** Common client connection interface 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -49,7 +49,7 @@ public abstract class ClientConn implements Runnable {
      * 
      * @param pkt The packet
      */
-    public abstract void sendPacket(NetworkPacket pkt);
+    public abstract void sendPacket(GameCommand pkt);
     
     /** Close this connection */
     public abstract void disconnect();
@@ -66,8 +66,8 @@ public abstract class ClientConn implements Runnable {
      * 
      * @param opcode An opcode
      */
-    public void sendPacket(GameCommand opcode) {
-        sendPacket(new NetworkPacket(opcode));
+    public void sendPacket(GameOpcode opcode) {
+        sendPacket(new GameCommand(opcode));
     }
     
 }

@@ -16,7 +16,7 @@ public class Main {
      */
     public static void main(String[] args) {
         GameController c = new GameController();
-        View v = new GUIView();
+        View v = new GUIView(c);
         
         c.setView(v);
         c.run();

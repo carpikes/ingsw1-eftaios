@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.network;
 
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameCommand;
 
 /** A packet listener
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -11,7 +11,7 @@ public interface OnReceiveListener {
      * 
      * @param obj The received packet
      */
-    public void onReceive(NetworkPacket obj);
+    public void onReceive(GameCommand obj);
     
     /** This method is called when the connection drops */
     public void onDisconnect();

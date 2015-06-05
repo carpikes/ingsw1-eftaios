@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.ServerRMIMask;
 
 import java.rmi.AccessException;
@@ -90,7 +90,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
      * @param pkt       Packet you want to send 
      */
     @Override
-    public void onRMICommand(String clientId, NetworkPacket pkt) throws RemoteException {
+    public void onRMICommand(String clientId, GameCommand pkt) throws RemoteException {
         if(clientId == null || pkt == null)
             return;
         
@@ -106,19 +106,19 @@ public class ServerRMI implements Listener, ServerRMIMask {
      * Due to RMI fault, call this method to read your pending messages
      * 
      * @param clientId  Your unique ID obtained by calling registerAndGetId()
-     * @return          A NetworkPacket array
+     * @return          A GameCommand array
      */
     @Override
-    public NetworkPacket[] readCommands(String clientId) throws RemoteException {
+    public GameCommand[] readCommands(String clientId) throws RemoteException {
         if(clientId == null)
-            return new NetworkPacket[0];
+            return new GameCommand[0];
         
         if(mMap.containsKey(clientId)) {
             ClientConnRMI conn = mMap.get(clientId);
             return conn.readCommands();
         } else {
             LOG.log(Level.INFO, "Received an unknown message");
-            return new NetworkPacket[0];
+            return new GameCommand[0];
         }
     }
 

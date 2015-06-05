@@ -1,73 +1,110 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.game.network.GameInfoContainer;
+import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.network.GameStartInfo;
+import it.polimi.ingsw.game.network.GameViewCommand;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 18, 2015
  */
-public interface View {
+public abstract class View {
+    private final LinkedBlockingQueue<ArrayList<GameViewCommand>> mViewQueue;
+    protected boolean mStopEvent = false; 
+    protected final GameController mController;
+    
+    public View(GameController controller) {
+        mController = controller;
+        mViewQueue = new LinkedBlockingQueue<>();
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while(mController.isRunning()) {
+                        ArrayList<GameViewCommand> cmd = mViewQueue.take();
+                        handleCommand(cmd);
+                    }
+                } catch(InterruptedException e) {
+                    mController.stop();
+                }
+                close();
+            }
+        }).start();
+    }
+    
+    protected void enqueueCommand(ArrayList<GameViewCommand> arrayList) {
+        try {
+            mViewQueue.put(arrayList);
+        } catch(InterruptedException e) {
+            // TODO: log(e)
+        }
+    }
+
     /** Ask which connection the user want to use
      * 
      * @param params Available connections
      * @return The index of the chosen connection
      */
-    public int askConnectionType(String[] params);
+    public abstract int askConnectionType(String[] params);
     
     /** Ask the hostname
      * 
      * @return The chosen hostname
      */
-    public String askHost();
+    public abstract String askHost();
     
     /** Ask the username
      * 
      * @param message Prompt message
      * @return The username
      */
-    public String askUsername(String message);
+    public abstract String askUsername(String message);
     
     /** Ask which map to load
      * 
      * @param mapList List of maps
      * @return Index of the chosen map (-1 = Random)
      */
-    public Integer askMap(String[] mapList);
+    public abstract Integer askMap(String[] mapList);
     
     /** Run the Interface*/
-    public void run();
+    public abstract void run();
 
     /** Display an error
      * 
      * @param string Error message
      */
-    public void showError(String string);
+    public abstract void showError(String string);
     
     /** [Login] Notify a change of remaining time
      * 
      * @param remainingTime Remaining time
      */
-    public void updateLoginTime(int remainingTime);
+    public abstract void updateLoginTime(int remainingTime);
     
     /** [Login] Notify a change of players connected
      *  
      * @param numOfPlayers Number of connected players in your game
      */
-    public void updateLoginStat(int numOfPlayers);
+    public abstract void updateLoginStat(int numOfPlayers);
     
     /** Notify to switch to main screen. The game is started
      * 
      * @param container Some infos about this game
      */
-    public void switchToMainScreen(GameInfoContainer container);
+    public abstract void switchToMainScreen(GameStartInfo container);
     
     /** Notify a closed connection */
-    public void close();
+    public abstract void close();
 
-    public Point askMapPosition(Set<Point> enabledCells);
+    public abstract Point askMapPosition(Set<Point> enabledCells);
+    
+    protected abstract void handleCommand(ArrayList<GameViewCommand> cmd); 
 }

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.testserver;
 
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.server.Client;
 import it.polimi.ingsw.server.ClientConn;
 
@@ -18,7 +18,7 @@ public class ClientConnMock extends ClientConn {
     }
 
     @Override
-    public void sendPacket(NetworkPacket pkt) {
+    public void sendPacket(GameCommand pkt) {
         return;
     }
 
@@ -33,7 +33,7 @@ public class ClientConnMock extends ClientConn {
             mClient.handleDisconnect();
     }
 
-    public void emulateReadPacket(NetworkPacket pkt) {
+    public void emulateReadPacket(GameCommand pkt) {
         mClient.handlePacket(pkt);
     }
     

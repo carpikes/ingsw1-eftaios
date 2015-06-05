@@ -3,12 +3,15 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
-import it.polimi.ingsw.game.GameCommand;
-import it.polimi.ingsw.game.network.GameInfoContainer;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameStartInfo;
+import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.network.GameViewCommand;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -25,16 +28,16 @@ public class GameController implements OnReceiveListener {
     private Connection mConn;
     
     /** List of incoming packets/events */
-    private LinkedBlockingQueue<NetworkPacket> mQueue;
+    private LinkedBlockingQueue<GameCommand> mQueue;
     
-    /** True if the client must be shutted down */
+    /** True if the client must be shut down */
     private boolean mStopEvent = false;
     
-    private GameInfoContainer mGameInfo = null;
+    private GameStartInfo mGameInfo = null;
     
     /** The constructor */
     public GameController() {
-        mQueue = new LinkedBlockingQueue<NetworkPacket>();
+        mQueue = new LinkedBlockingQueue<GameCommand>();
     }
     
     /** Set the view */
@@ -77,7 +80,7 @@ public class GameController implements OnReceiveListener {
         String user = "";
         while(!mStopEvent) {
             try {
-                NetworkPacket cmd = mQueue.poll(1, TimeUnit.SECONDS);
+                GameCommand cmd = mQueue.poll(1, TimeUnit.SECONDS);
                 if(cmd == null)
                     continue;
                 String msg = "";
@@ -94,7 +97,7 @@ public class GameController implements OnReceiveListener {
                         do {
                             user = mView.askUsername(msg.equals("")?"Choose a username":msg);
                         } while(user == null || user.trim().length() == 0);
-                        mConn.sendPacket(new NetworkPacket(GameCommand.CMD_CS_USERNAME, user.trim()));
+                        mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_USERNAME, user.trim()));
                         break;
                     case CMD_SC_USEROK:
                         break;
@@ -105,18 +108,21 @@ public class GameController implements OnReceiveListener {
                             chosenMap = mView.askMap((String[])cmd.getArgs());
                         } while(chosenMap == null);
                         
-                        mConn.sendPacket(new NetworkPacket(GameCommand.CMD_CS_LOADMAP, chosenMap));
+                        mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_LOADMAP, chosenMap));
                         break;
                     case CMD_SC_MAPOK:
                         break;
                     case CMD_SC_RUN:
-                        mGameInfo = (GameInfoContainer) cmd.getArgs()[0];
+                        mGameInfo = (GameStartInfo) cmd.getArgs()[0];
                         mView.switchToMainScreen(mGameInfo);
                         break;
                     case CMD_BYE:
                         mStopEvent = true;
                         break;
-                        
+                    case CMD_SC_AVAILABLE_COMMANDS:
+                        //TODO some checks here
+                        mView.enqueueCommand((ArrayList<GameViewCommand>) cmd.getArgs()[0]);
+                        break;
                     /* TODO These commmands below are sent while game is running
                      * and the map is loaded. Add a check into each state if the
                      * used variables are initialized. Or, instead, a giant try-catch
@@ -143,11 +149,7 @@ public class GameController implements OnReceiveListener {
                         break;
                     case CMD_SC_MOVE_INVALID:
                     case CMD_SC_START_TURN:
-                        Point curPos = (Point) cmd.getArgs()[0];
-                        int maxMoves = (int) cmd.getArgs()[1];
-                        Set<Point> enabledCells = mGameInfo.getMap().getCellsWithMaxDistance(curPos, maxMoves);
-                        Point pos = mView.askMapPosition(enabledCells);
-                        mConn.sendPacket(new NetworkPacket(GameCommand.CMD_CS_MOVE, pos));
+
                         break;
                     case CMD_SC_UPDATE_LOCAL_INFO:
                         break;
@@ -191,7 +193,7 @@ public class GameController implements OnReceiveListener {
 
     /** This method handles an incoming packet */
     @Override
-    public void onReceive(NetworkPacket obj) {
+    public void onReceive(GameCommand obj) {
         synchronized(mQueue) {
             mQueue.add(obj);
         }
@@ -200,6 +202,22 @@ public class GameController implements OnReceiveListener {
     /** This method handles a disconnect event */
     @Override
     public void onDisconnect() {
+        stop();
+    }
+    
+    public boolean isRunning() {
+        return !mStopEvent;
+    }
+
+    public void stop() {
         mStopEvent = true;
+    }
+
+    public GameMap getMap() {
+        return mGameInfo.getMap();
+    }
+
+    public void onMapPositionChosen(Point mCurHexCoords) {
+        mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, mCurHexCoords));
     }
 }

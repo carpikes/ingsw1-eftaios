@@ -1,12 +1,12 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.EnemyInfo;
-import it.polimi.ingsw.game.network.GameInfoContainer;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameStartInfo;
+import it.polimi.ingsw.game.network.GameCommand;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -56,9 +56,9 @@ public class GameManager {
             return false;
 
         mClients.add(client);
-        client.sendPacket(new NetworkPacket(GameCommand.CMD_SC_TIME, String.valueOf(getRemainingLoginTime())));
-        client.sendPacket(GameCommand.CMD_SC_CHOOSEUSER);
-        broadcastPacket(new NetworkPacket(GameCommand.CMD_SC_STAT, String.valueOf(mClients.size())));
+        client.sendPacket(new GameCommand(GameOpcode.CMD_SC_TIME, String.valueOf(getRemainingLoginTime())));
+        client.sendPacket(GameOpcode.CMD_SC_CHOOSEUSER);
+        broadcastPacket(new GameCommand(GameOpcode.CMD_SC_STAT, String.valueOf(mClients.size())));
         
         // @first client: ask for map
         if(mClients.size() == 1)
@@ -167,8 +167,8 @@ public class GameManager {
                 userList[i] = new EnemyInfo(mClients.get(i).getUsername());
             
             for(int i = 0; i < mClients.size(); i++) {
-                GameInfoContainer info = mState.buildInfoContainer(userList, i);
-                mClients.get(i).sendPacket(new NetworkPacket(GameCommand.CMD_SC_RUN, info));
+                GameStartInfo info = mState.buildInfoContainer(userList, i);
+                mClients.get(i).sendPacket(new GameCommand(GameOpcode.CMD_SC_RUN, info));
             }
             
             mIsRunning = true;
@@ -182,7 +182,7 @@ public class GameManager {
      * 
      * @param opcode Packet opcode
      */
-    public void broadcastPacket(GameCommand opcode) {
+    public void broadcastPacket(GameOpcode opcode) {
         for(Client c : mClients)
             c.sendPacket(opcode);
     }
@@ -191,7 +191,7 @@ public class GameManager {
      * 
      * @param pkt Packet
      */
-    public synchronized void broadcastPacket(NetworkPacket pkt) {
+    public synchronized void broadcastPacket(GameCommand pkt) {
         for(Client c : mClients)
             c.sendPacket(pkt);
     }
@@ -211,7 +211,7 @@ public class GameManager {
         // Decrement global user counter
         Server.getInstance().removeClient();
         
-        broadcastPacket(new NetworkPacket(GameCommand.CMD_SC_STAT, String.valueOf(mClients.size())));
+        broadcastPacket(new GameCommand(GameOpcode.CMD_SC_STAT, String.valueOf(mClients.size())));
         if(mClients.size() == 0 || (mClients.size() < Config.GAME_MIN_PLAYERS && mIsRunning)) {
             Server.getInstance().removeGame(this);
         } else {
@@ -226,9 +226,9 @@ public class GameManager {
      * @param client The client
      */
     private void askForMap(Client client) {
-        NetworkPacket pkt;
+        GameCommand pkt;
         
-        pkt = new NetworkPacket(GameCommand.CMD_SC_CHOOSEMAP, (Serializable[]) GameMap.getListOfMaps());
+        pkt = new GameCommand(GameOpcode.CMD_SC_CHOOSEMAP, (Serializable[]) GameMap.getListOfMaps());
         client.sendPacket(pkt);
     }
 
@@ -236,7 +236,7 @@ public class GameManager {
      * @param client
      * @param pkt
      */
-    public void handlePacket(Client client, NetworkPacket pkt) {
+    public void handlePacket(Client client, GameCommand pkt) {
         if(!mIsRunning)
             LOG.log(Level.SEVERE, "Game is not started yet. What's happening?");
         
@@ -272,7 +272,7 @@ public class GameManager {
         return mClients.get(i);
     }
 
-    public void sendDirectPacket(int id, NetworkPacket networkPacket) {
+    public void sendDirectPacket(int id, GameCommand networkPacket) {
         mClients.get(id).sendPacket(networkPacket);
     }
 }

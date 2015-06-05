@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.GameCommand;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameCommand;
 
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -44,7 +44,7 @@ public class Client {
      * 
      * @param pkt The packet
      */
-    public synchronized void handlePacket(NetworkPacket pkt) {
+    public synchronized void handlePacket(GameCommand pkt) {
         if(!mGame.isRunning()) {
             try {
                 Serializable[] args = pkt.getArgs();
@@ -58,16 +58,16 @@ public class Client {
                             String name = (String) args[0];
                             if(mGame.canSetName(name) && mUser == null) {
                                 setUsername(name);
-                                sendPacket(new NetworkPacket(GameCommand.CMD_SC_USEROK, mGame.getNumberOfPlayers(), mGame.getRemainingLoginTime()));
+                                sendPacket(new GameCommand(GameOpcode.CMD_SC_USEROK, mGame.getNumberOfPlayers(), mGame.getRemainingLoginTime()));
                             } else
-                                sendPacket(GameCommand.CMD_SC_USERFAIL);
+                                sendPacket(GameOpcode.CMD_SC_USERFAIL);
                             break;
                         case CMD_CS_LOADMAP:
                             // FIXME null map
                             if(args.length == 1 && mGame.setMap(this, (Integer)args[0]))
-                                sendPacket(GameCommand.CMD_SC_MAPOK);
+                                sendPacket(GameOpcode.CMD_SC_MAPOK);
                             else
-                                sendPacket(GameCommand.CMD_SC_MAPFAIL);
+                                sendPacket(GameOpcode.CMD_SC_MAPFAIL);
                             break;
                     }
                 }
@@ -82,7 +82,7 @@ public class Client {
      * 
      * @param pkt The packet
      */
-    public void sendPacket(NetworkPacket pkt) {
+    public void sendPacket(GameCommand pkt) {
         mConn.sendPacket(pkt);
     }
     
@@ -90,8 +90,8 @@ public class Client {
      * 
      * @param opcode The opcode
      */
-    public void sendPacket(GameCommand opcode) {
-        sendPacket(new NetworkPacket(opcode));
+    public void sendPacket(GameOpcode opcode) {
+        sendPacket(new GameCommand(opcode));
     }
 
     /** Get the player username

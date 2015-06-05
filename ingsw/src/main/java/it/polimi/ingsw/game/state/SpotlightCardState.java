@@ -4,12 +4,15 @@
 package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
-import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.network.GameViewCommand;
+import it.polimi.ingsw.game.network.GameViewOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 
 import java.awt.Point;
+import java.util.ArrayList;
 
 /**
  * @author Michele
@@ -21,19 +24,28 @@ public class SpotlightCardState extends PlayerState {
         super(state, player);
     }
 
+    @Override
+    protected void buildAndSendAvailableCommands() {
+        ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
+        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENABLEMAPVIEW));
+
+        sendAvailableCommands(availableCommands);
+    }
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
     @Override
     public PlayerState update() {
-        NetworkPacket packet = mGameState.getPacketFromQueue();
+        GameCommand packet = mGameState.getPacketFromQueue();
         
         PlayerState nextState = this;
         if( packet != null ) {
-            if( packet.getOpcode() == GameCommand.CMD_CS_SET_POSITION ) {
+            if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_MAP_POSITION ) {
                 mGameState.spotlightAction( (Point)packet.getArgs()[0] );
                 
                 nextState = mGamePlayer.getStateBeforeSpotlightCard();
+                nextState.buildAndSendAvailableCommands();
                 mGamePlayer.setStateBeforeSpotlightCard(null);
             } else {
                 throw new IllegalStateOperationException("You can only choose a position here. Discarding packet.");
@@ -47,5 +59,4 @@ public class SpotlightCardState extends PlayerState {
 	public boolean stillInGame() {
 		return true;
 	}
-
 }

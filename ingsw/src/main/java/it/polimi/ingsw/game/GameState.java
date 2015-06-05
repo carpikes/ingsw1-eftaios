@@ -5,8 +5,9 @@ import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.EnemyInfo;
-import it.polimi.ingsw.game.network.GameInfoContainer;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameStartInfo;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleFactory;
@@ -40,8 +41,8 @@ public class GameState {
     
     private final GameManager mGameManager;
     
-    private final Queue<NetworkPacket> mInputQueue;
-    private final Queue<Map.Entry<Integer,NetworkPacket>> mOutputQueue;
+    private final Queue<GameCommand> mInputQueue;
+    private final Queue<Map.Entry<Integer,GameCommand>> mOutputQueue;
     
     private final GameMap mMap;
     private ArrayList<GamePlayer> mPlayers;
@@ -102,7 +103,7 @@ public class GameState {
     private void flushOutputQueue() {
 		if( !mOutputQueue.isEmpty() ) {
 			
-			for( Map.Entry<Integer, NetworkPacket> pkt : mOutputQueue )
+			for( Map.Entry<Integer, GameCommand> pkt : mOutputQueue )
 			    if(pkt.getKey() == -1)
 			        mGameManager.broadcastPacket(pkt.getValue());
 			    else
@@ -126,15 +127,15 @@ public class GameState {
         
         // Send card just obtained
         player.getObjectCards().add( newCard );
-        sendPacketToCurrentPlayer( new NetworkPacket(GameCommand.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
+        sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
         
         // We're ok, proceed
         if( player.getNumberOfCards() < Config.MAX_NUMBER_OF_OBJ_CARDS ) {
-            broadcastPacket( GameCommand.INFO_GOT_A_NEW_OBJ_CARD );
+            broadcastPacket( GameOpcode.INFO_GOT_A_NEW_OBJ_CARD );
             nextState = new EndingTurnState(this, getCurrentPlayer());
         } else {
             // tell the user he has to drop or use a card
-            sendPacketToCurrentPlayer( GameCommand.CMD_SC_DISCARD_OBJECT_CARD );
+            sendPacketToCurrentPlayer( GameOpcode.CMD_SC_DISCARD_OBJECT_CARD );
             nextState = new DiscardingObjectCardState(this, getCurrentPlayer());
         }
         
@@ -151,12 +152,12 @@ public class GameState {
         PlayerState nextState = player.getCurrentState();
         
         if( player.isHuman() && !player.isObjectCardUsed() ) {        	
-        	this.broadcastPacket( new NetworkPacket(GameCommand.INFO_OBJ_CARD_USED, objectCard.toString()) );
+        	this.broadcastPacket( new GameCommand(GameOpcode.INFO_OBJ_CARD_USED, objectCard.toString()) );
         	
             getCurrentPlayer().setObjectCardUsed(true);
             nextState = objectCard.doAction();
         } else {
-            sendPacketToCurrentPlayer( GameCommand.CMD_SC_CANNOT_USE_OBJ_CARD ); 
+            sendPacketToCurrentPlayer( GameOpcode.CMD_SC_CANNOT_USE_OBJ_CARD ); 
         }
         
         return nextState;
@@ -190,7 +191,7 @@ public class GameState {
     		}
     	}
     	
-    	broadcastPacket( new NetworkPacket(GameCommand.INFO_KILLED_PEOPLE, killedPlayers) );
+    	broadcastPacket( new GameCommand(GameOpcode.INFO_KILLED_PEOPLE, killedPlayers) );
     }
     
     /**
@@ -223,11 +224,11 @@ public class GameState {
         	}
         }
         
-        broadcastPacket( new NetworkPacket( GameCommand.INFO_SPOTLIGHT, caughtPlayers, playerPositions ) );
+        broadcastPacket( new GameCommand( GameOpcode.INFO_SPOTLIGHT, caughtPlayers, playerPositions ) );
     }
     /* -----------------------------------------------*/
     
-    public NetworkPacket getPacketFromQueue( ) {
+    public GameCommand getPacketFromQueue( ) {
     	synchronized(mInputQueue) {
             return mInputQueue.poll();
         }
@@ -241,14 +242,14 @@ public class GameState {
         return mMap;
     }
     
-    public void queuePacket(NetworkPacket pkt) {
+    public void queuePacket(GameCommand pkt) {
         synchronized(mInputQueue) {
             mInputQueue.add(pkt);
         }
     }
     
-    public GameInfoContainer buildInfoContainer(EnemyInfo[] userList, int i) {
-        GameInfoContainer info = new GameInfoContainer(userList, mPlayers.get(i).isHuman(), mMap);
+    public GameStartInfo buildInfoContainer(EnemyInfo[] userList, int i) {
+        GameStartInfo info = new GameStartInfo(userList, mPlayers.get(i).isHuman(), mMap);
         return info;
     }
 
@@ -273,7 +274,7 @@ public class GameState {
      * Kills all humans and make aliens winners.
      */
 	public void endGame() {
-		this.broadcastPacket( GameCommand.INFO_END_GAME );
+		this.broadcastPacket( GameOpcode.INFO_END_GAME );
 	}
 	
 	public boolean areTherePeopleStillPlaying() {
@@ -306,20 +307,20 @@ public class GameState {
 		throw new RuntimeException("No players. What's happening?");
 	}
 	
-	public void broadcastPacket( NetworkPacket pkt ) {
-		mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,NetworkPacket>(-1,pkt) );
+	public void broadcastPacket( GameCommand pkt ) {
+		mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(-1,pkt) );
 	}
 	
-	public void broadcastPacket( GameCommand command ) {
-	    broadcastPacket( new NetworkPacket( command ) );
+	public void broadcastPacket( GameOpcode command ) {
+	    broadcastPacket( new GameCommand( command ) );
 	}
 
-    public void sendPacketToCurrentPlayer(GameCommand command) {
-        sendPacketToCurrentPlayer(new NetworkPacket(command));
+    public void sendPacketToCurrentPlayer(GameOpcode command) {
+        sendPacketToCurrentPlayer(new GameCommand(command));
     }
 
-    public void sendPacketToCurrentPlayer(NetworkPacket networkPacket) {
-        mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,NetworkPacket>(mTurnId, networkPacket));
+    public void sendPacketToCurrentPlayer(GameCommand networkPacket) {
+        mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(mTurnId, networkPacket));
     }
 
 }

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.game.card.dangerous;
 
-import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 
@@ -15,8 +15,8 @@ public class NoiseInYourSectorCard extends DangerousCard {
 
     @Override
 	public PlayerState doAction() {	    
-	    mGameState.sendPacketToCurrentPlayer( new NetworkPacket(GameCommand.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardBuilder.NOISE_IN_YOUR_SECTOR) );
-        mGameState.broadcastPacket( new NetworkPacket(GameCommand.INFO_NOISE, mGamePlayer.getCurrentPosition()) );
+	    mGameState.sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardBuilder.NOISE_IN_YOUR_SECTOR) );
+        mGameState.broadcastPacket( new GameCommand(GameOpcode.INFO_NOISE, mGamePlayer.getCurrentPosition()) );
         
         return mGameState.getObjectCard( );
 	}

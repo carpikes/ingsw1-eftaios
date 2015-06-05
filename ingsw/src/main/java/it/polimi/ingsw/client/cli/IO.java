@@ -1,7 +1,10 @@
 package it.polimi.ingsw.client.cli;
 
+import it.polimi.ingsw.game.network.GameViewCommand;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,5 +58,18 @@ class IO {
             write("Out of range");
         }
         return i;
+    }
+    
+    
+    public static int askInAList(String[] list) {
+        for(int i = 0; i<list.length;i++)
+            IO.write((i+1) + ") " + list[i]);
+        return readRangeInt(1, list.length) - 1;
+    }
+    
+    public static int askInAList(ArrayList<GameViewCommand> list) {
+        for(int i = 0; i<list.size();i++)
+            IO.write((i+1) + ") " + list.get(i).getOpcode().toString());
+        return readRangeInt(1, list.size()) - 1;
     }
 }

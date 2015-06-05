@@ -5,12 +5,14 @@ import it.polimi.ingsw.exception.SectorException;
 public class SectorBuilder {
     
     public static final int NOT_VALID = 0;
-    public static final int HATCH = 2;
-    public static final int USED_HATCH = 4;
     public static final int NOT_DANGEROUS = 1;
+    public static final int HATCH = 2;
     public static final int DANGEROUS = 3;
+    public static final int USED_HATCH = 4;
     public static final int ALIEN = 8;
     public static final int HUMAN = 9;
+    
+    public static final int MAX_COUNT = HUMAN+1;
     
     private SectorBuilder() {}
     
@@ -25,6 +27,15 @@ public class SectorBuilder {
             case HUMAN:              return new Sector(HUMAN, false);
             case NOT_VALID:          return new Sector(NOT_VALID, false);
             default:                 throw new SectorException("Illegal sector code");
+        }
+    }
+    
+    public static boolean isValid(int id) {
+        try {
+            getSectorFor(id);
+            return true;
+        } catch(SectorException e) {
+            return false;
         }
     }
 }

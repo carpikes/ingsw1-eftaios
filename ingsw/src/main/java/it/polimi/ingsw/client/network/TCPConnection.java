@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.network;
 
-import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameCommand;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -86,7 +86,7 @@ public class TCPConnection extends Connection {
      * @param pkt the packet
      */
     @Override
-    public void sendPacket(NetworkPacket pkt) {
+    public void sendPacket(GameCommand pkt) {
         if(mSocket == null || !mSocket.isConnected() || mOut == null)
             throw new RuntimeException("Cannot send message. Socket is closed.");
         
@@ -158,8 +158,8 @@ public class TCPConnection extends Connection {
             try  {
                 while(mSocket != null && mSocket.isConnected()) {
                     Object obj = mReader.readObject();
-                    if(obj != null && mListener != null && obj instanceof NetworkPacket)
-                        mListener.onReceive((NetworkPacket) obj);
+                    if(obj != null && mListener != null && obj instanceof GameCommand)
+                        mListener.onReceive((GameCommand) obj);
                 }
             } catch (Exception e) {
                 LOG.log(Level.FINER, "Connection closed:" + e.toString(), e);
@@ -182,7 +182,7 @@ public class TCPConnection extends Connection {
         public void run() {
             try  {
                 while(mParent.isOnline()) {
-                    mParent.sendPacket(GameCommand.CMD_PING);
+                    mParent.sendPacket(GameOpcode.CMD_PING);
                     Thread.sleep(Config.CLIENT_TCP_PING_TIME);
                 }
             } catch (Exception e) {

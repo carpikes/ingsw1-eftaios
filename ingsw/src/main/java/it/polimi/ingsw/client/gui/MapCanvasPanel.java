@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.sector.Sector;
 
@@ -52,6 +53,8 @@ public class MapCanvasPanel extends JPanel {
 
     private Point mPlayerPosition;
     
+    private final GameController mController;
+    
     /**
      * Instantiates a new map canvas panel.
      *
@@ -59,8 +62,9 @@ public class MapCanvasPanel extends JPanel {
      * @param mCanvasWidth the canvas width
      * @param mCanvasHeight the canvas height
      */
-    public MapCanvasPanel( GameMap map, int canvasWidth, int canvasHeight , Point playerPosition) {
+    public MapCanvasPanel( GameController controller, GameMap map, int canvasWidth, int canvasHeight , Point playerPosition) {
         // initialization 
+        mController = controller;
         this.mCanvasWidth = canvasWidth;
         this.mCanvasHeight = canvasHeight;
         mHexagons = new Hexagon[GameMap.ROWS][GameMap.COLUMNS];
@@ -107,6 +111,8 @@ public class MapCanvasPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent arg0) { 
                 mClickedOnCell = true;
+                if(mCurHexCoords != null)
+                    mController.onMapPositionChosen(mCurHexCoords);
             }
 
             @Override

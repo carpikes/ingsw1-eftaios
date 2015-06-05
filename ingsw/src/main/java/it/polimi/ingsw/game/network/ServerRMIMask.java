@@ -9,6 +9,6 @@ import java.rmi.RemoteException;
  */
 public interface ServerRMIMask extends Remote {
     public String registerAndGetId() throws RemoteException;
-    public void onRMICommand(String clientId, NetworkPacket pkt) throws RemoteException;
-    public NetworkPacket[] readCommands(String clientId) throws RemoteException;
+    public void onRMICommand(String clientId, GameCommand pkt) throws RemoteException;
+    public GameCommand[] readCommands(String clientId) throws RemoteException;
 }

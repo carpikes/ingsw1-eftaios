@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.network;
 
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.ServerRMIMask;
 
 import java.io.IOException;
@@ -104,7 +104,7 @@ public class RMIConnection extends Connection {
      * @param pkt the packet
      */
     @Override
-    public void sendPacket(NetworkPacket pkt) {
+    public void sendPacket(GameCommand pkt) {
         if(mServerMask == null || mUniqueId == null)
             throw new RuntimeException("RMI Connection is offline");
         
@@ -164,9 +164,9 @@ public class RMIConnection extends Connection {
         public void run() {
             try  {
                 while(mServer != null && mOnline) {
-                    NetworkPacket[] commands = mServer.readCommands(mClientId);
+                    GameCommand[] commands = mServer.readCommands(mClientId);
                     if(mListener != null) {
-                        for(NetworkPacket i : commands)
+                        for(GameCommand i : commands)
                             if(i != null && mListener != null)
                                 mListener.onReceive(i);
                     }

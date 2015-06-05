@@ -31,4 +31,10 @@ public class NotMyTurnState extends PlayerState {
 		return true;
 	}
 
+    @Override
+    protected void buildAndSendAvailableCommands() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

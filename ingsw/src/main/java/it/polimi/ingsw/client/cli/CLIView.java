@@ -11,20 +11,22 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
-import it.polimi.ingsw.game.GameCommand;
-import it.polimi.ingsw.game.network.GameInfoContainer;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameStartInfo;
+import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.network.GameViewCommand;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 10, 2015
  */
 
-public class CLIView implements View {
+public class CLIView extends View {
     private static final Logger LOG = Logger.getLogger(CLIView.class.getName());
 
     private static void banner() {
@@ -51,7 +53,8 @@ public class CLIView implements View {
         IO.write("");
     }
 
-    public CLIView() {
+    public CLIView(GameController c) {
+        super(c);
         CLIView.banner();
     }
 
@@ -62,11 +65,7 @@ public class CLIView implements View {
     @Override
     public int askConnectionType(String[] params) {
         IO.write("Which connection do you want to use?");
-        
-        for(int i=0;i<params.length;i++)
-            IO.write((i+1) + ") " + params[i]);
-        
-        return IO.readRangeInt(1, params.length)-1;
+        return IO.askInAList(params);
     }
 
     @Override
@@ -81,11 +80,7 @@ public class CLIView implements View {
     @Override
     public Integer askMap(String[] mapList) {
         IO.write("Choose a map:");
-        for(int i=0;i<mapList.length;i++)
-            IO.write(String.format("%d) %s", i+1, mapList[i]));
-        
-        int choice = IO.readRangeInt(1, mapList.length)-1;
-        return choice;
+        return IO.askInAList(mapList);
     }
 
     @Override
@@ -119,10 +114,10 @@ public class CLIView implements View {
     }
 
     /* (non-Javadoc)
-     * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.network.GameInfoContainer)
+     * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.network.GameStartInfo)
      */
     @Override
-    public void switchToMainScreen(GameInfoContainer container) {
+    public void switchToMainScreen(GameStartInfo container) {
         // TODO Auto-generated method stub
         
     }
@@ -137,5 +132,24 @@ public class CLIView implements View {
     public Point askMapPosition(Set<Point> enabledCells) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    protected void handleCommand(ArrayList<GameViewCommand> cmd) {
+        if(cmd.size() > 1) {
+            IO.write("Choose a command:");
+            int choice = IO.askInAList(cmd);
+            switch(cmd.get(choice).getOpcode()) {
+            case CMD_ENABLEMAPVIEW:
+                
+                break;
+            case CMD_CHOOSEOBJECTCARD:
+                
+                break;
+            default:
+                break;
+                
+            }
+        }
     }
 }

@@ -1,24 +1,28 @@
 package it.polimi.ingsw.client.gui;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
 
+import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.network.GameInfoContainer;
+import it.polimi.ingsw.game.network.GameStartInfo;
+import it.polimi.ingsw.game.network.GameViewCommand;
 
 /**
  * @author Alain
  * @since 24/mag/2015
  *
  */
-public class GUIView implements View {
+public class GUIView extends View {
     GUIFrame mMainFrame;
     
-    public GUIView() {
-        mMainFrame = new GUIFrame();
+    public GUIView(GameController controller) {
+        super(controller);
+        mMainFrame = new GUIFrame(controller);
     }
     
     @Override
@@ -91,7 +95,7 @@ public class GUIView implements View {
      * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.network.GameInfoContainer)
      */
     @Override
-    public void switchToMainScreen(GameInfoContainer container) {
+    public void switchToMainScreen(GameStartInfo container) {
         GameMap map = container.getMap();
         mMainFrame.switchToMap(map,map.getStartingPoint(container.isHuman()));
     }
@@ -115,6 +119,28 @@ public class GUIView implements View {
         } catch( InterruptedException e) {}
         mMainFrame.resetChosenMapCell();
         return null;
+    }
+
+    @Override
+    protected void handleCommand(ArrayList<GameViewCommand> cmd) {
+        for(GameViewCommand c : cmd) {
+            switch(c.getOpcode()) {
+            case CMD_CHOOSEOBJECTCARD:
+                break;
+            case CMD_ENABLEMAPVIEW:
+                Point curPos = (Point) c.getArgs()[0];
+                int maxMoves = (int) c.getArgs()[1];
+                Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
+                mMainFrame.enableMapCells(enabledCells);
+                //Point pos = askMapPosition(enabledCells);
+                //sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, pos));
+                
+                break;
+            default:
+                break;
+            
+            }
+        }
     }
 
 }

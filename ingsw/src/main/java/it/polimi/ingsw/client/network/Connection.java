@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.network;
 
-import it.polimi.ingsw.game.GameCommand;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameCommand;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ public abstract class Connection {
      * 
      * @param pkt The packet
      */
-    public abstract void sendPacket(NetworkPacket pkt);
+    public abstract void sendPacket(GameCommand pkt);
     
     /** Check if the client is correctly connected
      * 
@@ -51,7 +51,7 @@ public abstract class Connection {
      * 
      * @param opcode The packet opcode
      */
-    public void sendPacket(GameCommand opcode) {
-        sendPacket(new NetworkPacket(opcode));
+    public void sendPacket(GameOpcode opcode) {
+        sendPacket(new GameCommand(opcode));
     }
 }

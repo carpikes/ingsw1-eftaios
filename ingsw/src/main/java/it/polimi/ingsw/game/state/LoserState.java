@@ -3,8 +3,11 @@
  */
 package it.polimi.ingsw.game.state;
 
-import it.polimi.ingsw.game.GameCommand;
+import java.util.ArrayList;
+
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameViewCommand;
 import it.polimi.ingsw.game.player.GamePlayer;
 
 /**
@@ -16,8 +19,8 @@ public class LoserState extends PlayerState {
     public LoserState(GameState state, GamePlayer player) {
         super(state, player);
 
-        state.broadcastPacket( GameCommand.INFO_LOSER );
-        mGameState.sendPacketToCurrentPlayer( GameCommand.CMD_SC_LOSE );
+        state.broadcastPacket( GameOpcode.INFO_LOSER );
+        mGameState.sendPacketToCurrentPlayer( GameOpcode.CMD_SC_LOSE );
     }
 
     /* (non-Javadoc)
@@ -32,4 +35,8 @@ public class LoserState extends PlayerState {
 	public boolean stillInGame() {
 		return false;
 	}
+
+    @Override
+    protected void buildAndSendAvailableCommands() {
+    }
 }

@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import it.polimi.ingsw.client.network.TCPConnection;
-import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.server.ClientConnTCP;
 import it.polimi.ingsw.server.Server;
 
@@ -48,7 +48,7 @@ public class TestServer {
             conns[i] = new ClientConnMock();
             conns[i].run();
             assertTrue(Server.getInstance().addClient(conns[i]));
-            conns[i].emulateReadPacket(new NetworkPacket(GameCommand.CMD_CS_USERNAME, "test_" + i));
+            conns[i].emulateReadPacket(new GameCommand(GameOpcode.CMD_CS_USERNAME, "test_" + i));
             assertTrue(conns[i].exposeClient().hasUsername());
         }
         try {
@@ -56,7 +56,7 @@ public class TestServer {
         } catch( InterruptedException e) { }
         for(ClientConnMock i : conns) {
             assertTrue(i.exposeClient().hasUsername());
-            i.emulateReadPacket(new NetworkPacket(GameCommand.CMD_PING));
+            i.emulateReadPacket(new GameCommand(GameOpcode.CMD_PING));
         }
 
         for(ClientConnMock i : conns)
@@ -127,18 +127,18 @@ public class TestServer {
         assertTrue(Server.getInstance().addClient(conn2));
         
         // Emulate and invalid packet
-        conn.emulateReadPacket(new NetworkPacket(GameCommand.CMD_PING));
+        conn.emulateReadPacket(new GameCommand(GameOpcode.CMD_PING));
         
         // Try to change username with an empty one
-        conn.emulateReadPacket(new NetworkPacket(GameCommand.CMD_CS_USERNAME));
+        conn.emulateReadPacket(new GameCommand(GameOpcode.CMD_CS_USERNAME));
         assertFalse(conn.exposeClient().hasUsername());
         
         // Try a good username
-        conn.emulateReadPacket(new NetworkPacket(GameCommand.CMD_CS_USERNAME, "test"));
+        conn.emulateReadPacket(new GameCommand(GameOpcode.CMD_CS_USERNAME, "test"));
         assertTrue(conn.exposeClient().hasUsername());
         
         // Try an already used username
-        conn2.emulateReadPacket(new NetworkPacket(GameCommand.CMD_CS_USERNAME, "test"));
+        conn2.emulateReadPacket(new GameCommand(GameOpcode.CMD_CS_USERNAME, "test"));
         assertFalse(conn2.exposeClient().hasUsername());
         
         // Disconnect clients

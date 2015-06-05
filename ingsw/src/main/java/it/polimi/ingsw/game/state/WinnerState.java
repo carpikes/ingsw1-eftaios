@@ -3,8 +3,8 @@
  */
 package it.polimi.ingsw.game.state;
 
-import it.polimi.ingsw.game.GameCommand;
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 
 /**
@@ -16,8 +16,8 @@ public class WinnerState extends PlayerState {
     public WinnerState(GameState state, GamePlayer player) {
         super(state, player);
 
-        state.broadcastPacket( GameCommand.INFO_WINNER );
-        state.sendPacketToCurrentPlayer( GameCommand.CMD_SC_WIN );
+        state.broadcastPacket( GameOpcode.INFO_WINNER );
+        state.sendPacketToCurrentPlayer( GameOpcode.CMD_SC_WIN );
     }
 
     /* (non-Javadoc)
@@ -32,5 +32,11 @@ public class WinnerState extends PlayerState {
 	public boolean stillInGame() {
 		return false;
 	}
+
+    @Override
+    protected void buildAndSendAvailableCommands() {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

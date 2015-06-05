@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.GameCommand;
-import it.polimi.ingsw.game.network.NetworkPacket;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.GameCommand;
 
 import java.rmi.RemoteException;
 import java.util.LinkedList;
@@ -13,7 +13,7 @@ import java.util.Queue;
  */
 public class ClientConnRMI extends ClientConn {
     /** Outgoing packets */
-    private Queue<NetworkPacket> mOutgoingQueue;
+    private Queue<GameCommand> mOutgoingQueue;
     
     /** Unique client identifier */
     private final String mUniqueId;
@@ -34,7 +34,7 @@ public class ClientConnRMI extends ClientConn {
     public ClientConnRMI(ServerRMI server, String uniqueId) {
         super();
         mIsConnected = true;
-        mOutgoingQueue = new LinkedList<NetworkPacket>();
+        mOutgoingQueue = new LinkedList<GameCommand>();
         mUniqueId = uniqueId;
         mServer = server;
     }
@@ -49,7 +49,7 @@ public class ClientConnRMI extends ClientConn {
      * @param pkt The packet
      */
     @Override
-    public void sendPacket(NetworkPacket pkt) {
+    public void sendPacket(GameCommand pkt) {
         synchronized(mOutgoingQueue) {
             mOutgoingQueue.add(pkt);
         }
@@ -58,7 +58,7 @@ public class ClientConnRMI extends ClientConn {
     /** Close this connection */
     @Override
     public void disconnect() {
-        sendPacket(GameCommand.CMD_BYE);
+        sendPacket(GameOpcode.CMD_BYE);
         mIsDisconnecting = true;
         mIsConnected = false;
     }
@@ -68,7 +68,7 @@ public class ClientConnRMI extends ClientConn {
      * @param pkt The packet
      * @throws RemoteException
      */
-    public void onRMICommand(NetworkPacket pkt) throws RemoteException {
+    public void onRMICommand(GameCommand pkt) throws RemoteException {
         resetTimeoutTimer();
         if(mClient != null && pkt != null && !mIsDisconnecting)
             mClient.handlePacket(pkt);
@@ -78,7 +78,7 @@ public class ClientConnRMI extends ClientConn {
      * 
      * @return A list of packets
      */
-    public NetworkPacket[] readCommands() {
+    public GameCommand[] readCommands() {
         resetTimeoutTimer();
         
         // Last read with good bye message
@@ -87,12 +87,12 @@ public class ClientConnRMI extends ClientConn {
         
         synchronized(mOutgoingQueue) {
             if(mOutgoingQueue.isEmpty())
-                return new NetworkPacket[0];
-            NetworkPacket[] out = new NetworkPacket[mOutgoingQueue.size()];
+                return new GameCommand[0];
+            GameCommand[] out = new GameCommand[mOutgoingQueue.size()];
             
             int i = 0;
             while(!mOutgoingQueue.isEmpty()) {
-                NetworkPacket msg = mOutgoingQueue.poll();
+                GameCommand msg = mOutgoingQueue.poll();
                 out[i++] = msg;
             }
             return out;

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
 
@@ -30,10 +31,12 @@ public class GUIFrame extends JFrame {
     private MapCanvasPanel mMapCanvas;
     private static final long serialVersionUID = 1L;
     private LoginCanvasPanel mLoginCanvas;
+    private final GameController mController;
     
-    public GUIFrame() {
+    public GUIFrame(GameController controller) {
         super();
         
+        mController = controller;
         setDefaultCloseOperation(EXIT_ON_CLOSE);   
         setTitle("Escape from the Aliens in Outer Space");
         setSize(WIDTH, HEIGHT);
@@ -63,7 +66,7 @@ public class GUIFrame extends JFrame {
         if(mLoginCanvas == null)
             throw new RuntimeException("Map is already loaded");
         try {
-            mMapCanvas = new MapCanvasPanel( map, WIDTH, HEIGHT, startingPoint);
+            mMapCanvas = new MapCanvasPanel(mController, map, WIDTH, HEIGHT, startingPoint);
             mMapCanvas.setPreferredSize(mDimension);
         } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
             LOG.log(Level.SEVERE, "File is not well formatted: " + e);
@@ -89,7 +92,7 @@ public class GUIFrame extends JFrame {
     }
     
     public static void main(String[] args) throws IOException, InterruptedException {
-        GUIFrame f = new GUIFrame();
+        /*GUIFrame f = new GUIFrame();
         GameMap map = GameMap.createFromId(1);
         f.switchToMap(map, map.getStartingPoint(true));
         f.setVisible(true);
@@ -102,7 +105,7 @@ public class GUIFrame extends JFrame {
                 f.enableMapCells(pnt);
             }
             Thread.sleep(100);
-        }
+        }*/
     }
 
     public void setPlayerPosition(Point startingPoint) {

@@ -1,11 +1,11 @@
-package it.polimi.ingsw.game;
+package it.polimi.ingsw.game.network;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 17, 2015
  */
 
-public enum GameCommand {
+public enum GameOpcode {
     /** LOGIN COMMANDS */
     CMD_INVALID,
     CMD_PING,
@@ -22,16 +22,17 @@ public enum GameCommand {
     CMD_CS_LOADMAP,
     CMD_SC_MAPOK,
     CMD_SC_MAPFAIL,
+    CMD_SC_AVAILABLE_COMMANDS,
    
     /** GAME COMMANDS TO SERVER */
     CMD_CS_ATTACK,
     CMD_CS_DISCARD_OBJ_CARD,
     CMD_CS_USE_OBJ_CARD,
     CMD_CS_SET_POSITION,
-    CMD_CS_MOVE,
+    CMD_CS_CHOSEN_MAP_POSITION,
     CMD_CS_DRAW_DANGEROUS_CARD,
     CMD_CS_NOISE_IN_ANY_SECTOR_POSITION,
-    CMD_CS_NOT_MY_TURN,
+    CMD_CS_END_TURN,
     CMD_CS_AWAKE,
     
     /** GAME COMMANDS TO *A SINGLE* CLIENT */
