@@ -21,6 +21,9 @@ class IO {
         System.out.println(line);
     }
 
+    public static void write(char c) {
+    	System.out.print(c);
+    }
     public static int readInt() {
         int i = 0;
         while(true) {
