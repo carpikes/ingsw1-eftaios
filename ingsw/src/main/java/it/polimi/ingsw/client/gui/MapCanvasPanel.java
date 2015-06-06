@@ -62,7 +62,7 @@ public class MapCanvasPanel extends JPanel {
      * @param mCanvasWidth the canvas width
      * @param mCanvasHeight the canvas height
      */
-    public MapCanvasPanel( GameController controller, GameMap map, int canvasWidth, int canvasHeight , Point playerPosition) {
+    public MapCanvasPanel( GameController controller, GameMap map, int canvasWidth, int canvasHeight, Point playerPosition) {
         // initialization 
         mController = controller;
         this.mCanvasWidth = canvasWidth;

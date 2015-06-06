@@ -103,8 +103,6 @@ public abstract class View {
     
     /** Notify a closed connection */
     public abstract void close();
-
-    public abstract Point askMapPosition(Set<Point> enabledCells);
     
     protected abstract void handleCommand(ArrayList<GameViewCommand> cmd); 
 }
