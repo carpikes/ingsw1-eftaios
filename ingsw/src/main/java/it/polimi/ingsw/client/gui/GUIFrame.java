@@ -12,7 +12,6 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.logging.Level;
@@ -61,8 +60,7 @@ public class GUIFrame extends JFrame {
     private static final Dimension mDimensionCardPanel = new Dimension(CARD_WIDTH, CARD_HEIGHT);
     
     private final int numberOfButtons = Config.MAX_NUMBER_OF_OBJ_CARDS + 1;
-    private BufferedImage[] buttonIcons = new BufferedImage[ numberOfButtons ];
-    private JButton[] cardButtons = new JButton[ numberOfButtons ];
+    private CardButton[] cardButtons = new CardButton[ numberOfButtons ];
     
     // Drawing canvas
     private MapCanvasPanel mMapCanvas;
@@ -116,7 +114,6 @@ public class GUIFrame extends JFrame {
         
         JButton btnAttack = new JButton("Attack");
         JButton btnDiscardCard = new JButton("Discard Card");
-        JButton btnEndTurn = new JButton("End Turn");
         
         actionButtonsPanel.add(btnAttack);
         actionButtonsPanel.add(btnDiscardCard);
@@ -149,33 +146,13 @@ public class GUIFrame extends JFrame {
         rightPanel.setPreferredSize(mDimensionCardPanel);
           
             for( int i = 0; i < numberOfButtons; ++i ) {
-                cardButtons[i] = new JButton( );
-                
-                cardButtons[i].setBorder(BorderFactory.createEmptyBorder());
-                cardButtons[i].setContentAreaFilled(false);
-
-                setCardToNullCard(i);
-                
+                cardButtons[i] = new CardButton( CardButtons.NULL, mController );
                 cardPanel.add( cardButtons[i] );
             }
             
         return cardPanel;
     }
     
-    private void setCardTo( int i, int type ) {
-        // TODO coming soon
-    }
-
-    private void setCardToNullCard(int i) {
-        try {   
-            buttonIcons[i] = ImageIO.read(new File("img/null.png"));
-            cardButtons[i].setIcon( new ImageIcon(buttonIcons[i]) );
-            cardButtons[i].setEnabled(false);
-        } catch (IOException e) {
-            ; // TODO
-        }
-    }
-
     public void setRemainingTime(int remainingTime) {
         if(mLoginCanvas != null)
             mLoginCanvas.setTime(remainingTime);
@@ -189,7 +166,7 @@ public class GUIFrame extends JFrame {
         mLoginCanvas = new LoginCanvasPanel( );
         mLoginCanvas.setPreferredSize(mDimensionLeftPanel);
        
-        add(mLoginCanvas, BorderLayout.CENTER);
+        add(mLoginCanvas, BorderLayout.WEST);
     }
     
     public void switchToMap(GameMap map, Point startingPoint) {
@@ -204,7 +181,7 @@ public class GUIFrame extends JFrame {
         }
         
         remove(mLoginCanvas);
-        add(mMapCanvas, BorderLayout.CENTER);
+        add(mMapCanvas, BorderLayout.WEST);
         mLoginCanvas = null;
         
     }
