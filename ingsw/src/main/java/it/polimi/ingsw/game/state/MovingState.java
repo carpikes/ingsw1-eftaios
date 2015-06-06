@@ -82,8 +82,7 @@ public class MovingState extends PlayerState {
         return nextState;
     }
 
-    private PlayerState handleMove(GamePlayer player, GameMap map,
-            Point chosenPos) {
+    private PlayerState handleMove(GamePlayer player, GameMap map, Point chosenPos) {
         PlayerState nextState;
         mGameState.rawMoveTo(player, chosenPos);
 

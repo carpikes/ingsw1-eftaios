@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
@@ -33,6 +34,9 @@ public class GameController implements OnReceiveListener {
     private boolean mStopEvent = false;
     
     private GameStartInfo mGameInfo = null;
+    
+    private Integer mMyTurn = null;
+    private String mMyUsername = null;
     
     private int mCurTurn = 0;
     
@@ -94,7 +98,6 @@ public class GameController implements OnReceiveListener {
     }
 
 	private void processCommand(GameCommand cmd) {
-    	String user = "";
         String msg = "";
         Object obj = null;
         String curUser = null;
@@ -117,9 +120,11 @@ public class GameController implements OnReceiveListener {
                 msg = "Another player is using your name. Choose another one.";
             case CMD_SC_CHOOSEUSER:
                 do {
-                    user = mView.askUsername(msg.equals("")?"Choose a username":msg);
-                } while(user == null || user.trim().length() == 0);
-                mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_USERNAME, user.trim()));
+                    mMyUsername = mView.askUsername(msg.equals("")?"Choose a username":msg);
+                    if(mMyUsername != null)
+                        mMyUsername = mMyUsername.trim();
+                } while(mMyUsername == null || mMyUsername.length() == 0);
+                mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_USERNAME, mMyUsername));
                 break;
             case CMD_SC_USEROK:
             	mView.showInfo(null, "Username accepted. Waiting for other players...");
@@ -138,6 +143,12 @@ public class GameController implements OnReceiveListener {
             case CMD_SC_RUN:
             	if (obj != null && obj instanceof GameStartInfo) {
             		mGameInfo = (GameStartInfo) cmd.getArgs()[0];
+            		for(int i = 0; i < mGameInfo.getPlayersList().length; i++) {
+            		    if(mGameInfo.getPlayersList()[i].getUsername().equals(mMyUsername)) {
+            		        mMyTurn = i;
+            		        break;
+            		    }
+            		}
             		mView.switchToMainScreen(mGameInfo);
             	} else
             		throw new RuntimeException("Can't get game infos!");
@@ -194,7 +205,7 @@ public class GameController implements OnReceiveListener {
             	mView.showInfo(curUser, "Draw new object card!");
                 break;
             case INFO_HAS_MOVED:
-            	mView.showInfo(curUser, "Player has moved"); // TODO who?
+            	mView.showInfo(curUser, "Player has moved");
                 break;
             case INFO_PLAYER_ATTACKED:
             	if(cmd.getArgs().length == 2 && obj instanceof Point && cmd.getArgs()[1] instanceof ArrayList<?>) {
@@ -226,6 +237,13 @@ public class GameController implements OnReceiveListener {
             case INFO_SPOTLIGHT:
                 break;
             case INFO_START_TURN:
+                if(obj != null && obj instanceof Integer) {
+                    mCurTurn = (Integer) obj;
+                    if(mCurTurn == mMyTurn)
+                        mView.onMyTurn();
+                    else
+                        mView.onOtherTurn(mGameInfo.getPlayersList()[mCurTurn].getUsername());
+                }
                 break;
             case INFO_USED_HATCH:
                 break;

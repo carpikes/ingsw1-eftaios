@@ -106,4 +106,10 @@ public abstract class View {
 	public abstract void showInfo(String user, String message);
 
 	public abstract void showNoiseInSector(String user, Point p);
+
+    /**
+     * @param username
+     */
+    public abstract void onMyTurn();
+    public abstract void onOtherTurn(String username);
 }

@@ -48,20 +48,17 @@ public class GUIView extends View {
 
     @Override
     public Integer askMap(String[] mapList) {
-        String[] askList = new String[mapList.length + 1];
-        for(int i = 0; i < mapList.length; i++)
-            askList[i+1] = mapList[i];
-        
-        askList[0] = "<Generate a random map>";
+
         Object ret = JOptionPane.showInputDialog(null, "Choose a map", "", 
-                JOptionPane.QUESTION_MESSAGE, null, askList, askList[0]);
+                JOptionPane.QUESTION_MESSAGE, null, mapList, mapList[0]);
    
         if(ret == null || !(ret instanceof String))
             return null;
         
-        for(int i = 0; i<askList.length;i++)
-            if(askList[i].equals(ret))
-                return i-1;
+        for(int i = 0; i<mapList.length;i++)
+            if(mapList[i].equals(ret))
+                return i;
+        
         return null; 
     }
 
@@ -143,4 +140,21 @@ public class GUIView extends View {
 		
 	}
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#onMyTurn()
+     */
+    @Override
+    public void onMyTurn() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#onOtherTurn(java.lang.String)
+     */
+    @Override
+    public void onOtherTurn(String username) {
+        // TODO Auto-generated method stub
+        
+    }
 }

@@ -196,4 +196,22 @@ public class CLIView extends View {
     public void showNoiseInSector(String user, Point p) {
         showInfo(user, "NOISE IN SECTOR " + mMap.pointToString(p));
     }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#onMyTurn()
+     */
+    @Override
+    public void onMyTurn() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#onOtherTurn(java.lang.String)
+     */
+    @Override
+    public void onOtherTurn(String username) {
+        // TODO Auto-generated method stub
+        
+    }
 }

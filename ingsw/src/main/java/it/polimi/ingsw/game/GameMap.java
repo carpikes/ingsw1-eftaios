@@ -23,8 +23,6 @@ import java.util.logging.Logger;
 public class GameMap implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOG = Logger.getLogger( GameMap.class.getName() );
-    
     private static final String[] mapFiles = {
         "maps/fermi.txt",
         "maps/galilei.txt",
@@ -36,12 +34,10 @@ public class GameMap implements Serializable {
 	public static final int COLUMNS = 23;
 	
 	private Sector[][] board;
-	private String name;
 	private final Point humanStartingPoint, alienStartingPoint;
 	
 	// You can only construct a new map either from a .map file or by random generation 
 	private GameMap( String name, Sector[][] board, Point human, Point alien) {
-	    this.name = name;
 		this.board = board;
 		this.humanStartingPoint = human;
 		this.alienStartingPoint = alien;
@@ -76,11 +72,6 @@ public class GameMap implements Serializable {
             throw new SectorException("Missing sector");
 		
 		return new GameMap(title, sectors, human, alien);
-	}
-	
-	public static GameMap generate() {
-		// TODO: advanced functionality to be implemented
-		return new GameMap(null, null, null, null);
 	}
 	
 	public Sector getSectorAt( int x, int y ) {
@@ -127,9 +118,6 @@ public class GameMap implements Serializable {
     public static GameMap createFromId(int mapId) throws IOException {
         if(!isValidMap(mapId))
             throw new RuntimeException("Invalid map id");
-            
-        if(mapId == -1)
-            return GameMap.generate();
         
         return GameMap.createFromMapFile(new File(mapFiles[mapId]));
     }

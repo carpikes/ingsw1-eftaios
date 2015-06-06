@@ -55,12 +55,11 @@ public class GameState {
      * @param clients List of connections of all players
      */
     public GameState(GameManager gameManager, int mapId) {
-        GameMap tmpMap;
+        GameMap tmpMap = null;
         try {
             tmpMap = GameMap.createFromId(mapId);
         } catch(IOException e) {
             LOG.log(Level.SEVERE, "Missing map files: " + e.toString(), e);
-            tmpMap = GameMap.generate();
         }
         mMap = tmpMap;
         
@@ -77,6 +76,9 @@ public class GameState {
             GamePlayer player = new GamePlayer(i, role, this, (i == mTurnId));
             mPlayers.add(player);
         }
+        
+        if(mMap == null)
+            gameManager.shutdown();
     }
     
     /**

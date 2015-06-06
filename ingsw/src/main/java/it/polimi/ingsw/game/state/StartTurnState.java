@@ -5,6 +5,7 @@ package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.config.Config;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 
@@ -28,7 +29,7 @@ public class StartTurnState extends PlayerState {
             state.endGame();
         } else {
             // tell everybody I'm starting playing!
-            state.broadcastPacket( GameOpcode.INFO_START_TURN );
+            state.broadcastPacket( new GameCommand(GameOpcode.INFO_START_TURN, state.getTurnId()) );
         }
     }
 
