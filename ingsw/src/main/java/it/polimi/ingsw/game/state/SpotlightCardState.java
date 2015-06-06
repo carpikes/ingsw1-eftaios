@@ -13,15 +13,18 @@ import it.polimi.ingsw.game.player.GamePlayer;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Michele
  * @since 25 May 2015
  */
 public class SpotlightCardState extends PlayerState {
-
+	private static final Logger LOG = Logger.getLogger(SpotlightCardState.class.getName());
     public SpotlightCardState(GameState state, GamePlayer player) {
         super(state, player);
+        LOG.log(Level.FINE, "Constructor");
     }
 
     @Override

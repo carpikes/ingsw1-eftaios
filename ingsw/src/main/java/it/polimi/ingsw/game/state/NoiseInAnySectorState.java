@@ -4,6 +4,8 @@
 package it.polimi.ingsw.game.state;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
@@ -20,10 +22,11 @@ import java.awt.Point;
  * @since 25 May 2015
  */
 public class NoiseInAnySectorState extends PlayerState {
-
+	private static final Logger LOG = Logger.getLogger(NoiseInAnySectorState.class.getName());
     public NoiseInAnySectorState(GameState state, GamePlayer player) {
         super(state, player);
-        // TODO Auto-generated constructor stub
+
+        LOG.log(Level.FINE, "Constructor");
     }
     
     @Override

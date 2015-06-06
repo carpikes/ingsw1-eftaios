@@ -3,27 +3,30 @@
  */
 package it.polimi.ingsw.game.state;
 
-import java.util.ArrayList;
-
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameViewCommand;
 import it.polimi.ingsw.game.network.GameViewOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
+
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Michele
  * @since 25 May 2015
  */
 public class DiscardingObjectCardState extends PlayerState {
-
+	private static final Logger LOG = Logger.getLogger(DiscardingObjectCardState.class.getName());
+	
     public DiscardingObjectCardState(GameState state, GamePlayer player) {
         super(state, player);
-        // TODO Auto-generated constructor stub
+
+        LOG.log(Level.FINE, "Constructor");
     }
 
     @Override

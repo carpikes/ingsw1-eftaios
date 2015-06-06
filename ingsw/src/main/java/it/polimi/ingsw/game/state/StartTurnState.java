@@ -11,16 +11,19 @@ import it.polimi.ingsw.game.player.GamePlayer;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Michele
  * @since 25 May 2015
  */
 public class StartTurnState extends PlayerState {
-
+	private static final Logger LOG = Logger.getLogger(StartTurnState.class.getName());
     public StartTurnState(GameState state, GamePlayer player) {
         super(state, player);
-      
+        LOG.log(Level.FINE, "Constructor");
+        
         player.resetValues();
         player.incrementMoveCounter();
         

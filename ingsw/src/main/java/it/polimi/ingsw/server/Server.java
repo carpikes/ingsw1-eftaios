@@ -121,6 +121,7 @@ public class Server {
 
     /** Start the server and put listeners online. */
     public void runServer() {
+    	LOG.log(Level.FINE, "Starting up...");
         for(Listener server : mServers)
             new Thread(server).start();
 

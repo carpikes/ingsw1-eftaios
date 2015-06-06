@@ -16,6 +16,7 @@ import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -27,9 +28,11 @@ public class MoveDoneState extends PlayerState {
     
     public MoveDoneState(GameState state, GamePlayer player) {
         super(state, player);
-
+        LOG.log(Level.FINE, "Constructor");
+        
         // tell the client it has to choose what to do after moving
         mGameState.sendPacketToCurrentPlayer( GameOpcode.CMD_SC_MOVE_DONE );
+        buildAndSendAvailableCommands();
     }
     
     @Override

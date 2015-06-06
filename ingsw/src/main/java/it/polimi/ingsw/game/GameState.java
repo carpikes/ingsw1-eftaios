@@ -87,9 +87,10 @@ public class GameState {
             return;
         
         GamePlayer player = getCurrentPlayer();
-                
+        PlayerState nextState = null;
+        
         try {
-            PlayerState nextState = player.getCurrentState().update();
+            nextState = player.getCurrentState().update();
             player.setCurrentState(nextState);
         } catch( IllegalStateOperationException e) {
             LOG.log(Level.INFO, e.toString(), e);
@@ -97,6 +98,9 @@ public class GameState {
 
         // broadcast messages at the end of the turn
         flushOutputQueue();
+        
+        if(nextState != null && nextState instanceof NotMyTurnState)
+        	moveToNextPlayer();
     }
     
     
@@ -298,9 +302,9 @@ public class GameState {
 	}
 
 	private int findNextPlayer() {
-		for( int currId = mTurnId; currId < mTurnId + mPlayers.size(); ++mTurnId ) {
+		for( int currId = mTurnId + 1; currId < mTurnId + mPlayers.size(); ++mTurnId ) {
 			if( mPlayers.get(currId % mPlayers.size()).getCurrentState() instanceof NotMyTurnState )
-				return currId;
+				return currId % mPlayers.size();
 		}
 
 		throw new RuntimeException("No players. What's happening?");

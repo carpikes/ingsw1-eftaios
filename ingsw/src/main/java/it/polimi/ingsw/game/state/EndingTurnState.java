@@ -4,7 +4,10 @@
 package it.polimi.ingsw.game.state;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import sun.util.LocaleServiceProviderPool.LocalizedObjectGetter;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.object.ObjectCard;
@@ -19,9 +22,12 @@ import it.polimi.ingsw.game.player.GamePlayer;
  * @since 25 May 2015
  */
 public class EndingTurnState extends PlayerState {
+	private static final Logger LOG = Logger.getLogger(EndingTurnState.class.getName());
 
     public EndingTurnState(GameState state, GamePlayer player) {
         super(state, player);
+        LOG.log(Level.FINE, "Constructor");
+        
         mGameState.sendPacketToCurrentPlayer( GameOpcode.CMD_SC_END_OF_TURN );
     }
     

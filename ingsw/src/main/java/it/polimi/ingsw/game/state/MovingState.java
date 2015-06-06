@@ -19,6 +19,7 @@ import it.polimi.ingsw.game.sector.SectorBuilder;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -32,6 +33,7 @@ public class MovingState extends PlayerState {
     
     public MovingState(GameState state, GamePlayer player) {
         super(state, player);
+        LOG.log(Level.FINE, "Constructor");
         
         availableSectors = state.getCellsWithMaxDistance();
         

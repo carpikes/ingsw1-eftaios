@@ -98,7 +98,10 @@ public class GameController implements OnReceiveListener {
     	String user = "";
         String msg = "";
         Object obj = null;
-        String curUser = mGameInfo.getPlayersList()[mCurTurn].getUsername();
+        String curUser = null;
+        
+        if(mGameInfo != null && mGameInfo.getPlayersList() != null)
+        	curUser = mGameInfo.getPlayersList()[mCurTurn].getUsername();
         
         if(cmd.getArgs().length > 0)
         	obj = cmd.getArgs()[0];
