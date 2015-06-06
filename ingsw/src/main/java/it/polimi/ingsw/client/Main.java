@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.client.cli.CLIView;
 import it.polimi.ingsw.client.gui.GUIView;
 
 /** Client launcher
@@ -16,7 +17,7 @@ public class Main {
      */
     public static void main(String[] args) {
         GameController c = new GameController();
-        View v = new GUIView(c);
+        View v = new CLIView(c);
         
         c.setView(v);
         c.run();

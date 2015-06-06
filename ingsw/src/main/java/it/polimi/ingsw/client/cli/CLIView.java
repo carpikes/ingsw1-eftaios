@@ -122,6 +122,8 @@ public class CLIView extends View {
     @Override
     public void switchToMainScreen(GameStartInfo container) {
     	mMap = container.getMap();
+    	IO.write("Game is started! Good luck!");
+    	CLIMapRenderer.renderMap(mMap, null, null);
     }
 
     @Override
@@ -138,11 +140,19 @@ public class CLIView extends View {
             GameViewCommand c = cmd.get(choice);
             switch(c.getOpcode()) {
             case CMD_ENABLEMAPVIEW:
+            	Point newPos = null;
                 Point curPos = (Point) c.getArgs()[0];
                 int maxMoves = (int) c.getArgs()[1];
                 Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
                 
                 CLIMapRenderer.renderMap(mMap, curPos, enabledCells);
+                do {
+                	newPos = IO.askMapPos();
+                	if( (enabledCells == null && mMap.isWithinBounds(newPos)) || (enabledCells != null && enabledCells.contains(newPos)))
+                		break;
+                	IO.write("Invalid position");
+                } while(true);
+                
                 break;
             case CMD_CHOOSEOBJECTCARD:
                 break;

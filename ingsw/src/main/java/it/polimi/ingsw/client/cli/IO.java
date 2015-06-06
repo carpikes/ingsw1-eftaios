@@ -1,7 +1,9 @@
 package it.polimi.ingsw.client.cli;
 
+import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.network.GameViewCommand;
 
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -75,4 +77,19 @@ class IO {
             IO.write((i+1) + ") " + list.get(i).getOpcode().toString());
         return readRangeInt(1, list.size()) - 1;
     }
+
+	public static Point askMapPos() {
+		do {
+			String s = IO.readString();
+			if(s.length() == 3 || (s.length() == 4  && s.charAt(1) == '0')) {
+			
+				int x = (int)(Character.toLowerCase(s.charAt(0)) - 'a');
+				int y = Integer.parseInt(s.substring(s.length()-2)); 
+				if(x >= 0 && x <= GameMap.COLUMNS && y >=0 && y <= GameMap.ROWS)
+					return new Point(x,y);
+			}
+			
+			IO.write("Invalid position");
+		} while(true);
+	}
 }
