@@ -179,7 +179,8 @@ public class GameManager {
      */
     public void broadcastPacket(GameOpcode opcode) {
         for(Client c : mClients)
-            c.sendPacket(opcode);
+            if(!c.isInactive())
+                c.sendPacket(opcode);
     }
     
     /** Send a packet to all players connected
@@ -188,7 +189,8 @@ public class GameManager {
      */
     public synchronized void broadcastPacket(GameCommand pkt) {
         for(Client c : mClients)
-            c.sendPacket(pkt);
+            if(!c.isInactive())
+                c.sendPacket(pkt);
     }
     
     /** Remove a client from this game
@@ -200,20 +202,24 @@ public class GameManager {
         if(mClients.get(0).equals(client) && mChosenMapId == null)
             mustAskForMap = true;
         
-        if(mClients.remove(client) == false)
-            throw new RuntimeException("Are you trying to remove a non-existent client?");
+        // DO NOT REMOVE THE CLIENT IF THE GAME IS RUNNING.
+        if(!mIsRunning)
+            if(mClients.remove(client) == false)
+                throw new RuntimeException("Are you trying to remove a non-existent client?");
         
         // Decrement global user counter
         Server.getInstance().removeClient();
         
         broadcastPacket(new GameCommand(GameOpcode.CMD_SC_STAT, String.valueOf(mClients.size())));
-        if(mClients.size() == 0 || (mClients.size() < Config.GAME_MIN_PLAYERS && mIsRunning)) {
+        if(mClients.size() == 0)
             Server.getInstance().enqueueRemoveGame(this);
-        } else {
-            // Game is still alive
-            if(mustAskForMap && mClients.size()>0)
-                askForMap(mClients.get(0));
-        }
+
+        // Game is still alive
+        if(mustAskForMap && mClients.size() > 0)
+            askForMap(mClients.get(0));
+        
+        if(mIsRunning && mState != null)
+            mState.onPlayerDisconnect(mClients.indexOf(client));
     }
 
     /** Ask to client which map to use
@@ -281,7 +287,8 @@ public class GameManager {
 
 	public void shutdown() {
 		for(Client c : mClients)
-			c.handleDisconnect();
+		    if(!c.isInactive())
+		        c.handleDisconnect();
 		
 		Server.getInstance().enqueueRemoveGame(this);
 	}

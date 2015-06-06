@@ -61,5 +61,6 @@ public enum GameOpcode {
     INFO_SILENCE, 
     INFO_GOT_A_NEW_OBJ_CARD,
     INFO_END_GAME,
-    INFO_SPOTLIGHT
+    INFO_SPOTLIGHT, 
+    INFO_AWAY
 }

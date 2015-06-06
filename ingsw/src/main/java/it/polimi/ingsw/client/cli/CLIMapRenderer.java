@@ -17,7 +17,7 @@ public class CLIMapRenderer {
         " \\____/ "
     };
 
-    private static final String types[] = {"????","   ","HTCH","DANG","USED","????","????","????","ALJN","HUMN"};
+    private static final String types[] = {"????","    ","HTCH","DANG","USED","????","????","????","ALJN","HUMN"};
 
     public static void renderMap(GameMap map, Point curPos, Set<Point> enabledPoints) {
         final int py = pattern.length;

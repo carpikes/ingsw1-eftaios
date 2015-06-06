@@ -11,6 +11,7 @@ import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleBuilder;
+import it.polimi.ingsw.game.state.AwayState;
 import it.polimi.ingsw.game.state.DiscardingObjectCardState;
 import it.polimi.ingsw.game.state.EndingTurnState;
 import it.polimi.ingsw.game.state.LoserState;
@@ -282,7 +283,7 @@ public class GameState {
      * Kills all humans and make aliens winners.
      */
 	public void endGame() {
-		this.broadcastPacket( GameOpcode.INFO_END_GAME );
+		broadcastPacket( GameOpcode.INFO_END_GAME );
 		flushOutputQueue();
 		mGameManager.shutdown();
 	}
@@ -350,5 +351,20 @@ public class GameState {
 	public int getTurnId() {
 		return mTurnId;
 	}
+
+    /** Called when a client disconnects
+     * @param id
+     */
+    public void onPlayerDisconnect(int id) {
+        GamePlayer player = mPlayers.get(id);
+        if(player != null) {
+            if(mTurnId == id) 
+                moveToNextPlayer();
+            player.setCurrentState(new AwayState(this, player));
+        }
+        
+        if(!areTherePeopleStillPlaying())
+            endGame();
+    }
 
 }

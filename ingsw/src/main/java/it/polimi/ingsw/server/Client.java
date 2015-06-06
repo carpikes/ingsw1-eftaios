@@ -21,11 +21,10 @@ public class Client {
     /** Game he is playing */
     private final GameManager mGame;
     
-    /** Am I playing or waiting for other players? */
-    private boolean mPlaying = false;
-    
     /** My username */
     private String mUser = null;
+
+    private boolean mInactive = false;
 
     /** The constructor
      * 
@@ -45,6 +44,9 @@ public class Client {
      * @param pkt The packet
      */
     public synchronized void handlePacket(GameCommand pkt) {
+        if(mInactive)
+            return;
+        
         if(!mGame.isRunning()) {
             try {
                 Serializable[] args = pkt.getArgs();
@@ -83,6 +85,9 @@ public class Client {
      * @param pkt The packet
      */
     public void sendPacket(GameCommand pkt) {
+        if(mInactive)
+            throw new RuntimeException("You can't send data to an inactive client");
+        
         mConn.sendPacket(pkt);
     }
     
@@ -114,9 +119,10 @@ public class Client {
 
     /** Disconnect the client */
     public synchronized void handleDisconnect() {
-        if(mConn.isConnected()) {
+        if(mConn.isConnected() && !mInactive) {
             mConn.disconnect();
             mGame.removeClient(this);
+            mInactive = true;
         }
     }
 
@@ -133,6 +139,9 @@ public class Client {
     
     /** Update timeouts */
     public void update() {
+        if(mInactive)
+            return;
+        
         if(mConn.isTimeoutTimerElapsed()) {
             LOG.log(Level.WARNING, "Ping timeout. Disconnecting.");
             handleDisconnect();
@@ -141,5 +150,9 @@ public class Client {
     
     public ClientConn getConnection() {
         return mConn;
+    }
+    
+    public boolean isInactive() {
+        return mInactive;
     }
 }
