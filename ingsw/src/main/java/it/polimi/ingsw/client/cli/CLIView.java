@@ -44,9 +44,11 @@ public class CLIView extends View {
     }
 
 	private GameMap mMap;
+	private final GameController mController;
 
     public CLIView(GameController c) {
         super(c);
+        mController = c;
         CLIView.banner();
     }
 
@@ -141,7 +143,7 @@ public class CLIView extends View {
                 		break;
                 	IO.write("Invalid position");
                 } while(true);
-                
+                mController.onMapPositionChosen(newPos);
                 break;
             case CMD_CHOOSEOBJECTCARD:
                 break;

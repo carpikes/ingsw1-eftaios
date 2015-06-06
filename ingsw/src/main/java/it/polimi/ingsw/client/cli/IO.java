@@ -84,7 +84,7 @@ class IO {
 			if(s.length() == 3 || (s.length() == 4  && s.charAt(1) == '0')) {
 			
 				int x = (int)(Character.toLowerCase(s.charAt(0)) - 'a');
-				int y = Integer.parseInt(s.substring(s.length()-2)); 
+				int y = Integer.parseInt(s.substring(s.length()-2))-1; 
 				if(x >= 0 && x <= GameMap.COLUMNS && y >=0 && y <= GameMap.ROWS)
 					return new Point(x,y);
 			}
