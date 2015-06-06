@@ -23,6 +23,7 @@ import java.util.logging.Logger;
  * @since 25 May 2015
  */
 public class MoveDoneState extends PlayerState {
+    private static final Logger LOG = Logger.getLogger(MoveDoneState.class.getName());
     
     public MoveDoneState(GameState state, GamePlayer player) {
         super(state, player);
@@ -37,7 +38,7 @@ public class MoveDoneState extends PlayerState {
         ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
         availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENABLEMAPVIEW, mGamePlayer.getCurrentPosition(), mGamePlayer.getMaxMoves()));
         
-        if(!mGamePlayer.isObjectCardUsed())
+        if(!mGamePlayer.isObjectCardUsed() && mGamePlayer.getNumberOfCards() > 0)
             availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD));
         
         if(mGamePlayer.isAlien())
@@ -50,8 +51,6 @@ public class MoveDoneState extends PlayerState {
             
         sendAvailableCommands(availableCommands);
     }
-
-    private static final Logger LOG = Logger.getLogger(MoveDoneState.class.getName());
     
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
@@ -65,7 +64,7 @@ public class MoveDoneState extends PlayerState {
 
         // If we actually received a command from the client...
         if( packet != null ) {
-            if( packet.getOpcode() == GameOpcode.CMD_CS_USE_OBJ_CARD ) {
+            if( packet.getOpcode() == GameOpcode.CMD_CS_USE_OBJ_CARD  && mGamePlayer.getNumberOfCards() > 0) {
                 nextState = useObjectCard(this, packet);
             } else if( mGamePlayer.isAlien() && packet.getOpcode() == GameOpcode.CMD_CS_ATTACK ) {
                 mGameState.attack( mGamePlayer.getCurrentPosition() );

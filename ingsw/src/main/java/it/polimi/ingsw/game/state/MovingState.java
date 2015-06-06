@@ -26,8 +26,8 @@ import java.util.logging.Logger;
  * @since 25 May 2015
  */
 public class MovingState extends PlayerState {
-
     private static final Logger LOG = Logger.getLogger(MovingState.class.getName());
+    
     private Set< Point > availableSectors;
     
     public MovingState(GameState state, GamePlayer player) {
@@ -42,7 +42,7 @@ public class MovingState extends PlayerState {
         ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
         availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENABLEMAPVIEW, mGamePlayer.getCurrentPosition(), mGamePlayer.getMaxMoves()));
         
-        if(!mGamePlayer.isObjectCardUsed())
+        if(!mGamePlayer.isObjectCardUsed() && mGamePlayer.getNumberOfCards() > 0)
             availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD));
         
         sendAvailableCommands(availableCommands);
@@ -71,7 +71,7 @@ public class MovingState extends PlayerState {
                         mGameState.sendPacketToCurrentPlayer(GameOpcode.CMD_SC_MOVE_INVALID);
                 } else
                     mGameState.sendPacketToCurrentPlayer(GameOpcode.CMD_SC_MOVE_INVALID);
-            } else if( packet.getOpcode() == GameOpcode.CMD_CS_USE_OBJ_CARD ) {
+            } else if( packet.getOpcode() == GameOpcode.CMD_CS_USE_OBJ_CARD && mGamePlayer.getNumberOfCards() > 0) {
                 nextState = useObjectCard(this, packet);
             } else {
                 throw new IllegalStateOperationException("You can only move. Discarding command.");

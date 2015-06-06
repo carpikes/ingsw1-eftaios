@@ -125,28 +125,35 @@ public class CLIView extends View {
     
     @Override
     protected void handleCommand(ArrayList<GameViewCommand> cmd) {
-       if(cmd.size() > 1) {
-            IO.write("What do you want to do now?");
+    	GameViewCommand c;
+    	if(cmd.size() > 1) {
+    		IO.write("What do you want to do now?");
             int choice = IO.askInAList(cmd);
-            GameViewCommand c = cmd.get(choice);
-            switch(c.getOpcode()) {
-            case CMD_ENABLEMAPVIEW:
-            	Point newPos = null;
-                Point curPos = (Point) c.getArgs()[0];
-                int maxMoves = (int) c.getArgs()[1];
-                Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
-                
-                CLIMapRenderer.renderMap(mMap, curPos, enabledCells);
-                do {
-                	newPos = IO.askMapPos();
-                	if( (enabledCells == null && mMap.isWithinBounds(newPos)) || (enabledCells != null && enabledCells.contains(newPos)))
-                		break;
-                	IO.write("Invalid position");
-                } while(true);
-                mController.onMapPositionChosen(newPos);
-                break;
-            case CMD_CHOOSEOBJECTCARD:
-                break;
+            c = cmd.get(choice);
+    	} else if(cmd.size() == 1) {
+    		c = cmd.get(0);
+    	} else
+    		return;
+    	
+        switch(c.getOpcode()) {
+	        case CMD_ENABLEMAPVIEW:
+	        	Point newPos = null;
+	            Point curPos = (Point) c.getArgs()[0];
+	            int maxMoves = (int) c.getArgs()[1];
+	            Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
+	            
+	            CLIMapRenderer.renderMap(mMap, curPos, enabledCells);
+	    		IO.write("Choose a position on the map");
+	            do {
+	            	newPos = IO.askMapPos();
+	            	if( (enabledCells == null && mMap.isWithinBounds(newPos)) || (enabledCells != null && enabledCells.contains(newPos)))
+	            		break;
+	            	IO.write("Invalid position");
+	            } while(true);
+	            mController.onMapPositionChosen(newPos);
+	            break;
+	        case CMD_CHOOSEOBJECTCARD:
+	            break;
 			case CMD_ATTACK:
 				break;
 			case CMD_DISCARDOBJECTCARD:
@@ -155,7 +162,6 @@ public class CLIView extends View {
 				break;
 			case CMD_ENDTURN:
 				break;
-            }
         }
     }
 }
