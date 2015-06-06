@@ -28,30 +28,32 @@ public class CardButton extends JButton {
     private BufferedImage image;
     private GameController controller;
     
-    public CardButton( CardButtons type, GameController c ) {
-       super( );
-       
-       controller = c;
-       
-       try {
-           image = ImageIO.read( type.getImageFile() );
-           setIcon( new ImageIcon( image ) );
-           
-           setBorder(BorderFactory.createEmptyBorder());
-           setContentAreaFilled(false);
-           setEnabled( type.isEnabled() );
-           
-           this.addActionListener( new ActionListener(){
+    public CardButton( final CardButtons type, GameController c ) {
+        super( );
 
+        controller = c;
+        changeTo( type );
+
+        this.addActionListener( new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                //controller.useCard( getId() );
+                controller.sendChosenObjectCard( type.getId() );
             }
-               
-           });
-       } catch( IOException e ) {
-           LOG.log(Level.SEVERE, "Cannot create " + type.toString() + " card button. Please check your assets in img folder.");
-       }
+
+        });
+    }
+
+    public void changeTo(CardButtons type) {
+        try {
+            image = ImageIO.read( type.getImageFile() );
+            setIcon( new ImageIcon( image ) );
+            
+            setBorder(BorderFactory.createEmptyBorder());
+            setContentAreaFilled(false);
+            setEnabled( type.isEnabled() );
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, "Cannot create " + type.toString() + " card button. Please check your assets in img folder.");
+        }
     }
 
     public int getId() {
