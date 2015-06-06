@@ -1,13 +1,9 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.GameViewCommand;
 
-import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**

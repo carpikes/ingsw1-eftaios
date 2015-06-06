@@ -6,6 +6,8 @@ public enum GameViewOpcode {
     CMD_DRAWDANGEROUSCARD("Draw a dangerous card"), 
     CMD_ATTACK("Attack"), 
     CMD_ENDTURN("End Turn"), 
+    
+    // it could be merged with chooseobjectcard
     CMD_DISCARDOBJECTCARD("Discard an object card");
     
     private final String mText;

@@ -1,26 +1,15 @@
 package it.polimi.ingsw.client.cli;
 
-import java.awt.Point;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
-import it.polimi.ingsw.client.network.Connection;
-import it.polimi.ingsw.client.network.ConnectionFactory;
-import it.polimi.ingsw.client.network.OnReceiveListener;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameViewCommand;
+
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)

@@ -29,7 +29,7 @@ public class DiscardingObjectCardState extends PlayerState {
     @Override
     protected void buildAndSendAvailableCommands() {
         ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
-        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_DISCARDOBJECTCARD));
+        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD));
         
         if(!mGamePlayer.isObjectCardUsed())
             availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD));
