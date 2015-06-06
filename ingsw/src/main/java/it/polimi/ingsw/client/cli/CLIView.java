@@ -169,8 +169,8 @@ public class CLIView extends View {
                 mController.onMapPositionChosen(newPos);
                 break;
             case CMD_CHOOSEOBJECTCARD:
-                if(c.getArgs().length == 1 && c.getArgs()[0] instanceof String[]) {
-                    String[] objs = (String[]) c.getArgs()[0];
+                if(c.getArgs().length == 1 && c.getArgs() instanceof String[]) {
+                    String[] objs = (String[]) c.getArgs();
                     IO.write("Which card do you want to use?");
                     int choice = IO.askInAList(objs);
                     mController.sendChosenObjectCard(choice);
