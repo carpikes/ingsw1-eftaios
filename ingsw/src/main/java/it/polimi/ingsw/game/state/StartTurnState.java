@@ -6,11 +6,8 @@ package it.polimi.ingsw.game.state;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.player.GamePlayer;
 
-import java.awt.Point;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,19 +16,19 @@ import java.util.logging.Logger;
  * @since 25 May 2015
  */
 public class StartTurnState extends PlayerState {
-	private static final Logger LOG = Logger.getLogger(StartTurnState.class.getName());
+    private static final Logger LOG = Logger.getLogger(StartTurnState.class.getName());
     public StartTurnState(GameState state, GamePlayer player) {
         super(state, player);
         LOG.log(Level.FINE, "Constructor");
-        
+
         player.resetValues();
         player.incrementMoveCounter();
-        
+
         if( player.getMoveCounter() >= Config.MAX_NUMBER_OF_TURNS ) {
-        	state.endGame();
+            state.endGame();
         } else {
-        	// tell everybody I'm starting playing!
-        	state.broadcastPacket( GameOpcode.INFO_START_TURN );
+            // tell everybody I'm starting playing!
+            state.broadcastPacket( GameOpcode.INFO_START_TURN );
         }
     }
 
@@ -42,15 +39,15 @@ public class StartTurnState extends PlayerState {
     public PlayerState update() {       
         return new MovingState(mGameState, mGamePlayer);
     }
-    
+
     @Override
-	public boolean stillInGame() {
-		return true;
-	}
+    public boolean stillInGame() {
+        return true;
+    }
 
     @Override
     protected void buildAndSendAvailableCommands() {
         // TODO Auto-generated method stub
-        
+
     }
 }

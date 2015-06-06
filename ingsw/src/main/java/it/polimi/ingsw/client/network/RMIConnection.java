@@ -8,7 +8,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,25 +17,25 @@ import java.util.logging.Logger;
  */
 public class RMIConnection extends Connection {
     private static final Logger LOG = Logger.getLogger(RMIConnection.class.getName());
-    
+
     /** Service */
     private static final String RMISERVER_STRING = "eftaiosRMI";
-    
+
     /** Thread that reads data */
     private ReadRunnable mReader = null;
-    
+
     /** Receive Listener */
     private OnReceiveListener mTempRecv = null;
-    
+
     /** Common RMI Mask */
     private ServerRMIMask mServerMask = null;
-    
+
     /** My unique id used to communicate with server */
     private String mUniqueId = null;
-    
+
     /** Server host */
     private String mHost;
-    
+
     /** Is initialized */
     private boolean mInited = false;
 
@@ -62,18 +61,18 @@ public class RMIConnection extends Connection {
     public void connect() throws IOException {
         if(!mInited)
             throw new RuntimeException("RMIConnection must be configured before use");
-        
+
         if(mServerMask != null)
             throw new RuntimeException("Socket already created");
-    
+
         Registry registry = LocateRegistry.getRegistry(mHost);
-        
+
         try {
             mServerMask = (ServerRMIMask) registry.lookup(RMISERVER_STRING);
             mUniqueId = mServerMask.registerAndGetId();
             if(mUniqueId == null)
                 throw new RuntimeException("Cannot receive a unique id");
-            
+
             mReader = new ReadRunnable(mServerMask, mUniqueId);
             if(mTempRecv != null) {
                 mReader.setListener(mTempRecv);
@@ -85,7 +84,7 @@ public class RMIConnection extends Connection {
             throw new IOException("Cannot find my server on the RMI Registry");
         }
     }
-    
+
     /* Sets the listener
      * 
      * @param listener The new listener
@@ -107,7 +106,7 @@ public class RMIConnection extends Connection {
     public void sendPacket(GameCommand pkt) {
         if(mServerMask == null || mUniqueId == null)
             throw new RuntimeException("RMI Connection is offline");
-        
+
         try {
             mServerMask.onRMICommand(mUniqueId, pkt);
         } catch (RemoteException e) {
@@ -127,7 +126,7 @@ public class RMIConnection extends Connection {
 
         return true;
     }
-    
+
     /** Handle incoming messages and dispatch them to the proper listener */
     private class ReadRunnable implements Runnable {
         private final Logger LOG = Logger.getLogger(ReadRunnable.class.getName());
@@ -154,7 +153,7 @@ public class RMIConnection extends Connection {
         public void setListener(OnReceiveListener listener) {
             mListener = listener;
         }
-        
+
         /** Close the thread */
         public void shutdown() {
             mOnline = false;
@@ -186,10 +185,10 @@ public class RMIConnection extends Connection {
     @Override
     public void disconnect() {
         mServerMask = null;
-        
+
         if(mListener != null)
             mListener.onDisconnect();
-        
+
         if(mReader != null) {
             mReader.shutdown();
             mReader = null;

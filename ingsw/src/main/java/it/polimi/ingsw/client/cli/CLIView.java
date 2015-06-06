@@ -6,7 +6,6 @@ import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.GameViewCommand;
-import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import java.util.logging.Logger;
  */
 
 public class CLIView extends View {
-    private static final Logger LOG = Logger.getLogger(CLIView.class.getName());
 
     private static void banner() {
         IO.write("*******************************************************************************");
@@ -45,9 +43,9 @@ public class CLIView extends View {
         IO.write("");
     }
 
-	private GameMap mMap;
-	private final GameController mController;
-	private GameStartInfo mContainer;
+    private GameMap mMap;
+    private final GameController mController;
+    private GameStartInfo mContainer;
 
     public CLIView(GameController c) {
         super(c);
@@ -68,7 +66,7 @@ public class CLIView extends View {
     @Override
     public String askUsername(String message) {
         String name;
-        
+
         IO.write(message);
         name = IO.readString().trim();
         return name;
@@ -115,87 +113,87 @@ public class CLIView extends View {
      */
     @Override
     public void switchToMainScreen(GameStartInfo container) {
-    	mContainer = container;
-    	mMap = container.getMap();
-    	
-    	CLIMapRenderer.renderMap(mMap, null, null);
-    	IO.write("Game is started! Good luck!");
-    	IO.write("Your role is: " + (container.isHuman()?"HUMAN":"ALIEN"));
-    	IO.write(String.format("%d players in game:", container.getPlayersList().length));
-    	for(EnemyInfo e : container.getPlayersList())
-    		IO.write("-> " + e.getUsername());
+        mContainer = container;
+        mMap = container.getMap();
+
+        CLIMapRenderer.renderMap(mMap, null, null);
+        IO.write("Game is started! Good luck!");
+        IO.write("Your role is: " + (container.isHuman()?"HUMAN":"ALIEN"));
+        IO.write(String.format("%d players in game:", container.getPlayersList().length));
+        for(EnemyInfo e : container.getPlayersList())
+            IO.write("-> " + e.getUsername());
     }
 
     @Override
     public void close() {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     @Override
     protected void handleCommand(ArrayList<GameViewCommand> cmd) {
-    	GameViewCommand c;
-    	if(cmd.size() > 1) {
-    		IO.write("What do you want to do now?");
+        GameViewCommand c;
+        if(cmd.size() > 1) {
+            IO.write("What do you want to do now?");
             int choice = IO.askInAList(cmd);
             c = cmd.get(choice);
-    	} else if(cmd.size() == 1) {
-    		c = cmd.get(0);
-    	} else
-    		return;
-    	
+        } else if(cmd.size() == 1) {
+            c = cmd.get(0);
+        } else
+            return;
+
         switch(c.getOpcode()) {
-	        case CMD_ENABLEMAPVIEW:
-	        	Point newPos = null;
-	            Point curPos = null;
-	            int maxMoves = 0;
-	            Set<Point> enabledCells = null;
-	            if(c.getArgs().length > 0) {
-	            	if(c.getArgs()[0] instanceof Point)
-	            		curPos = (Point) c.getArgs()[0];
-	            	if(c.getArgs().length == 2)
-	            		maxMoves = (int) c.getArgs()[1];
-	            }
-	            
-	            if(maxMoves != 0) 
-	            	enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
-	            
-	            CLIMapRenderer.renderMap(mMap, curPos, enabledCells);
-	    		IO.write("Choose a position on the map");
-	            do {
-	            	newPos = IO.askMapPos();
-	            	if( (enabledCells == null && mMap.isWithinBounds(newPos)) || (enabledCells != null && enabledCells.contains(newPos)))
-	            		break;
-	            	IO.write("Invalid position");
-	            } while(true);
-	            mController.onMapPositionChosen(newPos);
-	            break;
-	        case CMD_CHOOSEOBJECTCARD:
-	            break;
-			case CMD_ATTACK:
-				mController.attack();
-				break;
-			case CMD_DISCARDOBJECTCARD:
-				break;
-			case CMD_DRAWDANGEROUSCARD:
-				mController.drawDangerousCard();
-				break;
-			case CMD_ENDTURN:
-				mController.endTurn();
-				break;
+            case CMD_ENABLEMAPVIEW:
+                Point newPos = null;
+                Point curPos = null;
+                int maxMoves = 0;
+                Set<Point> enabledCells = null;
+                if(c.getArgs().length > 0) {
+                    if(c.getArgs()[0] instanceof Point)
+                        curPos = (Point) c.getArgs()[0];
+                    if(c.getArgs().length == 2)
+                        maxMoves = (int) c.getArgs()[1];
+                }
+    
+                if(maxMoves != 0) 
+                    enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
+    
+                CLIMapRenderer.renderMap(mMap, curPos, enabledCells);
+                IO.write("Choose a position on the map");
+                do {
+                    newPos = IO.askMapPos();
+                    if( (enabledCells == null && mMap.isWithinBounds(newPos)) || (enabledCells != null && enabledCells.contains(newPos)))
+                        break;
+                    IO.write("Invalid position");
+                } while(true);
+                mController.onMapPositionChosen(newPos);
+                break;
+            case CMD_CHOOSEOBJECTCARD:
+                break;
+            case CMD_ATTACK:
+                mController.attack();
+                break;
+            case CMD_DISCARDOBJECTCARD:
+                break;
+            case CMD_DRAWDANGEROUSCARD:
+                mController.drawDangerousCard();
+                break;
+            case CMD_ENDTURN:
+                mController.endTurn();
+                break;
         }
     }
 
-	@Override
-	public void showInfo(String user, String message) {
-		if(user != null)
-			IO.write("["+ user + "] " + message);
-		else
-			IO.write("--INFO-- " + message);
-	}
+    @Override
+    public void showInfo(String user, String message) {
+        if(user != null)
+            IO.write("["+ user + "] " + message);
+        else
+            IO.write("--INFO-- " + message);
+    }
 
-	@Override
-	public void showNoiseInSector(String user, Point p) {
-		showInfo(user, "NOISE IN SECTOR " + mMap.pointToString(p));
-	}
+    @Override
+    public void showNoiseInSector(String user, Point p) {
+        showInfo(user, "NOISE IN SECTOR " + mMap.pointToString(p));
+    }
 }

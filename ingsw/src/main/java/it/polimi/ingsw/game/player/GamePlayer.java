@@ -1,6 +1,5 @@
 package it.polimi.ingsw.game.player;
 
-import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.object.DefenseCard;
 import it.polimi.ingsw.game.card.object.ObjectCard;
@@ -17,82 +16,82 @@ import java.util.ArrayList;
  * @since  May 19, 2015
  */
 public class GamePlayer {
-    
+
     /** Position on board */
     private Point mPosition;
-    
+
     /** Defense enabled? (defense card used or not) */
     private boolean defense;
-    
+
     /** Object card already used in current turn */
     private boolean objectCardUsed;
-    
+
     /** Sedatives card used? */
     private boolean drawDangerousCard;
-    
+
     /** Object cards the player owns */
     private ArrayList < ObjectCard > objectCards;
-    
+
     /** Alien or human? */
     private final Role role;
-    
+
     /** Current state in game for the player */
     private PlayerState currentState;
-    
+
     /** State before using SpotlightCard */
     private PlayerState stateBeforeSpotlightCard;
-    
+
     /** ID in game */
     private int mId;
-    
+
     /** Number of current move */
     private int moveCounter;
 
     /** The game manager */
     private GameState mGame;
-    
+
     /** 
      * Get current move number.
      * @return Move number
      */
     public int getMoveCounter() {
-		return moveCounter;
-	}
+        return moveCounter;
+    }
 
     /** 
      * Increment move number
      */
-	public void incrementMoveCounter( ) {
-		++moveCounter;
-	}
+    public void incrementMoveCounter( ) {
+        ++moveCounter;
+    }
 
-	/**
-	 * Create a new player for the game
-	 * @param id ID in game
-	 * @param playerRole Role of the player (alien or human)
-	 * @param game The game he's playing
-	 * @param isMyTurn Is he the first player?
-	 */
-	public GamePlayer( int id, Role playerRole, GameState game, boolean isMyTurn) {
+    /**
+     * Create a new player for the game
+     * @param id ID in game
+     * @param playerRole Role of the player (alien or human)
+     * @param game The game he's playing
+     * @param isMyTurn Is he the first player?
+     */
+    public GamePlayer( int id, Role playerRole, GameState game, boolean isMyTurn) {
         resetValues();
-    	objectCards = new ArrayList<>();
+        objectCards = new ArrayList<>();
         role = playerRole;
 
         mPosition = game.getMap().getStartingPoint(role instanceof Human); 
         mId = id; 
         moveCounter = 0;
         mGame = game;
-        
+
         if(isMyTurn)
             setCurrentState(new StartTurnState(game, this));
         else
             setCurrentState(new NotMyTurnState(game, this));
     }
 
-	/**
-	 * Get current player state
-	 * @return Player state
-	 */
+    /**
+     * Get current player state
+     * @return Player state
+     */
     public PlayerState getCurrentState() {
         return currentState;
     }
@@ -104,7 +103,7 @@ public class GamePlayer {
     public void setCurrentState(PlayerState currentState) {
         this.currentState = currentState;
     }
-    
+
     /**
      * Check if defense is enabled (if you have a defense card)
      * @return True if defense enabled
@@ -151,7 +150,7 @@ public class GamePlayer {
      * @return The role
      */
     public Role getRole() {
-       return role;
+        return role;
     }
 
     /**
@@ -177,7 +176,7 @@ public class GamePlayer {
     public ArrayList<ObjectCard> getObjectCards() {
         return objectCards;
     }
-    
+
     /**
      * Get how many cards the player is holding at the moment
      * @return The number of cards
@@ -209,7 +208,7 @@ public class GamePlayer {
     public int getId() {
         return mId;
     }
-    
+
     /**
      * Check if this player has to draw a dangerous card during this turn
      * @return True if he has to draw a dangerous card
@@ -242,72 +241,72 @@ public class GamePlayer {
     public void setStateBeforeSpotlightCard(PlayerState stateBefore) {
         this.stateBeforeSpotlightCard = stateBefore;
     }
-    
+
     /**
      * Reset values at the beginning of each turn.
      */
     public void resetValues() {
-    	defense = hasDefenseCard();
-    	objectCardUsed = false;
-    	drawDangerousCard = true;
-    	stateBeforeSpotlightCard = null;
-    	setAdrenaline(false);
+        defense = hasDefenseCard();
+        objectCardUsed = false;
+        drawDangerousCard = true;
+        stateBeforeSpotlightCard = null;
+        setAdrenaline(false);
     }
 
     /**
      * Check if the player has a defense card in his own deck
      * @return True if has at least one defense card.
      */
-	private boolean hasDefenseCard() {
-	    if(objectCards == null)
-	        return false;
-		for( ObjectCard card : objectCards ) 
-			if( card instanceof DefenseCard )
-				return true;
-		
-		return false;
-	}
-	
-	/**
-	 * Get how many sectors he can cross based on the role specified.
-	 * @return The maximum number of moves
-	 */
-	public int getMaxMoves() {
-		return role.getMaxMoves();
-	}
-    
-	/** 
-	 * Check if this player has eaten during this turn. Always returns false for a human
-	 * @return True if he has eaten
-	 */
-	public boolean isFull() {
-		if( role instanceof Alien )
-			return ((Alien) role).hasEaten();
-		else
-			return false;
-	}
-	
-	/**
-	 * Set the player to full or not. Ignored when used on a human.
-	 * @param isFull
-	 */
-	public void setFull(boolean isFull) {
-		if( role instanceof Alien )
-			((Alien) role).setHasEaten(isFull);
-	}
-	
-	/**
-	 * Set adrenaline to used or not. Only valid on humans, ignored on aliens.
-	 * @param adrenaline The value to use
-	 */
-	public void setAdrenaline(boolean adrenaline) {
-		if( role instanceof Human) 
-			((Human) role).setAdrenaline(adrenaline);
-	}
+    private boolean hasDefenseCard() {
+        if(objectCards == null)
+            return false;
+        for( ObjectCard card : objectCards ) 
+            if( card instanceof DefenseCard )
+                return true;
 
-	/**
-	 * Used when someone attacks this player but the defense is enabled.
-	 */
+        return false;
+    }
+
+    /**
+     * Get how many sectors he can cross based on the role specified.
+     * @return The maximum number of moves
+     */
+    public int getMaxMoves() {
+        return role.getMaxMoves();
+    }
+
+    /** 
+     * Check if this player has eaten during this turn. Always returns false for a human
+     * @return True if he has eaten
+     */
+    public boolean isFull() {
+        if( role instanceof Alien )
+            return ((Alien) role).hasEaten();
+        else
+            return false;
+    }
+
+    /**
+     * Set the player to full or not. Ignored when used on a human.
+     * @param isFull
+     */
+    public void setFull(boolean isFull) {
+        if( role instanceof Alien )
+            ((Alien) role).setHasEaten(isFull);
+    }
+
+    /**
+     * Set adrenaline to used or not. Only valid on humans, ignored on aliens.
+     * @param adrenaline The value to use
+     */
+    public void setAdrenaline(boolean adrenaline) {
+        if( role instanceof Human) 
+            ((Human) role).setAdrenaline(adrenaline);
+    }
+
+    /**
+     * Used when someone attacks this player but the defense is enabled.
+     */
     public void dropDefense() {        
         for( int i = 0; i < objectCards.size(); ++i ) {
             if( objectCards.get(i) instanceof DefenseCard ) {
@@ -315,7 +314,7 @@ public class GamePlayer {
                 break;
             }
         } 
-        
+
         // there could be more than one defense card
         setDefense( this.hasDefenseCard() );
     }
@@ -327,5 +326,5 @@ public class GamePlayer {
     public boolean stillInGame() {
         return currentState.stillInGame();
     }
-    
+
 }

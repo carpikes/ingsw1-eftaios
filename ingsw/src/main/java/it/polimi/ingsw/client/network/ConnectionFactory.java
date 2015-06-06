@@ -1,8 +1,5 @@
 package it.polimi.ingsw.client.network;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)

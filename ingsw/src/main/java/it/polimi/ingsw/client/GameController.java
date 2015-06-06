@@ -4,15 +4,14 @@ import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameViewCommand;
 
 import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 

@@ -7,9 +7,8 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.dangerous.DangerousCardBuilder;
-import it.polimi.ingsw.game.card.object.ObjectCard;
-import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameViewCommand;
 import it.polimi.ingsw.game.network.GameViewOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
@@ -25,35 +24,35 @@ import java.util.logging.Logger;
  */
 public class MoveDoneState extends PlayerState {
     private static final Logger LOG = Logger.getLogger(MoveDoneState.class.getName());
-    
+
     public MoveDoneState(GameState state, GamePlayer player) {
         super(state, player);
         LOG.log(Level.FINE, "Constructor");
-        
+
         // tell the client it has to choose what to do after moving
         mGameState.sendPacketToCurrentPlayer( GameOpcode.CMD_SC_MOVE_DONE );
         buildAndSendAvailableCommands();
     }
-    
+
     @Override
     protected void buildAndSendAvailableCommands() {
         GameMap map = mGameState.getMap();
         ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
-        
+
         if(!mGamePlayer.isObjectCardUsed() && mGamePlayer.getNumberOfCards() > 0)
             availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD));
-        
+
         if(mGamePlayer.isAlien())
             availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ATTACK));
-        
+
         if(map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS)
             availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_DRAWDANGEROUSCARD));
         else
             availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENDTURN));
-            
+
         sendAvailableCommands(availableCommands);
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
@@ -87,7 +86,7 @@ public class MoveDoneState extends PlayerState {
                 }
             }
         }
-        
+
         return nextState;
     }
 
@@ -98,9 +97,9 @@ public class MoveDoneState extends PlayerState {
     private PlayerState drawDangerousCard( ) {                
         return DangerousCardBuilder.getRandomCard(mGameState, mGamePlayer).doAction( );
     }
-    
+
     @Override
-	public boolean stillInGame() {
-		return true;
-	}
+    public boolean stillInGame() {
+        return true;
+    }
 }

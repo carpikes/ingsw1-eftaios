@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.cli.CLIView;
-import it.polimi.ingsw.client.gui.GUIView;
 
 /** Client launcher
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)

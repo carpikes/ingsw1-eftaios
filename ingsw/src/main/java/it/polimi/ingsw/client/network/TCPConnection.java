@@ -1,14 +1,13 @@
 package it.polimi.ingsw.client.network;
 
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.network.GameOpcode;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,16 +64,16 @@ public class TCPConnection extends Connection {
     public void connect() throws IOException {
         if(!mInited)
             throw new RuntimeException("TCPConnection must be configured before use");
-        
+
         if(mSocket != null)
             throw new RuntimeException("Socket already created");
-    
+
         mSocket = new Socket(mHost, mPort);
         mOut = new ObjectOutputStream(mSocket.getOutputStream());
         mIn = new ObjectInputStream(mSocket.getInputStream());
         mReader = new ReadRunnable(this, mIn);
         mPinger = new PingRunnable(this);
-        
+
         if(mListener != null)
             mReader.setListener(mListener);
         new Thread(mReader).start();
@@ -89,11 +88,11 @@ public class TCPConnection extends Connection {
     public void sendPacket(GameCommand pkt) {
         if(mSocket == null || !mSocket.isConnected() || mOut == null)
             throw new RuntimeException("Cannot send message. Socket is closed.");
-        
+
         try {
             mOut.writeObject(pkt);
             mOut.flush();
-        }catch(IOException e) {
+        } catch(IOException e) {
             LOG.log(Level.FINER, "Connection closed: " + e.toString(), e);
             disconnect();
         }
@@ -109,7 +108,7 @@ public class TCPConnection extends Connection {
         if(mReader != null)
             mReader.setListener(mListener);
     }
-    
+
     /** Check if the client is correctly connected
      * 
      * @return True if is online
@@ -168,12 +167,12 @@ public class TCPConnection extends Connection {
             }
         }
     }
-    
+
     /** Ping the server each Config.CLIENT_TCP_PING_TIME milliseconds */
     private class PingRunnable implements Runnable {
         private final Logger LOG = Logger.getLogger(ReadRunnable.class.getName());
         private final TCPConnection mParent;
-        
+
         public PingRunnable(TCPConnection parent) {
             mParent = parent;
         }

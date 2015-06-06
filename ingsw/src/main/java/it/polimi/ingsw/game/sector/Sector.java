@@ -6,8 +6,10 @@ import java.io.Serializable;
  * Model for a sector.
  */
 public class Sector implements Serializable{
-	
-	/** The type of sector */
+
+    private static final long serialVersionUID = 1L;
+
+    /** The type of sector */
     private int id;
     
     /** Players can get on/through this sector or not? */
