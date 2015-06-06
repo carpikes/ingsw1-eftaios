@@ -9,7 +9,6 @@ import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameViewCommand;
-import it.polimi.ingsw.game.network.GameViewOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 
 import java.util.ArrayList;
@@ -33,11 +32,8 @@ public class DiscardingObjectCardState extends PlayerState {
     @Override
     protected void buildAndSendAvailableCommands() {
         ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
-        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD));
-        
-        if(!mGamePlayer.isObjectCardUsed())
-            availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD));
-        
+
+        addObjectCardIfPossible(availableCommands);
         sendAvailableCommands(availableCommands);
     }
     
@@ -52,9 +48,8 @@ public class DiscardingObjectCardState extends PlayerState {
         if( packet != null ) {
             if( packet.getOpcode() == GameOpcode.CMD_SC_DISCARD_OBJECT_CARD )
                 nextState = discardObjectCard(packet, nextState);
-            
-            if ( !mGamePlayer.isObjectCardUsed() ) {
-                if( packet.getOpcode() == GameOpcode.CMD_CS_USE_OBJ_CARD )
+            else if ( !mGamePlayer.isObjectCardUsed() ) {
+                if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD )
                     nextState = useObjectCard(this, packet);
                 else
                     throw new IllegalStateOperationException("You can only choose what object card to discard here because you already used a card during this turn. Discarding packet.");

@@ -42,10 +42,8 @@ public class MovingState extends PlayerState {
     protected void buildAndSendAvailableCommands() {
         ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
         availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENABLEMAPVIEW, mGamePlayer.getCurrentPosition(), mGamePlayer.getMaxMoves()));
-
-        if(!mGamePlayer.isObjectCardUsed() && mGamePlayer.getNumberOfCards() > 0)
-            availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD));
-
+        
+        addObjectCardIfPossible(availableCommands);
         sendAvailableCommands(availableCommands);
     }
 
@@ -72,7 +70,7 @@ public class MovingState extends PlayerState {
                         mGameState.sendPacketToCurrentPlayer(GameOpcode.CMD_SC_MOVE_INVALID);
                 } else
                     mGameState.sendPacketToCurrentPlayer(GameOpcode.CMD_SC_MOVE_INVALID);
-            } else if( packet.getOpcode() == GameOpcode.CMD_CS_USE_OBJ_CARD && mGamePlayer.getNumberOfCards() > 0) {
+            } else if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD && mGamePlayer.getNumberOfCards() > 0) {
                 nextState = useObjectCard(this, packet);
             } else {
                 throw new IllegalStateOperationException("You can only move. Discarding command.");

@@ -107,6 +107,7 @@ public class GameController implements OnReceiveListener {
         
         if(cmd.getArgs().length > 0)
         	obj = cmd.getArgs()[0];
+        
         switch(cmd.getOpcode()) {
             case CMD_SC_TIME:
         		if(obj != null && obj instanceof String)
@@ -231,10 +232,18 @@ public class GameController implements OnReceiveListener {
             	}
                 break;
             case INFO_OBJ_CARD_USED:
+                if(cmd.getArgs().length == 2 && cmd.getArgs()[1] instanceof String) {
+                    String name = (String) cmd.getArgs()[1];
+                    mView.showInfo(curUser, "Used the object card '" + name + "'");
+                } else
+                    mView.showInfo(curUser, "Used a weird object card without a valid name");
+                
                 break;
             case INFO_SILENCE:
+                mView.showInfo(curUser, "Silence. Not implemented yet"); // TODO here
                 break;
             case INFO_SPOTLIGHT:
+                mView.showInfo(curUser, "Spotlight. Not implemented yet"); // TODO here
                 break;
             case INFO_START_TURN:
                 if(obj != null && obj instanceof Integer) {
@@ -295,4 +304,11 @@ public class GameController implements OnReceiveListener {
 	public void attack() {
 		mConn.sendPacket(GameOpcode.CMD_CS_ATTACK);
 	}
+
+    /**
+     * @param choice
+     */
+    public void sendChosenObjectCard(int choice) {
+        mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD, choice));
+    }
 }

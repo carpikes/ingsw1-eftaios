@@ -12,7 +12,7 @@ import it.polimi.ingsw.game.state.PlayerState;
 public class DefenseCard extends ObjectCard {
 
 	public DefenseCard(GameState state, GamePlayer player) {
-        super(state, player);
+        super(state, player, ObjectCardBuilder.DEFENSE_CARD, "Defense");
         
         player.setDefense(true);
     }

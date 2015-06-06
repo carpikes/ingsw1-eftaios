@@ -133,7 +133,7 @@ public class GameState {
         
         // FIXME maybe an id is better here!
         player.getObjectCards().add( newCard );
-        sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, newCard) );
+        sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, newCard.getId(), newCard.getName()) );
         
         // We're ok, proceed
         if( player.getNumberOfCards() < Config.MAX_NUMBER_OF_OBJ_CARDS ) {
@@ -153,14 +153,17 @@ public class GameState {
      * @param objectCard The card the user wants to use
      * @return Next PlayerState for current player
      */
-    public PlayerState startUsingObjectCard(ObjectCard objectCard) {
+    public PlayerState startUsingObjectCard(Integer objectCardPos) {
         GamePlayer player = getCurrentPlayer();
         PlayerState nextState = player.getCurrentState();
         
-        if( player.isHuman() && !player.isObjectCardUsed() ) {        	
-        	this.broadcastPacket( new GameCommand(GameOpcode.INFO_OBJ_CARD_USED, objectCard.toString()) );
+        if(player.isHuman() && !player.isObjectCardUsed() && player.getObjectCards().size() > objectCardPos && objectCardPos >= 0) {   
+            ObjectCard objectCard = player.getObjectCards().get(objectCardPos);
+        	broadcastPacket( new GameCommand(GameOpcode.INFO_OBJ_CARD_USED, objectCard.getId(), objectCard.getName()) );
         	
             getCurrentPlayer().setObjectCardUsed(true);
+            player.getObjectCards().remove(objectCardPos);
+            
             nextState = objectCard.doAction();
         } else {
             sendPacketToCurrentPlayer( GameOpcode.CMD_SC_CANNOT_USE_OBJ_CARD ); 

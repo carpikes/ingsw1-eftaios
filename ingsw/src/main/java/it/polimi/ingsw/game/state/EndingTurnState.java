@@ -35,9 +35,7 @@ public class EndingTurnState extends PlayerState {
         ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
         availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENDTURN));
 
-        if(!mGamePlayer.isObjectCardUsed() && mGamePlayer.getNumberOfCards() > 0)
-            availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD));
-
+        addObjectCardIfPossible(availableCommands);
         sendAvailableCommands(availableCommands);
     }
 
@@ -52,7 +50,7 @@ public class EndingTurnState extends PlayerState {
         if( packet != null ) {
             if( packet.getOpcode() == GameOpcode.CMD_CS_END_TURN )
                 nextState = new NotMyTurnState(mGameState, mGamePlayer);
-            else if( packet.getOpcode() == GameOpcode.CMD_CS_USE_OBJ_CARD  && mGamePlayer.getNumberOfCards() > 0) 
+            else if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD  && mGamePlayer.getNumberOfCards() > 0) 
                 nextState = useObjectCard(this, packet);
             else
                 throw new IllegalStateOperationException("You can only use an object card or end here. Discarding packet.");

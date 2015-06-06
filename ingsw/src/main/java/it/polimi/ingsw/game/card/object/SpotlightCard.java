@@ -13,7 +13,7 @@ import it.polimi.ingsw.game.state.SpotlightCardState;
 public class SpotlightCard extends ObjectCard {
 
 	public SpotlightCard(GameState state, GamePlayer player) {
-        super(state, player);
+        super(state, player, ObjectCardBuilder.SPOTLIGHT_CARD, "Spotlight");
         // TODO Auto-generated constructor stub
     }
 

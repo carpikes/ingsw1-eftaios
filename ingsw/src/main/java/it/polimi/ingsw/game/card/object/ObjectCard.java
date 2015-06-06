@@ -7,23 +7,25 @@ import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 
-import java.io.Serializable;
-
 
 /**
  * Abstract class for a generic Object Card. Always drawn by a human after using some sorts of Dangerous Cards.
  * @author Michele
  * @since 23 May 2015
  */
-public abstract class ObjectCard implements Serializable {
+public abstract class ObjectCard {
 
     protected GameState mGameState;
     protected GamePlayer mGamePlayer;
+    protected final String mName;
+    protected final int mId;
     
-    protected ObjectCard(GameState state, GamePlayer player) {
+    protected ObjectCard(GameState state, GamePlayer player, int id, String name) {
         // FIXME AGGIUNGI CONTROLLO: Player dev'essere umano
         mGameState = state;
         mGamePlayer = player;
+        mName = name;
+        mId = id;
     } 
 	
     /**
@@ -31,4 +33,12 @@ public abstract class ObjectCard implements Serializable {
      * @return Next state for the invoker
      */
 	public abstract PlayerState doAction();
+	
+	public String getName() {
+	    return mName;
+	}
+	
+	public int getId() {
+	    return mId;
+	}
 }

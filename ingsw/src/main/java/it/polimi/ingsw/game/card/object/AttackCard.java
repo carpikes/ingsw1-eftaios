@@ -12,7 +12,7 @@ import it.polimi.ingsw.game.state.PlayerState;
 public class AttackCard extends ObjectCard {
 
 	public AttackCard(GameState state, GamePlayer player) {
-        super(state, player);
+        super(state, player, ObjectCardBuilder.ATTACK_CARD, "Attack");
         // TODO Auto-generated constructor stub
     }
 

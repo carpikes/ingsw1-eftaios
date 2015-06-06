@@ -39,9 +39,7 @@ public class MoveDoneState extends PlayerState {
         GameMap map = mGameState.getMap();
         ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
 
-        if(!mGamePlayer.isObjectCardUsed() && mGamePlayer.getNumberOfCards() > 0)
-            availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD));
-
+        
         if(mGamePlayer.isAlien())
             availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ATTACK));
 
@@ -49,7 +47,8 @@ public class MoveDoneState extends PlayerState {
             availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_DRAWDANGEROUSCARD));
         else
             availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENDTURN));
-
+        
+        addObjectCardIfPossible(availableCommands);
         sendAvailableCommands(availableCommands);
     }
 
@@ -65,7 +64,7 @@ public class MoveDoneState extends PlayerState {
 
         // If we actually received a command from the client...
         if( packet != null ) {
-            if( packet.getOpcode() == GameOpcode.CMD_CS_USE_OBJ_CARD  && mGamePlayer.getNumberOfCards() > 0) {
+            if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD  && mGamePlayer.getNumberOfCards() > 0) {
                 nextState = useObjectCard(this, packet);
             } else if( mGamePlayer.isAlien() && packet.getOpcode() == GameOpcode.CMD_CS_ATTACK ) {
                 mGameState.attack( mGamePlayer.getCurrentPosition() );

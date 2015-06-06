@@ -31,9 +31,6 @@ public class GameManager {
     /** Clients connected */
     private List<Client> mClients = new LinkedList<Client>();
 
-    /** Current turn */
-    private Integer mCurTurn = null; 
-
     /** ChosenMap */
     private Integer mChosenMapId = null;
     
@@ -168,8 +165,7 @@ public class GameManager {
                 GameStartInfo info = mState.buildInfoContainer(userList, i);
                 mClients.get(i).sendPacket(new GameCommand(GameOpcode.CMD_SC_RUN, info));
             }
-            
-            mCurTurn = 0;
+
             mIsRunning = true;
         } else {
             if(mState != null)

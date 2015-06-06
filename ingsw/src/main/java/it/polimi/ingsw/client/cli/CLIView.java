@@ -169,6 +169,12 @@ public class CLIView extends View {
                 mController.onMapPositionChosen(newPos);
                 break;
             case CMD_CHOOSEOBJECTCARD:
+                if(c.getArgs().length == 1 && c.getArgs()[0] instanceof String[]) {
+                    String[] objs = (String[]) c.getArgs()[0];
+                    IO.write("Which card do you want to use?");
+                    int choice = IO.askInAList(objs);
+                    mController.sendChosenObjectCard(choice);
+                }
                 break;
             case CMD_ATTACK:
                 mController.attack();
@@ -202,8 +208,7 @@ public class CLIView extends View {
      */
     @Override
     public void onMyTurn() {
-        // TODO Auto-generated method stub
-        
+        showInfo(null, "It's your turn!");
     }
 
     /* (non-Javadoc)
@@ -211,7 +216,6 @@ public class CLIView extends View {
      */
     @Override
     public void onOtherTurn(String username) {
-        // TODO Auto-generated method stub
-        
+        showInfo(null, "It's " + username + "'s turn!");
     }
 }
