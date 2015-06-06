@@ -56,7 +56,7 @@ public abstract class PlayerState {
     }
     
     protected void addObjectCardIfPossible(ArrayList<GameViewCommand> availableCommands) {
-        if(mGamePlayer.isObjectCardUsed() || mGamePlayer.getNumberOfCards() > 0 || mGamePlayer.isAlien())
+        if(mGamePlayer.isObjectCardUsed() || mGamePlayer.getNumberOfCards() == 0 || mGamePlayer.isAlien())
             return;
         
         ArrayList<ObjectCard> cards = mGamePlayer.getObjectCards();
