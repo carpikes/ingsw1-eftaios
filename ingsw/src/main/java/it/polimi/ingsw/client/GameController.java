@@ -168,16 +168,22 @@ public class GameController implements OnReceiveListener {
                 break;
                 
             case INFO_END_GAME:
+            	mView.showInfo("Game is over. Good bye!");
                 break;
             case INFO_GOT_A_NEW_OBJ_CARD:
+            	mView.showInfo("Congrats! You've got a new object card!");
                 break;
             case INFO_HAS_MOVED:
+            	mView.showInfo("Player <?> has moved"); // TODO who?
                 break;
             case INFO_KILLED_PEOPLE:
+            	mView.showInfo("Someone got killed"); // TODO who?
                 break;
             case INFO_LOSER:
+            	mView.showInfo("Game over.");
                 break;
             case INFO_NOISE:
+            	mView.showInfo("Noise");
                 break;
             case INFO_OBJ_CARD_USED:
                 break;
@@ -225,4 +231,12 @@ public class GameController implements OnReceiveListener {
     public void onMapPositionChosen(Point mCurHexCoords) {
         mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, mCurHexCoords));
     }
+
+	public void drawDangerousCard() {
+		mConn.sendPacket(GameOpcode.CMD_CS_DRAW_DANGEROUS_CARD);
+	}
+
+	public void endTurn() {
+		mConn.sendPacket(GameOpcode.CMD_CS_END_TURN);
+	}
 }

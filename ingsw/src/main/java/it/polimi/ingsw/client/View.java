@@ -100,5 +100,7 @@ public abstract class View {
     /** Notify a closed connection */
     public abstract void close();
     
-    protected abstract void handleCommand(ArrayList<GameViewCommand> cmd); 
+    protected abstract void handleCommand(ArrayList<GameViewCommand> cmd);
+
+	public abstract void showInfo(String string);
 }

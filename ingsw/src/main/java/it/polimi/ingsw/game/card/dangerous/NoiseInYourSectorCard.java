@@ -22,7 +22,7 @@ public class NoiseInYourSectorCard extends DangerousCard {
 	 * Send info to current player about the card and then get a new object card
 	 */
     @Override
-	public PlayerState doAction() {	    
+	public PlayerState doAction() { 
 	    mGameState.sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardBuilder.NOISE_IN_YOUR_SECTOR) );
         mGameState.broadcastPacket( new GameCommand(GameOpcode.INFO_NOISE, mGamePlayer.getCurrentPosition()) );
         

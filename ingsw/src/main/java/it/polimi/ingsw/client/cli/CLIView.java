@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.GameViewCommand;
 
@@ -45,6 +46,7 @@ public class CLIView extends View {
 
 	private GameMap mMap;
 	private final GameController mController;
+	private GameStartInfo mContainer;
 
     public CLIView(GameController c) {
         super(c);
@@ -112,9 +114,15 @@ public class CLIView extends View {
      */
     @Override
     public void switchToMainScreen(GameStartInfo container) {
+    	mContainer = container;
     	mMap = container.getMap();
-    	IO.write("Game is started! Good luck!");
+    	
     	CLIMapRenderer.renderMap(mMap, null, null);
+    	IO.write("Game is started! Good luck!");
+    	IO.write("Your role is: " + (container.isHuman()?"HUMAN":"ALIEN"));
+    	IO.write(String.format("%d players in game:", container.getPlayersList().length));
+    	for(EnemyInfo e : container.getPlayersList())
+    		IO.write("-> " + e.getUsername());
     }
 
     @Override
@@ -159,9 +167,16 @@ public class CLIView extends View {
 			case CMD_DISCARDOBJECTCARD:
 				break;
 			case CMD_DRAWDANGEROUSCARD:
+				mController.drawDangerousCard();
 				break;
 			case CMD_ENDTURN:
+				mController.endTurn();
 				break;
         }
     }
+
+	@Override
+	public void showInfo(String string) {
+		IO.write("[INFO]" + string);
+	}
 }

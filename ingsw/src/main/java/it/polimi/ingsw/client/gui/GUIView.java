@@ -129,4 +129,10 @@ public class GUIView extends View {
         }
     }
 
+	@Override
+	public void showInfo(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -36,7 +36,6 @@ public class MoveDoneState extends PlayerState {
     protected void buildAndSendAvailableCommands() {
         GameMap map = mGameState.getMap();
         ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
-        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENABLEMAPVIEW, mGamePlayer.getCurrentPosition(), mGamePlayer.getMaxMoves()));
         
         if(!mGamePlayer.isObjectCardUsed() && mGamePlayer.getNumberOfCards() > 0)
             availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD));
