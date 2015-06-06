@@ -108,20 +108,6 @@ public class GUIView extends View {
     }
 
     @Override
-    public Point askMapPosition(Set<Point> enabledCells) {
-        mMainFrame.enableMapCells(enabledCells);
-        Point p;
-        try {
-            do {
-                p = mMainFrame.getChosenMapCell();
-                Thread.sleep(150);
-            } while( p == null );
-        } catch( InterruptedException e) {}
-        mMainFrame.resetChosenMapCell();
-        return null;
-    }
-
-    @Override
     protected void handleCommand(ArrayList<GameViewCommand> cmd) {
         for(GameViewCommand c : cmd) {
             switch(c.getOpcode()) {

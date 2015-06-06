@@ -16,6 +16,7 @@ import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
+import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.GameCommand;
@@ -52,6 +53,8 @@ public class CLIView extends View {
         IO.write("*******************************************************************************");
         IO.write("");
     }
+
+	private GameMap mMap;
 
     public CLIView(GameController c) {
         super(c);
@@ -118,8 +121,7 @@ public class CLIView extends View {
      */
     @Override
     public void switchToMainScreen(GameStartInfo container) {
-        // TODO Auto-generated method stub
-        
+    	mMap = container.getMap();
     }
 
     @Override
@@ -127,28 +129,31 @@ public class CLIView extends View {
         // TODO Auto-generated method stub
         
     }
-
-    @Override
-    public Point askMapPosition(Set<Point> enabledCells) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    
     @Override
     protected void handleCommand(ArrayList<GameViewCommand> cmd) {
-        if(cmd.size() > 1) {
-            IO.write("Choose a command:");
+       if(cmd.size() > 1) {
+            IO.write("What do you want to do now?");
             int choice = IO.askInAList(cmd);
-            switch(cmd.get(choice).getOpcode()) {
+            GameViewCommand c = cmd.get(choice);
+            switch(c.getOpcode()) {
             case CMD_ENABLEMAPVIEW:
+                Point curPos = (Point) c.getArgs()[0];
+                int maxMoves = (int) c.getArgs()[1];
+                Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
                 
+                CLIMapRenderer.renderMap(mMap, curPos, enabledCells);
                 break;
             case CMD_CHOOSEOBJECTCARD:
-                
                 break;
-            default:
-                break;
-                
+			case CMD_ATTACK:
+				break;
+			case CMD_DISCARDOBJECTCARD:
+				break;
+			case CMD_DRAWDANGEROUSCARD:
+				break;
+			case CMD_ENDTURN:
+				break;
             }
         }
     }
