@@ -3,16 +3,24 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.config.Config;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -37,8 +45,24 @@ public class GUIFrame extends JFrame {
     private static final int WIDTH_RIGHT  = WIDTH - WIDTH_LEFT;
     private static final int HEIGHT = 768;
     
-    private static final Dimension mDimensionLeft = new Dimension(WIDTH_LEFT, HEIGHT);
-    private static final Dimension mDimensionRight = new Dimension(WIDTH_RIGHT, HEIGHT);
+    private static final int PANEL_MARGIN = 10;
+    private static EmptyBorder RIGHT_PANEL_MARGIN = new EmptyBorder(PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN);
+    private static final int CARD_HGAP = 5;
+    private static final int CARD_VGAP = 5;
+    
+    private static final int CARD_WIDTH = WIDTH_RIGHT - 2 * PANEL_MARGIN - 2 * CARD_HGAP;
+    private static final int CARD_HEIGHT = CARD_WIDTH * 745 / 490; // values based on image size
+    
+    private static final Insets TEXT_AREA_PADDING = new Insets(5, 5, 5, 5);
+    private static final EmptyBorder TEXT_AREA_MARGIN = new EmptyBorder( 10, 0, 10, 0 );
+    
+    private static final Dimension mDimensionLeftPanel = new Dimension(WIDTH_LEFT, HEIGHT);
+    private static final Dimension mDimensionRightPanel = new Dimension(WIDTH_RIGHT, HEIGHT);
+    private static final Dimension mDimensionCardPanel = new Dimension(CARD_WIDTH, CARD_HEIGHT);
+    
+    private final int numberOfButtons = Config.MAX_NUMBER_OF_OBJ_CARDS + 1;
+    private BufferedImage[] buttonIcons = new BufferedImage[ numberOfButtons ];
+    private JButton[] cardButtons = new JButton[ numberOfButtons ];
     
     // Drawing canvas
     private MapCanvasPanel mMapCanvas;
@@ -56,38 +80,38 @@ public class GUIFrame extends JFrame {
         setResizable(false);
         
         createRightPanel();
-        
         switchToLogin();
-        pack();
+       
     }
     
     /**
      * 
      */
     private void createRightPanel() {
-        
-        JPanel rightPanel = new JPanel();
-        rightPanel.setBorder(new EmptyBorder(10, 10, 10, 10) );
-        rightPanel.setPreferredSize(mDimensionRight);
+        // general settings
+        JPanel rightPanel = new JPanel(  );
+
+        rightPanel.setBorder( RIGHT_PANEL_MARGIN );
+        rightPanel.setPreferredSize(mDimensionRightPanel);
         rightPanel.setLayout( new BorderLayout() );
         
-        /* card panel */
-        JButton btnx = new JButton("Button 1");
-        rightPanel.add(btnx, BorderLayout.NORTH);
+        // card panel
+        JPanel cardPanel = createCardPanel(rightPanel);
+        rightPanel.add(cardPanel, BorderLayout.NORTH);
         
-        /* text area */
-        JTextArea textArea = new JTextArea( 5, 20 );
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        textArea.setEditable(false);
-
-        JScrollPane scrollPane = new JScrollPane(textArea); 
-        scrollPane.setVerticalScrollBarPolicy(
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
+        // Message Area
+        JScrollPane scrollPane = createMessageArea();
         rightPanel.add(scrollPane, BorderLayout.CENTER);
         
-        /* Action buttons panel */
+        // Action buttons panel 
+        JPanel actionButtonsPanel = createActionPanel();
+        rightPanel.add(actionButtonsPanel, BorderLayout.SOUTH);
+        
+        // add all this to parent's frame
+        this.add(rightPanel, BorderLayout.EAST);
+    }
+
+    private JPanel createActionPanel() {
         JPanel actionButtonsPanel = new JPanel( new FlowLayout() );
         
         JButton btnAttack = new JButton("Attack");
@@ -96,11 +120,60 @@ public class GUIFrame extends JFrame {
         
         actionButtonsPanel.add(btnAttack);
         actionButtonsPanel.add(btnDiscardCard);
+        return actionButtonsPanel;
+    }
+
+    private JScrollPane createMessageArea() {
+        JTextArea textArea = new JTextArea( 5, 20 );
+        textArea.setText("Player 1 has just done nothing because this is just a test.\n\n");
+        textArea.append("Player 2 has just done nothing because this is just a test too.\n\n");
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setEditable(false);
+        textArea.setMargin( TEXT_AREA_PADDING );
+
+        JScrollPane scrollPane = new JScrollPane(textArea); 
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setBorder( TEXT_AREA_MARGIN );
         
-        rightPanel.add(actionButtonsPanel, BorderLayout.SOUTH);
+        return scrollPane;
+    }
+
+    private JPanel createCardPanel(JPanel rightPanel) {
+        GridLayout layout = new GridLayout(0, 2);
+        layout.setHgap( CARD_HGAP );
+        layout.setVgap( CARD_VGAP );
         
-        /* Add the right panel to the main frame's pane */
-        this.add(rightPanel, BorderLayout.EAST);
+        JPanel cardPanel = new JPanel( layout ); // set 2 card per line, "unlimited" number of rows
+        
+        rightPanel.setPreferredSize(mDimensionCardPanel);
+          
+            for( int i = 0; i < numberOfButtons; ++i ) {
+                cardButtons[i] = new JButton( );
+                
+                cardButtons[i].setBorder(BorderFactory.createEmptyBorder());
+                cardButtons[i].setContentAreaFilled(false);
+
+                setCardToNullCard(i);
+                
+                cardPanel.add( cardButtons[i] );
+            }
+            
+        return cardPanel;
+    }
+    
+    private void setCardTo( int i, int type ) {
+        // TODO coming soon
+    }
+
+    private void setCardToNullCard(int i) {
+        try {   
+            buttonIcons[i] = ImageIO.read(new File("img/null.png"));
+            cardButtons[i].setIcon( new ImageIcon(buttonIcons[i]) );
+            cardButtons[i].setEnabled(false);
+        } catch (IOException e) {
+            ; // TODO
+        }
     }
 
     public void setRemainingTime(int remainingTime) {
@@ -113,10 +186,10 @@ public class GUIFrame extends JFrame {
     }
     
     private void switchToLogin() {
-        mLoginCanvas = new LoginCanvasPanel();
-        mLoginCanvas.setPreferredSize(mDimensionLeft);
+        mLoginCanvas = new LoginCanvasPanel( );
+        mLoginCanvas.setPreferredSize(mDimensionLeftPanel);
+       
         add(mLoginCanvas, BorderLayout.CENTER);
-        
     }
     
     public void switchToMap(GameMap map, Point startingPoint) {
@@ -124,7 +197,7 @@ public class GUIFrame extends JFrame {
             throw new RuntimeException("Map is already loaded");
         try {
             mMapCanvas = new MapCanvasPanel(mController, map, WIDTH_LEFT, HEIGHT, startingPoint);
-            mMapCanvas.setPreferredSize(mDimensionLeft);
+            mMapCanvas.setPreferredSize(mDimensionLeftPanel);
         } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
             LOG.log(Level.SEVERE, "File is not well formatted: " + e);
             System.exit(1);
@@ -133,7 +206,7 @@ public class GUIFrame extends JFrame {
         remove(mLoginCanvas);
         add(mMapCanvas, BorderLayout.CENTER);
         mLoginCanvas = null;
-        pack();
+        
     }
 
     public Point getChosenMapCell() {
