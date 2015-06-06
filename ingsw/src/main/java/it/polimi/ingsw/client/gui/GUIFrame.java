@@ -140,16 +140,18 @@ public class GUIFrame extends JFrame {
         GridLayout layout = new GridLayout(0, 2);
         layout.setHgap( CARD_HGAP );
         layout.setVgap( CARD_VGAP );
-        
+
         JPanel cardPanel = new JPanel( layout ); // set 2 card per line, "unlimited" number of rows
-        
+
         rightPanel.setPreferredSize(mDimensionCardPanel);
-          
-            for( int i = 0; i < numberOfButtons; ++i ) {
-                cardButtons[i] = new CardButton( CardButtons.NULL, mController );
-                cardPanel.add( cardButtons[i] );
-            }
-            
+
+        for( int i = 0; i < numberOfButtons; ++i ) {
+            cardButtons[i] = new CardButton( CardButtons.NULL, mController );
+            cardPanel.add( cardButtons[i] );
+        }
+
+        cardButtons[0].changeTo( CardButtons.SPOTLIGHT );
+
         return cardPanel;
     }
     
