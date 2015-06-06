@@ -223,4 +223,12 @@ public class GameMap implements Serializable {
     	
     	return sectors;
     }
+    
+    public String pointToString(Point p) {
+    	return pointToString(p.x,p.y);
+    }
+    
+    public String pointToString(int x, int y) {
+    	return String.format("%c%03d", x + 'A', y + 1);
+    }
 }

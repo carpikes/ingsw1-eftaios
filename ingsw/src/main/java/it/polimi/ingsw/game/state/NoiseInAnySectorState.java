@@ -42,13 +42,17 @@ public class NoiseInAnySectorState extends PlayerState {
         GameCommand packet = mGameState.getPacketFromQueue();
 
         PlayerState nextState = this;
+        
         if( packet != null ) {
-            if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_MAP_POSITION  && mGameState.getMap().isWithinBounds((Point)packet.getArgs()[0])) {
-            	mGameState.broadcastPacket( new GameCommand(GameOpcode.INFO_NOISE, packet.getArgs()[0] ) );
-                nextState = mGameState.getObjectCard( );
-            } else {
+            if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_MAP_POSITION && packet.getArgs().length == 1) {
+            	Point p = (Point) packet.getArgs()[0];
+            	if(p != null && mGameState.getMap().isWithinBounds(p)) {
+            		mGameState.broadcastPacket( new GameCommand(GameOpcode.INFO_NOISE, p ) );
+            		nextState = mGameState.getObjectCard( );
+            	} else
+            		throw new IllegalStateOperationException("Invalid position");
+            } else
                 throw new IllegalStateOperationException("You can only choose a position here. Discarding packet.");
-            }
         }
         
         return nextState;

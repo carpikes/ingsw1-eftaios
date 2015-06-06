@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.GameViewCommand;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -102,5 +103,7 @@ public abstract class View {
     
     protected abstract void handleCommand(ArrayList<GameViewCommand> cmd);
 
-	public abstract void showInfo(String string);
+	public abstract void showInfo(String user, String message);
+
+	public abstract void showNoiseInSector(String user, Point p);
 }

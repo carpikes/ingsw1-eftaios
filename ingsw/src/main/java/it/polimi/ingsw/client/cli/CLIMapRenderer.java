@@ -39,7 +39,7 @@ public class CLIMapRenderer {
             for( int j = 0; j < GameMap.COLUMNS; ++j ) {
                 Sector sector = map.getSectorAt(j, i);
                 if(sector.getId() != SectorBuilder.NOT_VALID) {
-                	String str = String.format("%c%03d", j + 'A', i + 1);
+                	String str = map.pointToString(j, i);
                 	String str2 = types[sector.getId()];
                 	int spos = 0, spos2 = 0;
                 	

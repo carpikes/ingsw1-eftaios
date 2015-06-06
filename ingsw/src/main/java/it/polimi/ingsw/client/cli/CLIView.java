@@ -6,6 +6,7 @@ import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.GameViewCommand;
+import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -176,7 +177,15 @@ public class CLIView extends View {
     }
 
 	@Override
-	public void showInfo(String string) {
-		IO.write("[INFO]" + string);
+	public void showInfo(String user, String message) {
+		if(user != null)
+			IO.write("["+ user + "] " + message);
+		else
+			IO.write("--INFO-- " + message);
+	}
+
+	@Override
+	public void showNoiseInSector(String user, Point p) {
+		showInfo(user, "NOISE IN SECTOR " + mMap.pointToString(p));
 	}
 }

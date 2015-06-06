@@ -129,8 +129,16 @@ public class GUIView extends View {
         }
     }
 
+    /** WARNING user can be null!!! */
 	@Override
-	public void showInfo(String string) {
+	public void showInfo(String user, String message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/** WARNING user can be null!!! */
+	@Override
+	public void showNoiseInSector(String user, Point p) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -35,6 +35,8 @@ public class GameController implements OnReceiveListener {
     
     private GameStartInfo mGameInfo = null;
     
+    private int mCurTurn = 0;
+    
     /** The constructor */
     public GameController() {
         mQueue = new LinkedBlockingQueue<GameCommand>();
@@ -92,15 +94,22 @@ public class GameController implements OnReceiveListener {
         mView.close();
     }
 
-    private void processCommand(GameCommand cmd) {
+	private void processCommand(GameCommand cmd) {
     	String user = "";
         String msg = "";
+        Object obj = null;
+        String curUser = mGameInfo.getPlayersList()[mCurTurn].getUsername();
+        
+        if(cmd.getArgs().length > 0)
+        	obj = cmd.getArgs()[0];
         switch(cmd.getOpcode()) {
             case CMD_SC_TIME:
-                mView.updateLoginTime(Integer.parseInt((String) cmd.getArgs()[0]));
+        		if(obj != null && obj instanceof String)
+        			mView.updateLoginTime(Integer.parseInt((String) obj));
                 break;
             case CMD_SC_STAT:
-                mView.updateLoginStat(Integer.parseInt((String) cmd.getArgs()[0]));
+            	if(obj != null && obj instanceof String)
+            		mView.updateLoginStat(Integer.parseInt((String) obj));
                 break;
             case CMD_SC_USERFAIL:
                 msg = "Another player is using your name. Choose another one.";
@@ -111,6 +120,7 @@ public class GameController implements OnReceiveListener {
                 mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_USERNAME, user.trim()));
                 break;
             case CMD_SC_USEROK:
+            	mView.showInfo(null, "Username accepted. Waiting for other players...");
                 break;
             case CMD_SC_MAPFAIL:
             case CMD_SC_CHOOSEMAP:
@@ -124,16 +134,23 @@ public class GameController implements OnReceiveListener {
             case CMD_SC_MAPOK:
                 break;
             case CMD_SC_RUN:
-                mGameInfo = (GameStartInfo) cmd.getArgs()[0];
-                mView.switchToMainScreen(mGameInfo);
+            	if (obj != null && obj instanceof GameStartInfo) {
+            		mGameInfo = (GameStartInfo) cmd.getArgs()[0];
+            		mView.switchToMainScreen(mGameInfo);
+            	} else
+            		throw new RuntimeException("Can't get game infos!");
                 break;
             case CMD_BYE:
                 mStopEvent = true;
                 break;
             case CMD_SC_AVAILABLE_COMMANDS:
-                //TODO some checks here
-                mView.enqueueCommand((ArrayList<GameViewCommand>) cmd.getArgs()[0]);
+            	if(obj != null && obj instanceof ArrayList<?>) {
+            		ArrayList<?> tmp = (ArrayList<?>) obj;
+            		if(tmp.size() > 0 && tmp.get(0) instanceof GameViewCommand)
+            			mView.enqueueCommand((ArrayList<GameViewCommand>) tmp);
+            	}
                 break;
+                
             /* TODO These commmands below are sent while game is running
              * and the map is loaded. Add a check into each state if the
              * used variables are initialized. Or, instead, a giant try-catch
@@ -168,22 +185,31 @@ public class GameController implements OnReceiveListener {
                 break;
                 
             case INFO_END_GAME:
-            	mView.showInfo("Game is over. Good bye!");
+            	mView.showInfo(null, "Game is over. Good bye!");
                 break;
             case INFO_GOT_A_NEW_OBJ_CARD:
-            	mView.showInfo("Congrats! You've got a new object card!");
+            	mView.showInfo(curUser, "Draw new object card!");
                 break;
             case INFO_HAS_MOVED:
-            	mView.showInfo("Player <?> has moved"); // TODO who?
+            	mView.showInfo(curUser, "Player has moved"); // TODO who?
                 break;
             case INFO_KILLED_PEOPLE:
-            	mView.showInfo("Someone got killed"); // TODO who?
+            	ArrayList<Integer> killedList = (ArrayList<Integer>) cmd.getArgs()[0];
+            	if(killedList == null || killedList.size() == 0)
+            		mView.showInfo(curUser, "Nobody has been killed");
+            	else
+            		for(Integer i : killedList)
+            			mView.showInfo(curUser, mGameInfo.getPlayersList()[i].getUsername() + " has been killed");
                 break;
             case INFO_LOSER:
-            	mView.showInfo("Game over.");
+            	mView.showInfo(curUser, "Game over.");
                 break;
             case INFO_NOISE:
-            	mView.showInfo("Noise");
+            	if(obj != null && obj instanceof Point) {
+            		Point p = (Point) obj;
+            		
+            		mView.showNoiseInSector(curUser, p);
+            	}
                 break;
             case INFO_OBJ_CARD_USED:
                 break;
