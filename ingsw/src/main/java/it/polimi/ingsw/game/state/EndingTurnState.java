@@ -29,6 +29,7 @@ public class EndingTurnState extends PlayerState {
         LOG.log(Level.FINE, "Constructor");
         
         mGameState.sendPacketToCurrentPlayer( GameOpcode.CMD_SC_END_OF_TURN );
+        buildAndSendAvailableCommands();
     }
     
     @Override

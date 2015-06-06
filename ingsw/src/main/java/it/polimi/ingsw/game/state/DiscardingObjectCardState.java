@@ -27,6 +27,7 @@ public class DiscardingObjectCardState extends PlayerState {
         super(state, player);
 
         LOG.log(Level.FINE, "Constructor");
+        buildAndSendAvailableCommands();
     }
 
     @Override

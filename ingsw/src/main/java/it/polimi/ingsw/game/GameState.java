@@ -108,7 +108,7 @@ public class GameState {
 		if( !mOutputQueue.isEmpty() ) {
 			
 			for( Map.Entry<Integer, GameCommand> pkt : mOutputQueue )
-			    if(pkt.getKey() == -1)
+			    if(pkt.getKey().equals(-1))
 			        mGameManager.broadcastPacket(pkt.getValue());
 			    else
 			        mGameManager.sendDirectPacket(pkt.getKey(), pkt.getValue());
@@ -195,7 +195,7 @@ public class GameState {
     		}
     	}
     	
-    	broadcastPacket( new GameCommand(GameOpcode.INFO_KILLED_PEOPLE, killedPlayers) );
+    	broadcastPacket( new GameCommand(GameOpcode.INFO_PLAYER_ATTACKED, currentPosition, killedPlayers) );
     }
     
     /**
@@ -278,6 +278,8 @@ public class GameState {
      */
 	public void endGame() {
 		this.broadcastPacket( GameOpcode.INFO_END_GAME );
+		flushOutputQueue();
+		mGameManager.shutdown();
 	}
 	
 	public boolean areTherePeopleStillPlaying() {
@@ -311,7 +313,9 @@ public class GameState {
 	}
 	
 	public void broadcastPacket( GameCommand pkt ) {
-		mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(-1,pkt) );
+		synchronized(mOutputQueue) {
+			mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(-1,pkt) );
+		}
 	}
 	
 	public void broadcastPacket( GameOpcode command ) {
@@ -323,7 +327,9 @@ public class GameState {
     }
 
     public void sendPacketToCurrentPlayer(GameCommand networkPacket) {
-        mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(mTurnId, networkPacket));
+    	synchronized(mOutputQueue) {
+    		mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(mTurnId, networkPacket));
+    	}
     }
     
     public int getNumberOfPlayersInSector( Point p ) {

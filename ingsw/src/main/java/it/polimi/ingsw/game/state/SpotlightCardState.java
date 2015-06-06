@@ -25,6 +25,7 @@ public class SpotlightCardState extends PlayerState {
     public SpotlightCardState(GameState state, GamePlayer player) {
         super(state, player);
         LOG.log(Level.FINE, "Constructor");
+        buildAndSendAvailableCommands();
     }
 
     @Override

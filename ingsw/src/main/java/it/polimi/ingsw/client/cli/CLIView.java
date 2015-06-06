@@ -147,9 +147,18 @@ public class CLIView extends View {
         switch(c.getOpcode()) {
 	        case CMD_ENABLEMAPVIEW:
 	        	Point newPos = null;
-	            Point curPos = (Point) c.getArgs()[0];
-	            int maxMoves = (int) c.getArgs()[1];
-	            Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
+	            Point curPos = null;
+	            int maxMoves = 0;
+	            Set<Point> enabledCells = null;
+	            if(c.getArgs().length > 0) {
+	            	if(c.getArgs()[0] instanceof Point)
+	            		curPos = (Point) c.getArgs()[0];
+	            	if(c.getArgs().length == 2)
+	            		maxMoves = (int) c.getArgs()[1];
+	            }
+	            
+	            if(maxMoves != 0) 
+	            	enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
 	            
 	            CLIMapRenderer.renderMap(mMap, curPos, enabledCells);
 	    		IO.write("Choose a position on the map");
@@ -164,6 +173,7 @@ public class CLIView extends View {
 	        case CMD_CHOOSEOBJECTCARD:
 	            break;
 			case CMD_ATTACK:
+				mController.attack();
 				break;
 			case CMD_DISCARDOBJECTCARD:
 				break;

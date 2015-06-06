@@ -189,6 +189,7 @@ public class GameController implements OnReceiveListener {
                 
             case INFO_END_GAME:
             	mView.showInfo(null, "Game is over. Good bye!");
+            	stop();
                 break;
             case INFO_GOT_A_NEW_OBJ_CARD:
             	mView.showInfo(curUser, "Draw new object card!");
@@ -196,13 +197,18 @@ public class GameController implements OnReceiveListener {
             case INFO_HAS_MOVED:
             	mView.showInfo(curUser, "Player has moved"); // TODO who?
                 break;
-            case INFO_KILLED_PEOPLE:
-            	ArrayList<Integer> killedList = (ArrayList<Integer>) cmd.getArgs()[0];
-            	if(killedList == null || killedList.size() == 0)
-            		mView.showInfo(curUser, "Nobody has been killed");
-            	else
-            		for(Integer i : killedList)
-            			mView.showInfo(curUser, mGameInfo.getPlayersList()[i].getUsername() + " has been killed");
+            case INFO_PLAYER_ATTACKED:
+            	if(cmd.getArgs().length == 2 && obj instanceof Point && cmd.getArgs()[1] instanceof ArrayList<?>) {
+            		Point p = (Point) obj;
+            		ArrayList<Integer> killedList = (ArrayList<Integer>) cmd.getArgs()[1];
+            		mView.showInfo(curUser, "Player just attacked in sector " + mGameInfo.getMap().pointToString(p));
+            		
+            		if(killedList == null || killedList.size() == 0)
+            			mView.showInfo(curUser, "Nobody has been killed");
+            		else
+            			for(Integer i : killedList)
+            				mView.showInfo(curUser, mGameInfo.getPlayersList()[i].getUsername() + " has been killed");
+            	}
                 break;
             case INFO_LOSER:
             	mView.showInfo(curUser, "Game over.");
@@ -267,5 +273,9 @@ public class GameController implements OnReceiveListener {
 
 	public void endTurn() {
 		mConn.sendPacket(GameOpcode.CMD_CS_END_TURN);
+	}
+
+	public void attack() {
+		mConn.sendPacket(GameOpcode.CMD_CS_ATTACK);
 	}
 }

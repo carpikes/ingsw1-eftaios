@@ -275,11 +275,19 @@ public class GameManager {
     }
 
     public void sendDirectPacket(int id, GameCommand networkPacket) {
+    	LOG.log(Level.FINE, "Sending packet to " + id + ": " + networkPacket.getOpcode().toString());
         mClients.get(id).sendPacket(networkPacket);
     }
 
     public GameState getGameState() {
         return mState;
     }
+
+	public void shutdown() {
+		for(Client c : mClients)
+			c.handleDisconnect();
+		
+		Server.getInstance().enqueueRemoveGame(this);
+	}
     
 }
