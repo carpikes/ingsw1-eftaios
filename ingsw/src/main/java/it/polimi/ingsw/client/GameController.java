@@ -311,4 +311,8 @@ public class GameController implements OnReceiveListener {
     public void sendChosenObjectCard(int choice) {
         mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD, choice));
     }
+    
+    public void sendDiscardObjectCard(int choice) {
+        mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD, choice));
+    }
 }

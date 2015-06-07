@@ -46,7 +46,7 @@ public class DiscardingObjectCardState extends PlayerState {
 
         PlayerState nextState = this;
         if( packet != null ) {
-            if( packet.getOpcode() == GameOpcode.CMD_SC_DISCARD_OBJECT_CARD )
+            if( packet.getOpcode() == GameOpcode.CMD_CS_DISCARD_OBJECT_CARD )
                 nextState = discardObjectCard(packet, nextState);
             else if ( !mGamePlayer.isObjectCardUsed() ) {
                 if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD )
