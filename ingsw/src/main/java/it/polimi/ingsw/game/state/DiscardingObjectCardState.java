@@ -9,8 +9,10 @@ import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameViewCommand;
+import it.polimi.ingsw.game.network.GameViewOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,6 +35,7 @@ public class DiscardingObjectCardState extends PlayerState {
     protected void buildAndSendAvailableCommands() {
         ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
 
+        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_DISCARDOBJECTCARD, (Serializable[]) objectCardsToString()));
         addObjectCardIfPossible(availableCommands);
         sendAvailableCommands(availableCommands);
     }
