@@ -149,6 +149,7 @@ public class GUIFrame extends JFrame {
         // card panel
         cardPanel = createCardPanel(rightPanel);
         rightPanel.add(cardPanel, BorderLayout.NORTH);
+        
 
         // Message Area
         scrollTextAreaPane = createMessageArea();
@@ -243,6 +244,9 @@ public class GUIFrame extends JFrame {
         mLoginCanvas = new LoginCanvasPanel( );
         mLoginCanvas.setPreferredSize(mDimensionLeftPanel);
 
+        if( rightPanel != null )
+            rightPanel.setVisible(false);
+        
         add(mLoginCanvas, BorderLayout.CENTER);
     }
 
@@ -261,7 +265,12 @@ public class GUIFrame extends JFrame {
         add(mMapCanvas, BorderLayout.CENTER);
         mLoginCanvas = null;
         
+        if( rightPanel != null )
+            rightPanel.setVisible( true );
+        
         createBottomPanel();
+        
+        resetViewStatus();
         
         validate();
         repaint();
@@ -301,5 +310,60 @@ public class GUIFrame extends JFrame {
         startInfo  = container;
     }
 
+    /**
+     * @param value
+     */
+    public void setCanSelectObjCard(boolean value) {
+        // can select only valid cards
+        for( CardButton btn : cardButtons ) {
+            if( value ) {
+                btn.setEnabled( btn.getType().isEnabled() );
+            } else {
+                btn.setEnabled( false );
+            }
+        } 
+    }
+
+    /**
+     * @param value
+     */
+    public void setAttackEnabled(boolean value) {
+        btnAttack.setEnabled( value );
+    }
+
+    /**
+     * @param value
+     */
+    public void setDiscardObjCardEnabled(boolean value) {
+        for( CardButton btn : cardButtons ) {
+            btn.setCanBeDiscarded( value );
+        }
+    }
+
+    /**
+     * @param value
+     */
+    public void setEndTurnEnabled(boolean value) {
+        btnEndTurn.setEnabled( value );
+    }
+
+    /**
+     * @param value
+     */
+    public void setCanDrawDangerousCard(boolean value) {
+        btnDrawDangerousCard.setEnabled( value );
+    }
+
+    /**
+     * 
+     */
+    public void resetViewStatus() {
+        enableMapCells( null );
+        setCanSelectObjCard( false );
+        setAttackEnabled( false );
+        setDiscardObjCardEnabled( false );
+        setCanDrawDangerousCard( false );
+        setEndTurnEnabled( false );
+    }
 }
 

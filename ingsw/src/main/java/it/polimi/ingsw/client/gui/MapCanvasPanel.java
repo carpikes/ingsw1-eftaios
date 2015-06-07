@@ -118,6 +118,7 @@ public class MapCanvasPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent arg0) { 
                 mClickedOnCell = true;
+                
                 if(mCurHexCoords != null)
                     mController.onMapPositionChosen(mCurHexCoords);
             }
@@ -195,7 +196,13 @@ public class MapCanvasPanel extends JPanel {
                     continue;
                 
                 boolean isPlayerHere = p.equals(mPlayerPosition);
-                boolean enabled = mEnabledCells == null || mEnabledCells.contains(p);
+                
+                boolean enabled;
+                if( mEnabledCells == null || !mEnabledCells.contains(p) )
+                    enabled = false;
+                else
+                    enabled = true;
+                
                 mHexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, (i == GameMap.ROWS));
             }
     }

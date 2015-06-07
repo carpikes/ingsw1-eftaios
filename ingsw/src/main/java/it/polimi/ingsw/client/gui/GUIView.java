@@ -125,30 +125,31 @@ public class GUIView extends View {
 
     @Override
     protected void handleCommand(ArrayList<GameViewCommand> cmd) {
+        resetViewStatus();
+        
         for(GameViewCommand c : cmd) {
             switch(c.getOpcode()) {
             case CMD_CHOOSEOBJECTCARD:
+                setCanSelectObjCard( true );
                 break;
+                
             case CMD_ENABLEMAPVIEW:
-                Point curPos = (Point) c.getArgs()[0];
-                int maxMoves = (int) c.getArgs()[1];
-                Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
-                mMainFrame.enableMapCells(enabledCells);
-                //Point pos = askMapPosition(enabledCells);
-                //sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, pos));
-
+                enableMap( (Point) c.getArgs()[0], (int) c.getArgs()[1] );
                 break;
+                
             case CMD_ATTACK:
-                
+                setAttackEnabled( true );
                 break;
+                
             case CMD_DISCARDOBJECTCARD:
-                
+                setDiscardObjCardEnabled( true );
                 break;
-            case CMD_DRAWDANGEROUSCARD:
                 
+            case CMD_DRAWDANGEROUSCARD:
+                setCanDrawDangerousCard( true );
                 break;
             case CMD_ENDTURN:
-                
+                setEndTurnEnabled( true );
                 break;
 
             default:
@@ -158,11 +159,55 @@ public class GUIView extends View {
         }
     }
 
+    /**
+     * @param b
+     */
+    private void setEndTurnEnabled( boolean value ) {
+        mMainFrame.setEndTurnEnabled( value );
+    }
+
+    /**
+     * @param b
+     */
+    private void setCanDrawDangerousCard( boolean value ) {
+        mMainFrame.setCanDrawDangerousCard( value );
+    }
+
+    /**
+     * @param b
+     */
+    private void setDiscardObjCardEnabled(boolean value) {
+        mMainFrame.setDiscardObjCardEnabled( value );
+    }
+
+    /**
+     * @param b
+     */
+    private void setAttackEnabled(boolean value) {
+        mMainFrame.setAttackEnabled( value );
+    }
+
+    /**
+     * @param b
+     */
+    private void setCanSelectObjCard(boolean value) {
+        mMainFrame.setCanSelectObjCard( value );
+    }
+
+    private void enableMap( Point curPos, int maxMoves ) {
+        Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
+        mMainFrame.enableMapCells(enabledCells);
+    }
+
+    private void resetViewStatus() {
+        mMainFrame.resetViewStatus();
+    }
+    
     /** WARNING user can be null!!! */
 	@Override
 	public void showInfo(String user, String message) {
 		mMainFrame.showInfo( user, message );
-	}
+	}	
 
 	/** WARNING user can be null!!! */
 	@Override
