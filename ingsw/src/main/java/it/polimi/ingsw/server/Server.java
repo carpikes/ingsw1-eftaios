@@ -114,8 +114,10 @@ public class Server {
         synchronized(mGamesRunning) {
             if(mCurGame != null && game.equals(mCurGame))
                 mCurGame = null;
-            else
-                mGamesToRemove.add(game);
+            else {
+                if(!mGamesToRemove.contains(game))
+                    mGamesToRemove.add(game);
+            }
         }
     }
 

@@ -70,9 +70,9 @@ public class GameState {
         mOutputQueue = new LinkedList<>();
         
         mPlayers = new ArrayList<>();
-        List<Role> roles = RoleBuilder.generateRoles(gameManager.getNumberOfPlayers());
+        List<Role> roles = RoleBuilder.generateRoles(gameManager.getNumberOfClients());
         
-        for(int i = 0;i<gameManager.getNumberOfPlayers(); i++) {
+        for(int i = 0;i<gameManager.getNumberOfClients(); i++) {
             Role role = roles.get(i);
             GamePlayer player = new GamePlayer(i, role, this, (i == mTurnId));
             mPlayers.add(player);
@@ -310,7 +310,7 @@ public class GameState {
 	}
 
 	private int findNextPlayer() {
-		for( int currId = mTurnId + 1; currId < mTurnId + mPlayers.size(); ++mTurnId ) {
+		for( int currId = mTurnId + 1; currId < mTurnId + mPlayers.size(); ++currId ) {
 			if( mPlayers.get(currId % mPlayers.size()).getCurrentState() instanceof NotMyTurnState )
 				return currId % mPlayers.size();
 		}

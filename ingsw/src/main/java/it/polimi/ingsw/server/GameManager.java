@@ -4,14 +4,16 @@ import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.EnemyInfo;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.GameCommand;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,13 +31,17 @@ public class GameManager {
     private final long mStartTime;
     
     /** Clients connected */
-    private List<Client> mClients = new LinkedList<Client>();
+    private List<Client> mClients = new ArrayList<Client>();
 
     /** ChosenMap */
     private Integer mChosenMapId = null;
     
     /** Game state */
     private GameState mState = null;
+
+    private int mAwayClients = 0;
+
+    private Queue<Client> mClientsToRemove = new LinkedList<Client>();
     
     public GameManager() {
         mStartTime = System.currentTimeMillis();
@@ -51,9 +57,9 @@ public class GameManager {
             return false;
 
         mClients.add(client);
-        client.sendPacket(new GameCommand(GameOpcode.CMD_SC_TIME, String.valueOf(getRemainingLoginTime())));
+        client.sendPacket(new GameCommand(GameOpcode.CMD_SC_TIME, (Integer) getRemainingLoginTime()));
         client.sendPacket(GameOpcode.CMD_SC_CHOOSEUSER);
-        broadcastPacket(new GameCommand(GameOpcode.CMD_SC_STAT, String.valueOf(mClients.size())));
+        broadcastPacket(new GameCommand(GameOpcode.CMD_SC_STAT, (Integer) mClients.size()));
         
         // @first client: ask for map
         if(mClients.size() == 1)
@@ -96,7 +102,7 @@ public class GameManager {
      * 
      * @return Number of connected players
      */
-    public synchronized int getNumberOfPlayers() {
+    public synchronized int getNumberOfClients() {
         return mClients.size();
     }
 
@@ -104,9 +110,9 @@ public class GameManager {
      * 
      * @return Remaining time
      */
-    public synchronized long getRemainingLoginTime() {
+    public synchronized int getRemainingLoginTime() {
         long rem = Config.GAME_WAITING_SECS - (System.currentTimeMillis() - mStartTime)/1000;
-        return rem > 0 ? rem : 0;
+        return (int)rem > 0 ? (int)rem : 0;
     }
 
     /** Check if a player can set the name he wants
@@ -135,13 +141,22 @@ public class GameManager {
             if(c != null)
                 c.update();
         
+        while(!mClientsToRemove.isEmpty()) {
+            Client c = mClientsToRemove.remove();
+            removeClient(c);
+        }
+        
         if(!mIsRunning) {
             // Game is ready but it is not running 
-            for(Client client : mClients)
+            for(Client client : mClients) {
+                if(!client.isConnected())
+                    throw new RuntimeException("Client can't be inactive before the game is started. What's happening?");
+                
                 if(!client.hasUsername()) {
                     // Some slow users still haven't typed their name
                     return;
                 }
+            }
             
             if(mChosenMapId == null)
                 return;
@@ -179,7 +194,7 @@ public class GameManager {
      */
     public void broadcastPacket(GameOpcode opcode) {
         for(Client c : mClients)
-            if(!c.isInactive())
+            if(c.isConnected())
                 c.sendPacket(opcode);
     }
     
@@ -189,29 +204,39 @@ public class GameManager {
      */
     public synchronized void broadcastPacket(GameCommand pkt) {
         for(Client c : mClients)
-            if(!c.isInactive())
+            if(c.isConnected())
                 c.sendPacket(pkt);
     }
     
-    /** Remove a client from this game
+    /** Do not call this guy directly! Use enqueueRemoveGame.
+     * Remove a client from this game, but if this method is called inside
+     * a for(Client c : mClients) will throw an exception.
      * 
      * @param client The client
      */
-    public synchronized void removeClient(Client client) {
+    private void removeClient(Client client) {
         boolean mustAskForMap = false;
-        if(mClients.get(0).equals(client) && mChosenMapId == null)
+        int index = mClients.indexOf(client);
+        if(index == 0 && mChosenMapId == null)
             mustAskForMap = true;
         
         // DO NOT REMOVE THE CLIENT IF THE GAME IS RUNNING.
-        if(!mIsRunning)
-            if(mClients.remove(client) == false)
+        if(mIsRunning)
+            mAwayClients++;
+        else
+            if(mClients.remove(index) == null)
                 throw new RuntimeException("Are you trying to remove a non-existent client?");
+        
+        if(mAwayClients > getNumberOfClients())
+            throw new RuntimeException("AwayClients >= ConnectedClients. What's Happening?");
         
         // Decrement global user counter
         Server.getInstance().removeClient();
         
-        broadcastPacket(new GameCommand(GameOpcode.CMD_SC_STAT, String.valueOf(mClients.size())));
-        if(mClients.size() == 0)
+        broadcastPacket(new GameCommand(GameOpcode.CMD_SC_STAT, getNumberOfClients() - mAwayClients));
+        
+        // FIXME: Could be possible that a client joins the game while enqueued for removal?
+        if(getNumberOfClients() - mAwayClients == 0)
             Server.getInstance().enqueueRemoveGame(this);
 
         // Game is still alive
@@ -219,7 +244,19 @@ public class GameManager {
             askForMap(mClients.get(0));
         
         if(mIsRunning && mState != null)
-            mState.onPlayerDisconnect(mClients.indexOf(client));
+            mState.onPlayerDisconnect(index);
+        
+        LOG.log(Level.INFO, "Player disconnected. Game Running? " + String.valueOf(mIsRunning) + ". Clients connected: " + (getNumberOfClients() - mAwayClients));
+    }
+
+    /** Remove a client from the game
+     * @param client The client
+     */
+    public void enqueueRemoveClient(Client client) {
+        synchronized(mClientsToRemove) {
+            if(!mClientsToRemove.contains(client))
+                mClientsToRemove.add(client);
+        }
     }
 
     /** Ask to client which map to use
@@ -229,6 +266,8 @@ public class GameManager {
     private void askForMap(Client client) {
         GameCommand pkt;
         
+        if(!client.isConnected())
+            throw new RuntimeException("I am trying to ask a map to an inactive client. What's happening?");
         pkt = new GameCommand(GameOpcode.CMD_SC_CHOOSEMAP, (Serializable[]) GameMap.getListOfMaps());
         client.sendPacket(pkt);
     }
@@ -245,8 +284,11 @@ public class GameManager {
         	return;
         
         int turnId = mState.getTurnId();
-        if(turnId >=0 && turnId <= mClients.size() && mClients.get(turnId).equals(client))
+        if(turnId >=0 && turnId <= mClients.size() && mClients.get(turnId).equals(client)) {
+            if(!mClients.get(turnId).isConnected())
+                throw new RuntimeException("GameState is broken: mTurnId -> AwayPlayer. What's happening?");
             mState.queuePacket(pkt);
+        }
     }
 
     /** Save the map chosen by the first player
@@ -278,7 +320,10 @@ public class GameManager {
 
     public void sendDirectPacket(int id, GameCommand networkPacket) {
     	LOG.log(Level.FINE, "Sending packet to " + id + ": " + networkPacket.getOpcode().toString());
-        mClients.get(id).sendPacket(networkPacket);
+    	Client c = mClients.get(id); 
+    	if(!c.isConnected())
+    	    throw new RuntimeException("Trying to send a packet to an offline client. What's happening?");
+        c.sendPacket(networkPacket);
     }
 
     public GameState getGameState() {
@@ -287,7 +332,7 @@ public class GameManager {
 
 	public void shutdown() {
 		for(Client c : mClients)
-		    if(!c.isInactive())
+		    if(c.isConnected())
 		        c.handleDisconnect();
 		
 		Server.getInstance().enqueueRemoveGame(this);

@@ -23,9 +23,7 @@ public class Client {
     
     /** My username */
     private String mUser = null;
-
-    private boolean mInactive = false;
-
+    
     /** The constructor
      * 
      * @param conn Connection to the client
@@ -44,7 +42,7 @@ public class Client {
      * @param pkt The packet
      */
     public synchronized void handlePacket(GameCommand pkt) {
-        if(mInactive)
+        if(!isConnected())
             return;
         
         if(!mGame.isRunning()) {
@@ -60,13 +58,12 @@ public class Client {
                             String name = (String) args[0];
                             if(mGame.canSetName(name) && mUser == null) {
                                 setUsername(name);
-                                sendPacket(new GameCommand(GameOpcode.CMD_SC_USEROK, mGame.getNumberOfPlayers(), mGame.getRemainingLoginTime()));
+                                sendPacket(new GameCommand(GameOpcode.CMD_SC_USEROK, mGame.getNumberOfClients(), mGame.getRemainingLoginTime()));
                             } else
                                 sendPacket(GameOpcode.CMD_SC_USERFAIL);
                             break;
                         case CMD_CS_LOADMAP:
-                            // FIXME null map
-                            if(args.length == 1 && mGame.setMap(this, (Integer)args[0]))
+                            if(args.length == 1 && args[0] instanceof Integer && mGame.setMap(this, (Integer)args[0]))
                                 sendPacket(GameOpcode.CMD_SC_MAPOK);
                             else
                                 sendPacket(GameOpcode.CMD_SC_MAPFAIL);
@@ -85,7 +82,7 @@ public class Client {
      * @param pkt The packet
      */
     public void sendPacket(GameCommand pkt) {
-        if(mInactive)
+        if(!isConnected())
             throw new RuntimeException("You can't send data to an inactive client");
         
         mConn.sendPacket(pkt);
@@ -119,10 +116,9 @@ public class Client {
 
     /** Disconnect the client */
     public synchronized void handleDisconnect() {
-        if(mConn.isConnected() && !mInactive) {
+        if(mConn.isConnected()) {
             mConn.disconnect();
-            mGame.removeClient(this);
-            mInactive = true;
+            mGame.enqueueRemoveClient(this);
         }
     }
 
@@ -139,7 +135,7 @@ public class Client {
     
     /** Update timeouts */
     public void update() {
-        if(mInactive)
+        if(!isConnected())
             return;
         
         if(mConn.isTimeoutTimerElapsed()) {
@@ -152,7 +148,7 @@ public class Client {
         return mConn;
     }
     
-    public boolean isInactive() {
-        return mInactive;
+    public boolean isConnected() {
+        return mConn.isConnected();
     }
 }

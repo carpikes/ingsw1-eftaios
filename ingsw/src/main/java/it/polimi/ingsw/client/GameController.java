@@ -110,12 +110,12 @@ public class GameController implements OnReceiveListener {
         
         switch(cmd.getOpcode()) {
             case CMD_SC_TIME:
-        		if(obj != null && obj instanceof String)
-        			mView.updateLoginTime(Integer.parseInt((String) obj));
+        		if(obj != null && obj instanceof Integer)
+        			mView.updateLoginTime((Integer) obj);
                 break;
             case CMD_SC_STAT:
-            	if(obj != null && obj instanceof String)
-            		mView.updateLoginStat(Integer.parseInt((String) obj));
+            	if(obj != null && obj instanceof Integer)
+            		mView.updateLoginStat((Integer) obj);
                 break;
             case CMD_SC_USERFAIL:
                 msg = "Another player is using your name. Choose another one.";
