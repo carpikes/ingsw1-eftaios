@@ -5,7 +5,6 @@ import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
@@ -23,13 +22,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class GameController implements OnReceiveListener {
     /** The view */
-    private final View mView;
+    private View mView;
     
     /** The connection */
     private Connection mConn;
     
     /** List of incoming packets/events */
-    private LinkedBlockingQueue<GameCommand> mQueue;
+    private final LinkedBlockingQueue<GameCommand> mQueue;
+    private final LinkedBlockingQueue<ArrayList<GameViewCommand>> mViewQueue;
     
     /** True if the client must be shut down */
     private boolean mStopEvent = false;
@@ -43,7 +43,7 @@ public class GameController implements OnReceiveListener {
     
     /** The constructor */
     public GameController(String[] args) {
-        mQueue = new LinkedBlockingQueue<GameCommand>();
+        boolean mViewSet = false;
         
         String[] viewList = ViewFactory.getViewList();
         if(args.length == 1) {
@@ -51,15 +51,45 @@ public class GameController implements OnReceiveListener {
                 String v = viewList[i];
                 if(v.equalsIgnoreCase(args[0])) {
                     mView = ViewFactory.getView( this, i);
-                    return;
+                    mViewSet = true;
+                    break;
                 }
             }
         }
-                    
-        CLIView tempView = new CLIView(this);
+                 
+        if(!mViewSet) {
+            CLIView tempView = new CLIView(this);
         
-        int viewCode = tempView.askView( viewList );
-        mView = ViewFactory.getView(this, viewCode);
+            int viewCode = tempView.askView( viewList );
+            mView = ViewFactory.getView(this, viewCode);
+        }
+        
+        mQueue = new LinkedBlockingQueue<GameCommand>();
+        mViewQueue = new LinkedBlockingQueue<>();
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while(isRunning()) {
+                        ArrayList<GameViewCommand> cmd = mViewQueue.poll(100, TimeUnit.MILLISECONDS);
+                        if(cmd != null) 
+                            mView.handleCommand(cmd);
+                    }
+                } catch(InterruptedException e) { }
+                GameController.this.stop();
+                mView.close();
+            }
+        }).start();
+    }
+    
+    
+    protected void enqueueViewCommand(ArrayList<GameViewCommand> arrayList) {
+        try {
+            mViewQueue.put(arrayList);
+        } catch(InterruptedException e) {
+            // TODO: log(e)
+        }
     }
     
     /** Main loop */
@@ -87,6 +117,7 @@ public class GameController implements OnReceiveListener {
             mConn.connect();
         } catch (IOException e) {
             mView.showError("Cannot connect to " + host + ": " + e.toString());
+            stop();
             return;
         }
         
@@ -177,7 +208,7 @@ public class GameController implements OnReceiveListener {
             	if(obj != null && obj instanceof ArrayList<?>) {
             		ArrayList<?> tmp = (ArrayList<?>) obj;
             		if(tmp.size() > 0 && tmp.get(0) instanceof GameViewCommand)
-            			mView.enqueueCommand((ArrayList<GameViewCommand>) tmp);
+            		    enqueueViewCommand((ArrayList<GameViewCommand>) tmp);
             	}
                 break;
                 

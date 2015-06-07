@@ -6,42 +6,20 @@ import it.polimi.ingsw.game.network.GameViewCommand;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 18, 2015
  */
 public abstract class View {
-    private final LinkedBlockingQueue<ArrayList<GameViewCommand>> mViewQueue;
+    
     protected boolean mStopEvent = false; 
     protected final GameController mController;
     
     public View(GameController controller) {
         mController = controller;
-        mViewQueue = new LinkedBlockingQueue<>();
-        
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while(mController.isRunning()) {
-                        ArrayList<GameViewCommand> cmd = mViewQueue.take();
-                        handleCommand(cmd);
-                    }
-                } catch(InterruptedException e) {
-                    mController.stop();
-                }
-                close();
-            }
-        }).start();
-    }
-    
-    protected void enqueueCommand(ArrayList<GameViewCommand> arrayList) {
-        try {
-            mViewQueue.put(arrayList);
-        } catch(InterruptedException e) {
-            // TODO: log(e)
-        }
+
     }
 
     /** Ask which connection the user want to use
