@@ -243,6 +243,8 @@ public class GUIFrame extends JFrame {
         remove(mLoginCanvas);
         add(mMapCanvas, BorderLayout.CENTER);
         mLoginCanvas = null;
+        
+        validate();
         repaint();
     }
 

@@ -110,6 +110,9 @@ public class GUIView extends View {
     public void switchToMainScreen(GameStartInfo container) {
         GameMap map = container.getMap();
         mMainFrame.switchToMap(map,map.getStartingPoint(container.isHuman()));
+        
+        mMainFrame.validate();
+        mMainFrame.repaint();
     }
 
     @Override
