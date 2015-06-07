@@ -54,23 +54,11 @@ public abstract class PlayerState {
             buildAndSendAvailableCommands();
         return nextState;
     }
-    
-    protected String[] objectCardsToString() {
-        ArrayList<ObjectCard> cards = mGamePlayer.getObjectCards();
-        String[] cardNames = new String[cards.size()];
         
-        for(int i = 0; i<cards.size(); i++) {
-            ObjectCard card = cards.get(i);
-            cardNames[i] = card.getName();
-        }
-        
-        return cardNames;
-    }
-    
     protected void addObjectCardIfPossible(ArrayList<GameViewCommand> availableCommands) {
-        if(mGamePlayer.isObjectCardUsed() || mGamePlayer.getNumberOfCards() == 0 || mGamePlayer.isAlien())
+        if(mGamePlayer.isObjectCardUsed() || mGamePlayer.getNumberOfUsableCards() == 0 || !mGamePlayer.isHuman())
             return;
         
-        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD, (Serializable[]) objectCardsToString()));
+        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD, (Serializable[]) mGamePlayer.getNamesOfUsableCards()));
     }
 }

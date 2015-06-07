@@ -30,7 +30,8 @@ public class GamePlayer {
     private boolean drawDangerousCard;
 
     /** Object cards the player owns */
-    private ArrayList < ObjectCard > objectCards;
+    private ArrayList < ObjectCard > mObjectCards;
+    private ArrayList < ObjectCard > mUsableObjectCards;
 
     /** Alien or human? */
     private final Role role;
@@ -74,7 +75,8 @@ public class GamePlayer {
      */
     public GamePlayer( int id, Role playerRole, GameState game, boolean isMyTurn) {
         resetValues();
-        objectCards = new ArrayList<>();
+        mObjectCards = new ArrayList<>();
+        mUsableObjectCards = new ArrayList<>();
         role = playerRole;
 
         mPosition = game.getMap().getStartingPoint(role instanceof Human); 
@@ -168,23 +170,7 @@ public class GamePlayer {
     public boolean isHuman() {
         return role instanceof Human;
     }
-
-    /**
-     * Get the deck of object cards for this player
-     * @return The deck of object cards
-     */
-    public ArrayList<ObjectCard> getObjectCards() {
-        return objectCards;
-    }
-
-    /**
-     * Get how many cards the player is holding at the moment
-     * @return The number of cards
-     */
-    public int getNumberOfCards() {
-        return objectCards.size();
-    }
-
+    
     /**
      * Check if the player has already used an object card during this turn
      * @return True if he has already used one
@@ -258,9 +244,9 @@ public class GamePlayer {
      * @return True if has at least one defense card.
      */
     private boolean hasDefenseCard() {
-        if(objectCards == null)
+        if(mObjectCards == null)
             return false;
-        for( ObjectCard card : objectCards ) 
+        for( ObjectCard card : mObjectCards ) 
             if( card instanceof DefenseCard )
                 return true;
 
@@ -308,9 +294,9 @@ public class GamePlayer {
      * Used when someone attacks this player but the defense is enabled.
      */
     public void dropDefense() {        
-        for( int i = 0; i < objectCards.size(); ++i ) {
-            if( objectCards.get(i) instanceof DefenseCard ) {
-                objectCards.remove(i);
+        for( int i = 0; i < mObjectCards.size(); ++i ) {
+            if( mObjectCards.get(i) instanceof DefenseCard ) {
+                mObjectCards.remove(i);
                 break;
             }
         } 
@@ -325,6 +311,83 @@ public class GamePlayer {
      */
     public boolean stillInGame() {
         return currentState.stillInGame();
+    }
+    
+    
+    /** ===== OBJECT CARDS ===== */
+
+    /**
+     * @param objectCardPos
+     * @return
+     */
+    public ObjectCard useObjectCard(int index) {
+        ObjectCard c = mUsableObjectCards.get(index);
+        if( c == null || !mObjectCards.remove(c) || !mUsableObjectCards.remove(c))
+            throw new RuntimeException("Invalid card. What's happening?");
+        
+        return c;
+    }
+
+    /**
+     * Add an object cards for this player
+     * @return The deck of object cards
+     */
+    public void addObjectCard(ObjectCard c) {
+        if(c.isUsable()) {
+            mObjectCards.add(c);
+            mUsableObjectCards.add(c);
+        }
+    }
+    
+    /**
+     * Get how many cards the player is holding at the moment
+     * @return The number of cards
+     */
+    public int getNumberOfCards() {
+        return mObjectCards.size();
+    }
+    
+    /**
+     * Get how many *usable* cards the player is holding at the moment
+     * @return The number of cards
+     */
+    public int getNumberOfUsableCards() {
+        return mUsableObjectCards.size();
+    }
+    
+    /**
+     * @param objectCard
+     */
+    public void removeObjectCard(ObjectCard objectCard) {
+        mObjectCards.remove(objectCard);
+        mUsableObjectCards.remove(objectCard);
+    }
+    
+    public String[] getNamesOfUsableCards() {
+        return cardsToString(mUsableObjectCards);
+    }
+    
+    public String[] getNamesOfCards() {
+        return cardsToString(mObjectCards);
+    }
+    
+    /**
+     * @param index
+     */
+    public void removeObjectCard(int index) {
+        ObjectCard c = mObjectCards.remove(index);
+        mUsableObjectCards.remove(c);
+    }
+    
+    private String[] cardsToString(ArrayList<ObjectCard> cards) {
+        String[] cardNames = new String[cards.size()];
+        
+        for(int i = 0; i<cards.size(); i++) {
+            ObjectCard card = cards.get(i);
+            cardNames[i] = card.getName();
+        }
+        
+        return cardNames;
     }
 
 }

@@ -35,7 +35,7 @@ public class DiscardingObjectCardState extends PlayerState {
     protected void buildAndSendAvailableCommands() {
         ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
 
-        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_DISCARDOBJECTCARD, (Serializable[]) objectCardsToString()));
+        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_DISCARDOBJECTCARD, (Serializable[]) mGamePlayer.getNamesOfCards()));
         addObjectCardIfPossible(availableCommands);
         sendAvailableCommands(availableCommands);
     }
@@ -65,7 +65,7 @@ public class DiscardingObjectCardState extends PlayerState {
     private PlayerState discardObjectCard(GameCommand packet, PlayerState nextState) {
         int index = (int)packet.getArgs()[0];
         if( index >= 0 && index <= Config.MAX_NUMBER_OF_OBJ_CARDS ) { // <=, not <, because here we have a card over the limit 
-            mGamePlayer.getObjectCards().remove(index);
+            mGamePlayer.removeObjectCard(index);
             nextState = new EndingTurnState(mGameState, mGamePlayer);
         } else {
             throw new IllegalStateOperationException("Wrong index for card. Discarding packet.");

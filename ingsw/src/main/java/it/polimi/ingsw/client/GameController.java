@@ -56,7 +56,7 @@ public class GameController implements OnReceiveListener {
                 }
             }
         }
-                 
+        
         if(!mViewSet) {
             CLIView tempView = new CLIView(this);
         
