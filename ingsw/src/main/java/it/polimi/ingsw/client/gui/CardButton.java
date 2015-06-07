@@ -46,7 +46,7 @@ public class CardButton extends JButton {
                     if( SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
                         controller.sendChosenObjectCard( type.getId() );
                     } else if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
-                        //controller.discardObjectCard( type.getId() );
+                        controller.sendDiscardObjectCard( type.getId() );
                     }
                 }
             }

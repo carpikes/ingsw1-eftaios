@@ -246,7 +246,7 @@ public class GUIFrame extends JFrame {
                 GUIFrame f = new GUIFrame( new GameController() );
                 GameMap map = null;
                 try {
-                    map = GameMap.createFromId(1);
+                    map = GameMap.createFromId( 2 );
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
