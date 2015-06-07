@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -42,7 +43,10 @@ public class GUIFrame extends JFrame {
     private static final int WIDTH = 1024;
     private static final int WIDTH_LEFT  = 745;
     private static final int WIDTH_RIGHT  = WIDTH - WIDTH_LEFT;
+    
     private static final int HEIGHT = 768;
+    private static final int HEIGHT_BOTTOM = 50;
+    private static final int HEIGHT_TOP = HEIGHT - HEIGHT_BOTTOM;
 
     private static final int PANEL_MARGIN = 10;
     private static EmptyBorder RIGHT_PANEL_MARGIN = new EmptyBorder(PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN);
@@ -55,10 +59,11 @@ public class GUIFrame extends JFrame {
     private static final Insets TEXT_AREA_PADDING = new Insets(5, 5, 5, 5);
     private static final EmptyBorder TEXT_AREA_MARGIN = new EmptyBorder( 10, 0, 10, 0 );
 
-    private static final Dimension mDimensionLeftPanel = new Dimension(WIDTH_LEFT, HEIGHT);
-    private static final Dimension mDimensionRightPanel = new Dimension(WIDTH_RIGHT, HEIGHT);
+    private static final Dimension mDimensionLeftPanel = new Dimension(WIDTH_LEFT, HEIGHT_TOP);
+    private static final Dimension mDimensionRightPanel = new Dimension(WIDTH_RIGHT, HEIGHT_TOP);
     private static final Dimension mDimensionCardPanel = new Dimension(WIDTH_RIGHT, CARD_HEIGHT);
-
+    private static final Dimension mDimensionBottomPanel = new Dimension(WIDTH, HEIGHT_BOTTOM);
+    
     // Drawing canvas on the left
     private MapCanvasPanel mMapCanvas;
     private LoginCanvasPanel mLoginCanvas;
@@ -67,12 +72,13 @@ public class GUIFrame extends JFrame {
     private final int numberOfCardButtons = Config.MAX_NUMBER_OF_OBJ_CARDS + 1;
     private CardButton[] cardButtons = new CardButton[ numberOfCardButtons ];
 
-    JPanel rightPanel, cardPanel, actionButtonsPanel;
-    JScrollPane scrollTextAreaPane;
+    private JPanel bottomPanel, rightPanel, cardPanel, actionButtonsPanel;
+    private JScrollPane scrollTextAreaPane;
 
-    JTextArea textArea;
-    JButton btnAttack, btnDrawDangerousCard, btnEndTurn;
-
+    private JTextArea textArea;
+    private JButton btnAttack, btnDrawDangerousCard, btnEndTurn;
+    
+    private JLabel[] userLabel;    
 
     public GUIFrame(GameController controller) {
         super();
@@ -86,7 +92,28 @@ public class GUIFrame extends JFrame {
         setResizable(false);
 
         createRightPanel();
+        createBottomPanel();
         switchToLogin();
+    }
+
+    /**
+     * 
+     */
+    private void createBottomPanel() {
+     // general settings
+        bottomPanel = new JPanel(  );
+
+        bottomPanel.setPreferredSize( mDimensionBottomPanel );
+        bottomPanel.setBorder( RIGHT_PANEL_MARGIN );
+        bottomPanel.setLayout( new BorderLayout() );
+        
+        bottomPanel.add( new JLabel("Players in game: "), BorderLayout.WEST );
+        
+        JPanel listOfUsers = new JPanel( new GridLayout( 1, Config.GAME_MAX_PLAYERS ) );
+        
+        // the actual rendering will be made according to GameInfoContainer values
+        
+        this.add( bottomPanel, BorderLayout.SOUTH );
     }
 
     /**
@@ -155,8 +182,6 @@ public class GUIFrame extends JFrame {
 
     private JScrollPane createMessageArea() {
         textArea = new JTextArea( 5, 20 );
-        textArea.setText("Player 1 has just done nothing because this is just a test.\n\n");
-        textArea.append("Player 2 has just done nothing because this is just a test too.\n\n");
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setEditable(false);
@@ -208,7 +233,7 @@ public class GUIFrame extends JFrame {
         if(mLoginCanvas == null)
             throw new RuntimeException("Map is already loaded");
         try {
-            mMapCanvas = new MapCanvasPanel(mController, map, WIDTH_LEFT, HEIGHT, startingPoint);
+            mMapCanvas = new MapCanvasPanel(mController, map, WIDTH_LEFT, HEIGHT_TOP, startingPoint);
             mMapCanvas.setPreferredSize(mDimensionLeftPanel);
         } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
             LOG.log(Level.SEVERE, "File is not well formatted: " + e);
@@ -255,6 +280,17 @@ public class GUIFrame extends JFrame {
                 f.setVisible(true);
             }
         });
+    }
+
+    /**
+     * @param user
+     * @param message
+     */
+    public void showInfo(String user, String message) {
+        if( user != null )
+            textArea.append( String.format("%s: %s\n\n", user, message) );
+        else 
+            textArea.append( String.format("-- INFO --: %s\n\n", message) );
     }
 
 }

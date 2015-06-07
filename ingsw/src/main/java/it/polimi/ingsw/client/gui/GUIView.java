@@ -117,8 +117,20 @@ public class GUIView extends View {
                 mMainFrame.enableMapCells(enabledCells);
                 //Point pos = askMapPosition(enabledCells);
                 //sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, pos));
+
+                break;
+            case CMD_ATTACK:
                 
                 break;
+            case CMD_DISCARDOBJECTCARD:
+                break;
+            case CMD_DRAWDANGEROUSCARD:
+                
+                break;
+            case CMD_ENDTURN:
+                
+                break;
+
             default:
                 break;
             
@@ -129,8 +141,7 @@ public class GUIView extends View {
     /** WARNING user can be null!!! */
 	@Override
 	public void showInfo(String user, String message) {
-		// TODO Auto-generated method stub
-		
+		mMainFrame.showInfo( user, message );
 	}
 
 	/** WARNING user can be null!!! */
