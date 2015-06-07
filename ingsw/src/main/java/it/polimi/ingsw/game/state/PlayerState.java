@@ -55,10 +55,7 @@ public abstract class PlayerState {
         return nextState;
     }
     
-    protected void addObjectCardIfPossible(ArrayList<GameViewCommand> availableCommands) {
-        if(mGamePlayer.isObjectCardUsed() || mGamePlayer.getNumberOfCards() == 0 || mGamePlayer.isAlien())
-            return;
-        
+    protected String[] objectCardsToString() {
         ArrayList<ObjectCard> cards = mGamePlayer.getObjectCards();
         String[] cardNames = new String[cards.size()];
         
@@ -66,7 +63,14 @@ public abstract class PlayerState {
             ObjectCard card = cards.get(i);
             cardNames[i] = card.getName();
         }
-            
-        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD, (Serializable[]) cardNames));
+        
+        return cardNames;
+    }
+    
+    protected void addObjectCardIfPossible(ArrayList<GameViewCommand> availableCommands) {
+        if(mGamePlayer.isObjectCardUsed() || mGamePlayer.getNumberOfCards() == 0 || mGamePlayer.isAlien())
+            return;
+        
+        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD, (Serializable[]) objectCardsToString()));
     }
 }

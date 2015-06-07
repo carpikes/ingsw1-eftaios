@@ -189,6 +189,11 @@ public class CLIView extends View {
                 mController.attack();
                 break;
             case CMD_DISCARDOBJECTCARD:
+                if(c.getArgs().length == 1 && c.getArgs() instanceof String[]) {
+                    String[] objs = (String[]) c.getArgs();
+                    IO.write("Which card do you want to discard?");
+                    mController.sendDiscardObjectCard(IO.askInAList(objs));
+                }
                 break;
             case CMD_DRAWDANGEROUSCARD:
                 mController.drawDangerousCard();
