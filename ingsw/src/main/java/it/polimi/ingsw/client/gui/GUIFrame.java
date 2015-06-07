@@ -121,7 +121,7 @@ public class GUIFrame extends JFrame {
             JPanel listOfUsers = new JPanel( new FlowLayout() );
             
             for( int i = 0; i < players.length; ++i ) {
-                userLabel[i] = new JLabel( (i+1) + ") " + players[i].getUsername() + " - " + players[i].getNumberOfCards() + " object cards." );
+                userLabel[i] = new JLabel( (i+1) + ") " + players[i].getUsername() + " - " + players[i].getNumberOfCards() + " object cards" );
                 if( i == startInfo.getId() )
                     userLabel[i].setForeground( Color.RED );
                 

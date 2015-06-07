@@ -24,5 +24,13 @@ public class TeleportCard extends ObjectCard {
         mGameState.rawMoveTo( mGamePlayer, mGameState.getMap().getStartingPoint(true) );
         return mGamePlayer.getCurrentState();
 	}
+    
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
+     */
+    @Override
+    public boolean isUsable() {
+        return true;
+    }
 
 }

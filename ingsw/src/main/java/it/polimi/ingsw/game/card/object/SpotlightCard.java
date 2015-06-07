@@ -26,5 +26,13 @@ public class SpotlightCard extends ObjectCard {
         
         return new SpotlightCardState( mGameState, mGamePlayer );
 	}
+    
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
+     */
+    @Override
+    public boolean isUsable() {
+        return true;
+    }
 
 }
