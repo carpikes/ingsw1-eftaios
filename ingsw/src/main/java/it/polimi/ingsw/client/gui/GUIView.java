@@ -188,4 +188,13 @@ public class GUIView extends View {
         // TODO Auto-generated method stub
         
     }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#startup()
+     */
+    @Override
+    public void startup() {
+        // TODO Auto-generated method stub
+        
+    }
 }

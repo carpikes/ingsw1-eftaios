@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.client.cli.CLIView;
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class GameController implements OnReceiveListener {
     /** The view */
-    private View mView;
+    private final View mView;
     
     /** The connection */
     private Connection mConn;
@@ -41,27 +42,33 @@ public class GameController implements OnReceiveListener {
     private int mCurTurn = 0;
     
     /** The constructor */
-    public GameController() {
+    public GameController(String[] args) {
         mQueue = new LinkedBlockingQueue<GameCommand>();
-    }
-    
-    /** Set the view */
-    public void setView(View v) {
-        mView = v;
+        
+        String[] viewList = ViewFactory.getViewList();
+        if(args.length == 1) {
+            for(int i = 0; i < viewList.length; i++) {
+                String v = viewList[i];
+                if(v.equalsIgnoreCase(args[0])) {
+                    mView = ViewFactory.getView( this, i);
+                    return;
+                }
+            }
+        }
+                    
+        CLIView tempView = new CLIView(this);
+        
+        int viewCode = tempView.askView( viewList );
+        mView = ViewFactory.getView(this, viewCode);
     }
     
     /** Main loop */
     public void run() {
-        
-        String[] viewList = ViewFactory.getViewList();
-        int viewCode = mView.askView( viewList );
-        View view = ViewFactory.getView( this, viewCode);
-        if( view == null )
+        if(mView == null)
             return;
-        else {
-            setView(view);
-            view.run();
-        } 
+        
+        mView.startup();
+        
         String[] connList = ConnectionFactory.getConnectionList();
         int conn = mView.askConnectionType(connList);
         mConn = ConnectionFactory.getConnection(conn);

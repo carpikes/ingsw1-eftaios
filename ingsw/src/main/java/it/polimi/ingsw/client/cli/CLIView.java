@@ -50,13 +50,17 @@ public class CLIView extends View {
     public CLIView(GameController c) {
         super(c);
         mController = c;
+    }
+    
+    @Override
+    public void startup() {
         CLIView.banner();
     }
-
+    
     @Override
     public void run() {
     }
-
+    
     @Override
     public int askConnectionType(String[] params) {
         IO.write("Which connection do you want to use?");
@@ -232,4 +236,5 @@ public class CLIView extends View {
     public void onOtherTurn(String username) {
         showInfo(null, "It's " + username + "'s turn!");
     }
+
 }

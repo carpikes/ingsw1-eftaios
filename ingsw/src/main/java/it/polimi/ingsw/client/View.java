@@ -114,4 +114,9 @@ public abstract class View {
      */
     public abstract void onMyTurn();
     public abstract void onOtherTurn(String username);
+
+    /**
+     * 
+     */
+    public abstract void startup();
 }
