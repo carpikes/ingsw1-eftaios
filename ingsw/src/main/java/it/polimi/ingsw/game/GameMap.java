@@ -27,6 +27,7 @@ public class GameMap implements Serializable {
         "maps/fermi.txt",
         "maps/galilei.txt",
         "maps/galvani.txt",
+        "maps/debug.txt"
     };
     
 	// including not crossable sectors
