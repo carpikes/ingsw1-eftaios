@@ -42,10 +42,12 @@ public class CardButton extends JButton {
                 
         this.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
-                if( SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
-                    controller.sendChosenObjectCard( type.getId() );
-                } else if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
-                   //controller.discardObjectCard( type.getId() );
+                if( ((JButton)e.getSource() ).isEnabled() ) {
+                    if( SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
+                        controller.sendChosenObjectCard( type.getId() );
+                    } else if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
+                        //controller.discardObjectCard( type.getId() );
+                    }
                 }
             }
 
@@ -54,12 +56,15 @@ public class CardButton extends JButton {
             public void mouseReleased(MouseEvent e) { }
 
             public void mouseEntered(MouseEvent e) { 
-                setAlpha(0.5f);
+                if( ((JButton)e.getSource() ).isEnabled() ) {
+                    setAlpha(0.5f);
+                }
             }
 
             public void mouseExited(MouseEvent e) { 
-                setAlpha(1f);
-                
+                if( ((JButton)e.getSource() ).isEnabled() ) {
+                    setAlpha(1f);
+                }
             }
         });
     }
