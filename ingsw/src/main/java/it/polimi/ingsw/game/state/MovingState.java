@@ -70,7 +70,7 @@ public class MovingState extends PlayerState {
                         mGameState.sendPacketToCurrentPlayer(GameOpcode.CMD_SC_MOVE_INVALID);
                 } else
                     mGameState.sendPacketToCurrentPlayer(GameOpcode.CMD_SC_MOVE_INVALID);
-            } else if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD && mGamePlayer.getNumberOfCards() > 0) {
+            } else if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD && mGamePlayer.getNumberOfUsableCards() > 0) {
                 nextState = useObjectCard(this, packet);
             } else {
                 throw new IllegalStateOperationException("You can only move. Discarding command.");
