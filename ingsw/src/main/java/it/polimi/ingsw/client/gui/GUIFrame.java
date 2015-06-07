@@ -4,15 +4,18 @@ import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.config.Config;
+import it.polimi.ingsw.game.network.EnemyInfo;
+import it.polimi.ingsw.game.network.GameStartInfo;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +26,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -52,6 +54,8 @@ public class GUIFrame extends JFrame {
     private static EmptyBorder RIGHT_PANEL_MARGIN = new EmptyBorder(PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN);
     private static final int CARD_HGAP = 5;
     private static final int CARD_VGAP = 5;
+    
+    private static final int USERS_HGAP = 5;    
 
     private static final int CARD_WIDTH = WIDTH_RIGHT - 2 * PANEL_MARGIN - 2 * CARD_HGAP;
     private static final int CARD_HEIGHT = CARD_WIDTH * 745 / 490; // values based on image size
@@ -78,7 +82,9 @@ public class GUIFrame extends JFrame {
     private JTextArea textArea;
     private JButton btnAttack, btnDrawDangerousCard, btnEndTurn;
     
-    private JLabel[] userLabel;    
+    private JLabel[] userLabel;
+
+    private GameStartInfo startInfo = null;
 
     public GUIFrame(GameController controller) {
         super();
@@ -92,7 +98,6 @@ public class GUIFrame extends JFrame {
         setResizable(false);
 
         createRightPanel();
-        createBottomPanel();
         switchToLogin();
     }
 
@@ -109,11 +114,25 @@ public class GUIFrame extends JFrame {
         
         bottomPanel.add( new JLabel("Players in game: "), BorderLayout.WEST );
         
-        JPanel listOfUsers = new JPanel( new GridLayout( 1, Config.GAME_MAX_PLAYERS ) );
-        
-        // the actual rendering will be made according to GameInfoContainer values
-        
-        this.add( bottomPanel, BorderLayout.SOUTH );
+        try {
+            EnemyInfo[] players = startInfo.getPlayersList();
+            userLabel = new JLabel[ players.length ];
+            
+            JPanel listOfUsers = new JPanel( new FlowLayout() );
+            
+            for( int i = 0; i < players.length; ++i ) {
+                userLabel[i] = new JLabel( (i+1) + ") " + players[i].getUsername() + " - " + players[i].getNumberOfCards() + " object cards." );
+                if( i == startInfo.getId() )
+                    userLabel[i].setForeground( Color.RED );
+                
+                listOfUsers.add( userLabel[i] );
+            }
+            
+            bottomPanel.add( listOfUsers, BorderLayout.CENTER);
+            this.add( bottomPanel, BorderLayout.SOUTH );
+        } catch( NullPointerException e ) {
+            LOG.log(Level.SEVERE, "Cannot load list of enemies!");
+        }
     }
 
     /**
@@ -208,8 +227,6 @@ public class GUIFrame extends JFrame {
             cardPanel.add( cardButtons[i] );
         }
 
-        cardButtons[0].changeTo( CardButtons.SPOTLIGHT );
-
         return cardPanel;
     }
 
@@ -244,6 +261,8 @@ public class GUIFrame extends JFrame {
         add(mMapCanvas, BorderLayout.CENTER);
         mLoginCanvas = null;
         
+        createBottomPanel();
+        
         validate();
         repaint();
     }
@@ -264,26 +283,6 @@ public class GUIFrame extends JFrame {
         mMapCanvas.setPlayerPosition(startingPoint);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                GUIFrame f = new GUIFrame( new GameController() );
-                GameMap map = null;
-                try {
-                    map = GameMap.createFromId( 2 );
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                f.switchToMap(map, map.getStartingPoint(true));
-                f.setVisible(true);
-            }
-        });
-    }
-
     /**
      * @param user
      * @param message
@@ -293,6 +292,13 @@ public class GUIFrame extends JFrame {
             textArea.append( String.format("%s: %s\n\n", user, message) );
         else 
             textArea.append( String.format("-- INFO --: %s\n\n", message) );
+    }
+    
+    /**
+     * @param container
+     */
+    public void setStartInfo(GameStartInfo container) {
+        startInfo  = container;
     }
 
 }

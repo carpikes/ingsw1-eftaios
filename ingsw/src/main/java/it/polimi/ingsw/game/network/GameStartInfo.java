@@ -19,11 +19,13 @@ public class GameStartInfo implements Serializable {
 	/** Are you human or alien? */
 	private final boolean mHuman;
 	private final GameMap mMap;
+	private final int id;
 	
-	public GameStartInfo(EnemyInfo[] usernames, boolean isHuman, GameMap map) {
+	public GameStartInfo(EnemyInfo[] usernames, int idUsername, boolean isHuman, GameMap map) {
 		mUsers = usernames;
 		mHuman = isHuman;
 		mMap = map;
+		id = idUsername;
 	}
 
 	/**
@@ -45,5 +47,9 @@ public class GameStartInfo implements Serializable {
 	 */
 	public boolean isHuman() {
 		return mHuman;
+	}
+	
+	public int getId() {
+	    return id;
 	}
 }

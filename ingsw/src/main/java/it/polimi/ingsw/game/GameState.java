@@ -258,7 +258,7 @@ public class GameState {
     }
     
     public GameStartInfo buildInfoContainer(EnemyInfo[] userList, int i) {
-        GameStartInfo info = new GameStartInfo(userList, mPlayers.get(i).isHuman(), mMap);
+        GameStartInfo info = new GameStartInfo(userList, i, mPlayers.get(i).isHuman(), mMap);
         return info;
     }
 

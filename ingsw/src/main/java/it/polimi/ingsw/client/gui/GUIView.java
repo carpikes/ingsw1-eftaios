@@ -109,6 +109,7 @@ public class GUIView extends View {
     @Override
     public void switchToMainScreen(GameStartInfo container) {
         GameMap map = container.getMap();
+        mMainFrame.setStartInfo( container );
         mMainFrame.switchToMap(map,map.getStartingPoint(container.isHuman()));
         
         mMainFrame.validate();
@@ -141,6 +142,7 @@ public class GUIView extends View {
                 
                 break;
             case CMD_DISCARDOBJECTCARD:
+                
                 break;
             case CMD_DRAWDANGEROUSCARD:
                 
