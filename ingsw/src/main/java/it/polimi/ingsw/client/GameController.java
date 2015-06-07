@@ -52,8 +52,17 @@ public class GameController implements OnReceiveListener {
     
     /** Main loop */
     public void run() {
-        String[] connList = ConnectionFactory.getConnectionList();
         
+        String[] viewList = ViewFactory.getViewList();
+        int viewCode = mView.askView( viewList );
+        View view = ViewFactory.getView( this, viewCode);
+        if( view == null )
+            return;
+        else {
+            setView(view);
+            view.run();
+        } 
+        String[] connList = ConnectionFactory.getConnectionList();
         int conn = mView.askConnectionType(connList);
         mConn = ConnectionFactory.getConnection(conn);
         if(mConn == null)

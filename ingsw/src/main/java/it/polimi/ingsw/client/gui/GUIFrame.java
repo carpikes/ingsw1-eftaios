@@ -243,7 +243,7 @@ public class GUIFrame extends JFrame {
         remove(mLoginCanvas);
         add(mMapCanvas, BorderLayout.CENTER);
         mLoginCanvas = null;
-
+        repaint();
     }
 
     public Point getChosenMapCell() {

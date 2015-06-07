@@ -64,6 +64,8 @@ public abstract class View {
      */
     public abstract String askUsername(String message);
     
+    public abstract Integer askView( String[] viewList );
+    
     /** Ask which map to load
      * 
      * @param mapList List of maps
