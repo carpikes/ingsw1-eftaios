@@ -24,5 +24,13 @@ public class SedativesCard extends ObjectCard {
 		mGamePlayer.setShouldDrawDangerousCard(false);
 		return mGamePlayer.getCurrentState();
 	}
+    
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
+     */
+    @Override
+    public boolean isUsable() {
+        return true;
+    }
 
 }

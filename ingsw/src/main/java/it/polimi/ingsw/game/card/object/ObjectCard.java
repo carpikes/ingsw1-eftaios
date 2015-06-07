@@ -41,4 +41,6 @@ public abstract class ObjectCard {
 	public int getId() {
 	    return mId;
 	}
+	
+	public abstract boolean isUsable();
 }

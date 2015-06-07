@@ -24,5 +24,12 @@ public class DefenseCard extends ObjectCard {
 	public PlayerState doAction() {
 		return null;
 	}
-
+    
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
+     */
+    @Override
+    public boolean isUsable() {
+        return false;
+    }
 }
