@@ -15,8 +15,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -27,6 +32,8 @@ public class MapCanvasPanel extends JPanel {
     
     private static final long serialVersionUID = -5583245069814214909L;
     
+    private static final Logger LOG = Logger.getLogger( MapCanvasPanel.class.getName() );
+
     // the map being loaded
     private GameMap mGameMap;
 
@@ -165,15 +172,7 @@ public class MapCanvasPanel extends JPanel {
         setBackground(Color.WHITE);  // set background color for this JPanel
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        // Background
-        int x = -mCanvasWidth; // too much?
-        g2d.setColor(Color.LIGHT_GRAY);
-        g2d.setStroke(new BasicStroke(1.2f));
-        while(x < mCanvasWidth) {
-            g2d.drawLine(x, 0, x + (int)(Math.cos(Math.PI/360*60)*mCanvasHeight), mCanvasHeight);
-            x += 30;
-        }
-        
+
         g2d.setStroke(new BasicStroke(2f));
         synchronized(mRenderLoopMutex) {
             drawHexagons(g2d);

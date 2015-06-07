@@ -83,6 +83,15 @@ public class CLIView extends View {
         IO.write("Type the hostname");
         return IO.readString();
     }
+    
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#askView()
+     */
+    @Override
+    public Integer askView( String[] viewList ) {
+        IO.write("Which view do you want to use?");
+        return IO.askInAList( viewList );
+    }
 
     /* (non-Javadoc)
      * @see it.polimi.ingsw.client.View#showError(java.lang.String)

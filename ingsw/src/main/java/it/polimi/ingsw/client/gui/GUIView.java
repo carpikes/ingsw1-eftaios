@@ -1,16 +1,16 @@
 package it.polimi.ingsw.client.gui;
 
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Set;
-
-import javax.swing.JOptionPane;
-
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.GameViewCommand;
+
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Set;
+
+import javax.swing.JOptionPane;
 
 /**
  * @author Alain
@@ -44,6 +44,21 @@ public class GUIView extends View {
     @Override
     public String askUsername(String message) {
         return JOptionPane.showInputDialog(message.length() == 0 ? "Type a username" : message);
+    }
+    
+    @Override
+    public Integer askView( String[] viewList ) {
+        Object ret = JOptionPane.showInputDialog(null, "Choose a view", "", 
+                JOptionPane.QUESTION_MESSAGE, null, viewList, viewList[0]);
+   
+        if(ret == null || !(ret instanceof String))
+            return null;
+        
+        for(int i = 0; i<viewList.length;i++)
+            if(viewList[i].equals(ret))
+                return i;
+        
+        return null; 
     }
 
     @Override
@@ -95,6 +110,9 @@ public class GUIView extends View {
     public void switchToMainScreen(GameStartInfo container) {
         GameMap map = container.getMap();
         mMainFrame.switchToMap(map,map.getStartingPoint(container.isHuman()));
+        
+        mMainFrame.validate();
+        mMainFrame.repaint();
     }
 
     @Override
@@ -117,8 +135,20 @@ public class GUIView extends View {
                 mMainFrame.enableMapCells(enabledCells);
                 //Point pos = askMapPosition(enabledCells);
                 //sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, pos));
+
+                break;
+            case CMD_ATTACK:
                 
                 break;
+            case CMD_DISCARDOBJECTCARD:
+                break;
+            case CMD_DRAWDANGEROUSCARD:
+                
+                break;
+            case CMD_ENDTURN:
+                
+                break;
+
             default:
                 break;
             
@@ -129,8 +159,7 @@ public class GUIView extends View {
     /** WARNING user can be null!!! */
 	@Override
 	public void showInfo(String user, String message) {
-		// TODO Auto-generated method stub
-		
+		mMainFrame.showInfo( user, message );
 	}
 
 	/** WARNING user can be null!!! */
