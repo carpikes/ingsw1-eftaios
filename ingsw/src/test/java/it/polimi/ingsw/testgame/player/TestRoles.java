@@ -29,14 +29,14 @@ public class TestRoles {
     
     @Test(expected=TooFewPlayersException.class)
     public void tooFewPlayers() {
-        RoleBuilder.generateRoles(0);
+        RoleBuilder.generateRoles(0, true);
     }
     
     private void testRoleFactoryHelper( int numberOfPlayers ) {
         int humans = 0; 
         int aliens = 0;
         
-        List<Role> roles = RoleBuilder.generateRoles( numberOfPlayers );
+        List<Role> roles = RoleBuilder.generateRoles( numberOfPlayers, true);
         Iterator<Role> it = roles.iterator();
         
         while( it.hasNext() ) {

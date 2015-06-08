@@ -24,6 +24,7 @@ import it.polimi.ingsw.server.GameManager;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -43,7 +44,7 @@ public class GameState {
     private static final Logger LOG = Logger.getLogger(GameState.class.getName());
     
     /** Game Manager */
-    private final GameManager mGameManager;
+    private final GameManager mManager;
     
     /** Input and output queue */
     private final Queue<GameCommand> mInputQueue;
@@ -61,6 +62,13 @@ public class GameState {
     /** Number of rounds played */
     private int mRoundsPlayed = 0;
     
+    /** Debug mode */
+    private final boolean dDebugMode;
+
+    private boolean dGameOver = false;
+
+    private int dForceNextTurn = -1;
+    
     /**
      * Constructs a new game.
      * @param gameManager The GameManager that created this game.
@@ -76,13 +84,14 @@ public class GameState {
         }
         mMap = tmpMap;
         
-        mGameManager = gameManager;
+        dDebugMode = false;
+        mManager = gameManager;
         
         mInputQueue = new LinkedList<>();
         mOutputQueue = new LinkedList<>();
         
         mPlayers = new ArrayList<>();
-        List<Role> roles = RoleBuilder.generateRoles(gameManager.getNumberOfClients());
+        List<Role> roles = RoleBuilder.generateRoles(gameManager.getNumberOfClients(), true);
         
         for(int i = 0;i<gameManager.getNumberOfClients(); i++) {
             Role role = roles.get(i);
@@ -99,12 +108,60 @@ public class GameState {
             gameManager.shutdown();
     }
     
+    /** DEBUG MODE CONSTRUCTOR
+     * Constructs a new game.
+     * @param gameManager The GameManager that created this game.
+     * @param mapId Id of the map
+     * @param clients List of connections of all players
+     */
+    public GameState(String areYouSureToEnableDebugMode, int mapId, int numberOfPlayers, int startPlayerId, boolean randomizePlayers) {
+        GameMap tmpMap = null;
+        try {
+            tmpMap = GameMap.createFromId(mapId);
+        } catch(IOException e) {
+            LOG.log(Level.SEVERE, "Missing map files: " + e.toString(), e);
+        }
+        
+        if(!areYouSureToEnableDebugMode.equalsIgnoreCase("YES"))
+            throw new DebugException("Cannot enable debug mode.");
+        
+        mMap = tmpMap;
+        
+        dDebugMode = true;
+        mManager = null;
+        
+        mInputQueue = new LinkedList<>();
+        mOutputQueue = new LinkedList<>();
+        
+        mPlayers = new ArrayList<>();
+        
+        mTurnId = startPlayerId;
+        List<Role> roles = RoleBuilder.generateRoles(numberOfPlayers, randomizePlayers);
+        
+        for(int i = 0;i<numberOfPlayers; i++) {
+            Role role = roles.get(i);
+            boolean isMyTurn = (i == mTurnId);
+            GamePlayer player = new GamePlayer(i, role, getMap().getStartingPoint(role instanceof Human));
+            mPlayers.add(player);
+            if(isMyTurn)
+                player.setCurrentState(new StartTurnState(this));
+            else
+                player.setCurrentState(new NotMyTurnState(this));
+        }
+        
+        if(mMap == null)
+            throw new DebugException("Invalid map file");
+    }
+    
     /**
      * Method called by the server hosting the games. According to the current player's state, it lets the game flow.
      */
     public void update() {
-        if(!mGameManager.isRunning())
+        if(!mManager.isRunning() || dDebugMode)
             return;
+        
+        if(dDebugMode && dGameOver == true)
+            throw new DebugException("Game over");
         
         GamePlayer player = getCurrentPlayer();
         PlayerState nextState = null;
@@ -125,13 +182,16 @@ public class GameState {
     
     /** Flush the output queue */
     public void flushOutputQueue() {
+        if(dDebugMode)
+            return;
+        
         if( !mOutputQueue.isEmpty() ) {
             
             for( Map.Entry<Integer, GameCommand> pkt : mOutputQueue )
                 if(pkt.getKey().equals(-1))
-                    mGameManager.broadcastPacket(pkt.getValue());
+                    mManager.broadcastPacket(pkt.getValue());
                 else
-                    mGameManager.sendDirectPacket(pkt.getKey(), pkt.getValue());
+                    mManager.sendDirectPacket(pkt.getKey(), pkt.getValue());
             
             mOutputQueue.clear();
         }
@@ -287,7 +347,11 @@ public class GameState {
             
             broadcastPacket( new GameCommand(GameOpcode.INFO_END_GAME, winnersList, loserList));
             flushOutputQueue();
-            mGameManager.shutdown();
+            
+            if(!dDebugMode)
+                mManager.shutdown();
+            else
+                dGameOver = true;
         }
     }
 
@@ -318,7 +382,7 @@ public class GameState {
             
         }
         
-        broadcastPacket( new GameCommand( GameOpcode.INFO_SPOTLIGHT, caughtPlayers) );
+        broadcastPacket( new GameCommand( GameOpcode.INFO_SPOTLIGHT, (Serializable[]) caughtPlayers) );
     }
     
     /* -----------------------------------------------*/
@@ -353,14 +417,6 @@ public class GameState {
         GameStartInfo info = new GameStartInfo(userList, i, mPlayers.get(i).isHuman(), mMap);
         return info;
     }
-
-    public List<GamePlayer> getPlayers() {
-        return mPlayers;
-    }
-
-    public GameManager getGameManager() {
-        return mGameManager;
-    }
     
     public Set<Point> getCellsWithMaxDistance() {
         GamePlayer player = getCurrentPlayer();
@@ -374,21 +430,29 @@ public class GameState {
         int newTurnId = -1;
         int lastTurnId = mTurnId;
         
-        for( int currId = mTurnId + 1; currId < mTurnId + mPlayers.size(); ++currId ) {
-            if( mPlayers.get(currId % mPlayers.size()).getCurrentState() instanceof NotMyTurnState ) {
-                newTurnId = currId % mPlayers.size();
-                break;
+        if(dDebugMode && dForceNextTurn != -1) {
+            checkEndGame(false);
+            
+            mTurnId = dForceNextTurn;
+            dForceNextTurn = -1;
+        } else {
+            for( int currId = mTurnId + 1; currId < mTurnId + mPlayers.size(); ++currId ) {
+                if( mPlayers.get(currId % mPlayers.size()).getCurrentState() instanceof NotMyTurnState ) {
+                    newTurnId = currId % mPlayers.size();
+                    break;
+                }
             }
+            
+            if(newTurnId <= lastTurnId)
+                mRoundsPlayed ++;
+            
+            checkEndGame(false);
+            if(newTurnId == -1)
+                return;
+            
+            mTurnId = newTurnId;
         }
         
-        if(newTurnId <= lastTurnId)
-            mRoundsPlayed ++;
-        
-        checkEndGame(false);
-        if(newTurnId == -1)
-            return;
-        
-        mTurnId = newTurnId;
         getCurrentPlayer().setCurrentState( new StartTurnState( this ) );
     }
     
@@ -440,14 +504,57 @@ public class GameState {
         checkEndGame(false);
     }
 
-    /**
-     * @param loserPlayer
-     * @param cmdScLose
+    /** 
+     * @param player
+     * @param pkt
      */
-    public void sendPacketToPlayer(Integer loserPlayer, GameCommand pkt) {
+    public void sendPacketToPlayer(Integer player, GameCommand pkt) {
         synchronized(mOutputQueue) {
-            mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(loserPlayer, pkt));
+            mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(player, pkt));
         }
     }
 
+    
+    /** ====== DEBUG ====== */
+    
+    
+    /** [DEBUG] Get the output queue
+     *
+     * @return The output packet queue
+     */
+    public Queue<Map.Entry<Integer,GameCommand>> debugGetOutputQueue() {
+        if(!dDebugMode)
+            throw new DebugException("Cannot use this method in normal mode");
+        
+        Queue<Map.Entry<Integer,GameCommand>> q = new LinkedList<>();
+        
+        for( Map.Entry<Integer, GameCommand> pkt : mOutputQueue )
+            q.add(pkt);
+        
+        mOutputQueue.clear();
+        
+        return q;
+    }
+    
+    /** Change next player
+     * 
+     * @param id Who's the next?
+     */
+    public void debugSetNextTurnId(int id) {
+        if(!dDebugMode)
+            throw new DebugException("Cannot use this method in normal mode");
+        dForceNextTurn = id;
+    }
+
+    /** Get the player object. Useful to add card or change values
+     * 
+     * @param playerId The player id [0-7]
+     * @return The player object
+     */
+    public GamePlayer debugGetPlayer(int playerId) {
+        if(!dDebugMode)
+            throw new DebugException("Cannot use this method in normal mode");
+        
+        return mPlayers.get(playerId);
+    }
 }

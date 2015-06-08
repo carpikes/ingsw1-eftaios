@@ -21,7 +21,7 @@ public class RoleBuilder {
      * @param numberOfPlayers The number of roles it has to create
      * @return The list of roles
      */
-    public static List<Role> generateRoles(int numberOfPlayers) {
+    public static List<Role> generateRoles(int numberOfPlayers, boolean randomizeRoles) {
         List<Role> roles = new ArrayList<>();
         
         if(numberOfPlayers < Config.GAME_MIN_PLAYERS)
@@ -33,7 +33,8 @@ public class RoleBuilder {
             else
                 roles.add(new Human());
         
-        Collections.shuffle(roles);
+        if(randomizeRoles)
+            Collections.shuffle(roles);
         return roles;
     }
 }
