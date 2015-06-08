@@ -237,4 +237,30 @@ public class CLIView extends View {
         showInfo(null, "It's " + username + "'s turn!");
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#showEnding(java.util.ArrayList, java.util.ArrayList)
+     */
+    @Override
+    public void showEnding(ArrayList<Integer> winnerList, ArrayList<Integer> loserList) {
+        IO.write("*******************");
+        IO.write("**   GAME OVER   **");
+        IO.write("*******************\n");
+        
+        if(winnerList.size() == 0) 
+            IO.write("Nobody won this game.");
+        else {
+            IO.write("====  Winners  ====");
+            for(Integer i : winnerList)
+                IO.write(" -> " + mContainer.getPlayersList()[i].getUsername());
+        }
+        
+        if(loserList.size() == 0) 
+            IO.write("Nobody lost this game.");
+        else {
+            IO.write("====  Losers   ====");
+            for(Integer i : loserList)
+                IO.write(" -> " + mContainer.getPlayersList()[i].getUsername());
+        }
+    }
+
 }

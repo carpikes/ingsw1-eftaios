@@ -330,9 +330,8 @@ public class GameManager {
     public void sendDirectPacket(int id, GameCommand networkPacket) {
     	LOG.log(Level.FINE, "Sending packet to " + id + ": " + networkPacket.getOpcode().toString());
     	Client c = mClients.get(id); 
-    	if(!c.isConnected())
-    	    throw new RuntimeException("Trying to send a packet to an offline client. What's happening?");
-        c.sendPacket(networkPacket);
+    	if(c.isConnected())
+    	    c.sendPacket(networkPacket);
     }
 
     public GameState getGameState() {

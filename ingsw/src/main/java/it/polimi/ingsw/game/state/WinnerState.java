@@ -21,7 +21,6 @@ public class WinnerState extends PlayerState {
         
         state.broadcastPacket( GameOpcode.INFO_WINNER );
         state.sendPacketToCurrentPlayer( GameOpcode.CMD_SC_WIN );
-        
     }
 
     /* (non-Javadoc)

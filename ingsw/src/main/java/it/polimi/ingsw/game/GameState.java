@@ -226,7 +226,7 @@ public class GameState {
         checkEndGame(killedHumans);
     }
     
-    /** End game conditions: [<end|cont>/<who win?>]
+    /** End game conditions: [<who win?>]
      * 
      * (1) [ALIENS] If aliens eliminate last living human
      * (2) [ALIENS] No spaceships left && some humans are still in game
@@ -266,8 +266,6 @@ public class GameState {
                     p.setCurrentState(new WinnerState(this));
                 else if(p.getCurrentState() instanceof AwayState || (p.isHuman() && p.stillInGame()))
                     p.setCurrentState(new LoserState(this));
-                else
-                    throw new RuntimeException("Unknown player state. What's happening?");
             }
             
             // Fill this two arrays
@@ -383,7 +381,7 @@ public class GameState {
             }
         }
         
-        if(newTurnId < lastTurnId) {
+        if(newTurnId <= lastTurnId) {
             mRoundsPlayed ++;
             checkEndGame(false);
             if(newTurnId == -1)

@@ -242,4 +242,14 @@ public class GUIView extends View {
         // TODO Auto-generated method stub
         
     }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#showEnding(java.util.ArrayList, java.util.ArrayList)
+     */
+    @Override
+    public void showEnding(ArrayList<Integer> winnerList,
+            ArrayList<Integer> loserList) {
+        // TODO Auto-generated method stub
+        
+    }
 }

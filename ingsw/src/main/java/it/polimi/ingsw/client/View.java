@@ -97,4 +97,10 @@ public abstract class View {
      * 
      */
     public abstract void startup();
+
+    /**
+     * @param winnerList
+     * @param loserList
+     */
+    public abstract void showEnding(ArrayList<Integer> winnerList, ArrayList<Integer> loserList);
 }

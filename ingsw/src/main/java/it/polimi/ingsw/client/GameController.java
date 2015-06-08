@@ -229,8 +229,6 @@ public class GameController implements OnReceiveListener {
                 break;
             case CMD_SC_FULL:
                 break;
-            case CMD_SC_LOSE:
-                break;
             case CMD_SC_MOVE_DONE:
                 
                 break;
@@ -238,16 +236,27 @@ public class GameController implements OnReceiveListener {
                 break;
             case CMD_SC_MOVE_INVALID:
             case CMD_SC_START_TURN:
-
                 break;
             case CMD_SC_UPDATE_LOCAL_INFO:
                 break;
+                
+            case CMD_SC_LOSE:
+                mView.showInfo(null, "YOU'VE JUST LOST THE GAME. <3");
+                break;
             case CMD_SC_WIN:
+                mView.showInfo(null, "You won! Congrats!");
                 break;
                 
             case INFO_END_GAME:
-            	mView.showInfo(null, "Game is over. Good bye!");
-            	stop();
+                if(cmd.getArgs().length == 2 && obj != null && obj instanceof ArrayList<?>) {
+                    Object obj2 = cmd.getArgs()[1];
+                    if(obj2 != null && obj2 instanceof ArrayList<?>) {
+                        ArrayList<Integer> winnerList = (ArrayList<Integer>) obj;
+                        ArrayList<Integer> loserList = (ArrayList<Integer>) obj2;
+                        mView.showEnding(winnerList, loserList);
+                        stop();
+                    }
+                }
                 break;
             case INFO_GOT_A_NEW_OBJ_CARD:
             	mView.showInfo(curUser, "Draw new object card!");
@@ -269,7 +278,7 @@ public class GameController implements OnReceiveListener {
             	}
                 break;
             case INFO_LOSER:
-            	mView.showInfo(curUser, "Game over.");
+            	mView.showInfo(curUser, "This player lost the game");
                 break;
             case INFO_NOISE:
             	if(obj != null && obj instanceof Point) {
@@ -309,6 +318,7 @@ public class GameController implements OnReceiveListener {
                 }
                 break;
             case INFO_WINNER:
+                mView.showInfo(curUser, "This player won the game!");
                 break;
             default:
                 break;
