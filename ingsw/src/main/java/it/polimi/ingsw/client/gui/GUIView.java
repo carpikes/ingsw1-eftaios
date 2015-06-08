@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.GameViewCommand;
 
@@ -214,8 +215,7 @@ public class GUIView extends View {
 	/** WARNING user can be null!!! */
 	@Override
 	public void showNoiseInSector(String user, Point p) {
-		// TODO Auto-generated method stub
-		
+		// TODO 
 	}
 
     /* (non-Javadoc)
@@ -223,7 +223,6 @@ public class GUIView extends View {
      */
     @Override
     public void onMyTurn() {
-        // TODO Auto-generated method stub
         
     }
 
@@ -232,7 +231,6 @@ public class GUIView extends View {
      */
     @Override
     public void onOtherTurn(String username) {
-        // TODO Auto-generated method stub
         
     }
 

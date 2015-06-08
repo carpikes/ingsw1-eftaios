@@ -287,7 +287,7 @@ public class GameController implements OnReceiveListener {
                 
                 break;
             case INFO_SILENCE:
-                mView.showInfo(curUser, "Silence. Not implemented yet"); // TODO here
+                mView.showInfo(curUser, "Silence");
                 break;
             case INFO_SPOTLIGHT:
                 mView.showInfo(curUser, "Spotlight. Not implemented yet"); // TODO here

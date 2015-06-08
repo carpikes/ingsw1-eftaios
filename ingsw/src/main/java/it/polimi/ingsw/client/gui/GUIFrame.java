@@ -55,7 +55,7 @@ public class GUIFrame extends JFrame {
     private static final int CARD_HGAP = 5;
     private static final int CARD_VGAP = 5;
     
-    private static final int USERS_HGAP = 5;    
+    private static final int USERS_HGAP = 10;    
 
     private static final int CARD_WIDTH = WIDTH_RIGHT - 2 * PANEL_MARGIN - 2 * CARD_HGAP;
     private static final int CARD_HEIGHT = CARD_WIDTH * 745 / 490; // values based on image size
@@ -118,7 +118,9 @@ public class GUIFrame extends JFrame {
             EnemyInfo[] players = startInfo.getPlayersList();
             userLabel = new JLabel[ players.length ];
             
-            JPanel listOfUsers = new JPanel( new FlowLayout() );
+            FlowLayout flow = new FlowLayout();
+            flow.setHgap( USERS_HGAP );
+            JPanel listOfUsers = new JPanel( flow );
             
             for( int i = 0; i < players.length; ++i ) {
                 userLabel[i] = new JLabel(  );
@@ -126,7 +128,7 @@ public class GUIFrame extends JFrame {
                 
                 if( i == startInfo.getId() ) {
                     userLabel[i].setForeground( Color.RED );
-                    txt += (startInfo.isHuman()) ? "** HUMAN **" : "** ALIEN **";
+                    txt += (startInfo.isHuman()) ? "** HUMAN ** " : "** ALIEN ** ";
                 } else {
                     userLabel[i].setForeground( Color.BLACK );
                 }
