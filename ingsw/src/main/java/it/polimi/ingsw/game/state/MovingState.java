@@ -100,8 +100,8 @@ public class MovingState extends PlayerState {
     private PlayerState drawHatchCard( ) {
         GameMap map = mGameState.getMap();
 
+        map.useHatch(mGamePlayer.getCurrentPosition());
         // set current cell as no more accessible
-        map.setType( mGamePlayer.getCurrentPosition(), SectorBuilder.USED_HATCH );
         mGameState.broadcastPacket( new GameCommand( GameOpcode.INFO_USED_HATCH, mGamePlayer.getCurrentPosition() ) );
 
         return HatchCardBuilder.getRandomCard(mGameState).getNextState( );

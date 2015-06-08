@@ -32,14 +32,16 @@ public class GameMap implements Serializable {
     public static final int ROWS = 14;
     public static final int COLUMNS = 23;
     
-    private Sector[][] board;
-    private final Point humanStartingPoint, alienStartingPoint;
+    private Sector[][] mBoard;
+    private final Point mHumanStartingPoint, mAlienStartingPoint;
+    private int mNumberOfHatches = 0;
     
     // You can only construct a new map either from a .map file or by random generation 
-    private GameMap( String name, Sector[][] board, Point human, Point alien) {
-        this.board = board;
-        this.humanStartingPoint = human;
-        this.alienStartingPoint = alien;
+    private GameMap( String name, Sector[][] board, Point human, Point alien, int numberOfHatches) {
+        mBoard = board;
+        mHumanStartingPoint = human;
+        mAlienStartingPoint = alien;
+        mNumberOfHatches = numberOfHatches;
     } 
 
     public static GameMap createFromMapFile( File file ) throws IOException {
@@ -51,15 +53,27 @@ public class GameMap implements Serializable {
         Iterator<String> iterator = lines.iterator();
         
         int i = 0, j = 0;
+        int numHatches = 0;
         title = iterator.next();
         while ( iterator.hasNext() ) {
             String[] currentLine = iterator.next().split(" ");
             for( j = 0; j < currentLine.length; ++j ) {
                 sectors[i][j] = SectorBuilder.getSectorFor(Integer.parseInt(currentLine[j]));
-                if(sectors[i][j].getId() == SectorBuilder.ALIEN)
+                switch(sectors[i][j].getId()) {
+                case SectorBuilder.ALIEN:
+                    if(alien != null)
+                        throw new SectorException("Aliens must have only one starting point");
                     alien = new Point(j,i);
-                else if(sectors[i][j].getId() == SectorBuilder.HUMAN)
+                    break;
+                case SectorBuilder.HUMAN:
+                    if(human != null)
+                        throw new SectorException("Humans must have only one starting point");
                     human = new Point(j,i);
+                    break;
+                case SectorBuilder.HATCH:
+                    numHatches++;
+                    break;
+                }
             }
             ++i;
         }
@@ -70,11 +84,11 @@ public class GameMap implements Serializable {
         if( i != ROWS || j != COLUMNS )
             throw new SectorException("Missing sector");
         
-        return new GameMap(title, sectors, human, alien);
+        return new GameMap(title, sectors, human, alien, numHatches);
     }
     
     public Sector getSectorAt( int x, int y ) {
-        return board[y][x];
+        return mBoard[y][x];
     }
     
     public Sector getSectorAt( Point point ) {
@@ -91,8 +105,8 @@ public class GameMap implements Serializable {
 
     public Point getStartingPoint(boolean isHuman) {
         if(isHuman)
-            return humanStartingPoint;
-        return alienStartingPoint;
+            return mHumanStartingPoint;
+        return mAlienStartingPoint;
     }
 
     public static String[] getListOfMaps() {
@@ -119,16 +133,6 @@ public class GameMap implements Serializable {
             throw new RuntimeException("Invalid map id");
         
         return GameMap.createFromMapFile(new File(mapFiles[mapId]));
-    }
-
-    /**
-     * @param point 
-     * @param usedHatch
-     */
-    public void setType(Point point, int type) {
-        if( isWithinBounds(point) ) {
-            board[point.y][point.x] = SectorBuilder.getSectorFor(type);
-        }
     }
 
     /**
@@ -223,11 +227,15 @@ public class GameMap implements Serializable {
         return String.format("%c%03d", x + 'A', y + 1);
     }
 
-    /**
-     * @return
-     */
     public int getRemainingHatches() {
-        // TODO Auto-generated method stub
-        return 0;
+        return mNumberOfHatches;
+    }
+    
+    public void useHatch(Point pos) {
+        if(!isWithinBounds(pos) || mNumberOfHatches <= 0 || mBoard[pos.y][pos.x].getId() != SectorBuilder.HATCH)
+            throw new RuntimeException("Cannot use an hatch that does not exist.");
+        
+        mBoard[pos.y][pos.x] = SectorBuilder.getSectorFor(SectorBuilder.USED_HATCH);
+        mNumberOfHatches--;
     }
 }

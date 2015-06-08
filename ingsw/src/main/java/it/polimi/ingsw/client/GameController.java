@@ -302,6 +302,11 @@ public class GameController implements OnReceiveListener {
                 }
                 break;
             case INFO_USED_HATCH:
+                if(obj != null && obj instanceof Point) {
+                    mGameInfo.getMap().useHatch((Point) obj);
+                    // TODO mView.notifyMapUpdate();
+                    mView.showInfo(curUser, "Used a hatch");
+                }
                 break;
             case INFO_WINNER:
                 break;
