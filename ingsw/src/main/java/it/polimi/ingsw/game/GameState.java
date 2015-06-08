@@ -42,17 +42,25 @@ import java.util.logging.Logger;
 public class GameState {
     private static final Logger LOG = Logger.getLogger(GameState.class.getName());
     
+    /** Game Manager */
     private final GameManager mGameManager;
     
+    /** Input and output queue */
     private final Queue<GameCommand> mInputQueue;
     private final Queue<Map.Entry<Integer,GameCommand>> mOutputQueue;
     
+    /** Game map */
     private final GameMap mMap;
+    
+    /** Players in game */
     private ArrayList<GamePlayer> mPlayers;
+    
+    /** Current turn id */
     private int mTurnId = 0;
 
-    private int mNumberRoundsPlayed;
-
+    /** Number of rounds played */
+    private int mRoundsPlayed = 0;
+    
     /**
      * Constructs a new game.
      * @param gameManager The GameManager that created this game.
@@ -115,7 +123,7 @@ public class GameState {
             moveToNextPlayer();
     }
     
-    
+    /** Flush the output queue */
     public void flushOutputQueue() {
         if( !mOutputQueue.isEmpty() ) {
             
@@ -128,10 +136,7 @@ public class GameState {
             mOutputQueue.clear();
         }
     }
-    
-    // TODO: refactoring of the following methods
-    /* -----------------------------------------------*/
-    
+
     /**
      * Method invoked when a player draws an object card.  
      * @return Next PlayerState for current player
@@ -223,29 +228,41 @@ public class GameState {
     
     /** End game conditions: [<end|cont>/<who win?>]
      * 
-     * (1) [END/ALIENS] If aliens eliminate last living human
-     * (2) [END/ALIENS] No spaceships left && some humans are still in game
-     * (3) [END/ALIENS] 39 rounds have been played before any human escape.
-     * (4) [CONT/HUMAN] Every human that leaves the spaceship
-     * (5) [END/ALIENS] Players connected <= 2
+     * (1) [ALIENS] If aliens eliminate last living human
+     * (2) [ALIENS] No spaceships left && some humans are still in game
+     * (3) [ALIENS] 39 rounds have been played before any human escape.
+     * (4) [?ALIVE] Players connected <= 2
      * 
      * @param justKilledHumans True if this function is called after an attack and there are killed humans
      */
     private void checkEndGame(boolean justKilledHumans) {
+        boolean allWinnersMode = false; // set to true if inGamePlayers < MIN PLAYERS
         int aliveHumans = 0;
+        int inGamePlayers = 0;
         int remainingHatches = mMap.getRemainingHatches();
+        
         for(GamePlayer p : mPlayers)
-            if(p.isHuman() && p.stillInGame())
-                aliveHumans++;
+            if(p.stillInGame()) {
+                inGamePlayers++;
+                if(p.isHuman())
+                    aliveHumans++;
+            }
         
+        if(inGamePlayers < Config.GAME_MIN_PLAYERS)
+            allWinnersMode = true;
         
-        // (1) + (2) + (3)
-        if((aliveHumans == 0 && justKilledHumans) || (aliveHumans > 0 && remainingHatches == 0) || (mNumberRoundsPlayed >= Config.MAX_NUMBER_OF_TURNS)) {
+        if((aliveHumans == 0 && justKilledHumans) ||                // (1)
+           (aliveHumans > 0 && remainingHatches == 0) ||            // (2)
+           (mRoundsPlayed > Config.MAX_NUMBER_OF_TURNS) ||    // (3)
+           (inGamePlayers < Config.GAME_MIN_PLAYERS)) {             // (4)
             
-            for(int i = 0; i < mPlayers.size(); i++) {
-                GamePlayer p = mPlayers.get(i);
+            // So, the game will end.
+            // Let's gather some stats
+            
+            // Move all players either into WinnerState or LoserState 
+            for(GamePlayer p : mPlayers) {
                 
-                if((p.stillInGame() && p.isAlien()))
+                if((p.stillInGame() && (p.isAlien() || allWinnersMode)))
                     p.setCurrentState(new WinnerState(this));
                 else if(p.getCurrentState() instanceof AwayState || (p.isHuman() && p.stillInGame()))
                     p.setCurrentState(new LoserState(this));
@@ -253,6 +270,7 @@ public class GameState {
                     throw new RuntimeException("Unknown player state. What's happening?");
             }
             
+            // Fill this two arrays
             ArrayList<Integer> winnersList = new ArrayList<>();
             ArrayList<Integer> loserList = new ArrayList<>();
             
@@ -304,8 +322,13 @@ public class GameState {
         
         broadcastPacket( new GameCommand( GameOpcode.INFO_SPOTLIGHT, caughtPlayers, playerPositions ) );
     }
+    
     /* -----------------------------------------------*/
     
+    /** Read a packet from the input queue
+     * 
+     * @return The read packet
+     */
     public GameCommand getPacketFromQueue( ) {
         synchronized(mInputQueue) {
             return mInputQueue.poll();
@@ -313,6 +336,8 @@ public class GameState {
     }
     
     public synchronized GamePlayer getCurrentPlayer() {
+        if(mTurnId == -1)
+            throw new RuntimeException("CurrentPlayer == -1. What's happening?");
         return mPlayers.get( mTurnId ); 
     }
 
@@ -346,26 +371,18 @@ public class GameState {
                 player.getMaxMoves(), player.isHuman()
         );
     }
-	
-	public boolean areTherePeopleStillPlaying() {
-		int counter = 0;
-		
-		for( GamePlayer p : mPlayers )
-			if( p.stillInGame() )
-				++counter;
-		
-		return counter >= Config.GAME_MIN_PLAYERS;
-	}
-	
-	public void moveToNextPlayer() {
-		if( areTherePeopleStillPlaying() ) {
-			mTurnId = findNextPlayer();
-			getCurrentPlayer().setCurrentState( new StartTurnState( this ) );
-		} else {
-			// just one or zero players left -> the game has ended
-			checkEndGame(false);
-		}
-	}
+    
+    public void moveToNextPlayer() {
+        int lastTurnId = mTurnId;
+        
+        mTurnId = findNextPlayer();
+        
+        if(mTurnId < lastTurnId || mTurnId == -1) {
+            mRoundsPlayed ++;
+            checkEndGame(false);
+        } else 
+            getCurrentPlayer().setCurrentState( new StartTurnState( this ) );
+    }
 
     private int findNextPlayer() {
         for( int currId = mTurnId + 1; currId < mTurnId + mPlayers.size(); ++currId ) {
@@ -373,7 +390,7 @@ public class GameState {
                 return currId % mPlayers.size();
         }
 
-        throw new RuntimeException("No players. What's happening?");
+        return -1;
     }
     
     public void broadcastPacket( GameCommand pkt ) {
@@ -421,9 +438,7 @@ public class GameState {
             player.setCurrentState(new AwayState(this));
         }
         
-        if(!areTherePeopleStillPlaying()) {
-            checkEndGame(false);
-        }
+        checkEndGame(false);
     }
 
 }

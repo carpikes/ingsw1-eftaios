@@ -45,24 +45,6 @@ public class GamePlayer {
     /** ID in game */
     private int mId;
 
-    /** Number of current move */
-    private int moveCounter;
-
-    /** 
-     * Get current move number.
-     * @return Move number
-     */
-    public int getMoveCounter() {
-        return moveCounter;
-    }
-
-    /** 
-     * Increment move number
-     */
-    public void incrementMoveCounter( ) {
-        ++moveCounter;
-    }
-
     /**
      * Create a new player for the game
      * @param id ID in game
@@ -77,8 +59,7 @@ public class GamePlayer {
         role = playerRole;
 
         mPosition = startPosition; 
-        mId = id; 
-        moveCounter = 0;
+        mId = id;
     }
 
     /**

@@ -23,14 +23,9 @@ public class StartTurnState extends PlayerState {
         LOG.log(Level.FINE, "Constructor");
 
         mGamePlayer.resetValues();
-        mGamePlayer.incrementMoveCounter();
-
-        if( mGamePlayer.getMoveCounter() >= Config.MAX_NUMBER_OF_TURNS ) {
-            //state.endGame();
-        } else {
-            // tell everybody I'm starting playing!
-            state.broadcastPacket( new GameCommand(GameOpcode.INFO_START_TURN, state.getTurnId()) );
-        }
+        
+        // tell everybody I'm starting playing!
+        state.broadcastPacket( new GameCommand(GameOpcode.INFO_START_TURN, state.getTurnId()) );
     }
 
     /* (non-Javadoc)

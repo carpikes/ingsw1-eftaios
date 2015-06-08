@@ -19,10 +19,9 @@ public class Config {
     
     public static final int GAME_MAP_WIDTH                  = 23;
     public static final int GAME_MAP_HEIGHT                 = 14;
-    public static final int MAX_NUMBER_OF_TURNS            = 40;
     
+    public static final int MAX_NUMBER_OF_TURNS             = 39;
     public static final int MAX_NUMBER_OF_OBJ_CARDS         = 3;
-    
     public static final int MAX_HUMAN_MOVES                 = 1;
     public static final int MAX_HUMAN_ADRENALINE_MOVES      = 2;
     public static final int MAX_ALIEN_MOVES                 = 2;
