@@ -14,7 +14,7 @@ import java.io.File;
 public enum CardButtons {
     ADRENALINE( ObjectCardBuilder.ADRENALINE_CARD, new File("img/adrenaline.png"), true),
     ATTACK( ObjectCardBuilder.ATTACK_CARD, new File("img/attack.png"), true),
-    DEFENSE( ObjectCardBuilder.DEFENSE_CARD, new File("img/defense.png"), true),
+    DEFENSE( ObjectCardBuilder.DEFENSE_CARD, new File("img/defense.png"), false),
     SEDATIVES( ObjectCardBuilder.SEDATIVES_CARD, new File("img/sedatives.png"), true),
     SPOTLIGHT( ObjectCardBuilder.SPOTLIGHT_CARD, new File("img/spotlight.png"), true),
     TELEPORT( ObjectCardBuilder.TELEPORT_CARD, new File("img/teleport.png"), true),

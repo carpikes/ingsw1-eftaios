@@ -117,7 +117,8 @@ public class MapCanvasPanel extends JPanel {
                 mClickedOnCell = true;
                 
                 if(mCurHexCoords != null) {
-                    mPlayerPosition = mCurHexCoords;
+                    if( mEnabledCells != null )
+                        mPlayerPosition = mCurHexCoords;
                     mCurHexCoords = null;
                     mController.onMapPositionChosen(mPlayerPosition);
                 }
