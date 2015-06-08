@@ -40,6 +40,6 @@ public class Config {
     
     // Client configuration here
     public static final long CLIENT_TCP_PING_TIME           = 5000;
-	
+    
     private Config() {}
 }

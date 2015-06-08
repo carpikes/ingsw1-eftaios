@@ -137,10 +137,12 @@ public class GameManager {
      */
     public synchronized void update() {
         
+        // check connection for every client
         for(Client c : mClients)
             if(c != null)
                 c.update();
         
+        // remove client if needed
         while(!mClientsToRemove.isEmpty()) {
             Client c = mClientsToRemove.remove();
             removeClient(c);
@@ -158,34 +160,41 @@ public class GameManager {
                 }
             }
             
+            // map not chosen yet
             if(mChosenMapId == null)
                 return;
             
-            // Let the game begin
-            LOG.log(Level.INFO, "Players ready! Rolling the dice and starting up...");
-
-            Collections.shuffle(mClients);
-            
-            mState = new GameState(this, mChosenMapId);
-            
-            LOG.log(Level.INFO, mClients.get(0).getUsername() + " is the first player");
-            
-            // Send infos to all players
-            EnemyInfo[] userList = new EnemyInfo[mClients.size()];
-            
-            for(int i = 0; i < mClients.size(); i++)
-                userList[i] = new EnemyInfo(mClients.get(i).getUsername());
-            
-            for(int i = 0; i < mClients.size(); i++) {
-                GameStartInfo info = mState.buildInfoContainer(userList, i);
-                mClients.get(i).sendPacket(new GameCommand(GameOpcode.CMD_SC_RUN, info));
-            }
-
-            mIsRunning = true;
+            // game is ready to start
+            startGame();
         } else {
             if(mState != null)
+                // update game
                 mState.update();
         }
+    }
+
+    private void startGame() {
+        // Let the game begin
+        LOG.log(Level.INFO, "Players ready! Rolling the dice and starting up...");
+
+        Collections.shuffle(mClients);
+        
+        mState = new GameState(this, mChosenMapId);
+        
+        LOG.log(Level.INFO, mClients.get(0).getUsername() + " is the first player");
+        
+        // Send infos to all players
+        EnemyInfo[] userList = new EnemyInfo[mClients.size()];
+        
+        for(int i = 0; i < mClients.size(); i++)
+            userList[i] = new EnemyInfo(mClients.get(i).getUsername());
+        
+        for(int i = 0; i < mClients.size(); i++) {
+            GameStartInfo info = mState.buildInfoContainer(userList, i);
+            mClients.get(i).sendPacket(new GameCommand(GameOpcode.CMD_SC_RUN, info));
+        }
+
+        mIsRunning = true;
     }
 
     /** Send a packet without arguments to all players connected

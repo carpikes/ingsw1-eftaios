@@ -13,6 +13,7 @@ import it.polimi.ingsw.game.player.GamePlayer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Michele
@@ -52,7 +53,7 @@ public abstract class PlayerState {
         return nextState;
     }
         
-    protected void addObjectCardIfPossible(ArrayList<GameViewCommand> availableCommands) {
+    protected void addObjectCardIfPossible(List<GameViewCommand> availableCommands) {
         if(mGamePlayer.isObjectCardUsed() || mGamePlayer.getNumberOfUsableCards() == 0 || !mGamePlayer.isHuman())
             return;
         

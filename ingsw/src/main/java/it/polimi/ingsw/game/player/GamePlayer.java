@@ -60,7 +60,7 @@ public class GamePlayer {
         mPosition = startPosition; 
         mId = id; 
     }
-    
+
     /**
      * Get current player state
      * @return Player state
@@ -90,7 +90,11 @@ public class GamePlayer {
      * @param defense The value to use
      */
     public void setDefense(boolean defense) {
-        this.defense = defense;
+        // only humans can activate a defense system!
+        if( this.isHuman() )
+            this.defense = defense;
+        else
+            this.defense = false;
     }
 
     /**
@@ -257,7 +261,7 @@ public class GamePlayer {
      * @param adrenaline The value to use
      */
     public void setAdrenaline(boolean adrenaline) {
-        if( role instanceof Human) 
+        if( role instanceof Human ) 
             ((Human) role).setAdrenaline(adrenaline);
     }
 
@@ -360,5 +364,12 @@ public class GamePlayer {
         
         return cardNames;
     }
-
+    
+    public boolean getAdrenaline() {
+        if( role instanceof Human ) {
+            return ((Human)role).hasUsedAdrenaline();
+        } else {
+            return false;
+        }
+    }
 }
