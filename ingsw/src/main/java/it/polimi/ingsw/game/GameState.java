@@ -309,18 +309,16 @@ public class GameState {
         ArrayList<Point> sectors = getMap().getNeighbourAccessibleSectors(point, getCurrentPlayer().isHuman());
         sectors.add(point);
         
-        ArrayList<Integer> caughtPlayers = new ArrayList<>();
-        ArrayList<Point> playerPositions = new ArrayList<>();
-        
+        Point[] caughtPlayers = new Point[mPlayers.size()];
         for(int i = 0; i < mPlayers.size(); i++) {
             GamePlayer player = mPlayers.get(i);
-            if( sectors.contains( player.getCurrentPosition() ) ) {
-                caughtPlayers.add(i);
-                playerPositions.add( player.getCurrentPosition() );
-            }
+            caughtPlayers[i] = null;
+            if(sectors.contains( player.getCurrentPosition()))
+                caughtPlayers[i] = player.getCurrentPosition();
+            
         }
         
-        broadcastPacket( new GameCommand( GameOpcode.INFO_SPOTLIGHT, caughtPlayers, playerPositions ) );
+        broadcastPacket( new GameCommand( GameOpcode.INFO_SPOTLIGHT, caughtPlayers) );
     }
     
     /* -----------------------------------------------*/

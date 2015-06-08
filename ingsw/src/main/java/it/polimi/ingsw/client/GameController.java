@@ -280,13 +280,6 @@ public class GameController implements OnReceiveListener {
             case INFO_LOSER:
             	mView.showInfo(curUser, "This player lost the game");
                 break;
-            case INFO_NOISE:
-            	if(obj != null && obj instanceof Point) {
-            		Point p = (Point) obj;
-            		
-            		mView.showNoiseInSector(curUser, p);
-            	}
-                break;
             case INFO_OBJ_CARD_USED:
                 if(cmd.getArgs().length == 2 && cmd.getArgs()[1] instanceof String) {
                     String name = (String) cmd.getArgs()[1];
@@ -295,11 +288,33 @@ public class GameController implements OnReceiveListener {
                     mView.showInfo(curUser, "Used a weird object card without a valid name");
                 
                 break;
-            case INFO_SILENCE:
-                mView.showInfo(curUser, "Silence. Not implemented yet"); // TODO here
-                break;
             case INFO_SPOTLIGHT:
-                mView.showInfo(curUser, "Spotlight. Not implemented yet"); // TODO here
+                if(obj != null && obj instanceof Point[]) {
+                    Point[] playerPositions = (Point[]) obj;
+                    int nPlayers = 0;
+                    for(int i = 0; i<playerPositions.length;i++)
+                        if (playerPositions[i] != null)
+                            nPlayers++;
+                    
+                    mView.showInfo(curUser, "Used spotlight:" + nPlayers + " player(s) found."); // TODO here
+                    
+                    for(int i = 0; i<playerPositions.length;i++) {
+                        Point p = (Point) playerPositions[i];
+                        if(p != null)
+                            mView.showInfo(null, " -> " + mGameInfo.getPlayersList()[i].getUsername() + " is in sector " + mGameInfo.getMap().pointToString(p));
+                    }
+                }
+                break;
+            case INFO_SILENCE:
+                mView.showInfo(curUser, "Extracted dangerous card: Silence."); // TODO here
+                break;
+            case INFO_NOISE:
+                mView.showInfo(curUser, "Extracted dangerous card: Noise."); 
+                if(obj != null && obj instanceof Point) {
+                    Point p = (Point) obj;
+                    
+                    mView.showNoiseInSector(curUser, p);
+                }
                 break;
             case INFO_START_TURN:
                 if(obj != null && obj instanceof Integer) {
