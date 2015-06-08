@@ -102,7 +102,7 @@ public class GameState {
         // broadcast messages at the end of the turn
         flushOutputQueue();
         
-        if(nextState != null && nextState instanceof NotMyTurnState)
+        if(nextState != null && (nextState instanceof NotMyTurnState || !nextState.stillInGame()))
         	moveToNextPlayer();
     }
     
@@ -180,16 +180,18 @@ public class GameState {
      */
     public void attack(Point currentPosition) {
     	ArrayList<Integer> killedPlayers = new ArrayList<>();
+    	ArrayList<Integer> defensePlayers = new ArrayList<>();
     	
     	for(int i = 0; i < mPlayers.size(); i++) {
     	    GamePlayer player = mPlayers.get(i);
     		if( player != getCurrentPlayer() && player.getCurrentPosition().equals(currentPosition) ) {
     			if( player.isDefenseEnabled() ) {
+    			    defensePlayers.add(i);
     			    // TODO: VUOI AVVISARE in modo speciale il giocatore?
     			    player.dropDefense();
     			} else {
                     player.setCurrentState( new LoserState(this, player) );        
-                    killedPlayers.add( i ); 
+                    killedPlayers.add(i); 
     			}
     		}
     	}
@@ -202,7 +204,7 @@ public class GameState {
     		}
     	}
     	
-    	broadcastPacket( new GameCommand(GameOpcode.INFO_PLAYER_ATTACKED, currentPosition, killedPlayers) );
+    	broadcastPacket( new GameCommand(GameOpcode.INFO_PLAYER_ATTACKED, currentPosition, killedPlayers, defensePlayers) );
     }
     
     /**

@@ -243,6 +243,7 @@ public class GameController implements OnReceiveListener {
             case CMD_SC_UPDATE_LOCAL_INFO:
                 break;
             case CMD_SC_WIN:
+                mView.showInfo(curUser, "Won the game");
                 break;
                 
             case INFO_END_GAME:
@@ -256,16 +257,23 @@ public class GameController implements OnReceiveListener {
             	mView.showInfo(curUser, "Player has moved");
                 break;
             case INFO_PLAYER_ATTACKED:
-            	if(cmd.getArgs().length == 2 && obj instanceof Point && cmd.getArgs()[1] instanceof ArrayList<?>) {
+            	if(cmd.getArgs().length == 3 && obj instanceof Point && cmd.getArgs()[1] instanceof ArrayList<?> && cmd.getArgs()[2] instanceof ArrayList<?>) {
             		Point p = (Point) obj;
             		ArrayList<Integer> killedList = (ArrayList<Integer>) cmd.getArgs()[1];
+            		ArrayList<Integer> defendedList = (ArrayList<Integer>) cmd.getArgs()[2];
             		mView.showInfo(curUser, "Player just attacked in sector " + mGameInfo.getMap().pointToString(p));
             		
-            		if(killedList == null || killedList.size() == 0)
+            		if(killedList.size() == 0)
             			mView.showInfo(curUser, "Nobody has been killed");
             		else
             			for(Integer i : killedList)
             				mView.showInfo(curUser, mGameInfo.getPlayersList()[i].getUsername() + " has been killed");
+            		
+                    if(defendedList.size() == 0)
+                        mView.showInfo(curUser, "Nobody has defended himself");
+                    else
+                        for(Integer i : defendedList)
+                            mView.showInfo(curUser, mGameInfo.getPlayersList()[i].getUsername() + " has defended himself successfully.");
             	}
                 break;
             case INFO_LOSER:
