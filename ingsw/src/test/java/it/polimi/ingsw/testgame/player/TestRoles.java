@@ -3,10 +3,11 @@
  */
 package it.polimi.ingsw.testgame.player;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleBuilder;
+import it.polimi.ingsw.game.player.TooFewPlayersException;
 
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,11 @@ public class TestRoles {
         // test for odd and even numbers
         testRoleFactoryHelper( 5 );
         testRoleFactoryHelper( 6 );
+    }
+    
+    @Test(expected=TooFewPlayersException.class)
+    public void tooFewPlayers() {
+        RoleBuilder.generateRoles(0);
     }
     
     private void testRoleFactoryHelper( int numberOfPlayers ) {
