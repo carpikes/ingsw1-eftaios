@@ -1,14 +1,13 @@
 package it.polimi.ingsw.game.player;
 
-import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.card.object.DefenseCard;
 import it.polimi.ingsw.game.card.object.ObjectCard;
-import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
-import it.polimi.ingsw.game.state.StartTurnState;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class representing an in-game player. It contains all the cards, the role, the current state...
@@ -16,7 +15,7 @@ import java.util.ArrayList;
  * @since  May 19, 2015
  */
 public class GamePlayer {
-
+    
     /** Position on board */
     private Point mPosition;
 
@@ -30,8 +29,8 @@ public class GamePlayer {
     private boolean drawDangerousCard;
 
     /** Object cards the player owns */
-    private ArrayList < ObjectCard > mObjectCards;
-    private ArrayList < ObjectCard > mUsableObjectCards;
+    private List < ObjectCard > mObjectCards;
+    private List < ObjectCard > mUsableObjectCards;
 
     /** Alien or human? */
     private final Role role;
@@ -47,6 +46,24 @@ public class GamePlayer {
 
     /** Number of current move */
     private int moveCounter;
+    
+    /**
+     * Create a new player for the game
+     * @param id ID in game
+     * @param playerRole Role of the player (alien or human)
+     * @param game The game he's playing
+     * @param isMyTurn Is he the first player?
+     */
+    public GamePlayer( int id, Role playerRole, Point startPosition ) {
+        resetValues();
+        mObjectCards = new ArrayList<>();
+        mUsableObjectCards = new ArrayList<>();
+        role = playerRole;
+
+        mPosition = startPosition; 
+        mId = id; 
+        moveCounter = 0;
+    }
 
     /** 
      * Get current move number.
@@ -61,24 +78,6 @@ public class GamePlayer {
      */
     public void incrementMoveCounter( ) {
         ++moveCounter;
-    }
-
-    /**
-     * Create a new player for the game
-     * @param id ID in game
-     * @param playerRole Role of the player (alien or human)
-     * @param game The game he's playing
-     * @param isMyTurn Is he the first player?
-     */
-    public GamePlayer( int id, Role playerRole, Point startPosition, boolean isMyTurn) {
-        resetValues();
-        mObjectCards = new ArrayList<>();
-        mUsableObjectCards = new ArrayList<>();
-        role = playerRole;
-
-        mPosition = startPosition; 
-        mId = id; 
-        moveCounter = 0;
     }
 
     /**
@@ -314,7 +313,7 @@ public class GamePlayer {
     public ObjectCard useObjectCard(int index) {
         ObjectCard c = mUsableObjectCards.get(index);
         if( c == null || !mObjectCards.remove(c) || !mUsableObjectCards.remove(c))
-            throw new RuntimeException("Invalid card. What's happening?");
+            throw new InvalidCardException("Invalid card. What's happening?");
         
         return c;
     }
@@ -370,7 +369,7 @@ public class GamePlayer {
         mUsableObjectCards.remove(c);
     }
     
-    private String[] cardsToString(ArrayList<ObjectCard> cards) {
+    private String[] cardsToString(List<ObjectCard> cards) {
         String[] cardNames = new String[cards.size()];
         
         for(int i = 0; i<cards.size(); i++) {

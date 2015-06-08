@@ -76,7 +76,7 @@ public class GameState {
         for(int i = 0;i<gameManager.getNumberOfClients(); i++) {
             Role role = roles.get(i);
             boolean isMyTurn = (i == mTurnId);
-            GamePlayer player = new GamePlayer(i, role, getMap().getStartingPoint(role instanceof Human), isMyTurn);
+            GamePlayer player = new GamePlayer(i, role, getMap().getStartingPoint(role instanceof Human));
             mPlayers.add(player);
             if(isMyTurn)
                 player.setCurrentState(new StartTurnState(this));
