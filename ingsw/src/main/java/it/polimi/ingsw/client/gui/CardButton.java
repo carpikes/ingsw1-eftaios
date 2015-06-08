@@ -80,7 +80,7 @@ public class CardButton extends JButton {
             
             setBorder(BorderFactory.createEmptyBorder());
             setContentAreaFilled(false);
-            setEnabled( false ); // this will be overwritten when entering using object card state
+            setEnabled( type.isEnabled() );
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Cannot create " + type.toString() + " card button. Please check your assets in img folder.");
         }

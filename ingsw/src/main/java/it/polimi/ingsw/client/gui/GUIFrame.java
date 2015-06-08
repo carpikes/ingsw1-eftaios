@@ -325,6 +325,7 @@ public class GUIFrame extends JFrame {
      */
     public void setCanSelectObjCard(boolean value) {
         // can select only valid cards
+        
         for( CardButton btn : cardButtons ) {
             if( value ) {
                 btn.setEnabled( btn.getType().isEnabled() );
