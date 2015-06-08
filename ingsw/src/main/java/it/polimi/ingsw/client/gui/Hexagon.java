@@ -35,6 +35,7 @@ public class Hexagon {
             case SectorBuilder.DANGEROUS:     mColor = new Color(150,150,150); break;
             case SectorBuilder.NOT_DANGEROUS: mColor = new Color(255,255,255); break;
             case SectorBuilder.HATCH:         mColor = new Color(47,53,87); break;
+            case SectorBuilder.USED_HATCH:    mColor = new Color(178,0,0); break;
             case SectorBuilder.HUMAN:         mColor = new Color(50,0,0); break;
             case SectorBuilder.NOT_VALID:     mColor = null; 
         }

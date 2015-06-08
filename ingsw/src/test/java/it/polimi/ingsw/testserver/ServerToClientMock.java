@@ -12,11 +12,11 @@ import java.util.Queue;
  * @since  May 18, 2015
  */
 
-public class ClientConnMock extends ClientConn {
+public class ServerToClientMock extends ClientConn {
 
     Queue<GameCommand> fakeIncomingPackets;
     
-    public ClientConnMock() {
+    public ServerToClientMock() {
         fakeIncomingPackets = new LinkedList<>();
     }
     

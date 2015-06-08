@@ -16,6 +16,8 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -296,10 +298,6 @@ public class GUIFrame extends JFrame {
         mMapCanvas.setEnabledCells(pnt);
     }
 
-    public void resetChosenMapCell() {
-        mMapCanvas.setEnabledCells(null);
-    }
-
     public void setPlayerPosition(Point startingPoint) {
         mMapCanvas.setPlayerPosition(startingPoint);
     }
@@ -370,12 +368,31 @@ public class GUIFrame extends JFrame {
      * 
      */
     public void resetViewStatus() {
-        enableMapCells( null );
+        enableMapCells( new HashSet<Point>() );
         setCanSelectObjCard( false );
         setAttackEnabled( false );
         setDiscardObjCardEnabled( false );
         setCanDrawDangerousCard( false );
         setEndTurnEnabled( false );
+    }
+
+    /**
+     * @param listOfCards
+     */
+    public void notifyObjectCardListChange(ArrayList<Integer> listOfCards) {
+        for( int i = 0; i < this.numberOfCardButtons; ++i ) {
+            try {
+                int idCard = listOfCards.get(i);
+                
+                for( CardButtons btn : CardButtons.values() ) {
+                    if( btn.getId() == idCard ) {
+                        cardButtons[i].changeTo( btn );
+                    }
+                }
+            } catch( IndexOutOfBoundsException e ) {
+                cardButtons[i].changeTo( CardButtons.NULL );
+            }
+        }
     }
 }
 

@@ -33,7 +33,7 @@ public class HatchCardBuilder {
         switch( generator.nextInt(HATCH_CARD_TYPES) ) {
         case GREEN_HATCH_CARD:        return new GreenHatchCard(state);
         case RED_HATCH_CARD:          return new RedHatchCard(state);
-        default:          throw new InvalidCardException("Unknown card");
+        default:                      throw new InvalidCardException("Unknown card");
         }
     }
 }

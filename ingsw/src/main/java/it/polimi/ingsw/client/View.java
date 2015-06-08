@@ -103,4 +103,10 @@ public abstract class View {
      * @param loserList
      */
     public abstract void showEnding(ArrayList<Integer> winnerList, ArrayList<Integer> loserList);
+
+    /**
+     * @param listOfCards
+     */
+    public abstract void notifyObjectCardListChange(ArrayList<Integer> listOfCards);
+        
 }

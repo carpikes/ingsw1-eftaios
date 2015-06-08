@@ -20,13 +20,13 @@ import javax.swing.JOptionPane;
  */
 public class GUIView extends View {
     private GUIFrame mMainFrame;
-    private  GameStartInfo gameInfo = null;
+    private GameStartInfo gameInfo = null;
     
     public GUIView(GameController controller) {
         super(controller);
         mMainFrame = new GUIFrame(controller);
     }
-    
+
     @Override
     public int askConnectionType(String[] params) {
         Object ret = JOptionPane.showInputDialog(null, "Choose a connection", "Connection type", 
@@ -137,7 +137,13 @@ public class GUIView extends View {
                 break;
                 
             case CMD_ENABLEMAPVIEW:
-                enableMap( (Point) c.getArgs()[0], (int) c.getArgs()[1] );
+                if( c.getArgs().length > 0) {
+                    // start from a point and choose a position within x moves
+                    enableMap( (Point) c.getArgs()[0], (int) c.getArgs()[1] ); 
+                } else {
+                    // choose any position
+                    enableMap();
+                }
                 break;
                 
             case CMD_ATTACK:
@@ -196,6 +202,10 @@ public class GUIView extends View {
     private void setCanSelectObjCard(boolean value) {
         mMainFrame.setCanSelectObjCard( value );
     }
+    
+    private void enableMap() {
+        mMainFrame.enableMapCells( null );
+    }
 
     private void enableMap( Point curPos, int maxMoves ) {
         Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves, gameInfo.isHuman());
@@ -223,7 +233,7 @@ public class GUIView extends View {
      */
     @Override
     public void onMyTurn() {
-        
+        mMainFrame.showInfo( null, "-- It's your turn! --" );
     }
 
     /* (non-Javadoc)
@@ -231,7 +241,7 @@ public class GUIView extends View {
      */
     @Override
     public void onOtherTurn(String username) {
-        
+        mMainFrame.showInfo( null, "-- It's " + username + "'s turn! --" );
     }
 
     /* (non-Javadoc)
@@ -251,5 +261,13 @@ public class GUIView extends View {
             ArrayList<Integer> loserList) {
         // TODO Auto-generated method stub
         
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#notifyObjectCardListChange(java.util.ArrayList)
+     */
+    @Override
+    public void notifyObjectCardListChange(ArrayList<Integer> listOfCards) {
+        mMainFrame.notifyObjectCardListChange(listOfCards);
     }
 }

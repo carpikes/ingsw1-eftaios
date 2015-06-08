@@ -263,4 +263,13 @@ public class CLIView extends View {
         }
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#notifyObjectCardListChange(java.util.ArrayList)
+     */
+    @Override
+    public void notifyObjectCardListChange(ArrayList<Integer> listOfCards) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

@@ -15,13 +15,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.File;
-import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -52,7 +49,7 @@ public class MapCanvasPanel extends JPanel {
     private int mCanvasWidth;
     private int mCanvasHeight;
 
-    private Set<Point> mEnabledCells = null;
+    private Set<Point> mEnabledCells = new HashSet<>();
 
     private boolean mClickedOnCell = false;
     
@@ -142,7 +139,7 @@ public class MapCanvasPanel extends JPanel {
                 Point cell = getCell(e.getPoint());
                 
                 synchronized(mRenderLoopMutex) {
-                    if(mEnabledCells != null && mEnabledCells.contains(cell))    
+                    if( mEnabledCells == null || (mEnabledCells != null && mEnabledCells.contains(cell)) )    
                         mCurHexCoords = cell;
                     else
                         mCurHexCoords = null;
@@ -201,7 +198,7 @@ public class MapCanvasPanel extends JPanel {
                 boolean isPlayerHere = p.equals(mPlayerPosition);
                 
                 boolean enabled;
-                if( mEnabledCells == null || !mEnabledCells.contains(p) )
+                if( mEnabledCells != null && !mEnabledCells.contains(p) )
                     enabled = false;
                 else
                     enabled = true;
@@ -223,7 +220,7 @@ public class MapCanvasPanel extends JPanel {
     public Point getChosenMapCell() {
         if(mClickedOnCell) {
             mClickedOnCell = false;
-            if(mEnabledCells != null && mEnabledCells.contains(mCurHexCoords))
+            if( mEnabledCells == null || (mEnabledCells != null && mEnabledCells.contains(mCurHexCoords)) )
                 return mCurHexCoords;
         }
         return null;

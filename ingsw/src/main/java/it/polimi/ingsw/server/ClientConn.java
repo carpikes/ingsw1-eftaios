@@ -28,7 +28,7 @@ public abstract class ClientConn implements Runnable {
      */
     public void setClient(Client client) {
         if(mClient != null)
-            throw new RuntimeException("This connection has a client yet");
+            throw new RuntimeException("This connection already has a client");
         mClient = client;
     }
     
