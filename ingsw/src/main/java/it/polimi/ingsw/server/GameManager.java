@@ -149,6 +149,7 @@ public class GameManager {
         }
         
         if(!mIsRunning) {
+            int mFinalConnClients = 0;
             // Game is ready but it is not running 
             for(Client client : mClients) {
                 if(!client.isConnected())
@@ -158,6 +159,7 @@ public class GameManager {
                     // Some slow users still haven't typed their name
                     return;
                 }
+                mFinalConnClients++;
             }
             
             // map not chosen yet
@@ -165,7 +167,10 @@ public class GameManager {
                 return;
             
             // game is ready to start
-            startGame();
+            if(mFinalConnClients >= Config.GAME_MIN_PLAYERS)
+                startGame();
+            else
+                shutdown();
         } else {
             if(mState != null)
                 // update game
@@ -248,11 +253,18 @@ public class GameManager {
         if(getNumberOfClients() - mAwayClients == 0)
             Server.getInstance().enqueueRemoveGame(this);
 
+        boolean canAskAtLeastOne = false;
         // Game is still alive
-        if(mustAskForMap && mClients.size() > 0)
-            askForMap(mClients.get(0));
+        if(mustAskForMap && mClients.size() > 0) {
+            for(Client c : mClients)
+                if(c.isConnected()) {
+                    askForMap(c);
+                    canAskAtLeastOne = true;
+                    break;
+                }
+        }
         
-        if(mIsRunning && mState != null)
+        if((mIsRunning && mState != null) || (!canAskAtLeastOne && mustAskForMap))
             mState.onPlayerDisconnect(index);
         
         LOG.log(Level.INFO, "Player disconnected. Game Running? " + String.valueOf(mIsRunning) + ". Clients connected: " + (getNumberOfClients() - mAwayClients));

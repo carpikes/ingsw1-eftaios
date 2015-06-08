@@ -381,12 +381,12 @@ public class GameState {
             }
         }
         
-        if(newTurnId <= lastTurnId) {
+        if(newTurnId <= lastTurnId)
             mRoundsPlayed ++;
-            checkEndGame(false);
-            if(newTurnId == -1)
-                return;
-        } 
+        
+        checkEndGame(false);
+        if(newTurnId == -1)
+            return;
         
         mTurnId = newTurnId;
         getCurrentPlayer().setCurrentState( new StartTurnState( this ) );
