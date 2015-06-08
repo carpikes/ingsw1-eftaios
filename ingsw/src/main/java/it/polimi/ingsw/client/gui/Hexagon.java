@@ -12,7 +12,7 @@ import java.awt.Polygon;
  *
  */
 public class Hexagon {
-    private static final Color PLAYER_ON = Color.RED;
+    private static final Color PLAYER_ON = Color.YELLOW;
     private Point mCenter;
     private double mSize;
     private Polygon mPath;
@@ -87,10 +87,8 @@ public class Hexagon {
             real = PLAYER_ON;
         
         if(!enabled) {
-            if(!playerOn) {
-                drawStroke = false;
-                real = new Color(real.getRed()/2, real.getGreen()/2, real.getBlue()/2, 0xa0);
-            }
+            drawStroke = false;
+            real = new Color(real.getRed()/2, real.getGreen()/2, real.getBlue()/2, 0xa0);
         } else if(mouseOnThis)
             real = Color.CYAN;
         

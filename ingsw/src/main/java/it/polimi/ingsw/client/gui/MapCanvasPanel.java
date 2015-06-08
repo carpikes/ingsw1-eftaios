@@ -119,8 +119,11 @@ public class MapCanvasPanel extends JPanel {
             public void mouseClicked(MouseEvent arg0) { 
                 mClickedOnCell = true;
                 
-                if(mCurHexCoords != null)
-                    mController.onMapPositionChosen(mCurHexCoords);
+                if(mCurHexCoords != null) {
+                    mPlayerPosition = mCurHexCoords;
+                    mCurHexCoords = null;
+                    mController.onMapPositionChosen(mPlayerPosition);
+                }
             }
 
             @Override
@@ -139,7 +142,7 @@ public class MapCanvasPanel extends JPanel {
                 Point cell = getCell(e.getPoint());
                 
                 synchronized(mRenderLoopMutex) {
-                    if(mEnabledCells == null || mEnabledCells.contains(cell))    
+                    if(mEnabledCells != null && mEnabledCells.contains(cell))    
                         mCurHexCoords = cell;
                     else
                         mCurHexCoords = null;
@@ -220,7 +223,7 @@ public class MapCanvasPanel extends JPanel {
     public Point getChosenMapCell() {
         if(mClickedOnCell) {
             mClickedOnCell = false;
-            if(mCurHexCoords != null && (mEnabledCells == null || mEnabledCells.contains(mCurHexCoords)))
+            if(mEnabledCells != null && mEnabledCells.contains(mCurHexCoords))
                 return mCurHexCoords;
         }
         return null;

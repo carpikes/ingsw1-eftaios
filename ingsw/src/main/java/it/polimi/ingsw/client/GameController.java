@@ -83,10 +83,6 @@ public class GameController implements OnReceiveListener {
         }).start();
     }
     
-    private void handleCommands( ArrayList<GameViewCommand> cmd ) {
-        
-    }
-    
     
     protected void enqueueViewCommand(ArrayList<GameViewCommand> arrayList) {
         try {
