@@ -23,8 +23,8 @@ import java.awt.Point;
  */
 public class NoiseInAnySectorState extends PlayerState {
 	private static final Logger LOG = Logger.getLogger(NoiseInAnySectorState.class.getName());
-    public NoiseInAnySectorState(GameState state, GamePlayer player) {
-        super(state, player);
+    public NoiseInAnySectorState(GameState state) {
+        super(state);
 
         LOG.log(Level.FINE, "Constructor");
         buildAndSendAvailableCommands();

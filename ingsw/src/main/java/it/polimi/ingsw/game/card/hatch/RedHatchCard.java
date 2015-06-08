@@ -13,8 +13,8 @@ import it.polimi.ingsw.game.state.WinnerState;
  */
 public class RedHatchCard extends HatchCard {
 
-	public RedHatchCard(GameState state, GamePlayer player) {
-        super(state, player);
+	public RedHatchCard(GameState state) {
+        super(state);
         // TODO Auto-generated constructor stub
     }
 
@@ -23,7 +23,7 @@ public class RedHatchCard extends HatchCard {
 	 */
     @Override
 	public PlayerState getNextState() {
-	    return new EndingTurnState(mGameState, mGamePlayer);
+	    return new EndingTurnState(mGameState);
 	}
 
 }

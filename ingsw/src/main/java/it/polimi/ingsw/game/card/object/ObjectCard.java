@@ -20,10 +20,10 @@ public abstract class ObjectCard {
     protected final String mName;
     protected final int mId;
     
-    protected ObjectCard(GameState state, GamePlayer player, int id, String name) {
+    protected ObjectCard(GameState state, int id, String name) {
         // FIXME AGGIUNGI CONTROLLO: Player dev'essere umano
         mGameState = state;
-        mGamePlayer = player;
+        mGamePlayer = state.getCurrentPlayer();
         mName = name;
         mId = id;
     } 

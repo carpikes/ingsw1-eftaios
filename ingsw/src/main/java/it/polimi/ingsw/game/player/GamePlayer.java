@@ -48,9 +48,6 @@ public class GamePlayer {
     /** Number of current move */
     private int moveCounter;
 
-    /** The game manager */
-    private GameState mGame;
-
     /** 
      * Get current move number.
      * @return Move number
@@ -73,21 +70,15 @@ public class GamePlayer {
      * @param game The game he's playing
      * @param isMyTurn Is he the first player?
      */
-    public GamePlayer( int id, Role playerRole, GameState game, boolean isMyTurn) {
+    public GamePlayer( int id, Role playerRole, Point startPosition, boolean isMyTurn) {
         resetValues();
         mObjectCards = new ArrayList<>();
         mUsableObjectCards = new ArrayList<>();
         role = playerRole;
 
-        mPosition = game.getMap().getStartingPoint(role instanceof Human); 
+        mPosition = startPosition; 
         mId = id; 
         moveCounter = 0;
-        mGame = game;
-
-        if(isMyTurn)
-            setCurrentState(new StartTurnState(game, this));
-        else
-            setCurrentState(new NotMyTurnState(game, this));
     }
 
     /**

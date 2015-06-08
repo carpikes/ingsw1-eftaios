@@ -5,10 +5,11 @@ import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.EnemyInfo;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.player.GamePlayer;
+import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleBuilder;
 import it.polimi.ingsw.game.state.AwayState;
@@ -77,8 +78,13 @@ public class GameState {
         
         for(int i = 0;i<gameManager.getNumberOfClients(); i++) {
             Role role = roles.get(i);
-            GamePlayer player = new GamePlayer(i, role, this, (i == mTurnId));
+            boolean isMyTurn = (i == mTurnId);
+            GamePlayer player = new GamePlayer(i, role, getMap().getStartingPoint(role instanceof Human), isMyTurn);
             mPlayers.add(player);
+            if(isMyTurn)
+                player.setCurrentState(new StartTurnState(this));
+            else
+                player.setCurrentState(new NotMyTurnState(this));
         }
         
         if(mMap == null)
@@ -132,7 +138,7 @@ public class GameState {
      */
     public PlayerState getObjectCard( ) {
         GamePlayer player = getCurrentPlayer();
-        ObjectCard newCard = ObjectCardBuilder.getRandomCard( this, getCurrentPlayer() );
+        ObjectCard newCard = ObjectCardBuilder.getRandomCard( this );
         PlayerState nextState;
         
         // FIXME maybe an id is better here!
@@ -142,11 +148,11 @@ public class GameState {
         // We're ok, proceed
         if( player.getNumberOfCards() < Config.MAX_NUMBER_OF_OBJ_CARDS ) {
             broadcastPacket( GameOpcode.INFO_GOT_A_NEW_OBJ_CARD );
-            nextState = new EndingTurnState(this, getCurrentPlayer());
+            nextState = new EndingTurnState(this);
         } else {
             // tell the user he has to drop or use a card
             sendPacketToCurrentPlayer( GameOpcode.CMD_SC_DISCARD_OBJECT_CARD );
-            nextState = new DiscardingObjectCardState(this, getCurrentPlayer());
+            nextState = new DiscardingObjectCardState(this);
         }
         
         return nextState;
@@ -185,6 +191,7 @@ public class GameState {
         ArrayList<Integer> killedPlayers = new ArrayList<>();
         ArrayList<Integer> defendedPlayers = new ArrayList<>();
         boolean killedHumans = false;
+        
         for(int i = 0; i < mPlayers.size(); i++) {
             GamePlayer player = mPlayers.get(i);
             if( player != getCurrentPlayer() && player.getCurrentPosition().equals(currentPosition) && player.stillInGame()) {
@@ -194,7 +201,7 @@ public class GameState {
                 } else {
                     if(player.isHuman())
                         killedHumans = true;
-                    player.setCurrentState( new LoserState(this, player) );        
+                    player.setCurrentState( new LoserState(this) );        
                     killedPlayers.add(i); 
                 }
             }
@@ -239,9 +246,9 @@ public class GameState {
                 GamePlayer p = mPlayers.get(i);
                 
                 if((p.stillInGame() && p.isAlien()))
-                    p.setCurrentState(new WinnerState(this, p));
+                    p.setCurrentState(new WinnerState(this));
                 else if(p.getCurrentState() instanceof AwayState || (p.isHuman() && p.stillInGame()))
-                    p.setCurrentState(new LoserState(this, p));
+                    p.setCurrentState(new LoserState(this));
                 else
                     throw new RuntimeException("Unknown player state. What's happening?");
             }
@@ -305,7 +312,7 @@ public class GameState {
         }
     }
     
-    private synchronized GamePlayer getCurrentPlayer() {
+    public synchronized GamePlayer getCurrentPlayer() {
         return mPlayers.get( mTurnId ); 
     }
 
@@ -339,27 +346,26 @@ public class GameState {
                 player.getMaxMoves(), player.isHuman()
         );
     }
-
-    public boolean areTherePeopleStillPlaying() {
-        int counter = 0;
-        
-        for( GamePlayer p : mPlayers )
-            if( p.stillInGame() )
-                ++counter;
-        
-        return counter >= Config.GAME_MIN_PLAYERS;
-    }
-    
-    public void moveToNextPlayer() {
-        if( areTherePeopleStillPlaying() ) {
-            mTurnId = findNextPlayer();
-            GamePlayer nextPlayer = mPlayers.get(mTurnId);
-            nextPlayer.setCurrentState( new StartTurnState( this, nextPlayer) );
-        } else {
-            // just one or zero players left -> the game has ended
-            checkEndGame(false);
-        }
-    }
+	
+	public boolean areTherePeopleStillPlaying() {
+		int counter = 0;
+		
+		for( GamePlayer p : mPlayers )
+			if( p.stillInGame() )
+				++counter;
+		
+		return counter >= Config.GAME_MIN_PLAYERS;
+	}
+	
+	public void moveToNextPlayer() {
+		if( areTherePeopleStillPlaying() ) {
+			mTurnId = findNextPlayer();
+			getCurrentPlayer().setCurrentState( new StartTurnState( this ) );
+		} else {
+			// just one or zero players left -> the game has ended
+			checkEndGame(false);
+		}
+	}
 
     private int findNextPlayer() {
         for( int currId = mTurnId + 1; currId < mTurnId + mPlayers.size(); ++currId ) {
@@ -412,7 +418,7 @@ public class GameState {
         if(player != null) {
             if(mTurnId == id) 
                 moveToNextPlayer();
-            player.setCurrentState(new AwayState(this, player));
+            player.setCurrentState(new AwayState(this));
         }
         
         if(!areTherePeopleStillPlaying()) {

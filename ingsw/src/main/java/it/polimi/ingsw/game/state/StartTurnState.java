@@ -18,14 +18,14 @@ import java.util.logging.Logger;
  */
 public class StartTurnState extends PlayerState {
     private static final Logger LOG = Logger.getLogger(StartTurnState.class.getName());
-    public StartTurnState(GameState state, GamePlayer player) {
-        super(state, player);
+    public StartTurnState(GameState state) {
+        super(state);
         LOG.log(Level.FINE, "Constructor");
 
-        player.resetValues();
-        player.incrementMoveCounter();
+        mGamePlayer.resetValues();
+        mGamePlayer.incrementMoveCounter();
 
-        if( player.getMoveCounter() >= Config.MAX_NUMBER_OF_TURNS ) {
+        if( mGamePlayer.getMoveCounter() >= Config.MAX_NUMBER_OF_TURNS ) {
             //state.endGame();
         } else {
             // tell everybody I'm starting playing!
@@ -38,7 +38,7 @@ public class StartTurnState extends PlayerState {
      */
     @Override
     public PlayerState update() {       
-        return new MovingState(mGameState, mGamePlayer);
+        return new MovingState(mGameState);
     }
 
     @Override

@@ -14,8 +14,8 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class SilenceCard extends DangerousCard {
 
-	public SilenceCard(GameState state, GamePlayer player) {
-        super(state, player);
+	public SilenceCard(GameState state) {
+        super(state);
         // TODO Auto-generated constructor stub
     }
 
@@ -27,7 +27,7 @@ public class SilenceCard extends DangerousCard {
 	    mGameState.sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardBuilder.SILENCE) );
         mGameState.broadcastPacket( GameOpcode.INFO_SILENCE );
         
-        return new EndingTurnState(mGameState, mGamePlayer);
+        return new EndingTurnState(mGameState);
 	}
 
 }

@@ -16,8 +16,8 @@ import it.polimi.ingsw.game.player.GamePlayer;
  */
 public class AwayState extends PlayerState {
 	private static final Logger LOG = Logger.getLogger(AwayState.class.getName());
-    public AwayState(GameState state, GamePlayer player) {
-        super(state, player);
+    public AwayState(GameState state) {
+        super(state);
         LOG.log(Level.FINE, "Constructor");
         
         state.broadcastPacket( GameOpcode.INFO_AWAY );

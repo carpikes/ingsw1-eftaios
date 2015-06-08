@@ -25,9 +25,9 @@ public abstract class PlayerState {
     protected final GameState mGameState;
     protected final GamePlayer mGamePlayer;
     
-    protected PlayerState(GameState state, GamePlayer player) {
+    protected PlayerState(GameState state) {
         mGameState = state;
-        mGamePlayer = player;
+        mGamePlayer = state.getCurrentPlayer();
     } 
     
     protected void sendAvailableCommands(ArrayList<GameViewCommand> availableCommands) {

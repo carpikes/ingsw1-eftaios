@@ -12,8 +12,8 @@ import it.polimi.ingsw.game.state.SpotlightCardState;
  */
 public class SpotlightCard extends ObjectCard {
 
-	public SpotlightCard(GameState state, GamePlayer player) {
-        super(state, player, ObjectCardBuilder.SPOTLIGHT_CARD, "Spotlight");
+	public SpotlightCard(GameState state) {
+        super(state, ObjectCardBuilder.SPOTLIGHT_CARD, "Spotlight");
         // TODO Auto-generated constructor stub
     }
 
@@ -24,7 +24,7 @@ public class SpotlightCard extends ObjectCard {
 	public PlayerState doAction() {
         mGamePlayer.setStateBeforeSpotlightCard( mGamePlayer.getCurrentState() );
         
-        return new SpotlightCardState( mGameState, mGamePlayer );
+        return new SpotlightCardState( mGameState );
 	}
     
     /* (non-Javadoc)

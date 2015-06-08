@@ -25,8 +25,8 @@ import java.util.logging.Logger;
 public class MoveDoneState extends PlayerState {
     private static final Logger LOG = Logger.getLogger(MoveDoneState.class.getName());
 
-    public MoveDoneState(GameState state, GamePlayer player) {
-        super(state, player);
+    public MoveDoneState(GameState state) {
+        super(state);
         LOG.log(Level.FINE, "Constructor");
 
         // tell the client it has to choose what to do after moving
@@ -68,7 +68,7 @@ public class MoveDoneState extends PlayerState {
                 nextState = useObjectCard(this, packet);
             } else if( mGamePlayer.isAlien() && packet.getOpcode() == GameOpcode.CMD_CS_ATTACK ) {
                 mGameState.attack( mGamePlayer.getCurrentPosition() );
-                nextState = new EndingTurnState(mGameState, mGamePlayer);
+                nextState = new EndingTurnState(mGameState);
             } else if( map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS ) {
                 // DANGEROUS: either draw a card OR attack
                 if( packet.getOpcode() == GameOpcode.CMD_CS_DRAW_DANGEROUS_CARD ) {
@@ -79,7 +79,7 @@ public class MoveDoneState extends PlayerState {
             } else {
                 // NOT DANGEROUS: either attack or pass
                 if( packet.getOpcode() == GameOpcode.CMD_CS_END_TURN ) {
-                    nextState = new NotMyTurnState(mGameState, mGamePlayer);
+                    nextState = new NotMyTurnState(mGameState);
                 } else {
                     throw new IllegalStateOperationException("You can only attack or pass. Discarding command.");
                 }

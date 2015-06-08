@@ -15,8 +15,8 @@ import it.polimi.ingsw.game.player.GamePlayer;
  */
 public class NotMyTurnState extends PlayerState {
 	private static final Logger LOG = Logger.getLogger(NotMyTurnState.class.getName());
-    public NotMyTurnState(GameState state, GamePlayer player) {
-        super(state, player);
+    public NotMyTurnState(GameState state) {
+        super(state);
         
         LOG.log(Level.FINE, "Constructor");
     }

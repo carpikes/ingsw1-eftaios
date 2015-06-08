@@ -22,8 +22,8 @@ import java.util.logging.Logger;
  */
 public class SpotlightCardState extends PlayerState {
 	private static final Logger LOG = Logger.getLogger(SpotlightCardState.class.getName());
-    public SpotlightCardState(GameState state, GamePlayer player) {
-        super(state, player);
+    public SpotlightCardState(GameState state) {
+        super(state);
         LOG.log(Level.FINE, "Constructor");
         buildAndSendAvailableCommands();
     }

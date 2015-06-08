@@ -12,6 +12,9 @@ import java.util.List;
  * @since 3 Jun 2015
  */
 public class RoleBuilder {
+    
+    private RoleBuilder() { }
+    
     /**
      * Generate a list of roles, half humans and half aliens. 
      * @param numberOfPlayers The number of roles it has to create
@@ -21,7 +24,7 @@ public class RoleBuilder {
         List<Role> roles = new ArrayList<>();
         
         if(numberOfPlayers < Config.GAME_MIN_PLAYERS)
-            throw new RuntimeException("Too few players (" + numberOfPlayers + ")");
+            throw new TooFewPlayersException("Too few players (" + numberOfPlayers + ")");
         
         for(int i = 0; i < numberOfPlayers; i++)
             if(i % 2 == 0)

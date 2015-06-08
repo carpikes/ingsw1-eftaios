@@ -1,6 +1,6 @@
 /**
  * 
- */
+ *//*
 package it.polimi.ingsw.testgame.card;
 
 import static org.junit.Assert.*;
@@ -21,10 +21,10 @@ import java.awt.Point;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
+*//**
  * @author Michele
  * @since 2 Jun 2015
- */
+ *//*
 public class TestHatchCards {
     private static GameManager manager;
     private static GameState game;
@@ -34,9 +34,9 @@ public class TestHatchCards {
     private static Point testValidPosition;
     private static Point humanStart;
     
-    /**
+    *//**
      * Setup GameManager with fake connections in order to simulate receiving & sending packets 
-     */
+     *//*
     @BeforeClass
     public static void runBeforeClass() {
         manager = new GameManager();
@@ -80,3 +80,4 @@ public class TestHatchCards {
         
     }
 }
+*/

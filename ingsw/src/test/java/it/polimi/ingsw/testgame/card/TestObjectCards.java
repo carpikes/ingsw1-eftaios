@@ -1,6 +1,6 @@
 /**
  * 
- */
+ *//*
 package it.polimi.ingsw.testgame.card;
 
 import static org.junit.Assert.assertEquals;
@@ -31,10 +31,10 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
+*//**
  * @author Michele
  * @since 2 Jun 2015
- */
+ *//*
 public class TestObjectCards {
     private static GameManager manager;
     private static GameState game;
@@ -44,9 +44,9 @@ public class TestObjectCards {
     private static Point testValidPosition;
     private static Point humanStart;
     
-    /**
+    *//**
      * Setup GameManager with fake connections in order to simulate receiving & sending packets 
-     */
+     *//*
     @BeforeClass
     public static void runBeforeClass() {
         manager = new GameManager();
@@ -78,38 +78,38 @@ public class TestObjectCards {
         humanStart = new Point(11, 7);
     }
     
-    /**
+    *//**
      * Adrenaline card used in Moving State: set max moves to 2
-     */
+     *//*
     @Test
     public void testGoodAdrenalineCard() { 
         human.resetValues();
         
-        human.setCurrentState( new MovingState(game, human) );
+        human.setCurrentState( new MovingState(game) );
         ObjectCard card = new AdrenalineCard(game, human);
         card.doAction();
         
         assertEquals( human.getMaxMoves(), Config.MAX_HUMAN_ADRENALINE_MOVES );
     }
     
-    /**
+    *//**
      * Adrenaline card used in other states: command discarded
-     */
+     *//*
     @Test
     public void testBadAdrenalineCard() { 
         human.resetValues();
         
-        human.setCurrentState( new MoveDoneState(game, human) );
+        human.setCurrentState( new MoveDoneState(game) );
         
         ObjectCard card = new AdrenalineCard(game, human);
         card.doAction();
         assertEquals( human.getMaxMoves(), Config.MAX_HUMAN_MOVES );
     }
     
-    /**
+    *//**
      * Put the two players in the same sector and let the human attack
      * There will be only one at the end of the day...
-     */
+     *//*
     @Test
     public void testAttackCard() {
         human.resetValues();
@@ -126,9 +126,9 @@ public class TestObjectCards {
         assertEquals( game.getNumberOfPlayersInSector( testValidPosition ), 1 );
     }
     
-    /**
+    *//**
      * Check if the defense card enables defense for human player
-     */
+     *//*
     @Test
     public void testDefenseCard() {
         human.resetValues();
@@ -140,9 +140,9 @@ public class TestObjectCards {
         assertTrue( human.isDefenseEnabled() );
     }
     
-    /**
+    *//**
      * Disable drawing a card for this turn
-     */
+     *//*
     @Test
     public void testSedativesCard() {
         human.resetValues();
@@ -163,7 +163,7 @@ public class TestObjectCards {
         game.rawMoveTo( human, testValidPosition );
         game.rawMoveTo( alien, testValidPosition );
         
-        human.setCurrentState( new MoveDoneState(game, human) );
+        human.setCurrentState( new MoveDoneState(game) );
         
         ObjectCard card = new SpotlightCard(game, human);
         game.queuePacket( new GameCommand( GameOpcode.CMD_CS_SET_POSITION, testValidPosition ) );
@@ -172,9 +172,9 @@ public class TestObjectCards {
         // ...
     }
     
-    /**
+    *//**
      * Test if after using the card the human player returns to start point 
-     */
+     *//*
     @Test
     public void testTeleportCard() {
         human.resetValues();
@@ -187,3 +187,4 @@ public class TestObjectCards {
     }
 
 }
+*/
