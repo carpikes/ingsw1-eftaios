@@ -373,24 +373,25 @@ public class GameState {
     }
     
     public void moveToNextPlayer() {
+        int newTurnId = -1;
         int lastTurnId = mTurnId;
         
-        mTurnId = findNextPlayer();
+        for( int currId = mTurnId + 1; currId < mTurnId + mPlayers.size(); ++currId ) {
+            if( mPlayers.get(currId % mPlayers.size()).getCurrentState() instanceof NotMyTurnState ) {
+                newTurnId = currId % mPlayers.size();
+                break;
+            }
+        }
         
-        if(mTurnId < lastTurnId || mTurnId == -1) {
+        if(newTurnId < lastTurnId) {
             mRoundsPlayed ++;
             checkEndGame(false);
-        } else 
-            getCurrentPlayer().setCurrentState( new StartTurnState( this ) );
-    }
-
-    private int findNextPlayer() {
-        for( int currId = mTurnId + 1; currId < mTurnId + mPlayers.size(); ++currId ) {
-            if( mPlayers.get(currId % mPlayers.size()).getCurrentState() instanceof NotMyTurnState )
-                return currId % mPlayers.size();
-        }
-
-        return -1;
+            if(newTurnId == -1)
+                return;
+        } 
+        
+        mTurnId = newTurnId;
+        getCurrentPlayer().setCurrentState( new StartTurnState( this ) );
     }
     
     public void broadcastPacket( GameCommand pkt ) {

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.game;
 
 import it.polimi.ingsw.exception.SectorException;
-import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
@@ -18,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-import java.util.logging.Logger;
 
 public class GameMap implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -30,25 +28,25 @@ public class GameMap implements Serializable {
         "maps/debug.txt"
     };
     
-	// including not crossable sectors
-	public static final int ROWS = 14;
-	public static final int COLUMNS = 23;
-	
-	private Sector[][] board;
-	private final Point humanStartingPoint, alienStartingPoint;
-	
-	// You can only construct a new map either from a .map file or by random generation 
-	private GameMap( String name, Sector[][] board, Point human, Point alien) {
-		this.board = board;
-		this.humanStartingPoint = human;
-		this.alienStartingPoint = alien;
-	} 
+    // including not crossable sectors
+    public static final int ROWS = 14;
+    public static final int COLUMNS = 23;
+    
+    private Sector[][] board;
+    private final Point humanStartingPoint, alienStartingPoint;
+    
+    // You can only construct a new map either from a .map file or by random generation 
+    private GameMap( String name, Sector[][] board, Point human, Point alien) {
+        this.board = board;
+        this.humanStartingPoint = human;
+        this.alienStartingPoint = alien;
+    } 
 
-	public static GameMap createFromMapFile( File file ) throws IOException {
-	    Sector[][] sectors = new Sector[ROWS][COLUMNS];
-	    String title = null;
-	    Point human=null, alien=null;
-	    
+    public static GameMap createFromMapFile( File file ) throws IOException {
+        Sector[][] sectors = new Sector[ROWS][COLUMNS];
+        String title = null;
+        Point human=null, alien=null;
+        
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
         Iterator<String> iterator = lines.iterator();
         
@@ -71,17 +69,17 @@ public class GameMap implements Serializable {
         
         if( i != ROWS || j != COLUMNS )
             throw new SectorException("Missing sector");
-		
-		return new GameMap(title, sectors, human, alien);
-	}
-	
-	public Sector getSectorAt( int x, int y ) {
-	    return board[y][x];
-	}
-	
-	public Sector getSectorAt( Point point ) {
-	    return getSectorAt( point.x, point.y );
-	}
+        
+        return new GameMap(title, sectors, human, alien);
+    }
+    
+    public Sector getSectorAt( int x, int y ) {
+        return board[y][x];
+    }
+    
+    public Sector getSectorAt( Point point ) {
+        return getSectorAt( point.x, point.y );
+    }
 
     /** Check if given point is inside the map
      * @param destination
@@ -150,22 +148,22 @@ public class GameMap implements Serializable {
         frontier.add( delimiter );
         
         while( maxMoves > 0 ) {
-        	
-        	do {
-        		currentPoint = frontier.poll();
-        		
-        		if( currentPoint != null ) {
-        		    ArrayList<Point> neighbors = getNeighbourAccessibleSectors( currentPoint, isHuman );
-        			
-        			frontier.addAll( neighbors );
-        			frontier.add( delimiter );
-        			
-        			sectors.add( currentPoint );
-        			sectors.addAll(neighbors);
-        		}
-        	} while( currentPoint != null );
-        	
-        	--maxMoves;
+            
+            do {
+                currentPoint = frontier.poll();
+                
+                if( currentPoint != null ) {
+                    ArrayList<Point> neighbors = getNeighbourAccessibleSectors( currentPoint, isHuman );
+                    
+                    frontier.addAll( neighbors );
+                    frontier.add( delimiter );
+                    
+                    sectors.add( currentPoint );
+                    sectors.addAll(neighbors);
+                }
+            } while( currentPoint != null );
+            
+            --maxMoves;
         }
         
         sectors.remove( currentPosition );
@@ -186,43 +184,43 @@ public class GameMap implements Serializable {
      * @return A list of all neighbours
      */
     public ArrayList<Point> getNeighbourAccessibleSectors( Point currentPosition, boolean isHuman ) {
-    	// get x and y for simplicity's sake
-    	int x = currentPosition.x;
-    	int y = currentPosition.y;
-    	
-    	ArrayList<Point> sectors = new ArrayList< >();
+        // get x and y for simplicity's sake
+        int x = currentPosition.x;
+        int y = currentPosition.y;
+        
+        ArrayList<Point> sectors = new ArrayList< >();
 
-    	for( int i = -1; i <= 1; ++i ) {
-    		for( int j = -1; j <= 1; ++j ) {
-    		    
+        for( int i = -1; i <= 1; ++i ) {
+            for( int j = -1; j <= 1; ++j ) {
+                
                 // exclude the - sectors
-    		    boolean isValid = (i == 0 && j != 0);
-    		    if(currentPosition.x % 2 == 0) 
-    		        isValid |= (i == 1 && j == 0) || (i == -1);
-    		    else
-    		        isValid |= (i == -1 && j == 0) || (i == 1);
-    		    
-    			if( isValid ) {
-    				Point p = new Point(x+j, y+i);
-    				
-    				if( this.isWithinBounds( p ) ){
-    				    Sector currentSector = this.getSectorAt(p);
-    				    if( currentSector.isCrossable() && !(currentSector.getId() == SectorBuilder.HATCH && !isHuman) )
-    				        sectors.add(p);
-    				}
-    			}
-    		}
-    	}
-    	
-    	return sectors;
+                boolean isValid = (i == 0 && j != 0);
+                if(currentPosition.x % 2 == 0) 
+                    isValid |= (i == 1 && j == 0) || (i == -1);
+                else
+                    isValid |= (i == -1 && j == 0) || (i == 1);
+                
+                if( isValid ) {
+                    Point p = new Point(x+j, y+i);
+                    
+                    if( this.isWithinBounds( p ) ){
+                        Sector currentSector = this.getSectorAt(p);
+                        if( currentSector.isCrossable() && !(currentSector.getId() == SectorBuilder.HATCH && !isHuman) )
+                            sectors.add(p);
+                    }
+                }
+            }
+        }
+        
+        return sectors;
     }
     
     public String pointToString(Point p) {
-    	return pointToString(p.x,p.y);
+        return pointToString(p.x,p.y);
     }
     
     public String pointToString(int x, int y) {
-    	return String.format("%c%03d", x + 'A', y + 1);
+        return String.format("%c%03d", x + 'A', y + 1);
     }
 
     /**

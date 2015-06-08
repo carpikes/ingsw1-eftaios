@@ -3,19 +3,16 @@
  */
 package it.polimi.ingsw.game.state;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
-
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.card.object.ObjectCard;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameViewCommand;
-import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameViewOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * @author Michele
@@ -36,9 +33,9 @@ public abstract class PlayerState {
     
     public abstract PlayerState update();
 
-	public abstract boolean stillInGame();
-	protected abstract void buildAndSendAvailableCommands();
-	
+    public abstract boolean stillInGame();
+    protected abstract void buildAndSendAvailableCommands();
+    
 
     /**
      * @param pkt

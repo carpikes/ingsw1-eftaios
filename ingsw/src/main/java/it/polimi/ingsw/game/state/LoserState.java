@@ -5,7 +5,6 @@ package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.player.GamePlayer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

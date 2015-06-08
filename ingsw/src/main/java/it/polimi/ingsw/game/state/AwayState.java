@@ -3,19 +3,18 @@
  */
 package it.polimi.ingsw.game.state;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.player.GamePlayer;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Michele
  * @since 25 May 2015
  */
 public class AwayState extends PlayerState {
-	private static final Logger LOG = Logger.getLogger(AwayState.class.getName());
+    private static final Logger LOG = Logger.getLogger(AwayState.class.getName());
     public AwayState(GameState state) {
         super(state);
         LOG.log(Level.FINE, "Constructor");
@@ -32,9 +31,9 @@ public class AwayState extends PlayerState {
     }
     
     @Override
-	public boolean stillInGame() {
-		return false;
-	}
+    public boolean stillInGame() {
+        return false;
+    }
 
     @Override
     protected void buildAndSendAvailableCommands() {

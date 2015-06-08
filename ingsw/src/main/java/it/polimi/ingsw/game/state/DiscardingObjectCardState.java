@@ -10,7 +10,6 @@ import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameViewCommand;
 import it.polimi.ingsw.game.network.GameViewOpcode;
-import it.polimi.ingsw.game.player.GamePlayer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
