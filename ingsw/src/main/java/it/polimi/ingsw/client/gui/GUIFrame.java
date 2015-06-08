@@ -121,10 +121,19 @@ public class GUIFrame extends JFrame {
             JPanel listOfUsers = new JPanel( new FlowLayout() );
             
             for( int i = 0; i < players.length; ++i ) {
-                userLabel[i] = new JLabel( (i+1) + ") " + players[i].getUsername() + " - " + players[i].getNumberOfCards() + " object cards" );
-                if( i == startInfo.getId() )
-                    userLabel[i].setForeground( Color.RED );
+                userLabel[i] = new JLabel(  );
+                String txt = "[" + (i+1) + "] ";
                 
+                if( i == startInfo.getId() ) {
+                    userLabel[i].setForeground( Color.RED );
+                    txt += (startInfo.isHuman()) ? "** HUMAN **" : "** ALIEN **";
+                } else {
+                    userLabel[i].setForeground( Color.BLACK );
+                }
+                
+                txt +=  players[i].getUsername() + " - " + players[i].getNumberOfCards() + " object cards";
+                
+                userLabel[i].setText( txt );
                 listOfUsers.add( userLabel[i] );
             }
             
@@ -189,6 +198,7 @@ public class GUIFrame extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                resetViewStatus();
                 mController.endTurn();
             }
         });

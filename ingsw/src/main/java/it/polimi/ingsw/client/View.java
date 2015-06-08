@@ -16,7 +16,7 @@ public abstract class View {
     
     protected boolean mStopEvent = false; 
     protected final GameController mController;
-    
+
     public View(GameController controller) {
         mController = controller;
 

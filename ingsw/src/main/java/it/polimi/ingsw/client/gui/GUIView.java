@@ -18,7 +18,8 @@ import javax.swing.JOptionPane;
  *
  */
 public class GUIView extends View {
-    GUIFrame mMainFrame;
+    private GUIFrame mMainFrame;
+    private  GameStartInfo gameInfo = null;
     
     public GUIView(GameController controller) {
         super(controller);
@@ -108,6 +109,7 @@ public class GUIView extends View {
      */
     @Override
     public void switchToMainScreen(GameStartInfo container) {
+        gameInfo = container;
         GameMap map = container.getMap();
         mMainFrame.setStartInfo( container );
         mMainFrame.switchToMap(map,map.getStartingPoint(container.isHuman()));
@@ -195,7 +197,7 @@ public class GUIView extends View {
     }
 
     private void enableMap( Point curPos, int maxMoves ) {
-        Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
+        Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves, gameInfo.isHuman());
         mMainFrame.enableMapCells(enabledCells);
     }
 
