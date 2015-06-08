@@ -4,6 +4,7 @@
 package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 
 import java.util.logging.Level;
@@ -15,12 +16,12 @@ import java.util.logging.Logger;
  */
 public class WinnerState extends PlayerState {
     private static final Logger LOG = Logger.getLogger(WinnerState.class.getName());
-    public WinnerState(GameState state) {
+    public WinnerState(GameState state, Integer winnerPlayer) {
         super(state);
         LOG.log(Level.FINE, "Constructor");
         
-        state.broadcastPacket( GameOpcode.INFO_WINNER );
-        state.sendPacketToCurrentPlayer( GameOpcode.CMD_SC_WIN );
+        state.broadcastPacket( new GameCommand(GameOpcode.INFO_WINNER, winnerPlayer));
+        state.sendPacketToPlayer(winnerPlayer, new GameCommand(GameOpcode.CMD_SC_WIN));
     }
 
     /* (non-Javadoc)

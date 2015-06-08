@@ -1,7 +1,6 @@
 package it.polimi.ingsw.game.card.hatch;
 
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.WinnerState;
 
@@ -12,7 +11,9 @@ import it.polimi.ingsw.game.state.WinnerState;
  */
 public class GreenHatchCard extends HatchCard {
 
-	public GreenHatchCard(GameState state) {
+    private static final long serialVersionUID = 1L;
+
+    public GreenHatchCard(GameState state) {
         super(state);
         // TODO Auto-generated constructor stub
     }
@@ -22,7 +23,7 @@ public class GreenHatchCard extends HatchCard {
 	 */
     @Override
 	public PlayerState getNextState() {
-	    return new WinnerState(mGameState);
+	    return new WinnerState(mGameState, mGamePlayer.getId());
 	}
 
 }

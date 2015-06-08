@@ -206,7 +206,7 @@ public class GameState {
                 } else {
                     if(player.isHuman())
                         killedHumans = true;
-                    player.setCurrentState( new LoserState(this) );        
+                    player.setCurrentState( new LoserState(this, i) );        
                     killedPlayers.add(i); 
                 }
             }
@@ -260,13 +260,15 @@ public class GameState {
             // Let's gather some stats
             
             // Move all players either into WinnerState or LoserState 
-            for(GamePlayer p : mPlayers) {
-                
+            for(int i = 0; i < mPlayers.size(); i++) {
+                GamePlayer p = mPlayers.get(i);
                 if((p.stillInGame() && (p.isAlien() || allWinnersMode)))
-                    p.setCurrentState(new WinnerState(this));
+                    p.setCurrentState(new WinnerState(this, i));
                 else if(p.getCurrentState() instanceof AwayState || (p.isHuman() && p.stillInGame()))
-                    p.setCurrentState(new LoserState(this));
+                    p.setCurrentState(new LoserState(this, i));
             }
+            
+            flushOutputQueue();
             
             // Fill this two arrays
             ArrayList<Integer> winnersList = new ArrayList<>();
@@ -438,6 +440,16 @@ public class GameState {
         }
         
         checkEndGame(false);
+    }
+
+    /**
+     * @param loserPlayer
+     * @param cmdScLose
+     */
+    public void sendPacketToPlayer(Integer loserPlayer, GameCommand pkt) {
+        synchronized(mOutputQueue) {
+            mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(loserPlayer, pkt));
+        }
     }
 
 }

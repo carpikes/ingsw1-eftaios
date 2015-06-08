@@ -16,7 +16,8 @@ import java.io.Serializable;
  * @since 23 May 2015
  */
 public abstract class HatchCard implements Serializable {
-
+    private static final long serialVersionUID = 1L;
+    
     protected GameState mGameState;
     protected GamePlayer mGamePlayer;
 	
