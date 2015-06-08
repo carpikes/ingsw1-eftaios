@@ -222,7 +222,7 @@ public class GameState {
      * @param point The position where the card takes effect.
      */
     public void spotlightAction(Point point) {
-    	ArrayList<Point> sectors = getMap().getNeighbourAccessibleSectors(point);
+    	ArrayList<Point> sectors = getMap().getNeighbourAccessibleSectors(point, getCurrentPlayer().isHuman());
         sectors.add(point);
         
         ArrayList<Integer> caughtPlayers = new ArrayList<>();
@@ -274,9 +274,10 @@ public class GameState {
     }
     
     public Set<Point> getCellsWithMaxDistance() {
+        GamePlayer player = getCurrentPlayer();
         return getMap().getCellsWithMaxDistance( 
-                getCurrentPlayer().getCurrentPosition(), 
-                getCurrentPlayer().getMaxMoves()
+                player.getCurrentPosition(), 
+                player.getMaxMoves(), player.isHuman()
         );
     }
 

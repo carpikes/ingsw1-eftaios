@@ -118,8 +118,12 @@ public class MapCanvasPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent arg0) { 
                 mClickedOnCell = true;
-                if(mCurHexCoords != null)
-                    mController.onMapPositionChosen(mCurHexCoords);
+                
+                if(mCurHexCoords != null) {
+                    mPlayerPosition = mCurHexCoords;
+                    mCurHexCoords = null;
+                    mController.onMapPositionChosen(mPlayerPosition);
+                }
             }
 
             @Override
@@ -138,7 +142,7 @@ public class MapCanvasPanel extends JPanel {
                 Point cell = getCell(e.getPoint());
                 
                 synchronized(mRenderLoopMutex) {
-                    if(mEnabledCells == null || mEnabledCells.contains(cell))    
+                    if(mEnabledCells != null && mEnabledCells.contains(cell))    
                         mCurHexCoords = cell;
                     else
                         mCurHexCoords = null;
@@ -195,7 +199,13 @@ public class MapCanvasPanel extends JPanel {
                     continue;
                 
                 boolean isPlayerHere = p.equals(mPlayerPosition);
-                boolean enabled = mEnabledCells == null || mEnabledCells.contains(p);
+                
+                boolean enabled;
+                if( mEnabledCells == null || !mEnabledCells.contains(p) )
+                    enabled = false;
+                else
+                    enabled = true;
+                
                 mHexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, (i == GameMap.ROWS));
             }
     }
@@ -213,7 +223,7 @@ public class MapCanvasPanel extends JPanel {
     public Point getChosenMapCell() {
         if(mClickedOnCell) {
             mClickedOnCell = false;
-            if(mCurHexCoords != null && (mEnabledCells == null || mEnabledCells.contains(mCurHexCoords)))
+            if(mEnabledCells != null && mEnabledCells.contains(mCurHexCoords))
                 return mCurHexCoords;
         }
         return null;

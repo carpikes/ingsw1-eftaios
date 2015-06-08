@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.GameViewCommand;
 
@@ -18,7 +19,8 @@ import javax.swing.JOptionPane;
  *
  */
 public class GUIView extends View {
-    GUIFrame mMainFrame;
+    private GUIFrame mMainFrame;
+    private  GameStartInfo gameInfo = null;
     
     public GUIView(GameController controller) {
         super(controller);
@@ -108,6 +110,7 @@ public class GUIView extends View {
      */
     @Override
     public void switchToMainScreen(GameStartInfo container) {
+        gameInfo = container;
         GameMap map = container.getMap();
         mMainFrame.setStartInfo( container );
         mMainFrame.switchToMap(map,map.getStartingPoint(container.isHuman()));
@@ -125,30 +128,31 @@ public class GUIView extends View {
 
     @Override
     protected void handleCommand(ArrayList<GameViewCommand> cmd) {
+        resetViewStatus();
+        
         for(GameViewCommand c : cmd) {
             switch(c.getOpcode()) {
             case CMD_CHOOSEOBJECTCARD:
+                setCanSelectObjCard( true );
                 break;
+                
             case CMD_ENABLEMAPVIEW:
-                Point curPos = (Point) c.getArgs()[0];
-                int maxMoves = (int) c.getArgs()[1];
-                Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
-                mMainFrame.enableMapCells(enabledCells);
-                //Point pos = askMapPosition(enabledCells);
-                //sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, pos));
-
+                enableMap( (Point) c.getArgs()[0], (int) c.getArgs()[1] );
                 break;
+                
             case CMD_ATTACK:
-                
+                setAttackEnabled( true );
                 break;
+                
             case CMD_DISCARDOBJECTCARD:
-                
+                setDiscardObjCardEnabled( true );
                 break;
-            case CMD_DRAWDANGEROUSCARD:
                 
+            case CMD_DRAWDANGEROUSCARD:
+                setCanDrawDangerousCard( true );
                 break;
             case CMD_ENDTURN:
-                
+                setEndTurnEnabled( true );
                 break;
 
             default:
@@ -158,17 +162,60 @@ public class GUIView extends View {
         }
     }
 
+    /**
+     * @param b
+     */
+    private void setEndTurnEnabled( boolean value ) {
+        mMainFrame.setEndTurnEnabled( value );
+    }
+
+    /**
+     * @param b
+     */
+    private void setCanDrawDangerousCard( boolean value ) {
+        mMainFrame.setCanDrawDangerousCard( value );
+    }
+
+    /**
+     * @param b
+     */
+    private void setDiscardObjCardEnabled(boolean value) {
+        mMainFrame.setDiscardObjCardEnabled( value );
+    }
+
+    /**
+     * @param b
+     */
+    private void setAttackEnabled(boolean value) {
+        mMainFrame.setAttackEnabled( value );
+    }
+
+    /**
+     * @param b
+     */
+    private void setCanSelectObjCard(boolean value) {
+        mMainFrame.setCanSelectObjCard( value );
+    }
+
+    private void enableMap( Point curPos, int maxMoves ) {
+        Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves, gameInfo.isHuman());
+        mMainFrame.enableMapCells(enabledCells);
+    }
+
+    private void resetViewStatus() {
+        mMainFrame.resetViewStatus();
+    }
+    
     /** WARNING user can be null!!! */
 	@Override
 	public void showInfo(String user, String message) {
 		mMainFrame.showInfo( user, message );
-	}
+	}	
 
 	/** WARNING user can be null!!! */
 	@Override
 	public void showNoiseInSector(String user, Point p) {
-		// TODO Auto-generated method stub
-		
+		// TODO 
 	}
 
     /* (non-Javadoc)
@@ -176,7 +223,6 @@ public class GUIView extends View {
      */
     @Override
     public void onMyTurn() {
-        // TODO Auto-generated method stub
         
     }
 
@@ -185,7 +231,6 @@ public class GUIView extends View {
      */
     @Override
     public void onOtherTurn(String username) {
-        // TODO Auto-generated method stub
         
     }
 

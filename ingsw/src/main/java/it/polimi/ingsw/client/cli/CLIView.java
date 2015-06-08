@@ -169,7 +169,7 @@ public class CLIView extends View {
                 }
     
                 if(maxMoves != 0) 
-                    enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves);
+                    enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves, mContainer.isHuman());
     
                 CLIMapRenderer.renderMap(mMap, curPos, enabledCells);
                 IO.write("Choose a position on the map");

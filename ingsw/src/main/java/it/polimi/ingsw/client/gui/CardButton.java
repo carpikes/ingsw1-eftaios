@@ -28,16 +28,21 @@ public class CardButton extends JButton {
 
     private static final Logger LOG = Logger.getLogger( CardButton.class.getName() );
     
-    private int id;
-    private BufferedImage image;
+    
+    private CardButtons type;
     private GameController controller;
 
     private float alpha = 1f;
+    
+    private boolean canBeDiscarded;
     
     public CardButton( final CardButtons type, GameController c ) {
         super( );
 
         controller = c;
+        this.type = type;
+        
+        canBeDiscarded = false;
         changeTo( type );
                 
         this.addMouseListener(new MouseListener() {
@@ -45,7 +50,7 @@ public class CardButton extends JButton {
                 if( ((JButton)e.getSource() ).isEnabled() ) {
                     if( SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
                         controller.sendChosenObjectCard( type.getId() );
-                    } else if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
+                    } else if (canBeDiscarded && SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
                         controller.sendDiscardObjectCard( type.getId() );
                     }
                 }
@@ -71,8 +76,7 @@ public class CardButton extends JButton {
 
     public void changeTo(CardButtons type) {
         try {
-            image = ImageIO.read( type.getImageFile() );
-            setIcon( new ImageIcon( image ) );
+            setIcon( new ImageIcon( ImageIO.read( type.getImageFile() ) ) );
             
             setBorder(BorderFactory.createEmptyBorder());
             setContentAreaFilled(false);
@@ -80,14 +84,6 @@ public class CardButton extends JButton {
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Cannot create " + type.toString() + " card button. Please check your assets in img folder.");
         }
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
     
     public float getAlpha()
@@ -107,4 +103,16 @@ public class CardButton extends JButton {
       g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
       super.paintComponent(g2);
     }
+
+    public CardButtons getType() {
+        return type;
+    }
+
+    /**
+     * @param value
+     */
+    public void setCanBeDiscarded(boolean value) {
+        canBeDiscarded = value;
+    }
+ 
 }

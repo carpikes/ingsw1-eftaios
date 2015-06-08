@@ -55,7 +55,7 @@ public class GUIFrame extends JFrame {
     private static final int CARD_HGAP = 5;
     private static final int CARD_VGAP = 5;
     
-    private static final int USERS_HGAP = 5;    
+    private static final int USERS_HGAP = 10;    
 
     private static final int CARD_WIDTH = WIDTH_RIGHT - 2 * PANEL_MARGIN - 2 * CARD_HGAP;
     private static final int CARD_HEIGHT = CARD_WIDTH * 745 / 490; // values based on image size
@@ -118,13 +118,24 @@ public class GUIFrame extends JFrame {
             EnemyInfo[] players = startInfo.getPlayersList();
             userLabel = new JLabel[ players.length ];
             
-            JPanel listOfUsers = new JPanel( new FlowLayout() );
+            FlowLayout flow = new FlowLayout();
+            flow.setHgap( USERS_HGAP );
+            JPanel listOfUsers = new JPanel( flow );
             
             for( int i = 0; i < players.length; ++i ) {
-                userLabel[i] = new JLabel( (i+1) + ") " + players[i].getUsername() + " - " + players[i].getNumberOfCards() + " object cards" );
-                if( i == startInfo.getId() )
-                    userLabel[i].setForeground( Color.RED );
+                userLabel[i] = new JLabel(  );
+                String txt = "[" + (i+1) + "] ";
                 
+                if( i == startInfo.getId() ) {
+                    userLabel[i].setForeground( Color.RED );
+                    txt += (startInfo.isHuman()) ? "** HUMAN ** " : "** ALIEN ** ";
+                } else {
+                    userLabel[i].setForeground( Color.BLACK );
+                }
+                
+                txt +=  players[i].getUsername() + " - " + players[i].getNumberOfCards() + " object cards";
+                
+                userLabel[i].setText( txt );
                 listOfUsers.add( userLabel[i] );
             }
             
@@ -149,6 +160,7 @@ public class GUIFrame extends JFrame {
         // card panel
         cardPanel = createCardPanel(rightPanel);
         rightPanel.add(cardPanel, BorderLayout.NORTH);
+        
 
         // Message Area
         scrollTextAreaPane = createMessageArea();
@@ -188,6 +200,7 @@ public class GUIFrame extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                resetViewStatus();
                 mController.endTurn();
             }
         });
@@ -243,6 +256,9 @@ public class GUIFrame extends JFrame {
         mLoginCanvas = new LoginCanvasPanel( );
         mLoginCanvas.setPreferredSize(mDimensionLeftPanel);
 
+        if( rightPanel != null )
+            rightPanel.setVisible(false);
+        
         add(mLoginCanvas, BorderLayout.CENTER);
     }
 
@@ -261,7 +277,12 @@ public class GUIFrame extends JFrame {
         add(mMapCanvas, BorderLayout.CENTER);
         mLoginCanvas = null;
         
+        if( rightPanel != null )
+            rightPanel.setVisible( true );
+        
         createBottomPanel();
+        
+        resetViewStatus();
         
         validate();
         repaint();
@@ -301,5 +322,60 @@ public class GUIFrame extends JFrame {
         startInfo  = container;
     }
 
+    /**
+     * @param value
+     */
+    public void setCanSelectObjCard(boolean value) {
+        // can select only valid cards
+        for( CardButton btn : cardButtons ) {
+            if( value ) {
+                btn.setEnabled( btn.getType().isEnabled() );
+            } else {
+                btn.setEnabled( false );
+            }
+        } 
+    }
+
+    /**
+     * @param value
+     */
+    public void setAttackEnabled(boolean value) {
+        btnAttack.setEnabled( value );
+    }
+
+    /**
+     * @param value
+     */
+    public void setDiscardObjCardEnabled(boolean value) {
+        for( CardButton btn : cardButtons ) {
+            btn.setCanBeDiscarded( value );
+        }
+    }
+
+    /**
+     * @param value
+     */
+    public void setEndTurnEnabled(boolean value) {
+        btnEndTurn.setEnabled( value );
+    }
+
+    /**
+     * @param value
+     */
+    public void setCanDrawDangerousCard(boolean value) {
+        btnDrawDangerousCard.setEnabled( value );
+    }
+
+    /**
+     * 
+     */
+    public void resetViewStatus() {
+        enableMapCells( null );
+        setCanSelectObjCard( false );
+        setAttackEnabled( false );
+        setDiscardObjCardEnabled( false );
+        setCanDrawDangerousCard( false );
+        setEndTurnEnabled( false );
+    }
 }
 

@@ -50,7 +50,7 @@ public class GameController implements OnReceiveListener {
             for(int i = 0; i < viewList.length; i++) {
                 String v = viewList[i];
                 if(v.equalsIgnoreCase(args[0])) {
-                    mView = ViewFactory.getView( this, i);
+                    mView = ViewFactory.getView( this, i );
                     mViewSet = true;
                     break;
                 }
@@ -74,7 +74,7 @@ public class GameController implements OnReceiveListener {
                     while(isRunning()) {
                         ArrayList<GameViewCommand> cmd = mViewQueue.poll(100, TimeUnit.MILLISECONDS);
                         if(cmd != null) 
-                            mView.handleCommand(cmd);
+                            mView.handleCommand(cmd); // TO BE CHANGED TO -> handleCommands()
                     }
                 } catch(InterruptedException e) { }
                 GameController.this.stop();
@@ -295,7 +295,7 @@ public class GameController implements OnReceiveListener {
                 
                 break;
             case INFO_SILENCE:
-                mView.showInfo(curUser, "Silence. Not implemented yet"); // TODO here
+                mView.showInfo(curUser, "Silence");
                 break;
             case INFO_SPOTLIGHT:
                 mView.showInfo(curUser, "Spotlight. Not implemented yet"); // TODO here
