@@ -16,8 +16,8 @@ import it.polimi.ingsw.game.player.GamePlayer;
  */
 public class WinnerState extends PlayerState {
 	private static final Logger LOG = Logger.getLogger(WinnerState.class.getName());
-    public WinnerState(GameState state, GamePlayer player) {
-        super(state, player);
+    public WinnerState(GameState state) {
+        super(state);
         LOG.log(Level.FINE, "Constructor");
         
         state.broadcastPacket( GameOpcode.INFO_WINNER );

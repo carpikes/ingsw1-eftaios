@@ -11,8 +11,8 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class SedativesCard extends ObjectCard {
     
-	public SedativesCard(GameState state, GamePlayer player) {
-        super(state, player, ObjectCardBuilder.SEDATIVES_CARD, "Sedatives");
+	public SedativesCard(GameState state) {
+        super(state, ObjectCardBuilder.SEDATIVES_CARD, "Sedatives");
         // TODO Auto-generated constructor stub
     }
 

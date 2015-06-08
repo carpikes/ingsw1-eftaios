@@ -22,8 +22,8 @@ import java.util.logging.Logger;
 public class EndingTurnState extends PlayerState {
     private static final Logger LOG = Logger.getLogger(EndingTurnState.class.getName());
 
-    public EndingTurnState(GameState state, GamePlayer player) {
-        super(state, player);
+    public EndingTurnState(GameState state) {
+        super(state);
         LOG.log(Level.FINE, "Constructor");
 
         mGameState.sendPacketToCurrentPlayer( GameOpcode.CMD_SC_END_OF_TURN );
@@ -49,7 +49,7 @@ public class EndingTurnState extends PlayerState {
         PlayerState nextState = this;
         if( packet != null ) {
             if( packet.getOpcode() == GameOpcode.CMD_CS_END_TURN )
-                nextState = new NotMyTurnState(mGameState, mGamePlayer);
+                nextState = new NotMyTurnState(mGameState);
             else if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD  && mGamePlayer.getNumberOfCards() > 0) 
                 nextState = useObjectCard(this, packet);
             else

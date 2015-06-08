@@ -30,8 +30,8 @@ public class MovingState extends PlayerState {
 
     private Set< Point > availableSectors;
 
-    public MovingState(GameState state, GamePlayer player) {
-        super(state, player);
+    public MovingState(GameState state) {
+        super(state);
         LOG.log(Level.FINE, "Constructor");
 
         availableSectors = state.getCellsWithMaxDistance();
@@ -92,7 +92,7 @@ public class MovingState extends PlayerState {
         if( sector.getId() == SectorBuilder.HATCH ) {
             nextState = drawHatchCard( );
         } else {
-            nextState =  new MoveDoneState(mGameState, mGamePlayer);
+            nextState =  new MoveDoneState(mGameState);
         }
         return nextState;
     }
@@ -104,7 +104,7 @@ public class MovingState extends PlayerState {
         map.setType( mGamePlayer.getCurrentPosition(), SectorBuilder.USED_HATCH );
         mGameState.broadcastPacket( new GameCommand( GameOpcode.INFO_USED_HATCH, mGamePlayer.getCurrentPosition() ) );
 
-        return HatchCardBuilder.getRandomCard(mGameState, mGamePlayer).getNextState( );
+        return HatchCardBuilder.getRandomCard(mGameState).getNextState( );
     }
 
     @Override

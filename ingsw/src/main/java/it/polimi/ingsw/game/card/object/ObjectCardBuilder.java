@@ -30,20 +30,20 @@ public class ObjectCardBuilder {
      * @param player The Player who wants to get an object card
      * @return The object card
      */
-    public static ObjectCard getRandomCard(GameState game, GamePlayer player) {
+    public static ObjectCard getRandomCard(GameState game) {
         Random generator = new Random();
         
-        return idToObjectCard(generator.nextInt(OBJECT_CARD_TYPES), game, player);
+        return idToObjectCard(generator.nextInt(OBJECT_CARD_TYPES), game);
     }
     
-    public static ObjectCard idToObjectCard(int id, GameState game, GamePlayer player) {
+    public static ObjectCard idToObjectCard(int id, GameState game) {
         switch( id ) {
-            case ADRENALINE_CARD:             return new AdrenalineCard(game, player);
-            case ATTACK_CARD:                 return new AttackCard(game, player);
-            case DEFENSE_CARD:                return new DefenseCard(game, player);
-            case SEDATIVES_CARD:              return new SedativesCard(game, player);
-            case SPOTLIGHT_CARD:              return new SpotlightCard(game, player);
-            case TELEPORT_CARD:               return new TeleportCard(game, player);
+            case ADRENALINE_CARD:             return new AdrenalineCard(game);
+            case ATTACK_CARD:                 return new AttackCard(game);
+            case DEFENSE_CARD:                return new DefenseCard(game);
+            case SEDATIVES_CARD:              return new SedativesCard(game);
+            case SPOTLIGHT_CARD:              return new SpotlightCard(game);
+            case TELEPORT_CARD:               return new TeleportCard(game);
             default:                           throw new InvalidCardException("Unknown card");
         }
     }

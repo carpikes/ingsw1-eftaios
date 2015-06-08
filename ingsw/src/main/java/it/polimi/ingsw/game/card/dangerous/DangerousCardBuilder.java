@@ -32,9 +32,9 @@ public class DangerousCardBuilder {
         Random generator = new Random();
         
         switch( generator.nextInt(DANGEROUS_CARD_TYPES) ) {
-        case NOISE_IN_YOUR_SECTOR:        return new NoiseInYourSectorCard(gameState, gamePlayer);
-        case NOISE_IN_ANY_SECTOR:         return new NoiseInAnySectorCard(gameState, gamePlayer);
-        case SILENCE:                     return new SilenceCard(gameState, gamePlayer);
+        case NOISE_IN_YOUR_SECTOR:        return new NoiseInYourSectorCard(gameState);
+        case NOISE_IN_ANY_SECTOR:         return new NoiseInAnySectorCard(gameState);
+        case SILENCE:                     return new SilenceCard(gameState);
         default:                          throw new InvalidCardException("Unknown card");
         }
     }

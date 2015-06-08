@@ -21,9 +21,9 @@ public abstract class DangerousCard {
      * @param state Current GameState 
      * @param player Player who used the card
      */
-    protected DangerousCard(GameState state, GamePlayer player) {
+    protected DangerousCard(GameState state) {
         mGameState = state;
-        mGamePlayer = player;
+        mGamePlayer = state.getCurrentPlayer();
     } 
     
     /**

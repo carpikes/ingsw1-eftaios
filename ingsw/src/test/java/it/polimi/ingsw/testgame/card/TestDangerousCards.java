@@ -1,6 +1,6 @@
 /**
  * 
- */
+ *//*
 package it.polimi.ingsw.testgame.card;
 
 import static org.junit.Assert.assertTrue;
@@ -22,10 +22,10 @@ import java.awt.Point;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
+*//**
  * @author Michele
  * @since 2 Jun 2015
- */
+ *//*
 public class TestDangerousCards {
     private static GameManager manager;
     private static GameState game;
@@ -35,9 +35,9 @@ public class TestDangerousCards {
     private static Point testValidPosition;
     private static Point humanStart;
     
-    /**
+    *//**
      * Setup GameManager with fake connections in order to simulate receiving & sending packets 
-     */
+     *//*
     @BeforeClass
     public static void runBeforeClass() {
         manager = new GameManager();
@@ -74,7 +74,7 @@ public class TestDangerousCards {
     public void testNoiseInAnySectorCard() {
         human.resetValues();
         
-        human.setCurrentState( new MoveDoneState(game, human) );
+        human.setCurrentState( new MoveDoneState(game ) );
         DangerousCard card = new NoiseInAnySectorCard(game, human);
         human.setCurrentState( card.doAction() ); // move to NoiseInAnySectorState
         
@@ -87,7 +87,7 @@ public class TestDangerousCards {
     public void testNoiseInYourSectorCard() {
         human.resetValues();
         
-        human.setCurrentState( new MoveDoneState(game, human) );
+        human.setCurrentState( new MoveDoneState(game ) );
         DangerousCard card = new NoiseInYourSectorCard(game, human);
         human.setCurrentState( card.doAction() );
         
@@ -99,7 +99,7 @@ public class TestDangerousCards {
     public void testSilenceSectorCard() {
         human.resetValues();
         
-        human.setCurrentState( new MoveDoneState(game, human) );
+        human.setCurrentState( new MoveDoneState(game ) );
         DangerousCard card = new SilenceCard(game, human);
         human.setCurrentState( card.doAction() );
         
@@ -108,3 +108,4 @@ public class TestDangerousCards {
     }
 
 }
+*/

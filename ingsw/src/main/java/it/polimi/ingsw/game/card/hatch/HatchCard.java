@@ -20,9 +20,9 @@ public abstract class HatchCard implements Serializable {
     protected GameState mGameState;
     protected GamePlayer mGamePlayer;
 	
-    protected HatchCard(GameState state, GamePlayer player) {
+    protected HatchCard(GameState state) {
         mGameState = state;
-        mGamePlayer = player;
+        mGamePlayer = state.getCurrentPlayer();
     } 
     
     /**

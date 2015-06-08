@@ -14,8 +14,8 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class NoiseInAnySectorCard extends DangerousCard {
 
-	public NoiseInAnySectorCard(GameState state, GamePlayer player) {
-        super(state, player);
+	public NoiseInAnySectorCard(GameState state) {
+        super(state);
     }
 
 	/** 
@@ -24,7 +24,7 @@ public class NoiseInAnySectorCard extends DangerousCard {
     @Override
 	public PlayerState doAction() {
 	    mGameState.sendPacketToCurrentPlayer(new GameCommand(GameOpcode.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardBuilder.NOISE_IN_ANY_SECTOR) );
-        return new NoiseInAnySectorState(mGameState, mGamePlayer);
+        return new NoiseInAnySectorState(mGameState);
 	}
 
 }

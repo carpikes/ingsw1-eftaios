@@ -17,8 +17,8 @@ import java.util.logging.Logger;
 public class LoserState extends PlayerState {
     private static final Logger LOG = Logger.getLogger(LoserState.class.getName());
 
-    public LoserState(GameState state, GamePlayer player) {
-        super(state, player);
+    public LoserState(GameState state) {
+        super(state);
         LOG.log(Level.FINE, "Constructor");
 
         state.broadcastPacket( GameOpcode.INFO_LOSER );

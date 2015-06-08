@@ -24,8 +24,8 @@ import java.util.logging.Logger;
 public class DiscardingObjectCardState extends PlayerState {
 	private static final Logger LOG = Logger.getLogger(DiscardingObjectCardState.class.getName());
 	
-    public DiscardingObjectCardState(GameState state, GamePlayer player) {
-        super(state, player);
+    public DiscardingObjectCardState(GameState state) {
+        super(state);
 
         LOG.log(Level.FINE, "Constructor");
         buildAndSendAvailableCommands();
@@ -66,7 +66,7 @@ public class DiscardingObjectCardState extends PlayerState {
         int index = (int)packet.getArgs()[0];
         if( index >= 0 && index <= Config.MAX_NUMBER_OF_OBJ_CARDS ) { // <=, not <, because here we have a card over the limit 
             mGamePlayer.removeObjectCard(index);
-            nextState = new EndingTurnState(mGameState, mGamePlayer);
+            nextState = new EndingTurnState(mGameState);
         } else {
             throw new IllegalStateOperationException("Wrong index for card. Discarding packet.");
         }

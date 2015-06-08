@@ -13,8 +13,8 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class NoiseInYourSectorCard extends DangerousCard {
 
-	public NoiseInYourSectorCard(GameState state, GamePlayer player) {
-        super(state, player);
+	public NoiseInYourSectorCard(GameState state) {
+        super(state);
         // TODO Auto-generated constructor stub
     }
 
