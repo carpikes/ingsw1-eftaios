@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game.player;
 
+import it.polimi.ingsw.exception.TooFewPlayersException;
 import it.polimi.ingsw.game.config.Config;
 
 import java.util.ArrayList;

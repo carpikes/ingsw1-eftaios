@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.polimi.ingsw.game.player;
+package it.polimi.ingsw.exception;
 
 /**
  * @author Michele

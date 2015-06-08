@@ -4,10 +4,10 @@
 package it.polimi.ingsw.testgame.player;
 
 import static org.junit.Assert.assertEquals;
+import it.polimi.ingsw.exception.TooFewPlayersException;
 import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
 import it.polimi.ingsw.game.player.RoleBuilder;
-import it.polimi.ingsw.game.player.TooFewPlayersException;
 
 import java.util.Iterator;
 import java.util.List;

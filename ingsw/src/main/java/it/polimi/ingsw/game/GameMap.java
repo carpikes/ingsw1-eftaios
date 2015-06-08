@@ -204,9 +204,12 @@ public class GameMap implements Serializable {
     		    
     			if( isValid ) {
     				Point p = new Point(x+j, y+i);
-    				Sector currentSector = this.getSectorAt(p);
-    				if( this.isWithinBounds( p ) && currentSector.isCrossable() && !(currentSector.getId() == SectorBuilder.HATCH && !isHuman) )
-    					sectors.add(p);
+    				
+    				if( this.isWithinBounds( p ) ){
+    				    Sector currentSector = this.getSectorAt(p);
+    				    if( currentSector.isCrossable() && !(currentSector.getId() == SectorBuilder.HATCH && !isHuman) )
+    				        sectors.add(p);
+    				}
     			}
     		}
     	}
