@@ -221,4 +221,12 @@ public class GameMap implements Serializable {
     public String pointToString(int x, int y) {
     	return String.format("%c%03d", x + 'A', y + 1);
     }
+
+    /**
+     * @return
+     */
+    public int getRemainingHatches() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

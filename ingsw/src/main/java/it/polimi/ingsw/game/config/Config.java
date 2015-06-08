@@ -19,6 +19,7 @@ public class Config {
     
     public static final int GAME_MAP_WIDTH                  = 23;
     public static final int GAME_MAP_HEIGHT                 = 14;
+    public static final int MAX_NUMBER_OF_TURNS            = 40;
     
     public static final int MAX_NUMBER_OF_OBJ_CARDS         = 3;
     
@@ -27,7 +28,7 @@ public class Config {
     public static final int MAX_ALIEN_MOVES                 = 2;
     public static final int MAX_ALIEN_FULL_MOVES            = 3;
     
-    public static final int MAX_NUMBER_OF_TURNS 			= 40;
+   
     
     // Server configuration here
     public static final long SERVER_CONNECTION_TIMEOUT      = 10000;
