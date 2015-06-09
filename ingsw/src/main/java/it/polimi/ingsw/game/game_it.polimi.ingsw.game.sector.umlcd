@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.yattasolutions.uml.diagrams.classifier:ClassDiagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:com.yattasolutions.diagrams="http://ns.yatta-solutions.com/umllab/diagrams/1.1.0" xmlns:com.yattasolutions.uml.diagrams.classifier="http://ns.yatta-solutions.com/umllab/diagrams/classifier/1.1.0" xmi:id="_z-w6AA6REeWoH8cK047h5w">
+  <modelElement href="game.uml#_zmsYRQ6REeWoH8cK047h5w"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ConnectionVisual" xmi:id="_0nrUIQ6REeWoH8cK047h5w" targetItem="_0nrUIg6REeWoH8cK047h5w" sourceItem="_0nrUIA6REeWoH8cK047h5w"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ConnectionVisual" xmi:id="_0nrUPw6REeWoH8cK047h5w" targetItem="_0nrUSQ6REeWoH8cK047h5w" sourceItem="_0nrUPg6REeWoH8cK047h5w"/>
+  <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_0nrUQA6REeWoH8cK047h5w" source="_0nrUSQ6REeWoH8cK047h5w">
+    <modelElement href="game.uml#_zw-86Q6REeWoH8cK047h5w"/>
+    <visualProperties xmi:id="_0nrUgg6REeWoH8cK047h5w" position="90.0,90.0"/>
+    <stereotypes xmi:id="_0nrUQQ6REeWoH8cK047h5w" name="Reference">
+      <modelElement href="game.uml#_zw-86w6REeWoH8cK047h5w"/>
+    </stereotypes>
+    <nameVisual xmi:id="_0nrUQg6REeWoH8cK047h5w" text=""/>
+    <sourceRole xmi:id="_0nrUQw6REeWoH8cK047h5w" aggregationKind="NONE" name="">
+      <modelElement href="game.uml#_zw-86g6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrURA6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_0nrURQ6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+    </sourceRole>
+    <targetRole xmi:id="_0nrURg6REeWoH8cK047h5w" aggregationKind="NONE" name="LOG" navigable="true">
+      <modelElement href="game.uml#_zwPV3A6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrURw6REeWoH8cK047h5w" label="-"/>
+      <cardinality xmi:id="_0nrUSA6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+    </targetRole>
+  </edges>
+  <nodes xsi:type="com.yattasolutions.diagrams:CommentVisual" xmi:id="_0nrUIA6REeWoH8cK047h5w" sourceConnectionVisual="_0nrUIQ6REeWoH8cK047h5w" text="Model for a sector." item="_0nrUIg6REeWoH8cK047h5w">
+    <modelElement href="game.uml#_zwrbWg6REeWoH8cK047h5w"/>
+  </nodes>
+  <nodes xsi:type="com.yattasolutions.diagrams:CommentVisual" xmi:id="_0nrUPg6REeWoH8cK047h5w" sourceConnectionVisual="_0nrUPw6REeWoH8cK047h5w" text="Builder for sectors. Create a new sector based on ID.&#xD;&#xA;@author Michele&#xD;&#xA;@since 3 Jun 2015" item="_0nrUSQ6REeWoH8cK047h5w">
+    <modelElement href="game.uml#_zwrbWw6REeWoH8cK047h5w"/>
+  </nodes>
+  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_0nrUIg6REeWoH8cK047h5w" comments="_0nrUIA6REeWoH8cK047h5w" targetConnectionVisual="_0nrUIQ6REeWoH8cK047h5w" name="Sector">
+    <modelElement href="game.uml#_zqWJMA6REeWoH8cK047h5w"/>
+    <visualProperties xmi:id="_0nrUIw6REeWoH8cK047h5w" position="50.0,50.0" size="-1.0,-1.0"/>
+    <visibility xmi:id="_0nrUJA6REeWoH8cK047h5w" label="+"/>
+    <attributes xmi:id="_0nrUJQ6REeWoH8cK047h5w" defaultValue="1L" name="serialVersionUID" staticAttribute="true">
+      <modelElement href="game.uml#_zwPV2A6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUJg6REeWoH8cK047h5w" label="-"/>
+      <cardinality xmi:id="_0nrUJw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrUKA6REeWoH8cK047h5w" name="long">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_0nrUKQ6REeWoH8cK047h5w" name="id">
+      <modelElement href="game.uml#_zwPV2g6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUKg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_0nrUKw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrULA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_0nrULQ6REeWoH8cK047h5w" name="crossable">
+      <modelElement href="game.uml#_zwPV2w6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrULg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_0nrULw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrUMA6REeWoH8cK047h5w" name="boolean">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
+      </type>
+    </attributes>
+    <operations xmi:id="_0nrUMQ6REeWoH8cK047h5w" name="Sector">
+      <modelElement href="game.uml#_zqWwQA6REeWoH8cK047h5w"/>
+      <keywords xmi:id="_0nrUMg6REeWoH8cK047h5w" keyword="create"/>
+      <visibility xmi:id="_0nrUMw6REeWoH8cK047h5w" label="+"/>
+      <outParameters xmi:id="_0nrUNA6REeWoH8cK047h5w">
+        <modelElement href="game.uml#_zqWwRQ6REeWoH8cK047h5w"/>
+        <type xmi:id="_0nrUNQ6REeWoH8cK047h5w" name="Sector">
+          <modelElement href="game.uml#_zqWJMA6REeWoH8cK047h5w"/>
+        </type>
+      </outParameters>
+      <parameters xmi:id="_0nrUNg6REeWoH8cK047h5w" name="id">
+        <modelElement href="game.uml#_zqWwQQ6REeWoH8cK047h5w"/>
+        <type xmi:id="_0nrUNw6REeWoH8cK047h5w" name="int">
+          <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+        </type>
+      </parameters>
+      <parameters xmi:id="_0nrUOA6REeWoH8cK047h5w" name="crossable">
+        <modelElement href="game.uml#_zqWwQg6REeWoH8cK047h5w"/>
+        <type xmi:id="_0nrUOQ6REeWoH8cK047h5w" name="boolean">
+          <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
+        </type>
+      </parameters>
+    </operations>
+    <operations xmi:id="_0nrUOg6REeWoH8cK047h5w" name="isValid">
+      <modelElement href="game.uml#_zqWwRg6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUOw6REeWoH8cK047h5w" label="+"/>
+      <outParameters xmi:id="_0nrUPA6REeWoH8cK047h5w">
+        <modelElement href="game.uml#_zqWwRw6REeWoH8cK047h5w"/>
+        <type xmi:id="_0nrUPQ6REeWoH8cK047h5w" name="boolean">
+          <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
+        </type>
+      </outParameters>
+    </operations>
+  </nodes>
+  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_0nrUSQ6REeWoH8cK047h5w" comments="_0nrUPg6REeWoH8cK047h5w" targetConnectionVisual="_0nrUPw6REeWoH8cK047h5w" name="SectorBuilder" associationsOut="_0nrUQA6REeWoH8cK047h5w">
+    <modelElement href="game.uml#_zqXXUA6REeWoH8cK047h5w"/>
+    <visualProperties xmi:id="_0nrUSg6REeWoH8cK047h5w" position="400.0,-83.0" size="-1.0,-1.0"/>
+    <visibility xmi:id="_0nrUSw6REeWoH8cK047h5w" label="+"/>
+    <attributes xmi:id="_0nrUTA6REeWoH8cK047h5w" defaultValue="Logger.getLogger(SectorBuilder.class.getName())" name="LOG" staticAttribute="true">
+      <modelElement href="game.uml#_zwPV3A6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUTQ6REeWoH8cK047h5w" label="-"/>
+      <cardinality xmi:id="_0nrUTg6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrUTw6REeWoH8cK047h5w" name="Logger">
+        <modelElement href="game.uml#_zusdsw6REeWoH8cK047h5w"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_0nrUUA6REeWoH8cK047h5w" defaultValue="0" name="NOT_VALID" staticAttribute="true">
+      <modelElement href="game.uml#_zwPV3g6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUUQ6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_0nrUUg6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrUUw6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_0nrUVA6REeWoH8cK047h5w" defaultValue="1" name="NOT_DANGEROUS" staticAttribute="true">
+      <modelElement href="game.uml#_zwPV4A6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUVQ6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_0nrUVg6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrUVw6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_0nrUWA6REeWoH8cK047h5w" defaultValue="2" name="HATCH" staticAttribute="true">
+      <modelElement href="game.uml#_zwPV4g6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUWQ6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_0nrUWg6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrUWw6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_0nrUXA6REeWoH8cK047h5w" defaultValue="3" name="DANGEROUS" staticAttribute="true">
+      <modelElement href="game.uml#_zwPV5A6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUXQ6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_0nrUXg6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrUXw6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_0nrUYA6REeWoH8cK047h5w" defaultValue="4" name="USED_HATCH" staticAttribute="true">
+      <modelElement href="game.uml#_zwPV5g6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUYQ6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_0nrUYg6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrUYw6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_0nrUZA6REeWoH8cK047h5w" defaultValue="8" name="ALIEN" staticAttribute="true">
+      <modelElement href="game.uml#_zwPV6A6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUZQ6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_0nrUZg6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrUZw6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_0nrUaA6REeWoH8cK047h5w" defaultValue="9" name="HUMAN" staticAttribute="true">
+      <modelElement href="game.uml#_zwPV6g6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUaQ6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_0nrUag6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrUaw6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_0nrUbA6REeWoH8cK047h5w" defaultValue="HUMAN+1" name="MAX_COUNT" staticAttribute="true">
+      <modelElement href="game.uml#_zwPV7A6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUbQ6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_0nrUbg6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_0nrUbw6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <operations xmi:id="_0nrUcA6REeWoH8cK047h5w" name="SectorBuilder">
+      <modelElement href="game.uml#_zqYlcA6REeWoH8cK047h5w"/>
+      <keywords xmi:id="_0nrUcQ6REeWoH8cK047h5w" keyword="create"/>
+      <stereotypes xmi:id="_0nrUcg6REeWoH8cK047h5w" name="LegacyStyledElement">
+        <modelElement href="game.uml#_zqZMgQ6REeWoH8cK047h5w"/>
+      </stereotypes>
+      <visibility xmi:id="_0nrUcw6REeWoH8cK047h5w" label="-"/>
+      <outParameters xmi:id="_0nrUdA6REeWoH8cK047h5w">
+        <modelElement href="game.uml#_zqZMgg6REeWoH8cK047h5w"/>
+        <type xmi:id="_0nrUdQ6REeWoH8cK047h5w" name="SectorBuilder">
+          <modelElement href="game.uml#_zqXXUA6REeWoH8cK047h5w"/>
+        </type>
+      </outParameters>
+    </operations>
+    <operations xmi:id="_0nrUdg6REeWoH8cK047h5w" name="getSectorFor" staticOperation="true">
+      <modelElement href="game.uml#_zqZMgw6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUdw6REeWoH8cK047h5w" label="+"/>
+      <outParameters xmi:id="_0nrUeA6REeWoH8cK047h5w">
+        <modelElement href="game.uml#_zvS6oA6REeWoH8cK047h5w"/>
+        <type xmi:id="_0nrUeQ6REeWoH8cK047h5w" name="Sector">
+          <modelElement href="game.uml#_zqWJMA6REeWoH8cK047h5w"/>
+        </type>
+      </outParameters>
+      <parameters xmi:id="_0nrUeg6REeWoH8cK047h5w" name="id">
+        <modelElement href="game.uml#_zqZMhA6REeWoH8cK047h5w"/>
+        <type xmi:id="_0nrUew6REeWoH8cK047h5w" name="int">
+          <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+        </type>
+      </parameters>
+    </operations>
+    <operations xmi:id="_0nrUfA6REeWoH8cK047h5w" name="isValid" staticOperation="true">
+      <modelElement href="game.uml#_zqZzkA6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_0nrUfQ6REeWoH8cK047h5w" label="+"/>
+      <outParameters xmi:id="_0nrUfg6REeWoH8cK047h5w">
+        <modelElement href="game.uml#_zqZzkg6REeWoH8cK047h5w"/>
+        <type xmi:id="_0nrUfw6REeWoH8cK047h5w" name="boolean">
+          <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
+        </type>
+      </outParameters>
+      <parameters xmi:id="_0nrUgA6REeWoH8cK047h5w" name="id">
+        <modelElement href="game.uml#_zqZzkQ6REeWoH8cK047h5w"/>
+        <type xmi:id="_0nrUgQ6REeWoH8cK047h5w" name="int">
+          <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+        </type>
+      </parameters>
+    </operations>
+  </nodes>
+</com.yattasolutions.uml.diagrams.classifier:ClassDiagram>

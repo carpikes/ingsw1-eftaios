@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.yattasolutions.uml.diagrams.classifier:ClassDiagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:com.yattasolutions.diagrams="http://ns.yatta-solutions.com/umllab/diagrams/1.1.0" xmlns:com.yattasolutions.uml.diagrams.classifier="http://ns.yatta-solutions.com/umllab/diagrams/classifier/1.1.0" xmi:id="_z_VhwA6REeWoH8cK047h5w">
+  <modelElement href="game.uml#_zm2JQg6REeWoH8cK047h5w"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ConnectionVisual" xmi:id="_1e4o8Q6REeWoH8cK047h5w" targetItem="_1e4o8g6REeWoH8cK047h5w" sourceItem="_1e4o8A6REeWoH8cK047h5w"/>
+  <nodes xsi:type="com.yattasolutions.diagrams:CommentVisual" xmi:id="_1e4o8A6REeWoH8cK047h5w" sourceConnectionVisual="_1e4o8Q6REeWoH8cK047h5w" text="Configuration class: a list of constants for game and connections&#xA;@author Michele&#xA;@since 3 Jun 2015" item="_1e4o8g6REeWoH8cK047h5w">
+    <modelElement href="game.uml#_zwrbRA6REeWoH8cK047h5w"/>
+  </nodes>
+  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_1e4o8g6REeWoH8cK047h5w" comments="_1e4o8A6REeWoH8cK047h5w" targetConnectionVisual="_1e4o8Q6REeWoH8cK047h5w" name="Config">
+    <modelElement href="game.uml#_zpoXgA6REeWoH8cK047h5w"/>
+    <visualProperties xmi:id="_1e4o8w6REeWoH8cK047h5w" position="50.0,50.0"/>
+    <visibility xmi:id="_1e4o9A6REeWoH8cK047h5w" label="+"/>
+    <attributes xmi:id="_1e4o9Q6REeWoH8cK047h5w" defaultValue="2" name="GAME_MIN_PLAYERS" staticAttribute="true">
+      <modelElement href="game.uml#_zwFk-A6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4o9g6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4o9w6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4o-A6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4o-Q6REeWoH8cK047h5w" defaultValue="8" name="GAME_MAX_PLAYERS" staticAttribute="true">
+      <modelElement href="game.uml#_zwFk-g6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4o-g6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4o-w6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4o_A6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4o_Q6REeWoH8cK047h5w" defaultValue="5" name="GAME_WAITING_SECS" staticAttribute="true">
+      <modelElement href="game.uml#_zwFk_A6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4o_g6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4o_w6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pAA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pAQ6REeWoH8cK047h5w" defaultValue="23" name="GAME_MAP_WIDTH" staticAttribute="true">
+      <modelElement href="game.uml#_zwFk_g6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pAg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pAw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pBA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pBQ6REeWoH8cK047h5w" defaultValue="14" name="GAME_MAP_HEIGHT" staticAttribute="true">
+      <modelElement href="game.uml#_zwFlAA6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pBg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pBw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pCA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pCQ6REeWoH8cK047h5w" defaultValue="39" name="MAX_NUMBER_OF_TURNS" staticAttribute="true">
+      <modelElement href="game.uml#_zwFlAg6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pCg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pCw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pDA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pDQ6REeWoH8cK047h5w" defaultValue="3" name="MAX_NUMBER_OF_OBJ_CARDS" staticAttribute="true">
+      <modelElement href="game.uml#_zwFlBA6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pDg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pDw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pEA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pEQ6REeWoH8cK047h5w" defaultValue="1" name="MAX_HUMAN_MOVES" staticAttribute="true">
+      <modelElement href="game.uml#_zwFlBg6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pEg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pEw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pFA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pFQ6REeWoH8cK047h5w" defaultValue="2" name="MAX_HUMAN_ADRENALINE_MOVES" staticAttribute="true">
+      <modelElement href="game.uml#_zwFlCA6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pFg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pFw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pGA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pGQ6REeWoH8cK047h5w" defaultValue="2" name="MAX_ALIEN_MOVES" staticAttribute="true">
+      <modelElement href="game.uml#_zwFlCg6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pGg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pGw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pHA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pHQ6REeWoH8cK047h5w" defaultValue="3" name="MAX_ALIEN_FULL_MOVES" staticAttribute="true">
+      <modelElement href="game.uml#_zwFlDA6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pHg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pHw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pIA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pIQ6REeWoH8cK047h5w" defaultValue="10000" name="SERVER_CONNECTION_TIMEOUT" staticAttribute="true">
+      <modelElement href="game.uml#_zwFlDg6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pIg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pIw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pJA6REeWoH8cK047h5w" name="long">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pJQ6REeWoH8cK047h5w" defaultValue="3 * GAME_MAX_PLAYERS" name="SERVER_MAX_CLIENTS" staticAttribute="true">
+      <modelElement href="game.uml#_zwFlEA6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pJg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pJw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pKA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pKQ6REeWoH8cK047h5w" defaultValue="3834" name="SERVER_TCP_LISTEN_PORT" staticAttribute="true">
+      <modelElement href="game.uml#_zwFlEg6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pKg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pKw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pLA6REeWoH8cK047h5w" name="int">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </type>
+    </attributes>
+    <attributes xmi:id="_1e4pLQ6REeWoH8cK047h5w" defaultValue="5000" name="CLIENT_TCP_PING_TIME" staticAttribute="true">
+      <modelElement href="game.uml#_zwFlFA6REeWoH8cK047h5w"/>
+      <visibility xmi:id="_1e4pLg6REeWoH8cK047h5w" label="+"/>
+      <cardinality xmi:id="_1e4pLw6REeWoH8cK047h5w" label="1" max="1" min="1"/>
+      <type xmi:id="_1e4pMA6REeWoH8cK047h5w" name="long">
+        <modelElement href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
+      </type>
+    </attributes>
+    <operations xmi:id="_1e4pMQ6REeWoH8cK047h5w" name="Config">
+      <modelElement href="game.uml#_zpploA6REeWoH8cK047h5w"/>
+      <keywords xmi:id="_1e4pMg6REeWoH8cK047h5w" keyword="create"/>
+      <stereotypes xmi:id="_1e4pMw6REeWoH8cK047h5w" name="LegacyStyledElement">
+        <modelElement href="game.uml#_zpqMsg6REeWoH8cK047h5w"/>
+      </stereotypes>
+      <visibility xmi:id="_1e4pNA6REeWoH8cK047h5w" label="-"/>
+      <outParameters xmi:id="_1e4pNQ6REeWoH8cK047h5w">
+        <modelElement href="game.uml#_zpqMsw6REeWoH8cK047h5w"/>
+        <type xmi:id="_1e4pNg6REeWoH8cK047h5w" name="Config">
+          <modelElement href="game.uml#_zpoXgA6REeWoH8cK047h5w"/>
+        </type>
+      </outParameters>
+    </operations>
+  </nodes>
+</com.yattasolutions.uml.diagrams.classifier:ClassDiagram>
