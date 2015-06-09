@@ -308,7 +308,7 @@ public class GameManager {
         if(turnId >=0 && turnId <= mClients.size() && mClients.get(turnId).equals(client)) {
             if(!mClients.get(turnId).isConnected())
                 throw new RuntimeException("GameState is broken: mTurnId -> AwayPlayer. What's happening?");
-            mState.queuePacket(pkt);
+            mState.enqueuePacket(pkt);
         }
     }
 

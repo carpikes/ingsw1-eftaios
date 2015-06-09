@@ -1,4 +1,4 @@
-package it.polimi.ingsw.game;
+package it.polimi.ingsw.exception;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)

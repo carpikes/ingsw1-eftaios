@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game;
 
+import it.polimi.ingsw.exception.DebugException;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
@@ -110,9 +111,6 @@ public class GameState {
     
     /** DEBUG MODE CONSTRUCTOR
      * Constructs a new game.
-     * @param gameManager The GameManager that created this game.
-     * @param mapId Id of the map
-     * @param clients List of connections of all players
      */
     public GameState(String areYouSureToEnableDebugMode, int mapId, int numberOfPlayers, int startPlayerId, boolean randomizePlayers) {
         GameMap tmpMap = null;
@@ -157,7 +155,7 @@ public class GameState {
      * Method called by the server hosting the games. According to the current player's state, it lets the game flow.
      */
     public void update() {
-        if(!mManager.isRunning() || dDebugMode)
+        if( !dDebugMode && !mManager.isRunning() )
             return;
         
         if(dDebugMode && dGameOver == true)
@@ -407,7 +405,7 @@ public class GameState {
         return mMap;
     }
     
-    public void queuePacket(GameCommand gameCommand) {
+    public void enqueuePacket(GameCommand gameCommand) {
         synchronized(mInputQueue) {
             mInputQueue.add(gameCommand);
         }
