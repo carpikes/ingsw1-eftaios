@@ -36,7 +36,14 @@ public class GameMap implements Serializable {
     private final Point mHumanStartingPoint, mAlienStartingPoint;
     private int mNumberOfHatches = 0;
     
-    // You can only construct a new map either from a .map file or by random generation 
+    /** Private constructor
+     *  
+     * @param name Map name
+     * @param board Board
+     * @param human Human starting point
+     * @param alien Alien starting point
+     * @param numberOfHatches Number of hatches in this map
+     */
     private GameMap( String name, Sector[][] board, Point human, Point alien, int numberOfHatches) {
         mBoard = board;
         mHumanStartingPoint = human;
@@ -44,6 +51,12 @@ public class GameMap implements Serializable {
         mNumberOfHatches = numberOfHatches;
     } 
 
+    /** Load a map from file
+     * 
+     * @param file Filename
+     * @return The map
+     * @throws IOException File not found
+     */
     public static GameMap createFromMapFile( File file ) throws IOException {
         Sector[][] sectors = new Sector[ROWS][COLUMNS];
         String title = null;
@@ -86,11 +99,22 @@ public class GameMap implements Serializable {
         
         return new GameMap(title, sectors, human, alien, numHatches);
     }
-    
+
+    /** Return the sector type at the specified point
+     * 
+     * @param x X coords
+     * @param y Y coords
+     * @return The sector type
+     */
     public Sector getSectorAt( int x, int y ) {
         return mBoard[y][x];
     }
     
+    /** Return the sector type at the specified point
+     * 
+     * @param point The point
+     * @return The sector type
+     */
     public Sector getSectorAt( Point point ) {
         return getSectorAt( point.x, point.y );
     }
@@ -103,12 +127,21 @@ public class GameMap implements Serializable {
         return ( p.x >= 0 && p.y >= 0 && p.x < COLUMNS && p.y < ROWS ); 
     }
 
+    /** Get the player starting point
+     * 
+     * @param isHuman True if the player is human
+     * @return The starting point
+     */
     public Point getStartingPoint(boolean isHuman) {
         if(isHuman)
             return mHumanStartingPoint;
         return mAlienStartingPoint;
     }
 
+    /** Get the list of maps
+     * 
+     * @return The list of maps
+     */
     public static String[] getListOfMaps() {
         return mapFiles;
     }
@@ -128,6 +161,12 @@ public class GameMap implements Serializable {
         return false;
     }
 
+    /** Load a map using the specified ID
+     * 
+     * @param mapId The id
+     * @return The map
+     * @throws IOException File not found
+     */
     public static GameMap createFromId(int mapId) throws IOException {
         if(!isValidMap(mapId))
             throw new RuntimeException("Invalid map id");
@@ -135,9 +174,9 @@ public class GameMap implements Serializable {
         return GameMap.createFromMapFile(new File(mapFiles[mapId]));
     }
 
-    /**
-     * @param currentPosition
-     * @param maxMoves
+    /** Return the cells within the specified range
+     * @param currentPosition Starting position
+     * @param maxMoves Range
      * @return
      */
     public Set<Point> getCellsWithMaxDistance(Point currentPosition,
@@ -219,18 +258,37 @@ public class GameMap implements Serializable {
         return sectors;
     }
     
+    /** Return a string representing this coordinates
+     * 
+     * @param p Coordinate
+     * @return The string
+     */
     public String pointToString(Point p) {
         return pointToString(p.x,p.y);
     }
     
+    /** Return a string representing this coordinates
+     * 
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return The string
+     */
     public String pointToString(int x, int y) {
         return String.format("%c%03d", x + 'A', y + 1);
     }
-
+    
+    /** Return the remaining hatches
+     * 
+     * @return Remaining hatches
+     */
     public int getRemainingHatches() {
         return mNumberOfHatches;
     }
     
+    /** Use a hatch
+     * 
+     * @param pos Hatch coordinates
+     */
     public void useHatch(Point pos) {
         if(!isWithinBounds(pos) || mNumberOfHatches <= 0 || mBoard[pos.y][pos.x].getId() != SectorBuilder.HATCH)
             throw new SectorException("Cannot use an hatch that does not exist.");

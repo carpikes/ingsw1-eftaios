@@ -396,27 +396,49 @@ public class GameState {
         }
     }
     
+    /** Get the current player
+     * 
+     * @return The current player
+     */
     public synchronized GamePlayer getCurrentPlayer() {
         if(mTurnId == -1)
             throw new RuntimeException("CurrentPlayer == -1. What's happening?");
         return mPlayers.get( mTurnId ); 
     }
 
+    /** Get the game map
+     * 
+     * @return The game map
+     */
     public GameMap getMap() {
         return mMap;
     }
     
+    /** Enqueue a command
+     * 
+     * @param gameCommand The command
+     */
     public void enqueuePacket(GameCommand gameCommand) {
         synchronized(mInputQueue) {
             mInputQueue.add(gameCommand);
         }
     }
     
+    /** Build the info container used to send info to the client
+     * 
+     * @param userList Username list
+     * @param i Player id (to send this packet)
+     * @return Game infos
+     */
     public GameStartInfo buildInfoContainer(EnemyInfo[] userList, int i) {
         GameStartInfo info = new GameStartInfo(userList, i, mPlayers.get(i).isHuman(), mMap);
         return info;
     }
     
+    /** Get the cells the current player can go into
+     * 
+     * @return The cells
+     */
     public Set<Point> getCellsWithMaxDistance() {
         GamePlayer player = getCurrentPlayer();
         return getMap().getCellsWithMaxDistance( 
@@ -425,6 +447,7 @@ public class GameState {
         );
     }
     
+    /** Switch to the next player */
     public void moveToNextPlayer() {
         int newTurnId = -1;
         int lastTurnId = mTurnId;
@@ -455,26 +478,47 @@ public class GameState {
         getCurrentPlayer().setCurrentState( new StartTurnState( this ) );
     }
     
+    /** Broadcast a packet
+     * 
+     * @param pkt The packet
+     */
     public void broadcastPacket( GameCommand pkt ) {
         synchronized(mOutputQueue) {
             mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(-1,pkt) );
         }
     }
     
+    /** Broadcast a packet
+     * 
+     * @param command Packet opcode
+     */
     public void broadcastPacket( InfoOpcode command ) {
         broadcastPacket( new GameCommand( command ) );
     }
 
+    /** Send a packet to the current player
+     * 
+     * @param command The packet command
+     */
     public void sendPacketToCurrentPlayer(GameOpcode command) {
         sendPacketToCurrentPlayer(new GameCommand(command));
     }
 
+    /** Send a packet to the current player
+     * 
+     * @param command The packet command
+     */
     public void sendPacketToCurrentPlayer(GameCommand networkPacket) {
         synchronized(mOutputQueue) {
             mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(mTurnId, networkPacket));
         }
     }
     
+    /** Get the number of player in this sector
+     * 
+     * @param p Sector
+     * @return Number of players
+     */
     public int getNumberOfPlayersInSector( Point p ) {
         int counter = 0;
         
@@ -485,6 +529,10 @@ public class GameState {
         return counter;
     }
 
+    /** Get the current turn id
+     * 
+     * @return The current turn
+     */
     public int getTurnId() {
         return mTurnId;
     }
@@ -503,9 +551,9 @@ public class GameState {
         checkEndGame(false);
     }
 
-    /** 
-     * @param player
-     * @param pkt
+    /** Send a packet to the specified player
+     * @param player The player
+     * @param pkt The packet
      */
     public void sendPacketToPlayer(Integer player, GameCommand pkt) {
         synchronized(mOutputQueue) {

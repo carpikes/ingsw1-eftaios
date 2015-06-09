@@ -179,6 +179,7 @@ public class GameManager {
         }
     }
 
+    /** Start a game */
     private void startGame() {
         // Let the game begin
         LOG.log(Level.INFO, "Players ready! Rolling the dice and starting up...");
@@ -294,7 +295,7 @@ public class GameManager {
         client.sendPacket(pkt);
     }
 
-    /**
+    /** Handle a packet
      * @param client
      * @param pkt
      */
@@ -340,6 +341,11 @@ public class GameManager {
         return mClients.get(i);
     }
 
+    /** Send a packet to an user
+     * 
+     * @param id User id
+     * @param networkPacket Packet content
+     */
     public void sendDirectPacket(int id, GameCommand networkPacket) {
     	LOG.log(Level.FINE, "Sending packet to " + id + ": " + networkPacket.getOpcode().toString());
     	Client c = mClients.get(id); 
@@ -347,10 +353,7 @@ public class GameManager {
     	    c.sendPacket(networkPacket);
     }
 
-    public GameState getGameState() {
-        return mState;
-    }
-
+    /** Shutdown the game */
 	public void shutdown() {
 		for(Client c : mClients)
 		    if(c.isConnected())
