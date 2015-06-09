@@ -233,7 +233,7 @@ public class GameMap implements Serializable {
     
     public void useHatch(Point pos) {
         if(!isWithinBounds(pos) || mNumberOfHatches <= 0 || mBoard[pos.y][pos.x].getId() != SectorBuilder.HATCH)
-            throw new RuntimeException("Cannot use an hatch that does not exist.");
+            throw new SectorException("Cannot use an hatch that does not exist.");
         
         mBoard[pos.y][pos.x] = SectorBuilder.getSectorFor(SectorBuilder.USED_HATCH);
         mNumberOfHatches--;

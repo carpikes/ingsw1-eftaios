@@ -168,7 +168,7 @@ public class GameState {
             nextState = player.getCurrentState().update();
             player.setCurrentState(nextState);
         } catch( IllegalStateOperationException e) {
-            LOG.log(Level.INFO, e.toString(), e);
+            LOG.log(Level.INFO, e.toString());
         }
 
         // broadcast messages at the end of the turn
