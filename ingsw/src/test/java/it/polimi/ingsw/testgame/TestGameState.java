@@ -109,6 +109,9 @@ public class TestGameState {
         assertTrue( game.getCurrentPlayer().getCurrentPosition().equals( newPosition ) );
     }
     
+    /**
+     * Test a human moving to an hatch and using it
+     */
     @Test
     public void testMoveToHatchOK() {
         GameState game = playToMovingState( true, true );
@@ -121,6 +124,9 @@ public class TestGameState {
         assertTrue( findGameCommandInQueue( game, InfoOpcode.INFO_USED_HATCH ) );
     }
     
+    /*
+     * Test if an alien CANNOT go to an hatch
+     */
     @Test
     public void testAlienMoveToHatch(  ) {
         playToMovingState( true, false );
@@ -129,6 +135,12 @@ public class TestGameState {
         assertTrue( hatchPoints.isEmpty() );
     }
 
+    /**
+     * Helper method. Play a basic game until reaching MovingState for current player
+     * @param forceRole Force role for current player
+     * @param human If forceRole is true, force to human if this is true, alien otherwise
+     * @return The game played up to this state
+     */
     private GameState playToMovingState(boolean forceRole, boolean human) {
         GameState game = new GameState("YES", MAP_ID, NUMBER_OF_PLAYERS, START_ID, true);
         
@@ -206,14 +218,14 @@ public class TestGameState {
     /**
      * Find if the given command was sent in game.
      * @param game THe game you're testing
-     * @param opcode THe command you're looking for
+     * @param infoUsedHatch THe command you're looking for
      * @return Found or not?
      */
-    private boolean findGameCommandInQueue(GameState game, Opcode opcode) {
+    private boolean findGameCommandInQueue(GameState game, Opcode infoUsedHatch) {
         boolean found = false;
         
         for( Entry<Integer, GameCommand> pkt : game.debugGetOutputQueue() )
-            if( ((GameCommand)pkt.getValue()).getOpcode() == opcode )
+            if( ((GameCommand)pkt.getValue()).getOpcode() == infoUsedHatch )
                 found = true;
         
         return found;
