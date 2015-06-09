@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.exception.DebugException;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.network.CoreOpcode;
 
@@ -46,8 +47,12 @@ public class Server {
     /** This game is waiting for new players */
     private GameManager mCurGame = null;
 
+    /** All games queued to removal are here */ 
 	private Queue<GameManager> mGamesToRemove;
-
+	
+	/** Debug mode */
+	private boolean dDebugMode = false;
+	
     private Server() { 
         mServers = new ArrayList<Listener>();
         mGamesRunning = new ArrayList<GameManager>();
@@ -122,11 +127,14 @@ public class Server {
     }
 
     /** Start the server and put listeners online. */
-    public void runServer() {
-    	LOG.log(Level.FINE, "Starting up...");
-        for(Listener server : mServers)
-            new Thread(server).start();
-
+    public void runServer(boolean debugMode) {
+        dDebugMode = debugMode;
+        if(!dDebugMode) {  
+            LOG.log(Level.FINE, "Starting up...");
+            for(Listener server : mServers)
+                new Thread(server).start();
+        }
+        
         try {
             while(!mStopEvent) {
                 if(mCurGame != null) {
@@ -155,8 +163,10 @@ public class Server {
             LOG.log(Level.FINER, e.toString(), e);
         }
         
-        for(Listener server : mServers)
-            server.tearDown();
+        if(!dDebugMode) {
+            for(Listener server : mServers)
+                server.tearDown();
+        }
     }
     
     /** Get number of connected clients
@@ -177,6 +187,9 @@ public class Server {
      * @return True if the server is correctly shutted down
      */
     public synchronized boolean isDown() {
+        if(dDebugMode)
+            throw new DebugException("Unsupported command in debug mode");
+        
         if(mServers != null)
             for(Listener server : mServers)
                 if(!server.isDown())
@@ -189,6 +202,8 @@ public class Server {
      * @return True if the server is up and running
      */
     public synchronized boolean isUp() {
+        if(dDebugMode)
+            throw new DebugException("Unsupported command in debug mode");
         if(mServers == null)
             return false;
         
