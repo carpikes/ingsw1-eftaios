@@ -10,6 +10,7 @@ import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 import it.polimi.ingsw.game.state.MovingState;
+import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.StartTurnState;
 
 import java.awt.Point;
@@ -96,7 +97,45 @@ public class TestGameState {
      */
     @Test
     public void testMoveOK() {
+        GameState game = playToMovingState( false, false );
+        
+        // send position and update game
+        Point newPosition = dangerousPoints.iterator().next();
+        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, newPosition ) );
+        game.update();
+        
+        assertTrue( game.getCurrentPlayer().getCurrentPosition().equals( newPosition ) );
+    }
+    
+    @Test
+    public void testMoveToHatchOK() {
+        GameState game = playToMovingState( true, true );
+        
+        // send position and update game
+        Point newPosition = hatchPoints.iterator().next();
+        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, newPosition ) );
+        game.update();
+        
+        assertTrue( findGameCommandInQueue( game, GameOpcode.INFO_USED_HATCH ) );
+    }
+    
+    @Test
+    public void testAlienMoveToHatch(  ) {
+        playToMovingState( true, false );
+        
+        // Alien cannot have hatch sector in their sets of possible moves!
+        assertTrue( hatchPoints.isEmpty() );
+    }
+
+    private GameState playToMovingState(boolean forceRole, boolean human) {
         GameState game = new GameState("YES", MAP_ID, NUMBER_OF_PLAYERS, START_ID, true);
+        
+        // ONLY HUMANS CAN MOVE TO HATCH SECTORS!
+        if( forceRole ) {
+            if( ( !human && game.getCurrentPlayer().isHuman() ) || ( human && game.getCurrentPlayer().isAlien() ) ) {
+                swapPlayers(game);
+            }
+        }
         
         // move to moving state
         game.update();
@@ -107,12 +146,32 @@ public class TestGameState {
         // create set of dangerous, not dangerous and hatch sectors available for current player
         createSetsOfPossibleSectors(game);
         
-        // send position and update game
-        Point newPosition = dangerousPoints.iterator().next();
-        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, newPosition ) );
+        return game;
+    }
+    
+    /*
+    @Test
+    public void testInvalidActionInMovingState() {
+        GameState game = new GameState("YES", DEBUG_ID, NUMBER_OF_PLAYERS, START_ID, true);
+        
+        // move to moving state
         game.update();
         
-        assertTrue( game.getCurrentPlayer().getCurrentPosition().equals( newPosition ) );
+        // drop previous messages
+        clearMessageQueue(game);
+        
+        // send an invalid position
+        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD) );
+        game.update();
+    }
+    */
+    
+    /*----- END OF TESTS ----- */
+
+    private void swapPlayers(GameState game) {
+        game.getCurrentPlayer().setCurrentState( new NotMyTurnState(game) );
+        game.debugSetNextTurnId(1);
+        game.moveToNextPlayer();
     }
 
     private void createSetsOfPossibleSectors(GameState game) {
@@ -136,24 +195,6 @@ public class TestGameState {
         }
     }
     
-
-    
-    /*
-    @Test
-    public void testInvalidActionInMovingState() {
-        GameState game = new GameState("YES", DEBUG_ID, NUMBER_OF_PLAYERS, START_ID, true);
-        
-        // move to moving state
-        game.update();
-        
-        // drop previous messages
-        clearMessageQueue(game);
-        
-        // send an invalid position
-        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD) );
-        game.update();
-    }
-    */
     private void clearMessageQueue(GameState game) {
         game.debugGetOutputQueue().clear();
     }
@@ -176,6 +217,4 @@ public class TestGameState {
         return found;
     }
     
-    
-
 }
