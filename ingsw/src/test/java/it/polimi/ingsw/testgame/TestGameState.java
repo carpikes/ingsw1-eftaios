@@ -11,9 +11,12 @@ import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.InfoOpcode;
 import it.polimi.ingsw.game.network.Opcode;
 import it.polimi.ingsw.game.sector.SectorBuilder;
+import it.polimi.ingsw.game.state.EndingTurnState;
 import it.polimi.ingsw.game.state.MovingState;
 import it.polimi.ingsw.game.state.NotMyTurnState;
+import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.StartTurnState;
+import it.polimi.ingsw.game.state.WinnerState;
 
 import java.awt.Point;
 import java.util.HashSet;
@@ -51,7 +54,7 @@ public class TestGameState {
     }
     
     /**
-     * Check if server acknowlodges a wrong position
+     * Check if server acknowledges a wrong position
      */
     @Test
     public void testInvalidMove() {
@@ -73,7 +76,7 @@ public class TestGameState {
     }
     
     /**
-     * Check if server acknowlodges a wrong argument type
+     * Check if server acknowledges a wrong argument type
      */
     @Test
     public void testMoveWrongParameterType() {
@@ -122,13 +125,20 @@ public class TestGameState {
         game.update();
         
         assertTrue( findGameCommandInQueue( game, InfoOpcode.INFO_USED_HATCH ) );
+        
+        PlayerState state = game.getCurrentPlayer().getCurrentState();
+        
+        // since we're playing a 2-player game, there are only two possibilities:
+        // 1) The player has won, leaving the other player alone -> the game ends
+        // 2) The player has moved into a broken hatch -> let the turn end
+        assertTrue( game.debugGameEnded() || state instanceof EndingTurnState );
     }
     
     /*
      * Test if an alien CANNOT go to an hatch
      */
     @Test
-    public void testAlienMoveToHatch(  ) {
+    public void testAlienMoveToHatch( ) {
         playToMovingState( true, false );
         
         // Alien cannot have hatch sector in their sets of possible moves!
@@ -182,12 +192,20 @@ public class TestGameState {
     
     /*----- END OF TESTS ----- */
 
+    /**
+     * Force second player as first one in a basic two-player game
+     * @param game The game
+     */
     private void swapPlayers(GameState game) {
         game.getCurrentPlayer().setCurrentState( new NotMyTurnState(game) );
         game.debugSetNextTurnId(1);
         game.moveToNextPlayer();
     }
 
+    /** 
+     * Populate sets of dangerous, not dangerous and hatch sectors.
+     * @param game The game you're playing
+     */
     private void createSetsOfPossibleSectors(GameState game) {
         dangerousPoints.clear();
         notDangerousPoints.clear();
@@ -209,6 +227,10 @@ public class TestGameState {
         }
     }
     
+    /**
+     * Clear message queue.
+     * @param game The game
+     */
     private void clearMessageQueue(GameState game) {
         game.debugGetOutputQueue().clear();
     }

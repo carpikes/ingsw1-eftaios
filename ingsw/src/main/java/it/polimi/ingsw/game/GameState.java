@@ -604,4 +604,11 @@ public class GameState {
         
         return mPlayers.get(playerId);
     }
+    
+    public boolean debugGameEnded() {
+        if(!dDebugMode)
+            throw new DebugException("Cannot use this method in normal mode");
+        
+        return this.dGameOver;
+    }
 }
