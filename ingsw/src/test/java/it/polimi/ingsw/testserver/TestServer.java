@@ -26,16 +26,11 @@ public class TestServer {
     /**
      * @throws java.lang.Exception Throws exception if something is wrong
      */
-    @Ignore
     @BeforeClass
     public static void setUp() throws Exception {
-        new Thread(new Runnable() { public void run() { Server.getInstance().runServer(); } }).start();
-        while(!Server.getInstance().isUp()) {
-            Thread.sleep(10);
-        }
+        new Thread(new Runnable() { public void run() { Server.getInstance().runServer(true); } }).start();
     }
     
-    @Ignore
     @Test
     public void testGame() {
         
@@ -108,10 +103,6 @@ public class TestServer {
         assertEquals(Server.getInstance().getConnectedClients(), 0);
     }
 
-    /**
-     * Test method for {@link it.polimi.ingsw.server.Server#addClient(it.polimi.ingsw.server.ClientConn)}.
-     */
-    @Ignore
     @Test
     public void testClient() {
         ServerToClientMock conn = new ServerToClientMock();
@@ -121,6 +112,7 @@ public class TestServer {
         conn2.run();
         
         int clientsBefore = Server.getInstance().getConnectedClients();
+        
         assertTrue(Server.getInstance().addClient(conn));
         assertTrue(Server.getInstance().addClient(conn2));
         
@@ -138,10 +130,13 @@ public class TestServer {
         // Try an already used username
         conn2.emulateReadPacket(new GameCommand(CoreOpcode.CMD_CS_USERNAME, "test"));
         assertFalse(conn2.exposeClient().hasUsername());
-        
+
         // Disconnect clients
         conn.emulateDisconnect();
         conn2.emulateDisconnect();
+        
+        Server.getInstance().removeClient();
+        Server.getInstance().removeClient();
         
         assertEquals(Server.getInstance().getConnectedClients(), clientsBefore);
     }
@@ -165,13 +160,9 @@ public class TestServer {
     /**
      * @throws java.lang.Exception Throws exception if something is wrong
      */
-    @Ignore
     @AfterClass
     public static void tearDown() throws Exception {
         //System.out.println("------------------Tearing down------------------");
         Server.getInstance().tearDown();
-        while(!Server.getInstance().isDown()) {
-            Thread.sleep(10);
-        }
     }
 }

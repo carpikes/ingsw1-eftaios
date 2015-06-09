@@ -11,7 +11,7 @@ public class Main {
     private Main() { }
     
     public static void main(String[] args) {
-        Server.getInstance().runServer();
+        Server.getInstance().runServer(false);
     }
 
 }
