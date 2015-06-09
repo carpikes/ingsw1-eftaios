@@ -1,8 +1,7 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.CoreOpcode;
+import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.Opcode;
 
 import java.io.Serializable;

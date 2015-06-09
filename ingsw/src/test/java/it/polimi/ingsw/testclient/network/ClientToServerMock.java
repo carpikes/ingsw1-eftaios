@@ -3,10 +3,10 @@
  */
 package it.polimi.ingsw.testclient.network;
 
-import java.io.IOException;
-
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.game.network.GameCommand;
+
+import java.io.IOException;
 
 /**
  * @author Michele
@@ -55,7 +55,7 @@ public class ClientToServerMock extends Connection {
     @Override
     public boolean isOnline() {
         // TODO Auto-generated method stub
-        return false;
+        return connected;
     }
 
 }
