@@ -1,12 +1,10 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.GameViewCommand;
+import it.polimi.ingsw.game.network.ViewCommand;
 
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -81,7 +79,7 @@ public abstract class View {
     /** Notify a closed connection */
     public abstract void close();
     
-    protected abstract void handleCommand(ArrayList<GameViewCommand> cmd);
+    protected abstract void handleCommand(List<ViewCommand> cmd);
 
 	public abstract void showInfo(String user, String message);
 
@@ -102,11 +100,11 @@ public abstract class View {
      * @param winnerList
      * @param loserList
      */
-    public abstract void showEnding(ArrayList<Integer> winnerList, ArrayList<Integer> loserList);
+    public abstract void showEnding(List<Integer> winnerList, List<Integer> loserList);
 
     /**
      * @param listOfCards
      */
-    public abstract void notifyObjectCardListChange(ArrayList<Integer> listOfCards);
+    public abstract void notifyObjectCardListChange(List<Integer> listOfCards);
         
 }

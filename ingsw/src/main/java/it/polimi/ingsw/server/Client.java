@@ -1,7 +1,9 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.CoreOpcode;
+import it.polimi.ingsw.game.network.Opcode;
 
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -53,21 +55,26 @@ public class Client {
                 
                 // Choosing username
                 synchronized(mGame) {
-                    switch(pkt.getOpcode()) {
-                        case CMD_CS_USERNAME:
-                            String name = (String) args[0];
-                            if(mGame.canSetName(name) && mUser == null) {
-                                setUsername(name);
-                                sendPacket(new GameCommand(GameOpcode.CMD_SC_USEROK, mGame.getNumberOfClients(), mGame.getRemainingLoginTime()));
-                            } else
-                                sendPacket(GameOpcode.CMD_SC_USERFAIL);
-                            break;
-                        case CMD_CS_LOADMAP:
-                            if(args.length == 1 && args[0] instanceof Integer && mGame.setMap(this, (Integer)args[0]))
-                                sendPacket(GameOpcode.CMD_SC_MAPOK);
-                            else
-                                sendPacket(GameOpcode.CMD_SC_MAPFAIL);
-                            break;
+                    if(pkt.getOpcode() instanceof CoreOpcode) {
+                        CoreOpcode opcode = (CoreOpcode) pkt.getOpcode();
+                        switch(opcode) {
+                            case CMD_CS_USERNAME:
+                                String name = (String) args[0];
+                                if(mGame.canSetName(name) && mUser == null) {
+                                    setUsername(name);
+                                    sendPacket(new GameCommand(CoreOpcode.CMD_SC_USEROK, mGame.getNumberOfClients(), mGame.getRemainingLoginTime()));
+                                } else
+                                    sendPacket(CoreOpcode.CMD_SC_USERFAIL);
+                                break;
+                            case CMD_CS_LOADMAP:
+                                if(args.length == 1 && args[0] instanceof Integer && mGame.setMap(this, (Integer)args[0]))
+                                    sendPacket(CoreOpcode.CMD_SC_MAPOK);
+                                else
+                                    sendPacket(CoreOpcode.CMD_SC_MAPFAIL);
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             } catch( Exception e ) {
@@ -92,7 +99,7 @@ public class Client {
      * 
      * @param opcode The opcode
      */
-    public void sendPacket(GameOpcode opcode) {
+    public void sendPacket(Opcode opcode) {
         sendPacket(new GameCommand(opcode));
     }
 

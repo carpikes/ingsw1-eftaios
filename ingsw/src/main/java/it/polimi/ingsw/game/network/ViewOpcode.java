@@ -1,6 +1,8 @@
 package it.polimi.ingsw.game.network;
 
-public enum GameViewOpcode {
+import java.io.Serializable;
+
+public enum ViewOpcode implements Serializable {
     CMD_ENABLEMAPVIEW("Choose a position on the map"),
     CMD_CHOOSEOBJECTCARD("Choose an object card"), 
     CMD_DRAWDANGEROUSCARD("Draw a dangerous card"), 
@@ -12,7 +14,7 @@ public enum GameViewOpcode {
     
     private final String mText;
     
-    private GameViewOpcode(String text) {
+    private ViewOpcode(String text) {
         mText = text;
     }
     

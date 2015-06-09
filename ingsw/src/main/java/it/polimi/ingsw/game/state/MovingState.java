@@ -9,8 +9,9 @@ import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.hatch.HatchCardBuilder;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.GameViewCommand;
-import it.polimi.ingsw.game.network.GameViewOpcode;
+import it.polimi.ingsw.game.network.ViewCommand;
+import it.polimi.ingsw.game.network.ViewOpcode;
+import it.polimi.ingsw.game.network.InfoOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
@@ -40,8 +41,8 @@ public class MovingState extends PlayerState {
     }
 
     protected void buildAndSendAvailableCommands() {
-        ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
-        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENABLEMAPVIEW, mGamePlayer.getCurrentPosition(), mGamePlayer.getMaxMoves()));
+        ArrayList<ViewCommand> availableCommands = new ArrayList<>();
+        availableCommands.add(new ViewCommand(ViewOpcode.CMD_ENABLEMAPVIEW, mGamePlayer.getCurrentPosition(), mGamePlayer.getMaxMoves()));
         
         addObjectCardIfPossible(availableCommands);
         sendAvailableCommands(availableCommands);
@@ -85,7 +86,7 @@ public class MovingState extends PlayerState {
         mGameState.rawMoveTo(player, chosenPos);
 
         // notify all players that current players has just moved
-        mGameState.broadcastPacket( GameOpcode.INFO_HAS_MOVED );
+        mGameState.broadcastPacket( InfoOpcode.INFO_HAS_MOVED );
 
         Sector sector = map.getSectorAt( player.getCurrentPosition() );
         // If we are on an hatch sector, draw an hatch card and act accordingly
@@ -102,7 +103,7 @@ public class MovingState extends PlayerState {
 
         map.useHatch(mGamePlayer.getCurrentPosition());
         // set current cell as no more accessible
-        mGameState.broadcastPacket( new GameCommand( GameOpcode.INFO_USED_HATCH, mGamePlayer.getCurrentPosition() ) );
+        mGameState.broadcastPacket( new GameCommand( InfoOpcode.INFO_USED_HATCH, mGamePlayer.getCurrentPosition() ) );
 
         return HatchCardBuilder.getRandomCard(mGameState).getNextState( );
     }

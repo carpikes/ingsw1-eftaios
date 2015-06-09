@@ -7,8 +7,8 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.GameViewCommand;
-import it.polimi.ingsw.game.network.GameViewOpcode;
+import it.polimi.ingsw.game.network.ViewCommand;
+import it.polimi.ingsw.game.network.ViewOpcode;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -31,8 +31,8 @@ public class EndingTurnState extends PlayerState {
 
     @Override
     protected void buildAndSendAvailableCommands() {
-        ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
-        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENDTURN));
+        ArrayList<ViewCommand> availableCommands = new ArrayList<>();
+        availableCommands.add(new ViewCommand(ViewOpcode.CMD_ENDTURN));
 
         addObjectCardIfPossible(availableCommands);
         sendAvailableCommands(availableCommands);

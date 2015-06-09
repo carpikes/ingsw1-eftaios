@@ -2,12 +2,16 @@ package it.polimi.ingsw.game.sector;
 
 import it.polimi.ingsw.exception.SectorException;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Builder for sectors. Create a new sector based on ID.
  * @author Michele
  * @since 3 Jun 2015
  */
 public class SectorBuilder {
+    private static final Logger LOG = Logger.getLogger(SectorBuilder.class.getName());
     
     public static final int NOT_VALID = 0;
     public static final int NOT_DANGEROUS = 1;
@@ -45,6 +49,7 @@ public class SectorBuilder {
             getSectorFor(id);
             return true;
         } catch(SectorException e) {
+            LOG.log(Level.FINEST, e.toString(), e);
             return false;
         }
     }

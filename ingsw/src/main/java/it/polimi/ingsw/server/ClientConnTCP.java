@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.network.CoreOpcode;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -46,7 +46,7 @@ public class ClientConnTCP extends ClientConn {
                 if(obj != null && mClient != null && obj instanceof GameCommand) {
                     resetTimeoutTimer();
                     
-                    if(((GameCommand)obj).getOpcode() == GameOpcode.CMD_PING)
+                    if(((GameCommand)obj).getOpcode() == CoreOpcode.CMD_PING)
                     	continue;
                     mClient.handlePacket((GameCommand)obj);
                 }
@@ -78,7 +78,7 @@ public class ClientConnTCP extends ClientConn {
     public synchronized void disconnect() {
         if(mOut != null) {
             try {
-                mOut.writeObject(new GameCommand(GameOpcode.CMD_BYE));
+                mOut.writeObject(new GameCommand(CoreOpcode.CMD_BYE));
                 mOut.flush();
             } catch(IOException e) {
                 LOG.log(Level.FINER, e.toString(), e);

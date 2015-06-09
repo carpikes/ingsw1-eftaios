@@ -3,12 +3,11 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.GameViewCommand;
+import it.polimi.ingsw.game.network.ViewCommand;
 
 import java.awt.Point;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
@@ -127,10 +126,10 @@ public class GUIView extends View {
     }
 
     @Override
-    protected void handleCommand(ArrayList<GameViewCommand> cmd) {
+    protected void handleCommand(List<ViewCommand> cmd) {
         resetViewStatus();
         
-        for(GameViewCommand c : cmd) {
+        for(ViewCommand c : cmd) {
             switch(c.getOpcode()) {
             case CMD_CHOOSEOBJECTCARD:
                 setCanSelectObjCard( true );
@@ -257,8 +256,8 @@ public class GUIView extends View {
      * @see it.polimi.ingsw.client.View#showEnding(java.util.ArrayList, java.util.ArrayList)
      */
     @Override
-    public void showEnding(ArrayList<Integer> winnerList,
-            ArrayList<Integer> loserList) {
+    public void showEnding(List<Integer> winnerList,
+            List<Integer> loserList) {
         // TODO Auto-generated method stub
         
     }
@@ -267,7 +266,7 @@ public class GUIView extends View {
      * @see it.polimi.ingsw.client.View#notifyObjectCardListChange(java.util.ArrayList)
      */
     @Override
-    public void notifyObjectCardListChange(ArrayList<Integer> listOfCards) {
+    public void notifyObjectCardListChange(List<Integer> listOfCards) {
         mMainFrame.notifyObjectCardListChange(listOfCards);
     }
 }

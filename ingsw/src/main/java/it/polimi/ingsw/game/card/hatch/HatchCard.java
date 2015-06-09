@@ -7,17 +7,14 @@ import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 
-import java.io.Serializable;
-
 
 /**
  * Abstract class for a generic Hatch card.
  * @author Michele
  * @since 23 May 2015
  */
-public abstract class HatchCard implements Serializable {
-    private static final long serialVersionUID = 1L;
-    
+public abstract class HatchCard {
+
     protected GameState mGameState;
     protected GamePlayer mGamePlayer;
 	

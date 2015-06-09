@@ -5,12 +5,11 @@ import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.GameViewCommand;
+import it.polimi.ingsw.game.network.ViewCommand;
 
 import java.awt.Point;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -144,8 +143,8 @@ public class CLIView extends View {
     }
 
     @Override
-    protected void handleCommand(ArrayList<GameViewCommand> cmd) {
-        GameViewCommand c;
+    protected void handleCommand(List<ViewCommand> cmd) {
+        ViewCommand c;
         if(cmd.size() > 1) {
             IO.write("What do you want to do now?");
             int choice = IO.askInAList(cmd);
@@ -241,12 +240,12 @@ public class CLIView extends View {
      * @see it.polimi.ingsw.client.View#showEnding(java.util.ArrayList, java.util.ArrayList)
      */
     @Override
-    public void showEnding(ArrayList<Integer> winnerList, ArrayList<Integer> loserList) {
+    public void showEnding(List<Integer> winnerList, List<Integer> loserList) {
         IO.write("*******************");
         IO.write("**   GAME OVER   **");
         IO.write("*******************\n");
         
-        if(winnerList.size() == 0) 
+        if(winnerList.isEmpty()) 
             IO.write("Nobody won this game.");
         else {
             IO.write("====  Winners  ====");
@@ -254,7 +253,7 @@ public class CLIView extends View {
                 IO.write(" -> " + mContainer.getPlayersList()[i].getUsername());
         }
         
-        if(loserList.size() == 0) 
+        if(loserList.isEmpty()) 
             IO.write("Nobody lost this game.");
         else {
             IO.write("====  Losers   ====");
@@ -267,7 +266,7 @@ public class CLIView extends View {
      * @see it.polimi.ingsw.client.View#notifyObjectCardListChange(java.util.ArrayList)
      */
     @Override
-    public void notifyObjectCardListChange(ArrayList<Integer> listOfCards) {
+    public void notifyObjectCardListChange(List<Integer> listOfCards) {
         // TODO Auto-generated method stub
         
     }

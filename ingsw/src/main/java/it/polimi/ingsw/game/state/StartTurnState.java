@@ -5,7 +5,7 @@ package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.InfoOpcode;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +23,7 @@ public class StartTurnState extends PlayerState {
         mGamePlayer.resetValues();
         
         // tell everybody I'm starting playing!
-        state.broadcastPacket( new GameCommand(GameOpcode.INFO_START_TURN, state.getTurnId()) );
+        state.broadcastPacket( new GameCommand(InfoOpcode.INFO_START_TURN, state.getTurnId()) );
     }
 
     /* (non-Javadoc)

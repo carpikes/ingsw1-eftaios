@@ -7,8 +7,9 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.GameViewCommand;
-import it.polimi.ingsw.game.network.GameViewOpcode;
+import it.polimi.ingsw.game.network.ViewCommand;
+import it.polimi.ingsw.game.network.ViewOpcode;
+import it.polimi.ingsw.game.network.InfoOpcode;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -30,8 +31,8 @@ public class NoiseInAnySectorState extends PlayerState {
     
     @Override
     protected void buildAndSendAvailableCommands() {
-        ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
-        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENABLEMAPVIEW));
+        ArrayList<ViewCommand> availableCommands = new ArrayList<>();
+        availableCommands.add(new ViewCommand(ViewOpcode.CMD_ENABLEMAPVIEW));
 
         sendAvailableCommands(availableCommands);
     }
@@ -49,7 +50,7 @@ public class NoiseInAnySectorState extends PlayerState {
             if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_MAP_POSITION && packet.getArgs().length == 1) {
                 Point p = (Point) packet.getArgs()[0];
                 if(p != null && mGameState.getMap().isWithinBounds(p)) {
-                    mGameState.broadcastPacket( new GameCommand(GameOpcode.INFO_NOISE, p ) );
+                    mGameState.broadcastPacket( new GameCommand(InfoOpcode.INFO_NOISE, p ) );
                     nextState = mGameState.getObjectCard( );
                 } else
                     throw new IllegalStateOperationException("Invalid position");

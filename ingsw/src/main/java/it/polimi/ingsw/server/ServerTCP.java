@@ -75,7 +75,7 @@ class ServerTCP implements Listener {
             if(mServer != null)
                 mServer.close();
         } catch (IOException e) {
-            LOG.log(Level.FINEST, e.toString());
+            LOG.log(Level.FINEST, e.toString(), e);
         }
     }
 

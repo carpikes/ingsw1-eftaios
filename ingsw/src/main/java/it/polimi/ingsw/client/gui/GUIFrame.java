@@ -16,8 +16,8 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,7 +41,7 @@ public class GUIFrame extends JFrame {
 
     private static final Logger LOG = Logger.getLogger( GUIFrame.class.getName() );
 
-    private final GameController mController;
+    private transient final GameController mController;
 
     // Constants
     private static final int WIDTH = 1024;
@@ -144,7 +144,7 @@ public class GUIFrame extends JFrame {
             bottomPanel.add( listOfUsers, BorderLayout.CENTER);
             this.add( bottomPanel, BorderLayout.SOUTH );
         } catch( NullPointerException e ) {
-            LOG.log(Level.SEVERE, "Cannot load list of enemies!");
+            LOG.log(Level.SEVERE, "Cannot load list of enemies!", e);
         }
     }
 
@@ -270,24 +270,25 @@ public class GUIFrame extends JFrame {
         try {
             mMapCanvas = new MapCanvasPanel(mController, map, WIDTH_LEFT, HEIGHT_TOP, startingPoint);
             mMapCanvas.setPreferredSize(mDimensionLeftPanel);
+
+            remove(mLoginCanvas);
+            add(mMapCanvas, BorderLayout.CENTER);
+            mLoginCanvas = null;
+            
+            if( rightPanel != null )
+                rightPanel.setVisible( true );
+            
+            createBottomPanel();
+            
+            resetViewStatus();
+            
+            validate();
+            repaint();
         } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
             LOG.log(Level.SEVERE, "File is not well formatted: " + e);
-            System.exit(1);
+            mController.stop();
+            setVisible(false);
         }
-
-        remove(mLoginCanvas);
-        add(mMapCanvas, BorderLayout.CENTER);
-        mLoginCanvas = null;
-        
-        if( rightPanel != null )
-            rightPanel.setVisible( true );
-        
-        createBottomPanel();
-        
-        resetViewStatus();
-        
-        validate();
-        repaint();
     }
 
     public Point getChosenMapCell() {
@@ -308,9 +309,9 @@ public class GUIFrame extends JFrame {
      */
     public void showInfo(String user, String message) {
         if( user != null )
-            textArea.append( String.format("%s: %s\n\n", user, message) );
+            textArea.append( String.format("%s: %s%n%n", user, message) );
         else 
-            textArea.append( String.format("-- INFO --: %s\n\n", message) );
+            textArea.append( String.format("-- INFO --: %s%n%n", message) );
     }
     
     /**
@@ -380,7 +381,7 @@ public class GUIFrame extends JFrame {
     /**
      * @param listOfCards
      */
-    public void notifyObjectCardListChange(ArrayList<Integer> listOfCards) {
+    public void notifyObjectCardListChange(List<Integer> listOfCards) {
         for( int i = 0; i < this.numberOfCardButtons; ++i ) {
             try {
                 int idCard = listOfCards.get(i);
@@ -391,6 +392,7 @@ public class GUIFrame extends JFrame {
                     }
                 }
             } catch( IndexOutOfBoundsException e ) {
+                LOG.log(Level.FINER, e.toString(), e);
                 cardButtons[i].changeTo( CardButtons.NULL );
             }
         }

@@ -2,17 +2,17 @@ package it.polimi.ingsw.game.network;
 
 import java.io.Serializable;
 
-public class GameViewCommand implements Serializable{
+public class ViewCommand implements Serializable{
     private static final long serialVersionUID = 1L;
-    private final GameViewOpcode mOpcode;
+    private final ViewOpcode mOpcode;
     private final Serializable[] mArgs;
     
-    public GameViewCommand(GameViewOpcode opcode, Serializable... args) {
+    public ViewCommand(ViewOpcode opcode, Serializable... args) {
         mOpcode = opcode;
         mArgs = args;
     }
     
-    public GameViewOpcode getOpcode() {
+    public ViewOpcode getOpcode() {
         return mOpcode;
     }
     

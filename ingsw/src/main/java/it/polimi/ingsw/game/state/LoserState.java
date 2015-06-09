@@ -6,6 +6,7 @@ package it.polimi.ingsw.game.state;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
+import it.polimi.ingsw.game.network.InfoOpcode;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +23,7 @@ public class LoserState extends PlayerState {
         LOG.log(Level.FINE, "Constructor");
 
 
-        state.broadcastPacket( new GameCommand(GameOpcode.INFO_LOSER, loserPlayer));
+        state.broadcastPacket( new GameCommand(InfoOpcode.INFO_LOSER, loserPlayer));
         state.sendPacketToPlayer(loserPlayer, new GameCommand(GameOpcode.CMD_SC_LOSE));
     }
 

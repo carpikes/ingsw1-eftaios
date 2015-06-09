@@ -9,15 +9,15 @@ import java.io.Serializable;
 public class GameCommand implements Serializable {
     private static final long serialVersionUID = 1L;
     
-    private final GameOpcode mOpcode;
+    private final Opcode mOpcode;
     private final Serializable[] mArgs;
     
-    public GameCommand(GameOpcode opcode, Serializable... args) {
+    public GameCommand(Opcode opcode, Serializable... args) {
         mOpcode = opcode;
         mArgs = args;
     }
     
-    public GameOpcode getOpcode() {
+    public Opcode getOpcode() {
         return mOpcode;
     }
     

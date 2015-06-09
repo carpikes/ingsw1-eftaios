@@ -11,8 +11,6 @@ import it.polimi.ingsw.game.state.WinnerState;
  */
 public class GreenHatchCard extends HatchCard {
 
-    private static final long serialVersionUID = 1L;
-
     public GreenHatchCard(GameState state) {
         super(state);
         // TODO Auto-generated constructor stub

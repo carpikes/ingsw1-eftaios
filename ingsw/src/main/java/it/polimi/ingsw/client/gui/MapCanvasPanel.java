@@ -17,7 +17,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -28,14 +27,12 @@ import javax.swing.Timer;
 public class MapCanvasPanel extends JPanel {
     
     private static final long serialVersionUID = -5583245069814214909L;
-    
-    private static final Logger LOG = Logger.getLogger( MapCanvasPanel.class.getName() );
 
     // the map being loaded
     private GameMap mGameMap;
 
     // the array of all drawn mHexagons
-    private Hexagon[][] mHexagons;
+    private transient Hexagon[][] mHexagons;
 
     // Selected hex: contains indexes i and j in mHexagons[][] array
     private Point mCurHexCoords;
@@ -49,15 +46,15 @@ public class MapCanvasPanel extends JPanel {
     private int mCanvasWidth;
     private int mCanvasHeight;
 
-    private Set<Point> mEnabledCells = new HashSet<>();
+    private transient Set<Point> mEnabledCells = new HashSet<>();
 
     private boolean mClickedOnCell = false;
     
-    private final Object mRenderLoopMutex = new Object();
+    private transient final Object mRenderLoopMutex = new Object();
 
     private Point mPlayerPosition;
     
-    private final GameController mController;
+    private transient final GameController mController;
     
     /**
      * Instantiates a new map canvas panel.

@@ -5,7 +5,6 @@ package it.polimi.ingsw.game.card.object;
 
 import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.player.GamePlayer;
 
 import java.util.Random;
 

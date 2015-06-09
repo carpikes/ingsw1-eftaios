@@ -5,26 +5,10 @@ package it.polimi.ingsw.game.network;
  * @since  May 17, 2015
  */
 
-public enum GameOpcode {
-    /** LOGIN COMMANDS */
-    CMD_INVALID,
-    CMD_PING,
-    CMD_BYE,
-    CMD_SC_FULL,
-    CMD_SC_STAT,
-    CMD_SC_TIME,
-    CMD_SC_CHOOSEUSER,
-    CMD_CS_USERNAME,
-    CMD_SC_USEROK,
-    CMD_SC_USERFAIL,
-    CMD_SC_RUN,
-    CMD_SC_CHOOSEMAP,
-    CMD_CS_LOADMAP,
-    CMD_SC_MAPOK,
-    CMD_SC_MAPFAIL,
-    CMD_SC_AVAILABLE_COMMANDS,
-   
+public enum GameOpcode implements Opcode{
+
     /** GAME COMMANDS TO SERVER */
+    
     CMD_CS_ATTACK,
     CMD_CS_DISCARD_OBJECT_CARD,
     CMD_CS_CHOSEN_OBJECT_CARD,
@@ -36,6 +20,8 @@ public enum GameOpcode {
     CMD_CS_AWAKE,
     
     /** GAME COMMANDS TO *A SINGLE* CLIENT */
+    CMD_SC_AVAILABLE_COMMANDS,
+    
     CMD_SC_UPDATE_LOCAL_INFO,
     CMD_SC_START_TURN,
     CMD_SC_MOVE_DONE,
@@ -48,19 +34,4 @@ public enum GameOpcode {
     CMD_SC_END_OF_TURN,
     CMD_SC_LOSE,
     CMD_SC_WIN,
-    
-    /** INFO TO *ALL* PLAYERS */
-    INFO_HAS_MOVED,
-    INFO_USED_HATCH,
-    INFO_WINNER,
-    INFO_LOSER, 
-    INFO_PLAYER_ATTACKED, 
-    INFO_START_TURN, 
-    INFO_OBJ_CARD_USED,
-    INFO_NOISE,
-    INFO_SILENCE, 
-    INFO_GOT_A_NEW_OBJ_CARD,
-    INFO_END_GAME,
-    INFO_SPOTLIGHT, 
-    INFO_AWAY
 }

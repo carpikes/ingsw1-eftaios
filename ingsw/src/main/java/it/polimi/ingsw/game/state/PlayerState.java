@@ -7,8 +7,8 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.GameViewCommand;
-import it.polimi.ingsw.game.network.GameViewOpcode;
+import it.polimi.ingsw.game.network.ViewCommand;
+import it.polimi.ingsw.game.network.ViewOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 
 import java.io.Serializable;
@@ -28,7 +28,7 @@ public abstract class PlayerState {
         mGamePlayer = state.getCurrentPlayer();
     } 
     
-    protected void sendAvailableCommands(ArrayList<GameViewCommand> availableCommands) {
+    protected void sendAvailableCommands(ArrayList<ViewCommand> availableCommands) {
         mGameState.sendPacketToCurrentPlayer(new GameCommand(GameOpcode.CMD_SC_AVAILABLE_COMMANDS, availableCommands));
     }
     
@@ -53,10 +53,10 @@ public abstract class PlayerState {
         return nextState;
     }
         
-    protected void addObjectCardIfPossible(List<GameViewCommand> availableCommands) {
+    protected void addObjectCardIfPossible(List<ViewCommand> availableCommands) {
         if(mGamePlayer.isObjectCardUsed() || mGamePlayer.getNumberOfUsableCards() == 0 || !mGamePlayer.isHuman())
             return;
         
-        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_CHOOSEOBJECTCARD, (Serializable[]) mGamePlayer.getNamesOfUsableCards()));
+        availableCommands.add(new ViewCommand(ViewOpcode.CMD_CHOOSEOBJECTCARD, (Serializable[]) mGamePlayer.getNamesOfUsableCards()));
     }
 }

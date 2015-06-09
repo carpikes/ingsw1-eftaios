@@ -7,6 +7,7 @@ import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
+import it.polimi.ingsw.game.network.CoreOpcode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -57,9 +58,9 @@ public class GameManager {
             return false;
 
         mClients.add(client);
-        client.sendPacket(new GameCommand(GameOpcode.CMD_SC_TIME, (Integer) getRemainingLoginTime()));
-        client.sendPacket(GameOpcode.CMD_SC_CHOOSEUSER);
-        broadcastPacket(new GameCommand(GameOpcode.CMD_SC_STAT, (Integer) mClients.size()));
+        client.sendPacket(new GameCommand(CoreOpcode.CMD_SC_TIME, (Integer) getRemainingLoginTime()));
+        client.sendPacket(CoreOpcode.CMD_SC_CHOOSEUSER);
+        broadcastPacket(new GameCommand(CoreOpcode.CMD_SC_STAT, (Integer) mClients.size()));
         
         // @first client: ask for map
         if(mClients.size() == 1)
@@ -196,7 +197,7 @@ public class GameManager {
         
         for(int i = 0; i < mClients.size(); i++) {
             GameStartInfo info = mState.buildInfoContainer(userList, i);
-            mClients.get(i).sendPacket(new GameCommand(GameOpcode.CMD_SC_RUN, info));
+            mClients.get(i).sendPacket(new GameCommand(CoreOpcode.CMD_SC_RUN, info));
         }
 
         mIsRunning = true;
@@ -247,7 +248,7 @@ public class GameManager {
         // Decrement global user counter
         Server.getInstance().removeClient();
         
-        broadcastPacket(new GameCommand(GameOpcode.CMD_SC_STAT, getNumberOfClients() - mAwayClients));
+        broadcastPacket(new GameCommand(CoreOpcode.CMD_SC_STAT, getNumberOfClients() - mAwayClients));
         
         // FIXME: Could be possible that a client joins the game while enqueued for removal?
         if(getNumberOfClients() - mAwayClients == 0)
@@ -255,7 +256,7 @@ public class GameManager {
 
         boolean canAskAtLeastOne = false;
         // Game is still alive
-        if(mustAskForMap && mClients.size() > 0) {
+        if(mustAskForMap && !mClients.isEmpty()) {
             for(Client c : mClients)
                 if(c.isConnected()) {
                     askForMap(c);
@@ -289,7 +290,7 @@ public class GameManager {
         
         if(!client.isConnected())
             throw new RuntimeException("I am trying to ask a map to an inactive client. What's happening?");
-        pkt = new GameCommand(GameOpcode.CMD_SC_CHOOSEMAP, (Serializable[]) GameMap.getListOfMaps());
+        pkt = new GameCommand(CoreOpcode.CMD_SC_CHOOSEMAP, (Serializable[]) GameMap.getListOfMaps());
         client.sendPacket(pkt);
     }
 

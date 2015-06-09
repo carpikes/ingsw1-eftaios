@@ -8,6 +8,8 @@ import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
+import it.polimi.ingsw.game.network.InfoOpcode;
+import it.polimi.ingsw.game.network.Opcode;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 import it.polimi.ingsw.game.state.MovingState;
 import it.polimi.ingsw.game.state.NotMyTurnState;
@@ -116,7 +118,7 @@ public class TestGameState {
         game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, newPosition ) );
         game.update();
         
-        assertTrue( findGameCommandInQueue( game, GameOpcode.INFO_USED_HATCH ) );
+        assertTrue( findGameCommandInQueue( game, InfoOpcode.INFO_USED_HATCH ) );
     }
     
     @Test
@@ -207,7 +209,7 @@ public class TestGameState {
      * @param opcode THe command you're looking for
      * @return Found or not?
      */
-    private boolean findGameCommandInQueue(GameState game, GameOpcode opcode) {
+    private boolean findGameCommandInQueue(GameState game, Opcode opcode) {
         boolean found = false;
         
         for( Entry<Integer, GameCommand> pkt : game.debugGetOutputQueue() )

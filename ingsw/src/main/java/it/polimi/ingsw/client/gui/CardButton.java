@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,12 +24,12 @@ import javax.swing.SwingUtilities;
  * @since 6 Jun 2015
  */
 public class CardButton extends JButton {
+    private static final long serialVersionUID = 1L;
 
     private static final Logger LOG = Logger.getLogger( CardButton.class.getName() );
     
-    
     private CardButtons type;
-    private GameController controller;
+    private transient GameController controller;
 
     private float alpha = 1f;
     
@@ -82,7 +81,7 @@ public class CardButton extends JButton {
             setContentAreaFilled(false);
             setEnabled( type.isEnabled() );
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Cannot create " + type.toString() + " card button. Please check your assets in img folder.");
+            LOG.log(Level.SEVERE, "Cannot create " + type.toString() + " card button. Please check your assets in img folder.", e);
         }
     }
     

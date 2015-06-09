@@ -9,6 +9,7 @@ import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
+import it.polimi.ingsw.game.network.InfoOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
@@ -168,7 +169,7 @@ public class GameState {
             nextState = player.getCurrentState().update();
             player.setCurrentState(nextState);
         } catch( IllegalStateOperationException e) {
-            LOG.log(Level.INFO, e.toString());
+            LOG.log(Level.INFO, e.toString(), e);
         }
 
         // broadcast messages at the end of the turn
@@ -210,7 +211,7 @@ public class GameState {
         
         // We're ok, proceed
         if( player.getNumberOfCards() < Config.MAX_NUMBER_OF_OBJ_CARDS ) {
-            broadcastPacket( GameOpcode.INFO_GOT_A_NEW_OBJ_CARD );
+            broadcastPacket( InfoOpcode.INFO_GOT_A_NEW_OBJ_CARD );
             nextState = new EndingTurnState(this);
         } else {
             // tell the user he has to drop or use a card
@@ -233,7 +234,7 @@ public class GameState {
         if(player.isHuman() && !player.isObjectCardUsed() && player.getNumberOfUsableCards() > objectCardPos && objectCardPos >= 0) {   
             ObjectCard objectCard = player.useObjectCard(objectCardPos);
             if(objectCard != null) {
-                broadcastPacket( new GameCommand(GameOpcode.INFO_OBJ_CARD_USED, objectCard.getId(), objectCard.getName()) );
+                broadcastPacket( new GameCommand(InfoOpcode.INFO_OBJ_CARD_USED, objectCard.getId(), objectCard.getName()) );
             
                 getCurrentPlayer().setObjectCardUsed(true);
                 nextState = objectCard.doAction();
@@ -279,7 +280,7 @@ public class GameState {
             }
         }
         
-        broadcastPacket( new GameCommand(GameOpcode.INFO_PLAYER_ATTACKED, currentPosition, killedPlayers, defendedPlayers) );
+        broadcastPacket( new GameCommand(InfoOpcode.INFO_PLAYER_ATTACKED, currentPosition, killedPlayers, defendedPlayers) );
         
         checkEndGame(killedHumans);
     }
@@ -343,7 +344,7 @@ public class GameState {
                     throw new RuntimeException("There are players who are neither winner nor loser. What's happening?");
             }
             
-            broadcastPacket( new GameCommand(GameOpcode.INFO_END_GAME, winnersList, loserList));
+            broadcastPacket( new GameCommand(InfoOpcode.INFO_END_GAME, winnersList, loserList));
             flushOutputQueue();
             
             if(!dDebugMode)
@@ -380,7 +381,7 @@ public class GameState {
             
         }
         
-        broadcastPacket( new GameCommand( GameOpcode.INFO_SPOTLIGHT, (Serializable[]) caughtPlayers) );
+        broadcastPacket( new GameCommand( InfoOpcode.INFO_SPOTLIGHT, (Serializable[]) caughtPlayers) );
     }
     
     /* -----------------------------------------------*/
@@ -460,7 +461,7 @@ public class GameState {
         }
     }
     
-    public void broadcastPacket( GameOpcode command ) {
+    public void broadcastPacket( InfoOpcode command ) {
         broadcastPacket( new GameCommand( command ) );
     }
 

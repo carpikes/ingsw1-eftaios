@@ -9,8 +9,8 @@ import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.dangerous.DangerousCardBuilder;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.GameViewCommand;
-import it.polimi.ingsw.game.network.GameViewOpcode;
+import it.polimi.ingsw.game.network.ViewCommand;
+import it.polimi.ingsw.game.network.ViewOpcode;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.util.ArrayList;
@@ -36,16 +36,16 @@ public class MoveDoneState extends PlayerState {
     @Override
     protected void buildAndSendAvailableCommands() {
         GameMap map = mGameState.getMap();
-        ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
+        ArrayList<ViewCommand> availableCommands = new ArrayList<>();
         
         
         if(mGamePlayer.isAlien())
-            availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ATTACK));
+            availableCommands.add(new ViewCommand(ViewOpcode.CMD_ATTACK));
         
         if(map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS)
-            availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_DRAWDANGEROUSCARD));
+            availableCommands.add(new ViewCommand(ViewOpcode.CMD_DRAWDANGEROUSCARD));
         else
-            availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENDTURN));
+            availableCommands.add(new ViewCommand(ViewOpcode.CMD_ENDTURN));
         
         addObjectCardIfPossible(availableCommands);
         sendAvailableCommands(availableCommands);

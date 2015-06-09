@@ -1,9 +1,8 @@
 package it.polimi.ingsw.game.card.dangerous;
 
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.player.GamePlayer;
+import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.state.NoiseInAnySectorState;
 import it.polimi.ingsw.game.state.PlayerState;
 

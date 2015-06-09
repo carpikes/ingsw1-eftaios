@@ -7,8 +7,8 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.GameViewCommand;
-import it.polimi.ingsw.game.network.GameViewOpcode;
+import it.polimi.ingsw.game.network.ViewCommand;
+import it.polimi.ingsw.game.network.ViewOpcode;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -29,8 +29,8 @@ public class SpotlightCardState extends PlayerState {
 
     @Override
     protected void buildAndSendAvailableCommands() {
-        ArrayList<GameViewCommand> availableCommands = new ArrayList<>();
-        availableCommands.add(new GameViewCommand(GameViewOpcode.CMD_ENABLEMAPVIEW));
+        ArrayList<ViewCommand> availableCommands = new ArrayList<>();
+        availableCommands.add(new ViewCommand(ViewOpcode.CMD_ENABLEMAPVIEW));
 
         sendAvailableCommands(availableCommands);
     }
