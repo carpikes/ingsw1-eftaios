@@ -263,16 +263,23 @@ public class GameController implements OnReceiveListener {
                 mView.showInfo(curUser, "Player has moved");
                 break;
             case INFO_PLAYER_ATTACKED:
-                if(cmd.getArgs().length == 2 && cmd.getArgs()[0] instanceof Point && cmd.getArgs()[1] instanceof ArrayList<?>) {
+                if(cmd.getArgs().length == 3 && cmd.getArgs()[0] instanceof Point && cmd.getArgs()[1] instanceof ArrayList<?>
+                && cmd.getArgs()[2] instanceof ArrayList<?>) {
                         Point p = (Point) cmd.getArgs()[0];
-                        List<Integer> killedList = (List<Integer>) cmd.getArgs()[1];
+                        
                         mView.showInfo(curUser, "Player just attacked in sector " + mGameInfo.getMap().pointToString(p));
                         
+                        List<Integer> killedList = (List<Integer>) cmd.getArgs()[1];
                         if(killedList == null || killedList.isEmpty())
                             mView.showInfo(curUser, "Nobody has been killed");
                         else
                             for(Integer i : killedList)
                                 mView.showInfo(curUser, mGameInfo.getPlayersList()[i].getUsername() + " has been killed");
+                        
+                        List<Integer> defendedList = (List<Integer>) cmd.getArgs()[2];
+                        if(defendedList != null && !defendedList.isEmpty())
+                            for(Integer i : defendedList)
+                                mView.showInfo(curUser, mGameInfo.getPlayersList()[i].getUsername() + " has been attacked, but survived");
                 }
                 break;
             case INFO_LOSER:
