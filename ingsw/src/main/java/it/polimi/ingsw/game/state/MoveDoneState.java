@@ -63,8 +63,10 @@ public class MoveDoneState extends PlayerState {
 
         // If we actually received a command from the client...
         if( packet != null ) {
+            // if you used an object card...
             if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD  && mGamePlayer.getNumberOfCards() > 0) {
                 nextState = useObjectCard(this, packet);
+                // if you attacked..
             } else if( mGamePlayer.isAlien() && packet.getOpcode() == GameOpcode.CMD_CS_ATTACK ) {
                 mGameState.attack( mGamePlayer.getCurrentPosition() );
                 nextState = new EndingTurnState(mGameState);
@@ -93,7 +95,7 @@ public class MoveDoneState extends PlayerState {
      * @return 
      */
     private PlayerState drawDangerousCard( ) {                
-        return DangerousCardBuilder.getRandomCard(mGameState, mGamePlayer).doAction( );
+        return DangerousCardBuilder.getRandomCard(mGameState).doAction( );
     }
 
     @Override

@@ -28,10 +28,14 @@ public class DangerousCardBuilder {
      * @param gamePlayer The Player who is getting the card
      * @return A dangerous sector card
      */
-    public static DangerousCard getRandomCard( GameState gameState, GamePlayer gamePlayer ) {
+    public static DangerousCard getRandomCard( GameState gameState ) {
         Random generator = new Random();
         
-        switch( generator.nextInt(DANGEROUS_CARD_TYPES) ) {
+        return getCard( gameState, generator.nextInt(DANGEROUS_CARD_TYPES) );
+    }
+    
+    public static DangerousCard getCard( GameState gameState, int id ) {
+        switch( id ) {
         case NOISE_IN_YOUR_SECTOR:        return new NoiseInYourSectorCard(gameState);
         case NOISE_IN_ANY_SECTOR:         return new NoiseInAnySectorCard(gameState);
         case SILENCE:                     return new SilenceCard(gameState);

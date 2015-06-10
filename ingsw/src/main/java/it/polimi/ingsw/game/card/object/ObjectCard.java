@@ -21,7 +21,6 @@ public abstract class ObjectCard {
     protected final int mId;
     
     protected ObjectCard(GameState state, int id, String name) {
-        // FIXME AGGIUNGI CONTROLLO: Player dev'essere umano
         mGameState = state;
         mGamePlayer = state.getCurrentPlayer();
         mName = name;

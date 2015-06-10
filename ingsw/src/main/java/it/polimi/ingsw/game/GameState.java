@@ -169,7 +169,7 @@ public class GameState {
             nextState = player.getCurrentState().update();
             player.setCurrentState(nextState);
         } catch( IllegalStateOperationException e) {
-            LOG.log(Level.INFO, e.toString(), e);
+            LOG.log(Level.INFO, e.toString());
         }
 
         // broadcast messages at the end of the turn
@@ -311,7 +311,7 @@ public class GameState {
         
         if((aliveHumans == 0 && justKilledHumans) ||                // (1)
            (aliveHumans > 0 && remainingHatches == 0) ||            // (2)
-           (mRoundsPlayed > Config.MAX_NUMBER_OF_TURNS) ||    // (3)
+           (mRoundsPlayed > Config.MAX_NUMBER_OF_TURNS) ||          // (3)
            (inGamePlayers < Config.GAME_MIN_PLAYERS)) {             // (4)
             
             // So, the game will end.

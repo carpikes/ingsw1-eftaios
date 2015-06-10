@@ -3,6 +3,7 @@
  */
 package it.polimi.ingsw.testgame;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.network.GameCommand;
@@ -12,11 +13,12 @@ import it.polimi.ingsw.game.network.InfoOpcode;
 import it.polimi.ingsw.game.network.Opcode;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 import it.polimi.ingsw.game.state.EndingTurnState;
+import it.polimi.ingsw.game.state.MoveDoneState;
 import it.polimi.ingsw.game.state.MovingState;
+import it.polimi.ingsw.game.state.NoiseInAnySectorState;
 import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.StartTurnState;
-import it.polimi.ingsw.game.state.WinnerState;
 
 import java.awt.Point;
 import java.util.HashSet;
@@ -144,35 +146,42 @@ public class TestGameState {
         // Alien cannot have hatch sector in their sets of possible moves!
         assertTrue( hatchPoints.isEmpty() );
     }
-
-    /**
-     * Helper method. Play a basic game until reaching MovingState for current player
-     * @param forceRole Force role for current player
-     * @param human If forceRole is true, force to human if this is true, alien otherwise
-     * @return The game played up to this state
-     */
-    private GameState playToMovingState(boolean forceRole, boolean human) {
-        GameState game = new GameState("YES", MAP_ID, NUMBER_OF_PLAYERS, START_ID, true);
+    
+    @Test
+    public void testAlienAttack() {
+        // play as an alien till reaching move done state
+        GameState game = this.playToMoveDoneState(true, false, true);
         
-        // ONLY HUMANS CAN MOVE TO HATCH SECTORS!
-        if( forceRole ) {
-            if( ( !human && game.getCurrentPlayer().isHuman() ) || ( human && game.getCurrentPlayer().isAlien() ) ) {
-                swapPlayers(game);
-            }
-        }
-        
-        // move to moving state
+        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_ATTACK) );
+        clearMessageQueue(game);
         game.update();
         
-        // drop previous messages
-        clearMessageQueue(game);
-        
-        // create set of dangerous, not dangerous and hatch sectors available for current player
-        createSetsOfPossibleSectors(game);
-        
-        return game;
+        assertTrue( findGameCommandInQueue(game, InfoOpcode.INFO_PLAYER_ATTACKED) );
     }
     
+    @Test
+    public void testHumanAttack() {
+        // play as an alien till reaching move done state
+        GameState game = this.playToMoveDoneState(true, true, true);
+        
+        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_ATTACK) );
+        clearMessageQueue(game);
+        game.update();
+        
+        // Humans cannot attack!
+        assertFalse( findGameCommandInQueue(game, InfoOpcode.INFO_PLAYER_ATTACKED) );
+    }
+    
+    @Test
+    public void testDrawDangerousCard() {
+        GameState game = playToMoveDoneState(false, false, true);
+        
+        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_DRAW_DANGEROUS_CARD) );
+        clearMessageQueue(game);
+        game.update();
+        
+        
+    }
     /*
     @Test
     public void testInvalidActionInMovingState() {
@@ -192,6 +201,59 @@ public class TestGameState {
     
     /*----- END OF TESTS ----- */
 
+    /**
+     * Helper method. Play a basic game until reaching MovingState for current player
+     * @param forceRole Force role for current player
+     * @param human If forceRole is true, force to human if this is true, alien otherwise
+     * @return The game played up to this state
+     */
+    private GameState playToMovingState(boolean forceRole, boolean human) {
+        GameState game = new GameState("YES", MAP_ID, NUMBER_OF_PLAYERS, START_ID, true);
+        
+        if( forceRole ) {
+            if( ( !human && game.getCurrentPlayer().isHuman() ) || ( human && game.getCurrentPlayer().isAlien() ) ) {
+                swapPlayers(game);
+            }
+        }
+        
+        // move to moving state
+        game.update();
+        
+        // drop previous messages
+        clearMessageQueue(game);
+        
+        // create set of dangerous, not dangerous and hatch sectors available for current player
+        createSetsOfPossibleSectors(game);
+        
+        return game;
+    }
+    
+    /**
+     * Play a game until reaching a MoveDone State
+     * @param forceRole
+     * @param human
+     * @param dangerous
+     * @return
+     */
+    private GameState playToMoveDoneState(boolean forceRole, boolean human, boolean dangerous) {
+        GameState game = playToMovingState(forceRole, human);
+        
+        Point newPosition;
+        if( dangerous ) {
+            // send position and update game
+            newPosition = dangerousPoints.iterator().next();
+        } else {
+            newPosition = notDangerousPoints.iterator().next();
+        }
+        
+        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, newPosition ) );
+        game.update();
+        
+        assertTrue( game.getCurrentPlayer().getCurrentState() instanceof MoveDoneState );
+        
+        return game;
+    }
+    
     /**
      * Force second player as first one in a basic two-player game
      * @param game The game
@@ -243,11 +305,11 @@ public class TestGameState {
      * @param infoUsedHatch THe command you're looking for
      * @return Found or not?
      */
-    private boolean findGameCommandInQueue(GameState game, Opcode infoUsedHatch) {
+    private boolean findGameCommandInQueue(GameState game, Opcode code) {
         boolean found = false;
         
         for( Entry<Integer, GameCommand> pkt : game.debugGetOutputQueue() )
-            if( ((GameCommand)pkt.getValue()).getOpcode() == infoUsedHatch )
+            if( ((GameCommand)pkt.getValue()).getOpcode() == code )
                 found = true;
         
         return found;

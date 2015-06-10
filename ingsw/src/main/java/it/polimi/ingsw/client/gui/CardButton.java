@@ -75,6 +75,7 @@ public class CardButton extends JButton {
 
     public void changeTo(CardButtons type) {
         try {
+            this.type = type;
             setIcon( new ImageIcon( ImageIO.read( type.getImageFile() ) ) );
             
             setBorder(BorderFactory.createEmptyBorder());
