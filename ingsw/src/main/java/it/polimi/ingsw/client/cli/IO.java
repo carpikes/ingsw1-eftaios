@@ -26,13 +26,16 @@ class IO {
     public static void write(char c) {
     	System.out.print(c);
     }
-    public static int readInt() {
+    public static Integer readInt(boolean minusAvailable) {
         int i = 0;
         while(true) {
             try {
                 System.out.print("> ");
                 System.out.flush();
                 String m = mReader.readLine();
+                if(minusAvailable && m.equals("-"))
+                    return null;
+                
                 i = Integer.valueOf(m);
                 break;
             } catch(Exception e) {
@@ -54,11 +57,14 @@ class IO {
         return "";
     }
 
-    public static int readRangeInt(int min, int max) {
-        int i;
+    public static Integer readRangeInt(int min, int max, boolean minusAvailable) {
+        Integer i;
         while(true) {
-            i = readInt();
-            if(i >= min && i <= max)
+            i = readInt(minusAvailable);
+            if(i == null) {
+                if(minusAvailable)
+                    return null;
+            } else if(i >= min && i <= max)
                 break;
             write("Out of range");
         }
@@ -66,22 +72,40 @@ class IO {
     }
     
     
-    public static int askInAList(String[] list) {
+    public static Integer askInAList(String[] list, boolean minusAvailable) {
         for(int i = 0; i<list.length;i++)
             IO.write((i+1) + ") " + list[i]);
-        return readRangeInt(1, list.length) - 1;
+        do {
+            Integer c = readRangeInt(1, list.length, minusAvailable);
+            if(c == null) {
+                if(minusAvailable)
+                    return null;
+            } else if(c >= 1)
+                return c-1;
+        } while(true);
     }
     
-    public static int askInAList(List<ViewCommand> list) {
+    public static Integer askInAList(List<ViewCommand> list, boolean minusAvailable) {
         for(int i = 0; i<list.size();i++)
             IO.write((i+1) + ") " + list.get(i).getOpcode().toString());
-        return readRangeInt(1, list.size()) - 1;
+        do {
+            Integer c = readRangeInt(1, list.size(), minusAvailable);
+            if(c == null) {
+                if(minusAvailable)
+                    return null;
+            } else if(c >= 1)
+                return c-1;
+        } while(true);
     }
 
-	public static Point askMapPos() {
+	public static Point askMapPos(boolean minusAvailable) {
 		do {
 		    try {
     			String s = IO.readString();
+    			
+    			if(s.equals("-") && minusAvailable)
+    			    return null;
+    			
     			if(s.length() == 3 || (s.length() == 4  && s.charAt(1) == '0')) {
     			
     				int x = (int)(Character.toLowerCase(s.charAt(0)) - 'a');

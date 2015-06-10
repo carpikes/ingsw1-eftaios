@@ -64,7 +64,7 @@ public class CLIView extends View {
     @Override
     public int askConnectionType(String[] params) {
         IO.write("Which connection do you want to use?");
-        return IO.askInAList(params);
+        return IO.askInAList(params, false);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class CLIView extends View {
     @Override
     public Integer askMap(String[] mapList) {
         IO.write("Choose a map:");
-        return IO.askInAList(mapList);
+        return IO.askInAList(mapList, false);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class CLIView extends View {
     @Override
     public Integer askView( String[] viewList ) {
         IO.write("Which view do you want to use?");
-        return IO.askInAList( viewList );
+        return IO.askInAList(viewList, false);
     }
 
     /* (non-Javadoc)
@@ -139,72 +139,111 @@ public class CLIView extends View {
 
     @Override
     public void close() {
-        // TODO Auto-generated method stub
-
+        // EMPTY
     }
+    
+    private boolean handleEnableMapView(ViewCommand c, boolean canGoBack) {
+        Point newPos = null;
+        Point curPos = null;
+        int maxMoves = 0;
+        Set<Point> enabledCells = null;
+        if(c.getArgs().length > 0) {
+            if(c.getArgs()[0] instanceof Point)
+                curPos = (Point) c.getArgs()[0];
+            if(c.getArgs().length == 2)
+                maxMoves = (int) c.getArgs()[1];
+        }
 
+        if(maxMoves != 0) 
+            enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves, mContainer.isHuman());
+
+        CLIMapRenderer.renderMap(mMap, curPos, enabledCells);
+        IO.write("Choose a position on the map" + (canGoBack?" (or type - to go back)":""));
+        do {
+            newPos = IO.askMapPos(canGoBack);
+            
+            // up in the menu
+            if(newPos == null)
+                return false;
+            
+            if( (enabledCells == null && mMap.isWithinBounds(newPos)) || (enabledCells != null && enabledCells.contains(newPos)))
+                break;
+            IO.write("Invalid position");
+        } while(true);
+        mController.onMapPositionChosen(newPos);
+        return true;
+    }
+    
+    private boolean handleChooseObjectCard(ViewCommand c, boolean canGoBack) {
+        if(c.getArgs().length == 1 && c.getArgs() instanceof String[]) {
+            String[] objs = (String[]) c.getArgs();
+            IO.write("Which card do you want to use?" + (canGoBack?" (or type - to go back)":""));
+            Integer choice = IO.askInAList(objs, canGoBack);
+            if(choice == null)
+                return false;
+            mController.sendChosenObjectCard(choice);
+            return true;
+        }
+        return false;
+    }
+    
+    private boolean handleDiscardObjectCard(ViewCommand c, boolean canGoBack) {
+        if(c.getArgs().length == 1 && c.getArgs() instanceof String[]) {
+            String[] objs = (String[]) c.getArgs();
+            IO.write("Which card do you want to discard?" + (canGoBack?" (or type - to go back)":""));
+            Integer i = IO.askInAList(objs, canGoBack);
+            
+            if(i == null)
+                return false;
+            mController.sendDiscardObjectCard(i);
+            return true;
+        }
+        return false;
+    }
+    
     @Override
     protected void handleCommand(List<ViewCommand> cmd) {
         ViewCommand c;
-        if(cmd.size() > 1) {
-            IO.write("What do you want to do now?");
-            int choice = IO.askInAList(cmd);
-            c = cmd.get(choice);
-        } else if(cmd.size() == 1) {
-            c = cmd.get(0);
-        } else
-            return;
-
-        switch(c.getOpcode()) {
-            case CMD_ENABLEMAPVIEW:
-                Point newPos = null;
-                Point curPos = null;
-                int maxMoves = 0;
-                Set<Point> enabledCells = null;
-                if(c.getArgs().length > 0) {
-                    if(c.getArgs()[0] instanceof Point)
-                        curPos = (Point) c.getArgs()[0];
-                    if(c.getArgs().length == 2)
-                        maxMoves = (int) c.getArgs()[1];
-                }
+        boolean loopMenu = true;
+        
+        while(loopMenu) {
+            
+            if(cmd.size() > 1) {
+                IO.write("What do you want to do now?");
+                int choice = IO.askInAList(cmd, false);
+                c = cmd.get(choice);
+            } else if(cmd.size() == 1) {
+                loopMenu = false;
+                c = cmd.get(0);
+            } else
+                return;
     
-                if(maxMoves != 0) 
-                    enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves, mContainer.isHuman());
-    
-                CLIMapRenderer.renderMap(mMap, curPos, enabledCells);
-                IO.write("Choose a position on the map");
-                do {
-                    newPos = IO.askMapPos();
-                    if( (enabledCells == null && mMap.isWithinBounds(newPos)) || (enabledCells != null && enabledCells.contains(newPos)))
-                        break;
-                    IO.write("Invalid position");
-                } while(true);
-                mController.onMapPositionChosen(newPos);
-                break;
-            case CMD_CHOOSEOBJECTCARD:
-                if(c.getArgs().length == 1 && c.getArgs() instanceof String[]) {
-                    String[] objs = (String[]) c.getArgs();
-                    IO.write("Which card do you want to use?");
-                    int choice = IO.askInAList(objs);
-                    mController.sendChosenObjectCard(choice);
-                }
-                break;
-            case CMD_ATTACK:
-                mController.attack();
-                break;
-            case CMD_DISCARDOBJECTCARD:
-                if(c.getArgs().length == 1 && c.getArgs() instanceof String[]) {
-                    String[] objs = (String[]) c.getArgs();
-                    IO.write("Which card do you want to discard?");
-                    mController.sendDiscardObjectCard(IO.askInAList(objs));
-                }
-                break;
-            case CMD_DRAWDANGEROUSCARD:
-                mController.drawDangerousCard();
-                break;
-            case CMD_ENDTURN:
-                mController.endTurn();
-                break;
+            switch(c.getOpcode()) {
+                case CMD_ENABLEMAPVIEW:
+                    if(handleEnableMapView(c, loopMenu)) //loopMenu == false if this is the only choice
+                        loopMenu = false;
+                    break;
+                case CMD_CHOOSEOBJECTCARD:
+                    if(handleChooseObjectCard(c, loopMenu))
+                        loopMenu = false;
+                    break;
+                case CMD_ATTACK:
+                    mController.attack();
+                    loopMenu = false;
+                    break;
+                case CMD_DISCARDOBJECTCARD:
+                    if(handleDiscardObjectCard(c, loopMenu))
+                        loopMenu = false;
+                    break;
+                case CMD_DRAWDANGEROUSCARD:
+                    mController.drawDangerousCard();
+                    loopMenu = false;
+                    break;
+                case CMD_ENDTURN:
+                    mController.endTurn();
+                    loopMenu = false;
+                    break;
+            }
         }
     }
 
