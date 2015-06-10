@@ -281,4 +281,11 @@ public class MapCanvasPanel extends JPanel {
     public void showNoiseInSector(String user, Point p) {
         mNoisePosition = p;
     }
+
+    /**
+     * 
+     */
+    public void resetNoise() {
+        mNoisePosition = null;
+    }
 }

@@ -232,6 +232,7 @@ public class GUIView extends View {
      */
     @Override
     public void onMyTurn() {
+        mMainFrame.resetNoise();
         mMainFrame.showInfo( null, "-- It's your turn! --" );
     }
 
@@ -240,6 +241,7 @@ public class GUIView extends View {
      */
     @Override
     public void onOtherTurn(String username) {
+        mMainFrame.resetNoise();
         mMainFrame.showInfo( null, "-- It's " + username + "'s turn! --" );
     }
 
