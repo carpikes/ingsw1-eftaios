@@ -10,8 +10,8 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class TeleportCard extends ObjectCard {
     
-	public TeleportCard(GameState state) {
-        super(state, ObjectCardBuilder.TELEPORT_CARD, "Teleport");
+	public TeleportCard(GameState state, String name) {
+        super(state, ObjectCardBuilder.TELEPORT_CARD, name);
         // TODO Auto-generated constructor stub
     }
 

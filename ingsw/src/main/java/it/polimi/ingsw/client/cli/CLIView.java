@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameStartInfo;
 import it.polimi.ingsw.game.network.ViewCommand;
@@ -267,8 +268,21 @@ public class CLIView extends View {
      */
     @Override
     public void notifyObjectCardListChange(List<Integer> listOfCards) {
-        // TODO Auto-generated method stub
+        StringBuilder cards = new StringBuilder();
         
+        cards.append("Your object cards: ");
+        for(int i = 0;i < listOfCards.size(); i++) {
+            cards.append((i == 0? "[ " : "| "));
+            cards.append(ObjectCardBuilder.idToString(i));
+            cards.append(" ");
+        }
+        
+        if(cards.length() == 0)
+            cards.append("[ YOU HAVE NO OBJECT CARDS ]");
+        else 
+            cards.append("]");
+        
+        IO.write(cards.toString());
     }
 
 }

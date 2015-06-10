@@ -206,8 +206,6 @@ public class GameController implements OnReceiveListener {
                 break;
             case CMD_SC_DANGEROUS_CARD_DRAWN:
                 break;
-            case CMD_SC_DISCARD_OBJECT_CARD:
-                break;
             case CMD_SC_END_OF_TURN:
                 break;
             case CMD_SC_MOVE_DONE:
@@ -257,7 +255,10 @@ public class GameController implements OnReceiveListener {
                 }
                 break;
             case INFO_GOT_A_NEW_OBJ_CARD:
-                mView.showInfo(curUser, "Draw new object card!");
+                if(cmd.getArgs().length == 1 && cmd.getArgs()[0] instanceof Integer) {
+                    mGameInfo.getPlayersList()[mCurTurn].setNumberOfCards((Integer) cmd.getArgs()[0]);
+                    mView.showInfo(curUser, "Draw new object card!");
+                }
                 break;
             case INFO_HAS_MOVED:
                 mView.showInfo(curUser, "Player has moved");
