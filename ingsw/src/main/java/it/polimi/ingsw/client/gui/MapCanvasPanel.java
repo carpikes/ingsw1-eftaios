@@ -17,6 +17,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TimerTask;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -129,13 +130,17 @@ public class MapCanvasPanel extends JPanel {
                     // Here we want to move the player's position when the mEnabledCells set
                     // DOES NOT contains all sectors (because that means we are not moving,
                     // but only choosing a position in noise in any sector or in spotlight state!)
-                    if( mEnabledCells != null )
+                    if( mEnabledCells != null ) {
                         mPlayerPosition = mHoveringCellCoords;
-                    
+                        
+                     // notify that we have chosen a position on map by clicking on it
+                        mController.onMapPositionChosen(mPlayerPosition);
+                    } else {
+                        mController.onMapPositionChosen(mHoveringCellCoords);
+                    }
+                        
                     mHoveringCellCoords = null;
-                    
-                    // notify that we have chosen a position on map by clicking on it
-                    mController.onMapPositionChosen(mPlayerPosition);
+                                        
                 }
             }
 
@@ -286,6 +291,13 @@ public class MapCanvasPanel extends JPanel {
      * 
      */
     public void resetNoise() {
-        mNoisePosition = null;
+        java.util.Timer timer = new java.util.Timer();
+        
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+              mNoisePosition = null;
+            }
+          }, 2*1000);
     }
 }

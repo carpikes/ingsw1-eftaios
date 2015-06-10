@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.DefaultCaret;
 
 /**
  * @author Alain
@@ -223,6 +224,10 @@ public class GUIFrame extends JFrame {
 
         JScrollPane scrollPane = new JScrollPane(textArea); 
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        
         scrollPane.setBorder( TEXT_AREA_MARGIN );
 
         return scrollPane;
@@ -403,6 +408,7 @@ public class GUIFrame extends JFrame {
      * @param p
      */
     public void showNoiseInSector(String user, Point p) {
+        showInfo(user, "NOISE IN SECTOR " + startInfo.getMap().pointToString(p));
         mMapCanvas.showNoiseInSector(user, p);
     }
 

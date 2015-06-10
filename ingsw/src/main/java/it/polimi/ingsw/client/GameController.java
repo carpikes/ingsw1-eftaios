@@ -257,7 +257,7 @@ public class GameController implements OnReceiveListener {
             case INFO_GOT_A_NEW_OBJ_CARD:
                 if(cmd.getArgs().length == 1 && cmd.getArgs()[0] instanceof Integer) {
                     mGameInfo.getPlayersList()[mCurTurn].setNumberOfCards((Integer) cmd.getArgs()[0]);
-                    mView.showInfo(curUser, "Draw new object card!");
+                    mView.showInfo(curUser, "Got a new object card!");
                 }
                 break;
             case INFO_HAS_MOVED:
