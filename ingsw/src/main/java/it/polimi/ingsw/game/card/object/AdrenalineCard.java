@@ -12,8 +12,8 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class AdrenalineCard extends ObjectCard {
 
-	public AdrenalineCard(GameState state) {
-        super(state, ObjectCardBuilder.ADRENALINE_CARD, "Adrenaline");
+	public AdrenalineCard(GameState state, String name) {
+        super(state, ObjectCardBuilder.ADRENALINE_CARD, name);
         // TODO Auto-generated constructor stub
     }
 

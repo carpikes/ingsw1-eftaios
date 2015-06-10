@@ -37,12 +37,24 @@ public class ObjectCardBuilder {
     
     public static ObjectCard idToObjectCard(int id, GameState game) {
         switch( id ) {
-            case ADRENALINE_CARD:             return new AdrenalineCard(game);
-            case ATTACK_CARD:                 return new AttackCard(game);
-            case DEFENSE_CARD:                return new DefenseCard(game);
-            case SEDATIVES_CARD:              return new SedativesCard(game);
-            case SPOTLIGHT_CARD:              return new SpotlightCard(game);
-            case TELEPORT_CARD:               return new TeleportCard(game);
+            case ADRENALINE_CARD:             return new AdrenalineCard(game, idToString(id));
+            case ATTACK_CARD:                 return new AttackCard(game, idToString(id));
+            case DEFENSE_CARD:                return new DefenseCard(game, idToString(id));
+            case SEDATIVES_CARD:              return new SedativesCard(game, idToString(id));
+            case SPOTLIGHT_CARD:              return new SpotlightCard(game, idToString(id));
+            case TELEPORT_CARD:               return new TeleportCard(game, idToString(id));
+            default:                           throw new InvalidCardException("Unknown card");
+        }
+    }
+    
+    public static String idToString(int id) {
+        switch( id ) {
+            case ADRENALINE_CARD:             return "Adrenaline";
+            case ATTACK_CARD:                 return "Attack";
+            case DEFENSE_CARD:                return "Defense";
+            case SEDATIVES_CARD:              return "Sedatives";
+            case SPOTLIGHT_CARD:              return "Spotlight";
+            case TELEPORT_CARD:               return "Teleport";
             default:                           throw new InvalidCardException("Unknown card");
         }
     }
