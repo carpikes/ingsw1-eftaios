@@ -308,8 +308,8 @@ public class GamePlayer {
      * @return The deck of object cards
      */
     public void addObjectCard(ObjectCard c) {
+        mObjectCards.add(c);
         if(c.isUsable()) {
-            mObjectCards.add(c);
             mUsableObjectCards.add(c);
         }
     }
@@ -366,10 +366,9 @@ public class GamePlayer {
     }
     
     public boolean getAdrenaline() {
-        if( role instanceof Human ) {
+        if(role instanceof Human)
             return ((Human)role).hasUsedAdrenaline();
-        } else {
-            return false;
-        }
+
+        return false;
     }
 }

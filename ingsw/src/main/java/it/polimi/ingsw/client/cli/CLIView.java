@@ -312,7 +312,7 @@ public class CLIView extends View {
         cards.append("Your object cards: ");
         for(int i = 0;i < listOfCards.size(); i++) {
             cards.append((i == 0? "[ " : "| "));
-            cards.append(ObjectCardBuilder.idToString(i));
+            cards.append(ObjectCardBuilder.idToString(listOfCards.get(i)));
             cards.append(" ");
         }
         

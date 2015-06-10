@@ -29,9 +29,10 @@ public class ObjectCardBuilder {
      * @param player The Player who wants to get an object card
      * @return The object card
      */
+    
+    private static Random generator = new Random();
+    
     public static ObjectCard getRandomCard(GameState game) {
-        Random generator = new Random();
-        
         return idToObjectCard(generator.nextInt(OBJECT_CARD_TYPES), game);
     }
     

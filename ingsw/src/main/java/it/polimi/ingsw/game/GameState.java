@@ -207,7 +207,7 @@ public class GameState {
         
         // FIXME maybe an id is better here!
         player.addObjectCard(newCard);
-        sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, newCard.getId()) );
+        sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, (Integer)newCard.getId()) );
         
         // We're ok, proceed
         if( player.getNumberOfCards() < Config.MAX_NUMBER_OF_OBJ_CARDS ) {
