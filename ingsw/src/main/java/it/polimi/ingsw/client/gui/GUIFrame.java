@@ -397,5 +397,13 @@ public class GUIFrame extends JFrame {
             }
         }
     }
+
+    /** 
+     * @param user
+     * @param p
+     */
+    public void showNoiseInSector(String user, Point p) {
+        mMapCanvas.showNoiseInSector(user, p);
+    }
 }
 

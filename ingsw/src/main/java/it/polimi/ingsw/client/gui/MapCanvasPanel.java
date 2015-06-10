@@ -35,7 +35,7 @@ public class MapCanvasPanel extends JPanel {
     private transient Hexagon[][] mHexagons;
 
     // Selected hex: contains indexes i and j in mHexagons[][] array
-    private Point mCurHexCoords;
+    private Point mHoveringCellCoords;
 
     // Values for every hexagon
     private int mHexWidth;
@@ -46,6 +46,9 @@ public class MapCanvasPanel extends JPanel {
     private int mCanvasWidth;
     private int mCanvasHeight;
 
+    // Set of all sectors available for selection
+    // VERY IMPORTANT THING TO KEEP IN MIND
+    // mEnabledCells == null means that you can select EVERY VALID CELL on map!
     private transient Set<Point> mEnabledCells = new HashSet<>();
 
     private boolean mClickedOnCell = false;
@@ -53,6 +56,9 @@ public class MapCanvasPanel extends JPanel {
     private transient final Object mRenderLoopMutex = new Object();
 
     private Point mPlayerPosition;
+    
+    // The sector where the noise has been heard
+    private Point mNoisePosition = null;
     
     private transient final GameController mController;
     
@@ -70,7 +76,7 @@ public class MapCanvasPanel extends JPanel {
         this.mCanvasHeight = canvasHeight;
         mHexagons = new Hexagon[GameMap.ROWS][GameMap.COLUMNS];
         mGameMap = map;
-        mCurHexCoords = null;
+        mHoveringCellCoords = null;
         mPlayerPosition = playerPosition;
         
         // add listeners
@@ -79,11 +85,13 @@ public class MapCanvasPanel extends JPanel {
         // calc width, height and margins according to size
         calculateValuesForHexagons();
 
+        // create all hexagons images according to values given by the previous function
         for( int i = 0; i < GameMap.ROWS; ++i ) {
             for( int j = 0; j < GameMap.COLUMNS; ++j ) {
                 Sector sector = mGameMap.getSectorAt(j, i);
                 int startX = (int)(mHexWidth*3/4.0*j);
                 int startY = (int)(mMarginHeight + i * mHexHeight + ( isEvenColumn(j)  ? 0 : mHexHeight/2 ) );
+                
                 // create hexagon: center of it is distant (mHexWidth/2, mHexHeight/2) from the starting point
                 mHexagons[i][j] = HexagonFactory.createHexagon( 
                         new Point(startX + mHexWidth/2, startY + mHexHeight/2), mHexWidth/2, sector.getId());
@@ -91,6 +99,7 @@ public class MapCanvasPanel extends JPanel {
         }
         
 
+        // Repaint the frame at 30fps (more or less)
         new Timer(35, new ActionListener() {
 
             @Override
@@ -113,10 +122,19 @@ public class MapCanvasPanel extends JPanel {
             public void mouseClicked(MouseEvent arg0) { 
                 mClickedOnCell = true;
                 
-                if(mCurHexCoords != null) {
+                if(mHoveringCellCoords != null) {
+                    // VERY IMPORTANT THING TO KEEP IN MIND
+                    // mEnabledCells == null means that you can select EVERY VALID CELL on map!
+                   
+                    // Here we want to move the player's position when the mEnabledCells set
+                    // DOES NOT contains all sectors (because that means we are not moving,
+                    // but only choosing a position in noise in any sector or in spotlight state!)
                     if( mEnabledCells != null )
-                        mPlayerPosition = mCurHexCoords;
-                    mCurHexCoords = null;
+                        mPlayerPosition = mHoveringCellCoords;
+                    
+                    mHoveringCellCoords = null;
+                    
+                    // notify that we have chosen a position on map by clicking on it
                     mController.onMapPositionChosen(mPlayerPosition);
                 }
             }
@@ -137,10 +155,12 @@ public class MapCanvasPanel extends JPanel {
                 Point cell = getCell(e.getPoint());
                 
                 synchronized(mRenderLoopMutex) {
+                    // If we can choose every valid sector or if we are on one of the available sectors...
                     if( mEnabledCells == null || (mEnabledCells != null && mEnabledCells.contains(cell)) )    
-                        mCurHexCoords = cell;
+                        // register the current sector we are hovering on
+                        mHoveringCellCoords = cell;
                     else
-                        mCurHexCoords = null;
+                        mHoveringCellCoords = null;
                 }
             }
 
@@ -186,14 +206,15 @@ public class MapCanvasPanel extends JPanel {
     private void drawHexagons(Graphics2D g2d) { 
         for( int i = 0; i <= GameMap.ROWS; ++i ) 
             for( int j = 0; j < GameMap.COLUMNS; ++j ) {
-                Point p = mCurHexCoords;
+                Point p = mHoveringCellCoords;
                 if(i != GameMap.ROWS)
                     p = new Point(j,i);
                 
                 if(p == null)
                     continue;
                 
-                boolean isPlayerHere = p.equals(mPlayerPosition);
+                boolean isPlayerWhereTheMouseIs = p.equals(mPlayerPosition);
+                boolean isNoiseSector = handleNoise(p);
                 
                 boolean enabled;
                 if( mEnabledCells != null && !mEnabledCells.contains(p) )
@@ -201,8 +222,15 @@ public class MapCanvasPanel extends JPanel {
                 else
                     enabled = true;
                 
-                mHexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, (i == GameMap.ROWS));
+                mHexagons[p.y][p.x].draw(g2d, isPlayerWhereTheMouseIs, enabled, (i == GameMap.ROWS), isNoiseSector );
             }
+    }
+
+    private boolean handleNoise(Point p) {
+        if( p.equals( mNoisePosition ) ) 
+            return true; 
+        else 
+            return false;
     }
     
     /**
@@ -218,8 +246,8 @@ public class MapCanvasPanel extends JPanel {
     public Point getChosenMapCell() {
         if(mClickedOnCell) {
             mClickedOnCell = false;
-            if( mEnabledCells == null || (mEnabledCells != null && mEnabledCells.contains(mCurHexCoords)) )
-                return mCurHexCoords;
+            if( mEnabledCells == null || (mEnabledCells != null && mEnabledCells.contains(mHoveringCellCoords)) )
+                return mHoveringCellCoords;
         }
         return null;
     }
@@ -244,5 +272,13 @@ public class MapCanvasPanel extends JPanel {
 
     public void setPlayerPosition(Point point) {
         mPlayerPosition = point;
+    }
+
+    /**
+     * @param user
+     * @param p
+     */
+    public void showNoiseInSector(String user, Point p) {
+        mNoisePosition = p;
     }
 }

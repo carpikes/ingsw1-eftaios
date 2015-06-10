@@ -12,7 +12,10 @@ import java.awt.Polygon;
  *
  */
 public class Hexagon {
-    private static final Color PLAYER_ON = Color.YELLOW;
+    
+    
+    
+    
     private Point mCenter;
     private double mSize;
     private Polygon mPath;
@@ -31,13 +34,13 @@ public class Hexagon {
         this.mPath = hexagonPath;
 
         switch(type) {
-            case SectorBuilder.ALIEN:         mColor = new Color(0,50,0); break;
-            case SectorBuilder.DANGEROUS:     mColor = new Color(150,150,150); break;
-            case SectorBuilder.NOT_DANGEROUS: mColor = new Color(255,255,255); break;
-            case SectorBuilder.HATCH:         mColor = new Color(47,53,87); break;
-            case SectorBuilder.USED_HATCH:    mColor = new Color(178,0,0); break;
-            case SectorBuilder.HUMAN:         mColor = new Color(50,0,0); break;
-            case SectorBuilder.NOT_VALID:     mColor = null; 
+            case SectorBuilder.ALIEN:         mColor = ColorPalette.ALIEN; break;
+            case SectorBuilder.DANGEROUS:     mColor = ColorPalette.DANGEROUS; break;
+            case SectorBuilder.NOT_DANGEROUS: mColor = ColorPalette.NOT_DANGEROUS; break;
+            case SectorBuilder.HATCH:         mColor = ColorPalette.HATCH; break;
+            case SectorBuilder.USED_HATCH:    mColor = ColorPalette.USED_HATCH; break;
+            case SectorBuilder.HUMAN:         mColor = ColorPalette.HUMAN; break;
+            case SectorBuilder.NOT_VALID:     mColor = ColorPalette.NOT_VALID; 
         }
     }
     
@@ -77,28 +80,34 @@ public class Hexagon {
      * @param mouseOnThis True if the mouse is hovering this sector
      */
 
-    public void draw(Graphics2D g2d, boolean playerOn, boolean enabled, boolean mouseOnThis) {
+    public void draw(Graphics2D g2d, boolean playerOn, boolean enabled, boolean mouseOnThis, boolean noise) {
         if( mColor == null )
             return;
 
         boolean drawStroke = true;
 
+        // Color for current position: low priority
         Color real = mColor;
         if(playerOn)
-            real = PLAYER_ON;
+            real = ColorPalette.PLAYER_ON;
+        
+        if( noise )
+            real = ColorPalette.NOISE;
         
         if(!enabled) {
             drawStroke = false;
+            // Overwrite in case it is not selectable and make it gray-ish
             real = new Color(real.getRed()/2, real.getGreen()/2, real.getBlue()/2, 0xa0);
         } else if(mouseOnThis)
-            real = Color.CYAN;
+            // hovering color has higher priority than PlayerOn
+            real = ColorPalette.MOUSE_ON_THIS;
         
         g2d.setColor( real );
         g2d.fill(getPath());
         
         // border
         if(drawStroke) {
-            g2d.setColor(Color.DARK_GRAY);
+            g2d.setColor( ColorPalette.STROKE );
             g2d.draw(getPath());
         }
     }

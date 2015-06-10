@@ -22,7 +22,6 @@ public class NoiseInAnySectorCard extends DangerousCard {
 	 */
     @Override
 	public PlayerState doAction() {
-	    mGameState.sendPacketToCurrentPlayer(new GameCommand(GameOpcode.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardBuilder.NOISE_IN_ANY_SECTOR) );
         return new NoiseInAnySectorState(mGameState);
 	}
 

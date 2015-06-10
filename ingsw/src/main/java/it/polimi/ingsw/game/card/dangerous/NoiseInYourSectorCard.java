@@ -15,7 +15,6 @@ public class NoiseInYourSectorCard extends DangerousCard {
 
 	public NoiseInYourSectorCard(GameState state) {
         super(state);
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -23,7 +22,6 @@ public class NoiseInYourSectorCard extends DangerousCard {
 	 */
     @Override
 	public PlayerState doAction() { 
-	    mGameState.sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardBuilder.NOISE_IN_YOUR_SECTOR) );
         mGameState.broadcastPacket( new GameCommand(InfoOpcode.INFO_NOISE, mGamePlayer.getCurrentPosition()) );
         
         return mGameState.getObjectCard( );

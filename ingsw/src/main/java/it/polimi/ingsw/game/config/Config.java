@@ -41,5 +41,8 @@ public class Config {
     // Client configuration here
     public static final long CLIENT_TCP_PING_TIME           = 5000;
     
+    // GUI settings
+    public static final int GUI_NOISE_ANIMATION_TIME        = 30000;
+    
     private Config() {}
 }

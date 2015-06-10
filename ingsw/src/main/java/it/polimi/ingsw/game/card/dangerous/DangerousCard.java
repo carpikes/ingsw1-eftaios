@@ -4,6 +4,8 @@
 package it.polimi.ingsw.game.card.dangerous;
 
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.network.GameCommand;
+import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 
@@ -31,5 +33,4 @@ public abstract class DangerousCard {
      * @return Next state for the player
      */
 	public abstract PlayerState doAction();
-
 }

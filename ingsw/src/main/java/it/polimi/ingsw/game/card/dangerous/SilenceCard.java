@@ -16,7 +16,6 @@ public class SilenceCard extends DangerousCard {
 
 	public SilenceCard(GameState state) {
         super(state);
-        // TODO Auto-generated constructor stub
     }
 
 	/** 
@@ -24,7 +23,6 @@ public class SilenceCard extends DangerousCard {
 	 */
     @Override
 	public PlayerState doAction() {
-	    mGameState.sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_DANGEROUS_CARD_DRAWN, DangerousCardBuilder.SILENCE) );
         mGameState.broadcastPacket( InfoOpcode.INFO_SILENCE );
         
         return new EndingTurnState(mGameState);

@@ -224,7 +224,7 @@ public class GUIView extends View {
 	/** WARNING user can be null!!! */
 	@Override
 	public void showNoiseInSector(String user, Point p) {
-		// TODO 
+		mMainFrame.showNoiseInSector(user, p);
 	}
 
     /* (non-Javadoc)
