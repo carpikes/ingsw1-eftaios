@@ -15,7 +15,6 @@ import it.polimi.ingsw.game.sector.SectorBuilder;
 import it.polimi.ingsw.game.state.EndingTurnState;
 import it.polimi.ingsw.game.state.MoveDoneState;
 import it.polimi.ingsw.game.state.MovingState;
-import it.polimi.ingsw.game.state.NoiseInAnySectorState;
 import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.StartTurnState;
