@@ -3,7 +3,7 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.config.Config;
 
@@ -70,7 +70,7 @@ public class GUIFrame extends JFrame {
 
     private JLabel[] userLabel;
 
-    private GameStartInfo startInfo = null;
+    private GameInfo gameInfo = null;
 
     public GUIFrame(GameController controller) {
         super();
@@ -98,38 +98,57 @@ public class GUIFrame extends JFrame {
         bottomPanel.setBorder( RIGHT_PANEL_MARGIN );
         bottomPanel.setLayout( new BorderLayout() );
 
-        bottomPanel.add( new JLabel("Players in game: "), BorderLayout.WEST );
+        bottomPanel.add( new JLabel( gameInfo.getPlayersList().length + " players in game: "), BorderLayout.WEST );
 
-        try {
-            PlayerInfo[] players = startInfo.getPlayersList();
-            userLabel = new JLabel[ players.length ];
+        PlayerInfo[] players = gameInfo.getPlayersList();
+        userLabel = new JLabel[ players.length ];
 
-            FlowLayout flow = new FlowLayout();
-            flow.setHgap( Config.USERS_HGAP );
-            JPanel listOfUsers = new JPanel( flow );
-
-            for( int i = 0; i < players.length; ++i ) {
-                userLabel[i] = new JLabel(  );
-                String txt = "[" + (i+1) + "] ";
-
-                if( i == startInfo.getId() ) {
-                    userLabel[i].setForeground( Color.RED );
-                    txt += (startInfo.isHuman()) ? "** HUMAN ** " : "** ALIEN ** ";
-                } else {
-                    userLabel[i].setForeground( Color.BLACK );
-                }
-
-                txt +=  players[i].getUsername() + " - " + players[i].getNumberOfCards() + " object cards";
-
-                userLabel[i].setText( txt );
-                listOfUsers.add( userLabel[i] );
-            }
-
-            bottomPanel.add( listOfUsers, BorderLayout.CENTER);
-            this.add( bottomPanel, BorderLayout.SOUTH );
-        } catch( NullPointerException e ) {
-            LOG.log(Level.SEVERE, "Cannot load list of enemies!", e);
+        FlowLayout flow = new FlowLayout();
+        flow.setHgap( Config.USERS_HGAP );
+        JPanel listOfUsers = new JPanel( flow );
+        
+        for( int i = 0; i < players.length; ++i ) {
+            userLabel[i] = new JLabel(  );
         }
+        
+        updateLabels( );
+        
+        for( int i = 0; i < players.length; ++i ) {
+            listOfUsers.add( userLabel[i] );
+        }
+        
+        bottomPanel.add( listOfUsers, BorderLayout.CENTER);
+        this.add( bottomPanel, BorderLayout.SOUTH );
+    }
+
+    private void updateLabels() {
+        PlayerInfo[] players = gameInfo.getPlayersList();
+        
+        for( int i = 0; i < players.length; ++i ) {
+            createTextForLabel(i);
+        }
+    }
+
+    private void createTextForLabel(int i) {
+        PlayerInfo[] players = gameInfo.getPlayersList();
+        
+/*        for( PlayerInfo p : players ) {
+            System.out.println( "Index: " + i );
+            System.out.println( p.getUsername() + " " + p.getNumberOfCards() );
+        }*/
+            
+        String txt = "[" + (i+1) + "] ";
+
+        if( i == gameInfo.getId() ) {
+            userLabel[i].setForeground( Color.RED );
+            txt += (gameInfo.isHuman()) ? "** HUMAN ** " : "** ALIEN ** ";
+        } else {
+            userLabel[i].setForeground( Color.BLACK );
+        }
+
+        txt +=  players[i].getUsername() + " - " + players[i].getNumberOfCards() + " object cards";
+
+        userLabel[i].setText( txt );
     }
 
     /**
@@ -305,8 +324,8 @@ public class GUIFrame extends JFrame {
     /**
      * @param container
      */
-    public void setStartInfo(GameStartInfo container) {
-        startInfo  = container;
+    public void setGameInfo(GameInfo container) {
+        gameInfo  = container;
     }
 
     /**
@@ -391,7 +410,7 @@ public class GUIFrame extends JFrame {
      * @param p
      */
     public void showNoiseInSector(String user, Point p) {
-        showInfo(user, "NOISE IN SECTOR " + startInfo.getMap().pointToString(p));
+        showInfo(user, "NOISE IN SECTOR " + gameInfo.getMap().pointToString(p));
         mMapCanvas.showNoiseInSector(user, p);
     }
 
@@ -400,6 +419,17 @@ public class GUIFrame extends JFrame {
      */
     public void resetNoise() {
         mMapCanvas.resetNoise();
+    }
+
+    /**
+     * @param idPlayer 
+     * @param info 
+     * 
+     */
+    public void updatePlayersInfoDisplay(PlayerInfo info, int idPlayer) {
+        gameInfo.getPlayersList()[idPlayer] = info;
+        
+        this.createTextForLabel( idPlayer );
     }
 }
 

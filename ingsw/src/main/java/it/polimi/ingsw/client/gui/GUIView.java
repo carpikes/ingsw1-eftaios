@@ -3,7 +3,8 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.GameInfo;
+import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.ViewCommand;
 
 import java.awt.Point;
@@ -19,7 +20,7 @@ import javax.swing.JOptionPane;
  */
 public class GUIView extends View {
     private GUIFrame mMainFrame;
-    private GameStartInfo gameInfo = null;
+    private GameInfo gameInfo = null;
 
     public GUIView(GameController controller) {
         super(controller);
@@ -108,10 +109,10 @@ public class GUIView extends View {
      * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.network.GameInfoContainer)
      */
     @Override
-    public void switchToMainScreen(GameStartInfo container) {
+    public void switchToMainScreen(GameInfo container) {
         gameInfo = container;
         GameMap map = container.getMap();
-        mMainFrame.setStartInfo( container );
+        mMainFrame.setGameInfo( container );
         mMainFrame.switchToMap(map,map.getStartingPoint(container.isHuman()));
 
         mMainFrame.validate();
@@ -264,4 +265,14 @@ public class GUIView extends View {
     public void notifyObjectCardListChange(List<Integer> listOfCards) {
         mMainFrame.notifyObjectCardListChange(listOfCards);
     }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#updatePlayersInfoDisplay()
+     */
+    @Override
+    public void updatePlayersInfoDisplay( PlayerInfo info, int idPlayer ) {
+        mMainFrame.updatePlayersInfoDisplay( info, idPlayer );
+    }
+    
+    
 }

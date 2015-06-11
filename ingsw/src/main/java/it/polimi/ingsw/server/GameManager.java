@@ -5,7 +5,7 @@ import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.common.CoreOpcode;
 import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.config.Config;
 
 import java.io.Serializable;
@@ -203,7 +203,7 @@ public class GameManager {
             userList[i] = new PlayerInfo(mClients.get(i).getUsername());
 
         for(int i = 0; i < mClients.size(); i++) {
-            GameStartInfo info = mState.buildInfoContainer(userList, i);
+            GameInfo info = mState.buildInfoContainer(userList, i);
             mClients.get(i).sendPacket(new GameCommand(CoreOpcode.CMD_SC_RUN, info));
         }
 

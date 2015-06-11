@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @since 22/mag/2015
  *
  */
-public class GameStartInfo implements Serializable {
+public class GameInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,7 +21,7 @@ public class GameStartInfo implements Serializable {
     private final GameMap mMap;
     private final int id;
 
-    public GameStartInfo(PlayerInfo[] info, int idUsername, boolean isHuman, GameMap map) {
+    public GameInfo(PlayerInfo[] info, int idUsername, boolean isHuman, GameMap map) {
         mUsers = info;
         mHuman = isHuman;
         mMap = map;

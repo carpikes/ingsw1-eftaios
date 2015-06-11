@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.common.GameOpcode;
-import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.InfoOpcode;
 import it.polimi.ingsw.game.common.Opcode;
 import it.polimi.ingsw.game.sector.SectorBuilder;
@@ -89,7 +89,7 @@ public class TestGameState {
         clearMessageQueue(game);
 
         // send an invalid position
-        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, new GameStartInfo(null, 0, false, null) ) );
+        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, new GameInfo(null, 0, false, null) ) );
         game.update();
 
         boolean found = findGameCommandInQueue(game, GameOpcode.CMD_SC_MOVE_INVALID);

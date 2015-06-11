@@ -4,8 +4,8 @@ import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
+import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.PlayerInfo;
-import it.polimi.ingsw.game.common.GameStartInfo;
 import it.polimi.ingsw.game.common.ViewCommand;
 
 import java.awt.Point;
@@ -45,7 +45,7 @@ public class CLIView extends View {
 
     private GameMap mMap;
     private final GameController mController;
-    private GameStartInfo mContainer;
+    private GameInfo mContainer;
 
     /** The constructor
      * @param c Game Controller
@@ -146,7 +146,7 @@ public class CLIView extends View {
      * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.network.GameStartInfo)
      */
     @Override
-    public void switchToMainScreen(GameStartInfo container) {
+    public void switchToMainScreen(GameInfo container) {
         mContainer = container;
         mMap = container.getMap();
 
@@ -373,5 +373,14 @@ public class CLIView extends View {
 
         IO.write(cards.toString());
     }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#updatePlayersInfoDisplay(it.polimi.ingsw.game.common.PlayerInfo, int)
+     */
+    @Override
+    public void updatePlayersInfoDisplay(PlayerInfo info, int idPlayer) {
+        // TODO Guarda la GUI come reference per questo!
+    }
+
 
 }

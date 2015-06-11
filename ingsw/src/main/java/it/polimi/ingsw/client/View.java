@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.GameInfo;
+import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.ViewCommand;
 
 import java.awt.Point;
@@ -74,7 +75,7 @@ public abstract class View {
      * 
      * @param container Some infos about this game
      */
-    public abstract void switchToMainScreen(GameStartInfo container);
+    public abstract void switchToMainScreen(GameInfo container);
 
     /** Notify a closed connection */
     public abstract void close();
@@ -106,5 +107,10 @@ public abstract class View {
      * @param listOfCards
      */
     public abstract void notifyObjectCardListChange(List<Integer> listOfCards);
+
+    /**
+     * 
+     */
+    public abstract void updatePlayersInfoDisplay( PlayerInfo info, int idPlayer );
 
 }

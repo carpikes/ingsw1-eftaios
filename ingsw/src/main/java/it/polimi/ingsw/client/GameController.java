@@ -9,7 +9,7 @@ import it.polimi.ingsw.game.common.CoreOpcode;
 import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.common.GameOpcode;
-import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.InfoOpcode;
 import it.polimi.ingsw.game.common.Opcode;
 import it.polimi.ingsw.game.common.ViewCommand;
@@ -42,7 +42,7 @@ public class GameController implements OnReceiveListener {
     /** True if the client must be shut down */
     private boolean mStopEvent = false;
 
-    private GameStartInfo mGameInfo = null;
+    private GameInfo mGameInfo = null;
 
     private Integer mMyTurn = null;
     private String mMyUsername = null;
@@ -257,10 +257,16 @@ public class GameController implements OnReceiveListener {
                 }
                 break;
             case INFO_GOT_A_NEW_OBJ_CARD:
-                if(cmd.getArgs().length == 1 && cmd.getArgs()[0] instanceof Integer) {
-                    mGameInfo.getPlayersList()[mCurPlayerId].setNumberOfCards((Integer) cmd.getArgs()[0]);
-                    mView.showInfo(curUser, "Draw an object card!");
-                }
+                PlayerInfo playerInfo = mGameInfo.getPlayersList()[mCurPlayerId]; 
+                
+                // update count of cards for current player
+                playerInfo.setNumberOfCards( playerInfo.getNumberOfCards() + 1 );
+
+                // update info of current status for all players and show a message
+                mView.updatePlayersInfoDisplay( playerInfo, mCurPlayerId );
+
+                mView.showInfo(curUser, "New object card drawn!");
+
                 break;
             case INFO_DISCARDED_OBJ_CARD:
                 if(cmd.getArgs().length == 2 && cmd.getArgs()[1] instanceof String) {
@@ -459,8 +465,8 @@ public class GameController implements OnReceiveListener {
     }
 
     private void runGame(Object obj) {
-        if (obj != null && obj instanceof GameStartInfo) {
-            mGameInfo = (GameStartInfo) obj;
+        if (obj != null && obj instanceof GameInfo) {
+            mGameInfo = (GameInfo) obj;
             for(int i = 0; i < mGameInfo.getPlayersList().length; i++) {
                 if(mGameInfo.getPlayersList()[i].getUsername().equals(mMyUsername)) {
                     mMyTurn = i;

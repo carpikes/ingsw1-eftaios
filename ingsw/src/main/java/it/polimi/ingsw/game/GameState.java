@@ -7,7 +7,7 @@ import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.common.GameOpcode;
-import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.InfoOpcode;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.player.GamePlayer;
@@ -223,7 +223,7 @@ public class GameState {
                 
                 player.addObjectCard(newCard);
                 
-                broadcastPacket( new GameCommand(InfoOpcode.INFO_GOT_A_NEW_OBJ_CARD, player.getNumberOfCards()));
+                broadcastPacket( new GameCommand(InfoOpcode.INFO_GOT_A_NEW_OBJ_CARD) );
                 sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, (Integer)newCard.getId()) );
                 
                 // We're ok, proceed
@@ -442,8 +442,8 @@ public class GameState {
          * @param i Player id (to send this packet)
          * @return Game infos
          */
-        public GameStartInfo buildInfoContainer(PlayerInfo[] userList, int i) {
-            GameStartInfo info = new GameStartInfo(userList, i, mPlayers.get(i).isHuman(), mMap);
+        public GameInfo buildInfoContainer(PlayerInfo[] userList, int i) {
+            GameInfo info = new GameInfo(userList, i, mPlayers.get(i).isHuman(), mMap);
                 return info;
         }
     
