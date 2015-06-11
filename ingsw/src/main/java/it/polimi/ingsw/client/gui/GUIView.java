@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
 public class GUIView extends View {
     private GUIFrame mMainFrame;
     private GameStartInfo gameInfo = null;
-    
+
     public GUIView(GameController controller) {
         super(controller);
         mMainFrame = new GUIFrame(controller);
@@ -29,8 +29,8 @@ public class GUIView extends View {
     @Override
     public int askConnectionType(String[] params) {
         Object ret = JOptionPane.showInputDialog(null, "Choose a connection", "Connection type", 
-                     JOptionPane.QUESTION_MESSAGE, null, params, params[0]);
-        
+                JOptionPane.QUESTION_MESSAGE, null, params, params[0]);
+
         for(int i = 0; i<params.length;i++)
             if(params[i].equals(ret))
                 return i;
@@ -46,19 +46,19 @@ public class GUIView extends View {
     public String askUsername(String message) {
         return JOptionPane.showInputDialog(message.length() == 0 ? "Type a username" : message);
     }
-    
+
     @Override
     public Integer askView( String[] viewList ) {
         Object ret = JOptionPane.showInputDialog(null, "Choose a view", "", 
                 JOptionPane.QUESTION_MESSAGE, null, viewList, viewList[0]);
-   
+
         if(ret == null || !(ret instanceof String))
             return null;
-        
+
         for(int i = 0; i<viewList.length;i++)
             if(viewList[i].equals(ret))
                 return i;
-        
+
         return null; 
     }
 
@@ -67,14 +67,14 @@ public class GUIView extends View {
 
         Object ret = JOptionPane.showInputDialog(null, "Choose a map", "", 
                 JOptionPane.QUESTION_MESSAGE, null, mapList, mapList[0]);
-   
+
         if(ret == null || !(ret instanceof String))
             return null;
-        
+
         for(int i = 0; i<mapList.length;i++)
             if(mapList[i].equals(ret))
                 return i;
-        
+
         return null; 
     }
 
@@ -113,7 +113,7 @@ public class GUIView extends View {
         GameMap map = container.getMap();
         mMainFrame.setStartInfo( container );
         mMainFrame.switchToMap(map,map.getStartingPoint(container.isHuman()));
-        
+
         mMainFrame.validate();
         mMainFrame.repaint();
     }
@@ -128,38 +128,38 @@ public class GUIView extends View {
     @Override
     protected void handleCommand(List<ViewCommand> cmd) {
         resetViewStatus();
-        
+
         for(ViewCommand c : cmd) {
             switch(c.getOpcode()) {
-            case CMD_CHOOSEOBJECTCARD:
-                setCanSelectObjCard( true );
-                break;
-                
-            case CMD_ENABLEMAPVIEW:
-                if( c.getArgs().length > 0) // start from a point and choose a position within x moves
-                    enableMap( (Point) c.getArgs()[0], (int) c.getArgs()[1] ); 
-                else // choose any position
-                    enableMap();
-                break;
-                
-            case CMD_ATTACK:
-                setAttackEnabled( true );
-                break;
-                
-            case CMD_DISCARDOBJECTCARD:
-                setDiscardObjCardEnabled( true );
-                break;
-                
-            case CMD_DRAWDANGEROUSCARD:
-                setCanDrawDangerousCard( true );
-                break;
-            case CMD_ENDTURN:
-                setEndTurnEnabled( true );
-                break;
+                case CMD_CHOOSEOBJECTCARD:
+                    setCanSelectObjCard( true );
+                    break;
 
-            default:
-                break;
-            
+                case CMD_ENABLEMAPVIEW:
+                    if( c.getArgs().length > 0) // start from a point and choose a position within x moves
+                        enableMap( (Point) c.getArgs()[0], (int) c.getArgs()[1] ); 
+                    else // choose any position
+                        enableMap();
+                    break;
+
+                case CMD_ATTACK:
+                    setAttackEnabled( true );
+                    break;
+
+                case CMD_DISCARDOBJECTCARD:
+                    setDiscardObjCardEnabled( true );
+                    break;
+
+                case CMD_DRAWDANGEROUSCARD:
+                    setCanDrawDangerousCard( true );
+                    break;
+                case CMD_ENDTURN:
+                    setEndTurnEnabled( true );
+                    break;
+
+                default:
+                    break;
+
             }
         }
     }
@@ -198,7 +198,7 @@ public class GUIView extends View {
     private void setCanSelectObjCard(boolean value) {
         mMainFrame.setCanSelectObjCard( value );
     }
-    
+
     private void enableMap() {
         mMainFrame.enableMapCells( null );
     }
@@ -211,18 +211,18 @@ public class GUIView extends View {
     private void resetViewStatus() {
         mMainFrame.resetViewStatus();
     }
-    
-    /** WARNING user can be null!!! */
-	@Override
-	public void showInfo(String user, String message) {
-		mMainFrame.showInfo( user, message );
-	}	
 
-	/** WARNING user can be null!!! */
-	@Override
-	public void showNoiseInSector(String user, Point p) {
-		mMainFrame.showNoiseInSector(user, p);
-	}
+    /** WARNING user can be null!!! */
+    @Override
+    public void showInfo(String user, String message) {
+        mMainFrame.showInfo( user, message );
+    }	
+
+    /** WARNING user can be null!!! */
+    @Override
+    public void showNoiseInSector(String user, Point p) {
+        mMainFrame.showNoiseInSector(user, p);
+    }
 
     /* (non-Javadoc)
      * @see it.polimi.ingsw.client.View#onMyTurn()

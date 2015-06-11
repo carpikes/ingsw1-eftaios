@@ -66,26 +66,26 @@ public class TestGamePlayer {
     @Test
     public void testHumanDistance() {
         GamePlayer human = new GamePlayer( 0, new Human(), new Point(0,0) );
-        
+
         assertFalse( human.isValidDistance( 2 ) || human.isValidDistance( -1 ) );
     }
-    
+
     @Test
     public void testAdrenalineHumanDistance() {
         GamePlayer human = new GamePlayer( 0, new Human(), new Point(0,0) );
         human.setAdrenaline(true);
-        
+
         assertTrue( human.isValidDistance( 2 ) );
-        
+
         human.setAdrenaline(false);
         assertFalse( human.isValidDistance( 2 ) );
     }
-    
+
     @Test
     public void testAlienFull() {
         GamePlayer alien = new GamePlayer( 0, new Alien(), new Point(0,0) );
         alien.setFull( true );
-        
+
         assertTrue( alien.isFull() );
         assertTrue( alien.getMaxMoves() == Config.MAX_ALIEN_FULL_MOVES );
     }

@@ -20,26 +20,26 @@ import java.util.logging.Logger;
  */
 public class ServerRMI implements Listener, ServerRMIMask {
     private static final Logger LOG = Logger.getLogger(ServerRMI.class.getName());
-    
+
     /** RMI service identifier */
     private static final String RMISERVER_STRING = "eftaiosRMI";
-    
+
     /** HashMap with connected clients */
     private HashMap<String, ClientConnRMI> mMap;
-    
+
     /** Random generator */
     private Random mRandom = new Random();
-    
+
     /** RMI Registry instance */
     private Registry mRegistry;
-    
+
     /** True if the RMI service is running */
     private boolean mIsUp = false;
-    
+
     public ServerRMI() {
         mMap = new HashMap<String, ClientConnRMI>();
     }
-    
+
     /** Run the RMI listener */
     @Override
     public void run() {
@@ -51,7 +51,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
                 LOG.log(Level.FINEST, e.toString(), e);
                 mRegistry = LocateRegistry.createRegistry(1099);
             }
-            
+
             ServerRMIMask stub = (ServerRMIMask) UnicastRemoteObject.exportObject(this, 0);
             mRegistry.bind(RMISERVER_STRING, stub);
 
@@ -61,7 +61,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
             LOG.log(Level.SEVERE, "RMI server is down: " + e.toString(), e);
         }
     }
-    
+
     /** [REMOTE] 
      * This method will get back a new unique id
      * It must be called before any other one.
@@ -73,7 +73,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
         StringBuilder id = new StringBuilder();
         for(int i=0;i<32;i++)
             id.append((char)('0' + mRandom.nextInt(10)));
-        
+
         String ids = id.toString();
         ClientConnRMI conn = new ClientConnRMI(this, ids);
         if(Server.getInstance().addClient(conn))
@@ -93,7 +93,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
     public void onRMICommand(String clientId, GameCommand pkt) throws RemoteException {
         if(clientId == null || pkt == null)
             return;
-        
+
         if(mMap.containsKey(clientId)) {
             ClientConnRMI conn = mMap.get(clientId);
             conn.onRMICommand(pkt);
@@ -112,7 +112,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
     public GameCommand[] readCommands(String clientId) throws RemoteException {
         if(clientId == null)
             return new GameCommand[0];
-        
+
         if(mMap.containsKey(clientId)) {
             ClientConnRMI conn = mMap.get(clientId);
             return conn.readCommands();
@@ -166,5 +166,5 @@ public class ServerRMI implements Listener, ServerRMIMask {
     public boolean isUp() {
         return mIsUp;
     }
-    
+
 }

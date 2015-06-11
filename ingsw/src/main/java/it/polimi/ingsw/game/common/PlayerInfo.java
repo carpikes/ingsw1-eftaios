@@ -9,12 +9,12 @@ public class PlayerInfo implements Serializable{
     private static final long serialVersionUID = 1L;
     private String mUsername;
     private int mNumberOfCards;
-    
+
     public PlayerInfo(String username) {
         mUsername = username;
         mNumberOfCards = 0;
     }
-    
+
     public int getNumberOfCards() {
         return mNumberOfCards;
     }

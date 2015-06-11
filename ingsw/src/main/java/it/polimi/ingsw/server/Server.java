@@ -34,13 +34,13 @@ public class Server {
 
     /** This list contains all listeners running (e.g. Socket listener, RMI, ...) */
     private final List<Listener> mServers;
-    
+
     /** This list contains all games active and running */
     private final List<GameManager> mGamesRunning;
-    
+
     /** Number of connected clients */
     private Integer mConnectedClients;
-    
+
     /** Stop event. If true, the server will stop running */
     private boolean mStopEvent = false;
 
@@ -48,11 +48,11 @@ public class Server {
     private GameManager mCurGame = null;
 
     /** All games queued to removal are here */ 
-	private Queue<GameManager> mGamesToRemove;
-	
-	/** Debug mode */
-	private boolean dDebugMode = false;
-	
+    private Queue<GameManager> mGamesToRemove;
+
+    /** Debug mode */
+    private boolean dDebugMode = false;
+
     private Server() { 
         mServers = new ArrayList<Listener>();
         mGamesRunning = new ArrayList<GameManager>();
@@ -73,14 +73,14 @@ public class Server {
      */
     public synchronized boolean addClient(ClientConn conn) {
         // Invariant: mCurGame cannot be full here
-        
+
         if(mConnectedClients >= Config.SERVER_MAX_CLIENTS) {
             conn.sendPacket(CoreOpcode.CMD_SC_FULL);
             return false;
         }
-        
+
         mConnectedClients++;
-    
+
         if(mCurGame == null) {
             mCurGame = new GameManager();
         }
@@ -99,10 +99,10 @@ public class Server {
                 mCurGame = null;
             } 
         }
-        
+
         return true;
     }
-    
+
     /** Decrement client counter */
     public synchronized void removeClient() {
         if(mConnectedClients > 0)
@@ -110,7 +110,7 @@ public class Server {
         else
             throw new RuntimeException("0 Clients connected. What's Happening?");
     }
-    
+
     /** Removes a game from the games-to-update list 
      * 
      * @param game  Game you want to remove
@@ -134,7 +134,7 @@ public class Server {
             for(Listener server : mServers)
                 new Thread(server).start();
         }
-        
+
         try {
             while(!mStopEvent) {
                 if(mCurGame != null) {
@@ -150,25 +150,25 @@ public class Server {
                 synchronized(mGamesRunning) {
                     for (GameManager g : mGamesRunning)
                         g.update();
-                    
+
                     while(!mGamesToRemove.isEmpty()) {
-                    	GameManager g = mGamesToRemove.remove();
-                    	mGamesRunning.remove(g);
+                        GameManager g = mGamesToRemove.remove();
+                        mGamesRunning.remove(g);
                     }
                 }
-                
+
                 Thread.sleep(100);
             }
         } catch (InterruptedException e) {
             LOG.log(Level.FINER, e.toString(), e);
         }
-        
+
         if(!dDebugMode) {
             for(Listener server : mServers)
                 server.tearDown();
         }
     }
-    
+
     /** Get number of connected clients
      * 
      * @return Number of connected clients
@@ -176,7 +176,7 @@ public class Server {
     public synchronized int getConnectedClients() {
         return mConnectedClients;
     }
-    
+
     /** Shut down the server */
     public synchronized void tearDown() {
         mStopEvent = true;
@@ -189,14 +189,14 @@ public class Server {
     public synchronized boolean isDown() {
         if(dDebugMode)
             throw new DebugException("Unsupported command in debug mode");
-        
+
         if(mServers != null)
             for(Listener server : mServers)
                 if(!server.isDown())
                     return false;
         return true;
     }
-    
+
     /** Check if the server is correctly started up
      * 
      * @return True if the server is up and running
@@ -206,7 +206,7 @@ public class Server {
             throw new DebugException("Unsupported command in debug mode");
         if(mServers == null)
             return false;
-        
+
         for(Listener server : mServers)
             if(!server.isUp())
                 return false;

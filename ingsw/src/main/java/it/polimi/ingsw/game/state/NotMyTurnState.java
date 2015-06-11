@@ -16,7 +16,7 @@ public class NotMyTurnState extends PlayerState {
     private static final Logger LOG = Logger.getLogger(NotMyTurnState.class.getName());
     public NotMyTurnState(GameState state) {
         super(state);
-        
+
         LOG.log(Level.FINE, "Constructor");
     }
 
@@ -27,7 +27,7 @@ public class NotMyTurnState extends PlayerState {
     public PlayerState update() {
         return this;
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
      */

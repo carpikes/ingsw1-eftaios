@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * @since 25 May 2015
  */
 public class SpotlightCardState extends PlayerState {
-	private static final Logger LOG = Logger.getLogger(SpotlightCardState.class.getName());
+    private static final Logger LOG = Logger.getLogger(SpotlightCardState.class.getName());
     public SpotlightCardState(GameState state) {
         super(state);
         LOG.log(Level.FINE, "Constructor");
@@ -44,12 +44,12 @@ public class SpotlightCardState extends PlayerState {
     @Override
     public PlayerState update() {
         GameCommand packet = mGameState.getPacketFromQueue();
-        
+
         PlayerState nextState = this;
         if( packet != null ) {
             if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_MAP_POSITION ) {
                 mGameState.spotlightAction( (Point)packet.getArgs()[0] );
-                
+
                 nextState = mGamePlayer.getStateBeforeSpotlightCard();
                 nextState.buildAndSendAvailableCommands();
                 mGamePlayer.setStateBeforeSpotlightCard(null);
@@ -57,15 +57,15 @@ public class SpotlightCardState extends PlayerState {
                 throw new IllegalStateOperationException("You can only choose a position here. Discarding packet.");
             }
         }
-        
+
         return nextState;
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
      */
     @Override
-	public boolean stillInGame() {
-		return true;
-	}
+    public boolean stillInGame() {
+        return true;
+    }
 }

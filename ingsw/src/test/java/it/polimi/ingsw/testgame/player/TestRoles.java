@@ -19,33 +19,33 @@ import org.junit.Test;
  * @since 2 Jun 2015
  */
 public class TestRoles {
-    
+
     @Test
     public void testRoleFactory() {
         // test for odd and even numbers
         testRoleFactoryHelper( 5 );
         testRoleFactoryHelper( 6 );
     }
-    
+
     @Test(expected=TooFewPlayersException.class)
     public void tooFewPlayers() {
         RoleBuilder.generateRoles(0, true);
     }
-    
+
     private void testRoleFactoryHelper( int numberOfPlayers ) {
         int humans = 0; 
         int aliens = 0;
-        
+
         List<Role> roles = RoleBuilder.generateRoles( numberOfPlayers, true);
         Iterator<Role> it = roles.iterator();
-        
+
         while( it.hasNext() ) {
             if(it.next() instanceof Human) 
                 humans++; 
             else 
                 aliens++;
         }
-        
+
         assertEquals( humans, numberOfHumans(numberOfPlayers) );
         assertEquals( aliens, numberOfAliens(numberOfPlayers) );
     }

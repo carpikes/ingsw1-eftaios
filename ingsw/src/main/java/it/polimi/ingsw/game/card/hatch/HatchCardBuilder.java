@@ -16,14 +16,14 @@ import java.util.Random;
 public class HatchCardBuilder {
     private static Random generator = new Random();
     public static final int HATCH_CARD_TYPES = 2;
-    
+
     public static final int GREEN_HATCH_CARD = 0;
     public static final int RED_HATCH_CARD = 1;
-    
+
     private HatchCardBuilder() {
-        
+
     }
-    
+
     /**
      * Give a random hatch card to set player
      * @param state GameState of the player

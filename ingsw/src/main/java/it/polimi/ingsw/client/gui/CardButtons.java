@@ -19,11 +19,11 @@ public enum CardButtons {
     SPOTLIGHT( ObjectCardBuilder.SPOTLIGHT_CARD, new File("img/spotlight.png"), true),
     TELEPORT( ObjectCardBuilder.TELEPORT_CARD, new File("img/teleport.png"), true),
     NULL( -1, new File("img/null.png"), false);
-    
+
     private int id;
     private File imgFile;
     private boolean enabled;
-    
+
     private CardButtons( int id, File file, boolean enabled ) {
         this.id = id;
         this.imgFile = file;
@@ -44,5 +44,5 @@ public enum CardButtons {
     public boolean isEnabled() {
         return enabled;
     }
-    
+
 }

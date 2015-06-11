@@ -10,20 +10,20 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class AttackCard extends ObjectCard {
 
-	public AttackCard(GameState state, String name) {
+    public AttackCard(GameState state, String name) {
         super(state, ObjectCardBuilder.ATTACK_CARD, name);
     }
 
-	/** 
-	 * Invokes attack() on the player's current position
-	 */
+    /** 
+     * Invokes attack() on the player's current position
+     */
     @Override
-	public PlayerState doAction() {
-		mGameState.attack( mGamePlayer.getCurrentPosition() );
-		
-		return mGamePlayer.getCurrentState();
-	}
-    
+    public PlayerState doAction() {
+        mGameState.attack( mGamePlayer.getCurrentPosition() );
+
+        return mGamePlayer.getCurrentState();
+    }
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
      */

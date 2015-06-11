@@ -14,18 +14,18 @@ import java.util.Queue;
 public class ClientConnRMI extends ClientConn {
     /** Outgoing packets */
     private Queue<GameCommand> mOutgoingQueue;
-    
+
     /** Unique client identifier */
     private final String mUniqueId;
-    
+
     /** The listening server */
     private final ServerRMI mServer;
-    
+
     /** True if the client is disconnecting.
      * A disconnecting client can't send other packets
      */
     private boolean mIsDisconnecting = false;
-    
+
     /** The constructor
      * 
      * @param server    RMI Server listener
@@ -38,7 +38,7 @@ public class ClientConnRMI extends ClientConn {
         mUniqueId = uniqueId;
         mServer = server;
     }
-    
+
     /** Empty method, RMI does not need a separate thread */
     @Override
     public void run() {
@@ -81,16 +81,16 @@ public class ClientConnRMI extends ClientConn {
      */
     public GameCommand[] readCommands() {
         resetTimeoutTimer();
-        
+
         // Last read with good bye message
         if(mIsDisconnecting)
             mServer.unregister(mUniqueId);
-        
+
         synchronized(mOutgoingQueue) {
             if(mOutgoingQueue.isEmpty())
                 return new GameCommand[0];
             GameCommand[] out = new GameCommand[mOutgoingQueue.size()];
-            
+
             int i = 0;
             while(!mOutgoingQueue.isEmpty()) {
                 GameCommand msg = mOutgoingQueue.poll();

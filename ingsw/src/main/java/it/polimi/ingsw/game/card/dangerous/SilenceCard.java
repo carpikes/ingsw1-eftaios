@@ -12,18 +12,18 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class SilenceCard extends DangerousCard {
 
-	public SilenceCard(GameState state) {
+    public SilenceCard(GameState state) {
         super(state);
     }
 
-	/** 
-	 * Send info to current player about the card and then move to Ending Turn State
-	 */
+    /** 
+     * Send info to current player about the card and then move to Ending Turn State
+     */
     @Override
-	public PlayerState doAction() {
+    public PlayerState doAction() {
         mGameState.broadcastPacket( InfoOpcode.INFO_SILENCE );
-        
+
         return new EndingTurnState(mGameState);
-	}
+    }
 
 }

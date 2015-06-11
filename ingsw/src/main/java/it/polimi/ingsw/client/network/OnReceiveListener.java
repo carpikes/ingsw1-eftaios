@@ -12,7 +12,7 @@ public interface OnReceiveListener {
      * @param obj The received packet
      */
     public void onReceive(GameCommand obj);
-    
+
     /** This method is called when the connection drops */
     public void onDisconnect();
 }

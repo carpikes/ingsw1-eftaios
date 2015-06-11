@@ -22,21 +22,21 @@ import java.util.List;
 public abstract class PlayerState {
     protected final GameState mGameState;
     protected final GamePlayer mGamePlayer;
-    
+
     protected PlayerState(GameState state) {
         mGameState = state;
         mGamePlayer = state.getCurrentPlayer();
     } 
-    
+
     protected void sendAvailableCommands(ArrayList<ViewCommand> availableCommands) {
         mGameState.sendPacketToCurrentPlayer(new GameCommand(GameOpcode.CMD_SC_AVAILABLE_COMMANDS, availableCommands));
     }
-    
+
     public abstract PlayerState update();
 
     public abstract boolean stillInGame();
     protected abstract void buildAndSendAvailableCommands();
-    
+
 
     /** Use an object card
      * @param curState current state
@@ -47,21 +47,21 @@ public abstract class PlayerState {
         PlayerState nextState;
         if(cmd == null || cmd.getArgs() == null || cmd.getArgs().length == 0 || !(cmd.getArgs()[0] instanceof Integer))
             throw new IllegalStateOperationException("Which object card?");
-        
+
         nextState = mGameState.startUsingObjectCard( (Integer)cmd.getArgs()[0] );
-        
+
         if(nextState.equals(curState))
             buildAndSendAvailableCommands();
         return nextState;
     }
-        
+
     /** Add an object card to the availableCommands
      * @param availableCommands Input array
      */
     protected void addObjectCardIfPossible(List<ViewCommand> availableCommands) {
         if(mGamePlayer.isObjectCardUsed() || mGamePlayer.getNumberOfUsableCards() == 0 || !mGamePlayer.isHuman())
             return;
-        
+
         availableCommands.add(new ViewCommand(ViewOpcode.CMD_CHOOSEOBJECTCARD, (Serializable[]) mGamePlayer.getNamesOfUsableCards()));
     }
 }

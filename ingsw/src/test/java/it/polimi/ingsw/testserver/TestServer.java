@@ -30,12 +30,12 @@ public class TestServer {
     public static void setUp() throws Exception {
         new Thread(new Runnable() { public void run() { Server.getInstance().runServer(true); } }).start();
     }
-    
+
     @Test
     public void testGame() {
-        
+
         ServerToClientMock[] conns = new ServerToClientMock[Config.GAME_MAX_PLAYERS];
-        
+
         for(int i=0;i<Config.GAME_MAX_PLAYERS;i++) {
             conns[i] = new ServerToClientMock();
             conns[i].run();
@@ -53,17 +53,17 @@ public class TestServer {
 
         for(ServerToClientMock i : conns)
             i.emulateDisconnect();
-        
+
     }
-    
+
     @Ignore
     public void testLoad() {
         TCPConnection[] conns = new TCPConnection[Config.SERVER_MAX_CLIENTS];
 
         int clientsBefore = Server.getInstance().getConnectedClients();
-        
+
         assertEquals(clientsBefore, 0);
-        
+
         try {
             for(int i = 0; i<conns.length;i++) {
                 conns[i] = new TCPConnection();
@@ -72,7 +72,7 @@ public class TestServer {
                     conns[i].connect();
                     //System.out.println("Connecting [" + i + "]");
                     double maxSecs = 3;
-                    
+
                     while(maxSecs > 0 && Server.getInstance().getConnectedClients() != i + 1 ) {
                         Thread.sleep(50);
                         maxSecs -= 0.050;
@@ -83,13 +83,13 @@ public class TestServer {
                     fail("Cannot connect to server: " + e.toString());
                 }
             }
-        
-        
+
+
             for(int i = 0;i<conns.length;i++) {
                 assertTrue(conns[i].isOnline());
                 conns[i].disconnect();
                 double maxSecs = 3;
-                
+
                 while(maxSecs > 0 && Server.getInstance().getConnectedClients() != Config.SERVER_MAX_CLIENTS - i) {
                     Thread.sleep(50);
                     maxSecs -= 0.050;
@@ -98,7 +98,7 @@ public class TestServer {
                 assertEquals(Server.getInstance().getConnectedClients(),Config.SERVER_MAX_CLIENTS - i);
                 Thread.sleep(500);
             }
-        
+
         } catch( InterruptedException e) { }
         assertEquals(Server.getInstance().getConnectedClients(), 0);
     }
@@ -107,26 +107,26 @@ public class TestServer {
     public void testClient() {
         ServerToClientMock conn = new ServerToClientMock();
         ServerToClientMock conn2 = new ServerToClientMock(); 
-        
+
         conn.run();
         conn2.run();
-        
+
         int clientsBefore = Server.getInstance().getConnectedClients();
-        
+
         assertTrue(Server.getInstance().addClient(conn));
         assertTrue(Server.getInstance().addClient(conn2));
-        
+
         // Emulate and invalid packet
         conn.emulateReadPacket(new GameCommand(CoreOpcode.CMD_PING));
-        
+
         // Try to change username with an empty one
         conn.emulateReadPacket(new GameCommand(CoreOpcode.CMD_CS_USERNAME));
         assertFalse(conn.exposeClient().hasUsername());
-        
+
         // Try a good username
         conn.emulateReadPacket(new GameCommand(CoreOpcode.CMD_CS_USERNAME, "test"));
         assertTrue(conn.exposeClient().hasUsername());
-        
+
         // Try an already used username
         conn2.emulateReadPacket(new GameCommand(CoreOpcode.CMD_CS_USERNAME, "test"));
         assertFalse(conn2.exposeClient().hasUsername());
@@ -134,13 +134,13 @@ public class TestServer {
         // Disconnect clients
         conn.emulateDisconnect();
         conn2.emulateDisconnect();
-        
+
         Server.getInstance().removeClient();
         Server.getInstance().removeClient();
-        
+
         assertEquals(Server.getInstance().getConnectedClients(), clientsBefore);
     }
-    
+
     @Ignore
     @Test
     public void testTCP() {

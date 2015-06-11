@@ -9,20 +9,20 @@ import it.polimi.ingsw.game.state.PlayerState;
  * @since 2 Jun 2015
  */
 public class TeleportCard extends ObjectCard {
-    
-	public TeleportCard(GameState state, String name) {
+
+    public TeleportCard(GameState state, String name) {
         super(state, ObjectCardBuilder.TELEPORT_CARD, name);
     }
 
-	/**
-	 * Move player to starting point
-	 */
+    /**
+     * Move player to starting point
+     */
     @Override
-	public PlayerState doAction() {        
+    public PlayerState doAction() {        
         mGameState.rawMoveTo( mGamePlayer, mGameState.getMap().getStartingPoint(true) );
         return mGamePlayer.getCurrentState();
-	}
-    
+    }
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
      */

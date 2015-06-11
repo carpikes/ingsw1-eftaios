@@ -16,13 +16,13 @@ public class GreenHatchCard extends HatchCard {
         super(state);
     }
 
-	/**
-	 * Set next state to WinnerState
-	 */
+    /**
+     * Set next state to WinnerState
+     */
     @Override
-	public PlayerState getNextState() {
+    public PlayerState getNextState() {
         mGameState.setLastThingDid(LastThings.HUMAN_USED_HATCH);
-	    return new WinnerState(mGameState, mGamePlayer.getId());
-	}
+        return new WinnerState(mGameState, mGamePlayer.getId());
+    }
 
 }

@@ -54,7 +54,7 @@ public class CLIView extends View {
         super(c);
         mController = c;
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.client.View#startup()
      */
@@ -62,14 +62,14 @@ public class CLIView extends View {
     public void startup() {
         CLIView.banner();
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.client.View#run()
      */
     @Override
     public void run() {
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.client.View#askConnectionType(java.lang.String[])
      */
@@ -108,7 +108,7 @@ public class CLIView extends View {
         IO.write("Type the hostname");
         return IO.readString();
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.client.View#askView()
      */
@@ -165,7 +165,7 @@ public class CLIView extends View {
     public void close() {
         // EMPTY
     }
-    
+
     /** Handle a map view
      * @param c ViewCommand
      * @param canGoBack True if user can go back
@@ -190,11 +190,11 @@ public class CLIView extends View {
         IO.write("Choose a position on the map" + (canGoBack?" (or type - to go back)":""));
         do {
             newPos = IO.askMapPos(canGoBack);
-            
+
             // up in the menu
             if(newPos == null)
                 return false;
-            
+
             if( (enabledCells == null && mMap.isWithinBounds(newPos)) || (enabledCells != null && enabledCells.contains(newPos)))
                 break;
             IO.write("Invalid position");
@@ -202,7 +202,7 @@ public class CLIView extends View {
         mController.onMapPositionChosen(newPos);
         return true;
     }
-    
+
     /** Handle a ChooseObjectCard command
      * @param c ViewCommand
      * @param canGoBack True if user can go back
@@ -221,7 +221,7 @@ public class CLIView extends View {
             IO.write("ERROR: " + c.getArgs().length);
         return false;
     }
-    
+
     /** Handle a DiscardObjectCard Command
      * @param c ViewCommand
      * @param canGoBack True if user can go back
@@ -232,7 +232,7 @@ public class CLIView extends View {
             String[] objs = (String[]) c.getArgs();
             IO.write("Which card do you want to discard?" + (canGoBack?" (or type - to go back)":""));
             Integer i = IO.askInAList(objs, canGoBack);
-            
+
             if(i == null)
                 return false;
             mController.sendDiscardObjectCard(i);
@@ -241,7 +241,7 @@ public class CLIView extends View {
             IO.write("ERROR: " + c.getArgs().length);
         return false;
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.client.View#handleCommand(java.util.List)
      */
@@ -249,9 +249,9 @@ public class CLIView extends View {
     protected void handleCommand(List<ViewCommand> cmd) {
         ViewCommand c;
         boolean loopMenu = true;
-        
+
         while(loopMenu) {
-            
+
             if(cmd.size() > 1) {
                 IO.write("What do you want to do now?");
                 int choice = IO.askInAList(cmd, false);
@@ -261,7 +261,7 @@ public class CLIView extends View {
                 c = cmd.get(0);
             } else
                 return;
-    
+
             switch(c.getOpcode()) {
                 case CMD_ENABLEMAPVIEW:
                     if(handleEnableMapView(c, loopMenu)) //loopMenu == false if this is the only choice
@@ -334,7 +334,7 @@ public class CLIView extends View {
         IO.write("*******************");
         IO.write("**   GAME OVER   **");
         IO.write("*******************\n");
-        
+
         if(winnerList.isEmpty()) 
             IO.write("Nobody won this game.");
         else {
@@ -342,7 +342,7 @@ public class CLIView extends View {
             for(Integer i : winnerList)
                 IO.write(" -> " + mContainer.getPlayersList()[i].getUsername());
         }
-        
+
         if(loserList.isEmpty()) 
             IO.write("Nobody lost this game.");
         else {
@@ -358,19 +358,19 @@ public class CLIView extends View {
     @Override
     public void notifyObjectCardListChange(List<Integer> listOfCards) {
         StringBuilder cards = new StringBuilder();
-        
+
         cards.append("Your object cards: ");
         for(int i = 0;i < listOfCards.size(); i++) {
             cards.append((i == 0? "[ " : "| "));
             cards.append(ObjectCardBuilder.idToString(listOfCards.get(i)));
             cards.append(" ");
         }
-        
+
         if(cards.length() == 0)
             cards.append("[ YOU HAVE NO OBJECT CARDS ]");
         else 
             cards.append("]");
-        
+
         IO.write(cards.toString());
     }
 

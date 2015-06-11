@@ -12,15 +12,15 @@ import java.awt.Polygon;
  *
  */
 public class Hexagon {
-    
-    
-    
-    
+
+
+
+
     private Point mCenter;
     private double mSize;
     private Polygon mPath;
     private Color mColor;
-    
+
     /**
      * Instantiates a new hexagon view.
      *
@@ -43,7 +43,7 @@ public class Hexagon {
             case SectorBuilder.NOT_VALID:     mColor = ColorPalette.NOT_VALID; 
         }
     }
-    
+
     /**
      * Gets the mPath.
      *
@@ -52,7 +52,7 @@ public class Hexagon {
     public Polygon getPath() {
         return mPath;
     }
-    
+
     /**
      * Gets the mCenter.
      *
@@ -70,7 +70,7 @@ public class Hexagon {
     public double getSize() {
         return mSize;
     }
-    
+
     /**
      * Draw hex at given coordinates.
      *
@@ -90,15 +90,15 @@ public class Hexagon {
         Color real = mColor;
         if(playerOn)
             real = ColorPalette.PLAYER_ON;
-        
+
         if( noise ) {
             double k = System.currentTimeMillis() / 250.0;
             real = ColorPalette.NOISE;
             real = new Color((int)(Math.abs(Math.cos(k)) * (255-real.getRed()) + real.getRed()), 
-                             (int)(Math.abs(Math.cos(k)) * (255-real.getGreen()) + real.getGreen()), 
-                             (int)(Math.abs(Math.cos(k)) * (255-real.getBlue()) + real.getBlue()), 0xff);
+                    (int)(Math.abs(Math.cos(k)) * (255-real.getGreen()) + real.getGreen()), 
+                    (int)(Math.abs(Math.cos(k)) * (255-real.getBlue()) + real.getBlue()), 0xff);
         }
-        
+
         if(!enabled) {
             drawStroke = false;
             // Overwrite in case it is not selectable and make it gray-ish
@@ -106,10 +106,10 @@ public class Hexagon {
         } else if(mouseOnThis)
             // hovering color has higher priority than PlayerOn
             real = ColorPalette.MOUSE_ON_THIS;
-        
+
         g2d.setColor( real );
         g2d.fill(getPath());
-        
+
         // border
         if(drawStroke) {
             g2d.setColor( ColorPalette.STROKE );

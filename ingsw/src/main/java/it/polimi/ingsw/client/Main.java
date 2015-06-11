@@ -7,7 +7,7 @@ package it.polimi.ingsw.client;
 public class Main {	
     /** This class is not instantiable */
     private Main() { }
-    
+
     /** Main
      * 
      * @param args

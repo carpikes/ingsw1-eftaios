@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class GamePlayer {
     private static final Logger LOG = Logger.getLogger(GamePlayer.class.getName());
-    
+
     /** Position on board */
     private Point mPosition;
 
@@ -46,7 +46,7 @@ public class GamePlayer {
 
     /** ID in game */
     private int mId;
-    
+
     /**
      * Create a new player for the game
      * @param id ID in game
@@ -148,7 +148,7 @@ public class GamePlayer {
     public boolean isHuman() {
         return role instanceof Human;
     }
-    
+
     /**
      * Check if the player has already used an object card during this turn
      * @return True if he has already used one
@@ -292,8 +292,8 @@ public class GamePlayer {
     public boolean stillInGame() {
         return currentState.stillInGame();
     }
-    
-    
+
+
     /** ===== OBJECT CARDS ===== */
 
     /**
@@ -304,7 +304,7 @@ public class GamePlayer {
         ObjectCard c = mUsableObjectCards.get(index);
         if( c == null || !mObjectCards.remove(c) || !mUsableObjectCards.remove(c))
             throw new InvalidCardException("Invalid card. What's happening?");
-        
+
         return c;
     }
 
@@ -317,7 +317,7 @@ public class GamePlayer {
         if(c.isUsable())
             mUsableObjectCards.add(c);
     }
-    
+
     /**
      * Get how many cards the player is holding at the moment
      * @return The number of cards
@@ -325,7 +325,7 @@ public class GamePlayer {
     public int getNumberOfCards() {
         return mObjectCards.size();
     }
-    
+
     /**
      * Get how many *usable* cards the player is holding at the moment
      * @return The number of cards
@@ -333,7 +333,7 @@ public class GamePlayer {
     public int getNumberOfUsableCards() {
         return mUsableObjectCards.size();
     }
-    
+
     /**
      * @param objectCard
      */
@@ -341,21 +341,21 @@ public class GamePlayer {
         mObjectCards.remove(objectCard);
         mUsableObjectCards.remove(objectCard);
     }
-    
+
     /** Get the names of usable cards 
      * @return The names array
      */
     public String[] getNamesOfUsableCards() {
         return cardsToString(mUsableObjectCards);
     }
-    
+
     /** Get names of all cards
      * @return The names array
      */
     public String[] getNamesOfCards() {
         return cardsToString(mObjectCards);
     }
-    
+
     /** Remove an object card
      * @param index Index of the card
      */
@@ -364,22 +364,22 @@ public class GamePlayer {
         mUsableObjectCards.remove(c);
         return c;
     }
-    
+
     /** Helper of getNamesOf*Cards()
      * @param cards Cards array
      * @return Array of names
      */
     private String[] cardsToString(List<ObjectCard> cards) {
         String[] cardNames = new String[cards.size()];
-        
+
         for(int i = 0; i<cards.size(); i++) {
             ObjectCard card = cards.get(i);
             cardNames[i] = card.getName();
         }
-        
+
         return cardNames;
     }
-    
+
     /** True if the player has adrenaline set
      * @return A boolean value
      */

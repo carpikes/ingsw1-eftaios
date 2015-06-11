@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 public class TestGameMap {
-    
+
     /** Missing file
      * 
      * @throws IOException If there are errors
@@ -22,7 +22,7 @@ public class TestGameMap {
     public void testCreateFromNonExistentFile() throws IOException {
         GameMap.createFromMapFile( new File("testmaps/allyourbasearebelongtous.txt") );
     }
-    
+
     /** Character not valid 
      * 
      * @throws IOException If there are errors
@@ -31,7 +31,7 @@ public class TestGameMap {
     public void testCreateFromFileCharacterNotValid() throws IOException {
         GameMap.createFromMapFile( new File("testmaps/invalid_character.txt") );
     }
-    
+
     /** Too many characters
      * 
      * @throws IOException If there are errors
@@ -40,7 +40,7 @@ public class TestGameMap {
     public void testCreateFromFileTooManyLines() throws IOException {
         GameMap.createFromMapFile( new File("testmaps/too_many_lines.txt") );
     }
-    
+
     /** Characters missing 
      * 
      * @throws IOException If there are errors
@@ -49,11 +49,11 @@ public class TestGameMap {
     public void testCreateFromFileMissingSectors() throws IOException {
         GameMap.createFromMapFile( new File("testmaps/missing_sectors.txt") );
     }
-    
+
     @Test
     public void TestGetSectorAt() throws IOException {
         GameMap g = GameMap.createFromMapFile( new File("maps/fermi.txt") );
-        
+
         assertTrue("First cell in 'Fermi' map is 0.", g.getSectorAt(0, 0).getId() == 0 );
     }
 }

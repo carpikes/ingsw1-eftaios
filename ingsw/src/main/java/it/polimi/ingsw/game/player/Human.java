@@ -8,13 +8,13 @@ import it.polimi.ingsw.game.config.Config;
  * @since 3 Jun 2015
  */
 public class Human implements Role {
-    
+
     private boolean adrenalineUsed;
-    
+
     public Human( ) {
-		super();
-		this.adrenalineUsed = false;
-	}
+        super();
+        this.adrenalineUsed = false;
+    }
 
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.player.Role#getMaxMoves()
@@ -22,25 +22,25 @@ public class Human implements Role {
     @Override
     public int getMaxMoves() {
         if( adrenalineUsed ) 
-        	return Config.MAX_HUMAN_ADRENALINE_MOVES;
+            return Config.MAX_HUMAN_ADRENALINE_MOVES;
         else
-        	return Config.MAX_HUMAN_MOVES;
+            return Config.MAX_HUMAN_MOVES;
     }
 
     /** 
      * Check if he has used an adrenaline card during this turn.
      * @return True if adrenaline is active
      */
-	public boolean hasUsedAdrenaline() {
-		return adrenalineUsed;
-	}
+    public boolean hasUsedAdrenaline() {
+        return adrenalineUsed;
+    }
 
-	/**
-	 * Set adrenaline to used / not used.
-	 * @param adrenaline The value to use
-	 */
-	public void setAdrenaline(boolean adrenaline) {
-		adrenalineUsed = adrenaline;
-	}
+    /**
+     * Set adrenaline to used / not used.
+     * @param adrenaline The value to use
+     */
+    public void setAdrenaline(boolean adrenaline) {
+        adrenalineUsed = adrenaline;
+    }
 
 }

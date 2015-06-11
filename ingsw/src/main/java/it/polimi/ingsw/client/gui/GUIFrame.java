@@ -48,7 +48,7 @@ public class GUIFrame extends JFrame {
     private static final int WIDTH = 1024;
     private static final int WIDTH_LEFT  = 745;
     private static final int WIDTH_RIGHT  = WIDTH - WIDTH_LEFT;
-    
+
     private static final int HEIGHT = 768;
     private static final int HEIGHT_BOTTOM = 50;
     private static final int HEIGHT_TOP = HEIGHT - HEIGHT_BOTTOM;
@@ -57,7 +57,7 @@ public class GUIFrame extends JFrame {
     private static EmptyBorder RIGHT_PANEL_MARGIN = new EmptyBorder(PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN);
     private static final int CARD_HGAP = 5;
     private static final int CARD_VGAP = 5;
-    
+
     private static final int USERS_HGAP = 10;    
 
     private static final int CARD_WIDTH = WIDTH_RIGHT - 2 * PANEL_MARGIN - 2 * CARD_HGAP;
@@ -70,7 +70,7 @@ public class GUIFrame extends JFrame {
     private static final Dimension mDimensionRightPanel = new Dimension(WIDTH_RIGHT, HEIGHT_TOP);
     private static final Dimension mDimensionCardPanel = new Dimension(WIDTH_RIGHT, CARD_HEIGHT);
     private static final Dimension mDimensionBottomPanel = new Dimension(WIDTH, HEIGHT_BOTTOM);
-    
+
     // Drawing canvas on the left
     private MapCanvasPanel mMapCanvas;
     private LoginCanvasPanel mLoginCanvas;
@@ -84,7 +84,7 @@ public class GUIFrame extends JFrame {
 
     private JTextArea textArea;
     private JButton btnAttack, btnDrawDangerousCard, btnEndTurn;
-    
+
     private JLabel[] userLabel;
 
     private GameStartInfo startInfo = null;
@@ -108,40 +108,40 @@ public class GUIFrame extends JFrame {
      * 
      */
     private void createBottomPanel() {
-     // general settings
+        // general settings
         bottomPanel = new JPanel(  );
 
         bottomPanel.setPreferredSize( mDimensionBottomPanel );
         bottomPanel.setBorder( RIGHT_PANEL_MARGIN );
         bottomPanel.setLayout( new BorderLayout() );
-        
+
         bottomPanel.add( new JLabel("Players in game: "), BorderLayout.WEST );
-        
+
         try {
             PlayerInfo[] players = startInfo.getPlayersList();
             userLabel = new JLabel[ players.length ];
-            
+
             FlowLayout flow = new FlowLayout();
             flow.setHgap( USERS_HGAP );
             JPanel listOfUsers = new JPanel( flow );
-            
+
             for( int i = 0; i < players.length; ++i ) {
                 userLabel[i] = new JLabel(  );
                 String txt = "[" + (i+1) + "] ";
-                
+
                 if( i == startInfo.getId() ) {
                     userLabel[i].setForeground( Color.RED );
                     txt += (startInfo.isHuman()) ? "** HUMAN ** " : "** ALIEN ** ";
                 } else {
                     userLabel[i].setForeground( Color.BLACK );
                 }
-                
+
                 txt +=  players[i].getUsername() + " - " + players[i].getNumberOfCards() + " object cards";
-                
+
                 userLabel[i].setText( txt );
                 listOfUsers.add( userLabel[i] );
             }
-            
+
             bottomPanel.add( listOfUsers, BorderLayout.CENTER);
             this.add( bottomPanel, BorderLayout.SOUTH );
         } catch( NullPointerException e ) {
@@ -163,7 +163,7 @@ public class GUIFrame extends JFrame {
         // card panel
         cardPanel = createCardPanel(rightPanel);
         rightPanel.add(cardPanel, BorderLayout.NORTH);
-        
+
 
         // Message Area
         scrollTextAreaPane = createMessageArea();
@@ -224,10 +224,10 @@ public class GUIFrame extends JFrame {
 
         JScrollPane scrollPane = new JScrollPane(textArea); 
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        
+
         DefaultCaret caret = (DefaultCaret)textArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        
+
         scrollPane.setBorder( TEXT_AREA_MARGIN );
 
         return scrollPane;
@@ -265,7 +265,7 @@ public class GUIFrame extends JFrame {
 
         if( rightPanel != null )
             rightPanel.setVisible(false);
-        
+
         add(mLoginCanvas, BorderLayout.CENTER);
     }
 
@@ -279,14 +279,14 @@ public class GUIFrame extends JFrame {
             remove(mLoginCanvas);
             add(mMapCanvas, BorderLayout.CENTER);
             mLoginCanvas = null;
-            
+
             if( rightPanel != null )
                 rightPanel.setVisible( true );
-            
+
             createBottomPanel();
-            
+
             resetViewStatus();
-            
+
             validate();
             repaint();
         } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
@@ -318,7 +318,7 @@ public class GUIFrame extends JFrame {
         else 
             textArea.append( String.format("-- INFO --: %s%n%n", message) );
     }
-    
+
     /**
      * @param container
      */
@@ -331,7 +331,7 @@ public class GUIFrame extends JFrame {
      */
     public void setCanSelectObjCard(boolean value) {
         // can select only valid cards
-        
+
         for( CardButton btn : cardButtons ) {
             if( value ) {
                 btn.setEnabled( btn.getType().isEnabled() );
@@ -390,7 +390,7 @@ public class GUIFrame extends JFrame {
         for( int i = 0; i < this.numberOfCardButtons; ++i ) {
             try {
                 int idCard = listOfCards.get(i);
-                
+
                 for( CardButtons btn : CardButtons.values() ) {
                     if( btn.getId() == idCard ) {
                         cardButtons[i].changeTo( btn );

@@ -15,16 +15,16 @@ import java.util.logging.Logger;
 
 public class Client {
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
-    
+
     /** Connection to the client*/
     private final ClientConn mConn;
-    
+
     /** Game he is playing */
     private final GameManager mGame;
-    
+
     /** My username */
     private String mUser = null;
-    
+
     /** The constructor
      * 
      * @param conn Connection to the client
@@ -45,13 +45,13 @@ public class Client {
     public synchronized void handlePacket(GameCommand pkt) {
         if(!isConnected())
             return;
-        
+
         if(!mGame.isRunning()) {
             try {
                 Serializable[] args = pkt.getArgs();
                 if(args == null || args.length == 0)
                     return;
-                
+
                 // Choosing username
                 synchronized(mGame) {
                     if(pkt.getOpcode() instanceof CoreOpcode) {
@@ -82,7 +82,7 @@ public class Client {
         } else
             mGame.handlePacket(this, pkt);
     }
-    
+
     /** Send a packet through the network
      * 
      * @param pkt The packet
@@ -90,10 +90,10 @@ public class Client {
     public void sendPacket(GameCommand pkt) {
         if(!isConnected())
             throw new RuntimeException("You can't send data to an inactive client");
-        
+
         mConn.sendPacket(pkt);
     }
-    
+
     /** Send a packet without arguments through the network
      * 
      * @param opcode The opcode
@@ -138,22 +138,22 @@ public class Client {
             throw new RuntimeException("Username is already set");
         mUser = username;
     }
-    
+
     /** Update timeouts */
     public void update() {
         if(!isConnected())
             return;
-        
+
         if(mConn.isTimeoutTimerElapsed()) {
             LOG.log(Level.WARNING, "Ping timeout. Disconnecting.");
             handleDisconnect();
         }
     }
-    
+
     public ClientConn getConnection() {
         return mConn;
     }
-    
+
     public boolean isConnected() {
         return mConn.isConnected();
     }

@@ -27,23 +27,23 @@ public class CardButton extends JButton {
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOG = Logger.getLogger( CardButton.class.getName() );
-    
+
     private CardButtons type;
     private transient GameController controller;
 
     private float alpha = 1f;
-    
+
     private boolean canBeDiscarded;
-    
+
     public CardButton( final CardButtons type, GameController c ) {
         super( );
 
         controller = c;
         this.type = type;
-        
+
         canBeDiscarded = false;
         changeTo( type );
-                
+
         this.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
                 if( ((JButton)e.getSource() ).isEnabled() ) {
@@ -77,7 +77,7 @@ public class CardButton extends JButton {
         try {
             this.type = type;
             setIcon( new ImageIcon( ImageIO.read( type.getImageFile() ) ) );
-            
+
             setBorder(BorderFactory.createEmptyBorder());
             setContentAreaFilled(false);
             setEnabled( type.isEnabled() );
@@ -85,23 +85,23 @@ public class CardButton extends JButton {
             LOG.log(Level.SEVERE, "Cannot create " + type.toString() + " card button. Please check your assets in img folder.", e);
         }
     }
-    
+
     public float getAlpha()
     {
-      return alpha;
+        return alpha;
     }
 
     public void setAlpha(float alpha)
     {
-      this.alpha = alpha;
-      repaint();
+        this.alpha = alpha;
+        repaint();
     }
-    
+
     public void paintComponent(Graphics g)
     {
-      Graphics2D g2 = (Graphics2D) g;
-      g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-      super.paintComponent(g2);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        super.paintComponent(g2);
     }
 
     public CardButtons getType() {
@@ -114,5 +114,5 @@ public class CardButton extends JButton {
     public void setCanBeDiscarded(boolean value) {
         canBeDiscarded = value;
     }
- 
+
 }

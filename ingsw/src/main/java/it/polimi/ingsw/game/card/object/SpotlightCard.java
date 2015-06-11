@@ -11,20 +11,20 @@ import it.polimi.ingsw.game.state.SpotlightCardState;
  */
 public class SpotlightCard extends ObjectCard {
 
-	public SpotlightCard(GameState state, String name) {
+    public SpotlightCard(GameState state, String name) {
         super(state, ObjectCardBuilder.SPOTLIGHT_CARD, name);
     }
 
-	/** 
-	 * Move to SpotlightCardState
-	 */
+    /** 
+     * Move to SpotlightCardState
+     */
     @Override
-	public PlayerState doAction() {
+    public PlayerState doAction() {
         mGamePlayer.setStateBeforeSpotlightCard( mGamePlayer.getCurrentState() );
-        
+
         return new SpotlightCardState( mGameState );
-	}
-    
+    }
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
      */

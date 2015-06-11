@@ -11,21 +11,21 @@ public class Sector implements Serializable{
 
     /** The type of sector */
     private int id;
-    
+
     /** Players can get on/through this sector or not? */
     private boolean crossable;
-    
+
     public Sector( int id, boolean crossable ) {
         this.id = id;
         this.crossable = crossable;
     }
-	
+
     /**
      * Get type of sector
      * @return ID sector
      */
-	public int getId() { return id; }
-	
+    public int getId() { return id; }
+
     /**
      * Return true if this is NOT a NOT_VALID sector (off map)
      */

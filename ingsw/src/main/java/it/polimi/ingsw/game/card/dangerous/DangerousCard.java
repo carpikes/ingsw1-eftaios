@@ -12,10 +12,10 @@ import it.polimi.ingsw.game.state.PlayerState;
  * @since 23 May 2015
  */
 public abstract class DangerousCard {
-        
+
     protected GameState mGameState;
     protected GamePlayer mGamePlayer;
-    
+
     /**
      * Constructor for dangerous card class.
      * @param state Current GameState 
@@ -25,10 +25,10 @@ public abstract class DangerousCard {
         mGameState = state;
         mGamePlayer = state.getCurrentPlayer();
     } 
-    
+
     /**
      * Get the effect of the dangerous card.
      * @return Next state for the player
      */
-	public abstract PlayerState doAction();
+    public abstract PlayerState doAction();
 }

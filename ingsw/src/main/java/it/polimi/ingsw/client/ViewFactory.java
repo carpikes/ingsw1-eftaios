@@ -11,13 +11,13 @@ public class ViewFactory {
     private static String[] tAssoc = {"GUI", "Console"};
 
     private ViewFactory() {
-        
+
     }
-    
+
     public static final String[] getViewList() {
         return tAssoc;
     }
-    
+
     public static View getView(GameController c, int type) {
         switch(type) {
             case VIEW_GUI: return new GUIView( c );

@@ -47,16 +47,16 @@ public class MoveDoneState extends PlayerState {
     protected void buildAndSendAvailableCommands() {
         GameMap map = mGameState.getMap();
         ArrayList<ViewCommand> availableCommands = new ArrayList<>();
-        
-        
+
+
         if(mGamePlayer.isAlien())
             availableCommands.add(new ViewCommand(ViewOpcode.CMD_ATTACK));
-        
+
         if(map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS)
             availableCommands.add(new ViewCommand(ViewOpcode.CMD_DRAWDANGEROUSCARD));
         else
             availableCommands.add(new ViewCommand(ViewOpcode.CMD_ENDTURN));
-        
+
         addObjectCardIfPossible(availableCommands);
         sendAvailableCommands(availableCommands);
     }

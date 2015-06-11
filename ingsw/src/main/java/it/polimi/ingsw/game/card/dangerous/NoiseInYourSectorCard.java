@@ -12,18 +12,18 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class NoiseInYourSectorCard extends DangerousCard {
 
-	public NoiseInYourSectorCard(GameState state) {
+    public NoiseInYourSectorCard(GameState state) {
         super(state);
     }
 
-	/**
-	 * Send info to current player about the card and then get a new object card
-	 */
+    /**
+     * Send info to current player about the card and then get a new object card
+     */
     @Override
-	public PlayerState doAction() { 
+    public PlayerState doAction() { 
         mGameState.broadcastPacket( new GameCommand(InfoOpcode.INFO_NOISE, mGamePlayer.getCurrentPosition()) );
-        
+
         return mGameState.getObjectCard( );
-	}
+    }
 
 }

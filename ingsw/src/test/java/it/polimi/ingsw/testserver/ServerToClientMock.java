@@ -15,11 +15,11 @@ import java.util.Queue;
 public class ServerToClientMock extends ClientConn {
 
     Queue<GameCommand> fakeIncomingPackets;
-    
+
     public ServerToClientMock() {
         fakeIncomingPackets = new LinkedList<>();
     }
-    
+
     @Override
     public void run() {
         mIsConnected = true;
@@ -37,7 +37,7 @@ public class ServerToClientMock extends ClientConn {
         mIsConnected = false;
         return;
     }
-    
+
     public void emulateDisconnect() {
         if(mClient != null)
             mClient.handleDisconnect();
@@ -46,18 +46,18 @@ public class ServerToClientMock extends ClientConn {
     public void emulateReadPacket(GameCommand pkt) {
         mClient.handlePacket(pkt);
     }
-    
+
     public Client exposeClient() {
         return mClient;
     }
-    
+
     public GameCommand getPacketFromList() {
         if( !fakeIncomingPackets.isEmpty() )
             return fakeIncomingPackets.poll();
         else
             return null;
     }
-    
+
     public void clearIncomingPacketQueue() {
         fakeIncomingPackets.clear();
     }

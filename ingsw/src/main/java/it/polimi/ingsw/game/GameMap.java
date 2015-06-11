@@ -27,15 +27,15 @@ public class GameMap implements Serializable {
         "maps/galvani.txt",
         "maps/debug.txt"
     };
-    
+
     // including not crossable sectors
     public static final int ROWS = 14;
     public static final int COLUMNS = 23;
-    
+
     private Sector[][] mBoard;
     private final Point mHumanStartingPoint, mAlienStartingPoint;
     private int mNumberOfHatches = 0;
-    
+
     /** Private constructor
      *  
      * @param name Map name
@@ -61,10 +61,10 @@ public class GameMap implements Serializable {
         Sector[][] sectors = new Sector[ROWS][COLUMNS];
         String title = null;
         Point human=null, alien=null;
-        
+
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
         Iterator<String> iterator = lines.iterator();
-        
+
         int i = 0, j = 0;
         int numHatches = 0;
         title = iterator.next();
@@ -73,30 +73,30 @@ public class GameMap implements Serializable {
             for( j = 0; j < currentLine.length; ++j ) {
                 sectors[i][j] = SectorBuilder.getSectorFor(Integer.parseInt(currentLine[j]));
                 switch(sectors[i][j].getId()) {
-                case SectorBuilder.ALIEN:
-                    if(alien != null)
-                        throw new SectorException("Aliens must have only one starting point");
-                    alien = new Point(j,i);
-                    break;
-                case SectorBuilder.HUMAN:
-                    if(human != null)
-                        throw new SectorException("Humans must have only one starting point");
-                    human = new Point(j,i);
-                    break;
-                case SectorBuilder.HATCH:
-                    numHatches++;
-                    break;
+                    case SectorBuilder.ALIEN:
+                        if(alien != null)
+                            throw new SectorException("Aliens must have only one starting point");
+                        alien = new Point(j,i);
+                        break;
+                    case SectorBuilder.HUMAN:
+                        if(human != null)
+                            throw new SectorException("Humans must have only one starting point");
+                        human = new Point(j,i);
+                        break;
+                    case SectorBuilder.HATCH:
+                        numHatches++;
+                        break;
                 }
             }
             ++i;
         }
-        
+
         if(human == null || alien == null)
             throw new SectorException("Missing starting points");
-        
+
         if( i != ROWS || j != COLUMNS )
             throw new SectorException("Missing sector");
-        
+
         return new GameMap(title, sectors, human, alien, numHatches);
     }
 
@@ -109,7 +109,7 @@ public class GameMap implements Serializable {
     public Sector getSectorAt( int x, int y ) {
         return mBoard[y][x];
     }
-    
+
     /** Return the sector type at the specified point
      * 
      * @param point The point
@@ -155,7 +155,7 @@ public class GameMap implements Serializable {
         // Generate map
         if(mapId == -1)
             return true;
-        
+
         if(mapId >= 0 && mapId < mapFiles.length)
             return true;
         return false;
@@ -170,7 +170,7 @@ public class GameMap implements Serializable {
     public static GameMap createFromId(int mapId) throws IOException {
         if(!isValidMap(mapId))
             throw new RuntimeException("Invalid map id");
-        
+
         return GameMap.createFromMapFile(new File(mapFiles[mapId]));
     }
 
@@ -183,32 +183,32 @@ public class GameMap implements Serializable {
             int maxMoves, boolean isHuman) {
         Set<Point> sectors = new HashSet< >();
         Queue<Point> frontier = new LinkedList<Point>();
-        
+
         Point currentPoint;
         Point delimiter = null;
-        
+
         frontier.add( currentPosition );
         frontier.add( delimiter );
-        
+
         while( maxMoves > 0 ) {
-            
+
             do {
                 currentPoint = frontier.poll();
-                
+
                 if( currentPoint != null ) {
                     ArrayList<Point> neighbors = getNeighbourAccessibleSectors( currentPoint, isHuman );
-                    
+
                     frontier.addAll( neighbors );
                     frontier.add( delimiter );
-                    
+
                     sectors.add( currentPoint );
                     sectors.addAll(neighbors);
                 }
             } while( currentPoint != null );
-            
+
             --maxMoves;
         }
-        
+
         sectors.remove( currentPosition );
         return sectors;
     }
@@ -230,22 +230,22 @@ public class GameMap implements Serializable {
         // get x and y for simplicity's sake
         int x = currentPosition.x;
         int y = currentPosition.y;
-        
+
         ArrayList<Point> sectors = new ArrayList< >();
 
         for( int i = -1; i <= 1; ++i ) {
             for( int j = -1; j <= 1; ++j ) {
-                
+
                 // exclude the - sectors
                 boolean isValid = (i == 0 && j != 0);
                 if(currentPosition.x % 2 == 0) 
                     isValid |= (i == 1 && j == 0) || (i == -1);
                 else
                     isValid |= (i == -1 && j == 0) || (i == 1);
-                
+
                 if( isValid ) {
                     Point p = new Point(x+j, y+i);
-                    
+
                     if( this.isWithinBounds( p ) ){
                         Sector currentSector = this.getSectorAt(p);
                         if( currentSector.isCrossable() && !(currentSector.getId() == SectorBuilder.HATCH && !isHuman) )
@@ -254,10 +254,10 @@ public class GameMap implements Serializable {
                 }
             }
         }
-        
+
         return sectors;
     }
-    
+
     /** Return a string representing this coordinates
      * 
      * @param p Coordinate
@@ -266,7 +266,7 @@ public class GameMap implements Serializable {
     public String pointToString(Point p) {
         return pointToString(p.x,p.y);
     }
-    
+
     /** Return a string representing this coordinates
      * 
      * @param x X coordinate
@@ -276,7 +276,7 @@ public class GameMap implements Serializable {
     public String pointToString(int x, int y) {
         return String.format("%c%03d", x + 'A', y + 1);
     }
-    
+
     /** Return the remaining hatches
      * 
      * @return Remaining hatches
@@ -284,7 +284,7 @@ public class GameMap implements Serializable {
     public int getRemainingHatches() {
         return mNumberOfHatches;
     }
-    
+
     /** Use a hatch
      * 
      * @param pos Hatch coordinates
@@ -292,7 +292,7 @@ public class GameMap implements Serializable {
     public void useHatch(Point pos) {
         if(!isWithinBounds(pos) || mNumberOfHatches <= 0 || mBoard[pos.y][pos.x].getId() != SectorBuilder.HATCH)
             throw new SectorException("Cannot use an hatch that does not exist.");
-        
+
         mBoard[pos.y][pos.x] = SectorBuilder.getSectorFor(SectorBuilder.USED_HATCH);
         mNumberOfHatches--;
     }

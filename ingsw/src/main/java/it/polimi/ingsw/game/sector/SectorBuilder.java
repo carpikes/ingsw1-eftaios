@@ -15,11 +15,11 @@ public class SectorBuilder {
     public static final int USED_HATCH = 4;
     public static final int ALIEN = 8;
     public static final int HUMAN = 9;
-    
+
     public static final int MAX_COUNT = HUMAN+1;
-    
+
     private SectorBuilder() {}
-    
+
     /**
      * Create a new sector according to the ID given.
      * @param id The type of sector

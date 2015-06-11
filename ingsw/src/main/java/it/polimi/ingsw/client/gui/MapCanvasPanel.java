@@ -26,7 +26,7 @@ import javax.swing.Timer;
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 public class MapCanvasPanel extends JPanel {
-    
+
     private static final long serialVersionUID = -5583245069814214909L;
 
     // the map being loaded
@@ -42,7 +42,7 @@ public class MapCanvasPanel extends JPanel {
     private int mHexWidth;
     private int mHexHeight;
     private int mMarginHeight;
-    
+
     // canvas width and height
     private int mCanvasWidth;
     private int mCanvasHeight;
@@ -53,16 +53,16 @@ public class MapCanvasPanel extends JPanel {
     private transient Set<Point> mEnabledCells = new HashSet<>();
 
     private boolean mClickedOnCell = false;
-    
+
     private transient final Object mRenderLoopMutex = new Object();
 
     private Point mPlayerPosition;
-    
+
     // The sector where the noise has been heard
     private Point mNoisePosition = null;
-    
+
     private transient final GameController mController;
-    
+
     /**
      * Instantiates a new map canvas panel.
      *
@@ -79,7 +79,7 @@ public class MapCanvasPanel extends JPanel {
         mGameMap = map;
         mHoveringCellCoords = null;
         mPlayerPosition = playerPosition;
-        
+
         // add listeners
         addMouseListeners();
 
@@ -92,13 +92,13 @@ public class MapCanvasPanel extends JPanel {
                 Sector sector = mGameMap.getSectorAt(j, i);
                 int startX = (int)(mHexWidth*3/4.0*j);
                 int startY = (int)(mMarginHeight + i * mHexHeight + ( isEvenColumn(j)  ? 0 : mHexHeight/2 ) );
-                
+
                 // create hexagon: center of it is distant (mHexWidth/2, mHexHeight/2) from the starting point
                 mHexagons[i][j] = HexagonFactory.createHexagon( 
                         new Point(startX + mHexWidth/2, startY + mHexHeight/2), mHexWidth/2, sector.getId());
             }
         }
-        
+
 
         // Repaint the frame at 30fps (more or less)
         new Timer(35, new ActionListener() {
@@ -109,7 +109,7 @@ public class MapCanvasPanel extends JPanel {
                 if(m != null)
                     m.repaint();
             }
-            
+
         }).start();
     }
 
@@ -118,29 +118,29 @@ public class MapCanvasPanel extends JPanel {
         addMouseListener( new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e) { }
-            
+
             @Override
             public void mouseClicked(MouseEvent arg0) { 
                 mClickedOnCell = true;
-                
+
                 if(mHoveringCellCoords != null) {
                     // VERY IMPORTANT THING TO KEEP IN MIND
                     // mEnabledCells == null means that you can select EVERY VALID CELL on map!
-                   
+
                     // Here we want to move the player's position when the mEnabledCells set
                     // DOES NOT contains all sectors (because that means we are not moving,
                     // but only choosing a position in noise in any sector or in spotlight state!)
                     if( mEnabledCells != null ) {
                         mPlayerPosition = mHoveringCellCoords;
-                        
-                     // notify that we have chosen a position on map by clicking on it
+
+                        // notify that we have chosen a position on map by clicking on it
                         mController.onMapPositionChosen(mPlayerPosition);
                     } else {
                         mController.onMapPositionChosen(mHoveringCellCoords);
                     }
-                        
+
                     mHoveringCellCoords = null;
-                                        
+
                 }
             }
 
@@ -153,12 +153,12 @@ public class MapCanvasPanel extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) { }
         });
-        
+
         addMouseMotionListener( new MouseMotionListener() {
             @Override
             public void mouseMoved(MouseEvent e) {
                 Point cell = getCell(e.getPoint());
-                
+
                 synchronized(mRenderLoopMutex) {
                     // If we can choose every valid sector or if we are on one of the available sectors...
                     if( mEnabledCells == null || (mEnabledCells != null && mEnabledCells.contains(cell)) )    
@@ -214,19 +214,19 @@ public class MapCanvasPanel extends JPanel {
                 Point p = mHoveringCellCoords;
                 if(i != GameMap.ROWS)
                     p = new Point(j,i);
-                
+
                 if(p == null)
                     continue;
-                
+
                 boolean isPlayerWhereTheMouseIs = p.equals(mPlayerPosition);
                 boolean isNoiseSector = handleNoise(p);
-                
+
                 boolean enabled;
                 if( mEnabledCells != null && !mEnabledCells.contains(p) )
                     enabled = false;
                 else
                     enabled = true;
-                
+
                 mHexagons[p.y][p.x].draw(g2d, isPlayerWhereTheMouseIs, enabled, (i == GameMap.ROWS), isNoiseSector );
             }
     }
@@ -237,7 +237,7 @@ public class MapCanvasPanel extends JPanel {
         else 
             return false;
     }
-    
+
     /**
      * Checks if column % 2 == 0.
      *
@@ -247,7 +247,7 @@ public class MapCanvasPanel extends JPanel {
     private boolean isEvenColumn( int col ) {
         return col % 2 == 0;
     }
-    
+
     public Point getChosenMapCell() {
         if(mClickedOnCell) {
             mClickedOnCell = false;
@@ -262,7 +262,7 @@ public class MapCanvasPanel extends JPanel {
             mEnabledCells = pnt;
         }
     }
-    
+
     private Point getCell(Point p) {
         for( int i = 0; i < mHexagons.length; ++i )
             for( int j = 0; j < mHexagons[i].length; ++j )
@@ -271,7 +271,7 @@ public class MapCanvasPanel extends JPanel {
                         return new Point( j, i );
                     else
                         return null;
-        
+
         return null;
     }
 
@@ -292,12 +292,12 @@ public class MapCanvasPanel extends JPanel {
      */
     public void resetNoise() {
         java.util.Timer timer = new java.util.Timer();
-        
+
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-              mNoisePosition = null;
+                mNoisePosition = null;
             }
-          }, 2*1000);
+        }, 2*1000);
     }
 }

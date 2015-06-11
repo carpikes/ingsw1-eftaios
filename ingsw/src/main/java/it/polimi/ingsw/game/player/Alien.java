@@ -8,13 +8,13 @@ import it.polimi.ingsw.game.config.Config;
  * @since 3 Jun 2015
  */
 public class Alien implements Role {
-	
+
     private boolean hasEaten;
-    
+
     public Alien( ) {
-		super();
-		this.hasEaten = false;
-	}
+        super();
+        this.hasEaten = false;
+    }
 
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.player.Role#getMaxMoves()
@@ -22,25 +22,25 @@ public class Alien implements Role {
     @Override
     public int getMaxMoves() {
         if( hasEaten ) 
-        	return Config.MAX_ALIEN_FULL_MOVES;
+            return Config.MAX_ALIEN_FULL_MOVES;
         else
-        	return Config.MAX_ALIEN_MOVES;
+            return Config.MAX_ALIEN_MOVES;
     }
 
     /**
      * Check if the alien is full and can move up to 3 sectors per time
      * @return If it has eaten or not
      */
-	public boolean hasEaten() {
-		return hasEaten;
-	}
+    public boolean hasEaten() {
+        return hasEaten;
+    }
 
-	/**
-	 * Set alien to full or not
-	 * @param hasEaten
-	 */
-	public void setHasEaten(boolean hasEaten) {
-		this.hasEaten = hasEaten;
-	}
+    /**
+     * Set alien to full or not
+     * @param hasEaten
+     */
+    public void setHasEaten(boolean hasEaten) {
+        this.hasEaten = hasEaten;
+    }
 
 }

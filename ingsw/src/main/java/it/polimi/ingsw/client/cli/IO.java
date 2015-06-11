@@ -24,7 +24,7 @@ class IO {
     }
 
     public static void write(char c) {
-    	System.out.print(c);
+        System.out.print(c);
     }
     public static Integer readInt(boolean minusAvailable) {
         int i = 0;
@@ -35,7 +35,7 @@ class IO {
                 String m = mReader.readLine();
                 if(minusAvailable && m.equals("-"))
                     return null;
-                
+
                 i = Integer.valueOf(m);
                 break;
             } catch(Exception e) {
@@ -70,8 +70,8 @@ class IO {
         }
         return i;
     }
-    
-    
+
+
     public static Integer askInAList(String[] list, boolean minusAvailable) {
         for(int i = 0; i<list.length;i++)
             IO.write((i+1) + ") " + list[i]);
@@ -84,7 +84,7 @@ class IO {
                 return c-1;
         } while(true);
     }
-    
+
     public static Integer askInAList(List<ViewCommand> list, boolean minusAvailable) {
         for(int i = 0; i<list.size();i++)
             IO.write((i+1) + ") " + list.get(i).getOpcode().toString());
@@ -98,27 +98,27 @@ class IO {
         } while(true);
     }
 
-	public static Point askMapPos(boolean minusAvailable) {
-		do {
-		    try {
-    			String s = IO.readString();
-    			
-    			if(s.equals("-") && minusAvailable)
-    			    return null;
-    			
-    			if(s.length() == 3 || (s.length() == 4  && s.charAt(1) == '0')) {
-    			
-    				int x = (int)(Character.toLowerCase(s.charAt(0)) - 'a');
-    				int y = Integer.parseInt(s.substring(s.length()-2))-1; 
-    				if(x >= 0 && x <= GameMap.COLUMNS && y >=0 && y <= GameMap.ROWS)
-    					return new Point(x,y);
-    			}
-    			
-    			IO.write("Invalid position");
-		    } catch(Exception e) {
-		        IO.write("Invalid position");
-		        LOG.log(Level.FINEST, "", e);
-		    }
-		} while(true);
-	}
+    public static Point askMapPos(boolean minusAvailable) {
+        do {
+            try {
+                String s = IO.readString();
+
+                if(s.equals("-") && minusAvailable)
+                    return null;
+
+                if(s.length() == 3 || (s.length() == 4  && s.charAt(1) == '0')) {
+
+                    int x = (int)(Character.toLowerCase(s.charAt(0)) - 'a');
+                    int y = Integer.parseInt(s.substring(s.length()-2))-1; 
+                    if(x >= 0 && x <= GameMap.COLUMNS && y >=0 && y <= GameMap.ROWS)
+                        return new Point(x,y);
+                }
+
+                IO.write("Invalid position");
+            } catch(Exception e) {
+                IO.write("Invalid position");
+                LOG.log(Level.FINEST, "", e);
+            }
+        } while(true);
+    }
 }

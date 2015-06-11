@@ -22,16 +22,16 @@ import java.util.logging.Logger;
  */
 class ServerTCP implements Listener {
     private static final Logger LOG = Logger.getLogger(ServerTCP.class.getName());
-    
+
     /** Pool of threads */
     private ExecutorService mCachedPool;
-    
+
     /** The listening server */
     private ServerSocket mServer;
-    
+
     /** True if the listener should be shutted down */
     private boolean mStopEvent = false;
-    
+
     /** Listening port */
     private final int mPort;
 
@@ -43,7 +43,7 @@ class ServerTCP implements Listener {
         mPort = port;
         mCachedPool = Executors.newCachedThreadPool();
     }
-    
+
     /** Server loop */
     private void acceptConnection() {
         try {

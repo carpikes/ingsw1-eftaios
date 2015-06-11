@@ -46,7 +46,7 @@ public class MovingState extends PlayerState {
     protected void buildAndSendAvailableCommands() {
         ArrayList<ViewCommand> availableCommands = new ArrayList<>();
         availableCommands.add(new ViewCommand(ViewOpcode.CMD_ENABLEMAPVIEW, mGamePlayer.getCurrentPosition(), mGamePlayer.getMaxMoves()));
-        
+
         addObjectCardIfPossible(availableCommands);
         sendAvailableCommands(availableCommands);
     }
@@ -76,7 +76,7 @@ public class MovingState extends PlayerState {
                     mGameState.sendPacketToCurrentPlayer(GameOpcode.CMD_SC_MOVE_INVALID);
             } else if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD && mGamePlayer.getNumberOfUsableCards() > 0) {
                 nextState = useObjectCard(this, packet);
-                
+
                 // This call is important (Adrenaline card!) 
                 availableSectors = mGameState.getCellsWithMaxDistance();
             } else {

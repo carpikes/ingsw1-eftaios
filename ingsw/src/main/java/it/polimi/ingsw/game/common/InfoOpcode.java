@@ -5,7 +5,7 @@ package it.polimi.ingsw.game.common;
  *
  */
 public enum InfoOpcode implements Opcode {
-    
+
     /** INFO TO *ALL* PLAYERS */
     INFO_HAS_MOVED,
     INFO_USED_HATCH,

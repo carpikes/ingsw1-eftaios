@@ -18,7 +18,7 @@ public class AwayState extends PlayerState {
     public AwayState(GameState state) {
         super(state);
         LOG.log(Level.FINE, "Constructor");
-        
+
         state.broadcastPacket( InfoOpcode.INFO_AWAY );
     }
 
@@ -29,7 +29,7 @@ public class AwayState extends PlayerState {
     public PlayerState update() {
         return this;
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
      */

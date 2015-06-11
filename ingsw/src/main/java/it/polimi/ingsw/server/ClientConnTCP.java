@@ -20,13 +20,13 @@ import java.util.logging.Logger;
  */
 public class ClientConnTCP extends ClientConn {
     private static final Logger LOG = Logger.getLogger(ClientConnTCP.class.getName());
-    
+
     /** Socket output stream */
     private final ObjectOutputStream mOut;
-    
+
     /** Socket input stream */
     private final ObjectInputStream mIn;
-    
+
     /** The socket */
     private Socket mSocket;
 
@@ -51,9 +51,9 @@ public class ClientConnTCP extends ClientConn {
                 Object obj = mIn.readObject();
                 if(obj != null && mClient != null && obj instanceof GameCommand) {
                     resetTimeoutTimer();
-                    
+
                     if(((GameCommand)obj).getOpcode() == CoreOpcode.CMD_PING)
-                    	continue;
+                        continue;
                     mClient.handlePacket((GameCommand)obj);
                 }
             }
@@ -98,10 +98,10 @@ public class ClientConnTCP extends ClientConn {
         } catch (IOException e) {
             LOG.log(Level.FINE, "Sockets are already closed: " + e.toString(), e);
         }
-        
+
         mSocket = null;
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.server.ClientConn#isConnected()
      */

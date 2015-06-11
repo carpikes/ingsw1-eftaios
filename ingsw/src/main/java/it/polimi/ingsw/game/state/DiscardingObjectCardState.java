@@ -23,8 +23,8 @@ import java.util.logging.Logger;
  * @since 25 May 2015
  */
 public class DiscardingObjectCardState extends PlayerState {
-	private static final Logger LOG = Logger.getLogger(DiscardingObjectCardState.class.getName());
-	
+    private static final Logger LOG = Logger.getLogger(DiscardingObjectCardState.class.getName());
+
     public DiscardingObjectCardState(GameState state) {
         super(state);
 
@@ -45,7 +45,7 @@ public class DiscardingObjectCardState extends PlayerState {
             sendAvailableCommands(availableCommands);
         }
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
@@ -54,7 +54,7 @@ public class DiscardingObjectCardState extends PlayerState {
         GameCommand packet = mGameState.getPacketFromQueue();
 
         PlayerState nextState = this;
-        
+
         if(mGamePlayer.getNumberOfCards() <= Config.MAX_NUMBER_OF_OBJ_CARDS)
             nextState = new EndingTurnState(mGameState);
         else if( packet != null ) {
@@ -67,7 +67,7 @@ public class DiscardingObjectCardState extends PlayerState {
                     throw new IllegalStateOperationException("You can only choose what object card to discard here because you already used a card during this turn. Discarding packet.");
             }
         }
-        
+
         return nextState;
     }
 
@@ -88,8 +88,8 @@ public class DiscardingObjectCardState extends PlayerState {
         return nextState;
     }
 
-	@Override
-	public boolean stillInGame() {
-		return true;
-	}
+    @Override
+    public boolean stillInGame() {
+        return true;
+    }
 }

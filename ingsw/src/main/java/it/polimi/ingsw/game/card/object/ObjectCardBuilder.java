@@ -15,31 +15,31 @@ import java.util.Random;
  */
 public class ObjectCardBuilder {
     public static final int OBJECT_CARD_TYPES = 6;
-    
+
     public static final int ADRENALINE_CARD = 0;
     public static final int ATTACK_CARD = 1;
     public static final int DEFENSE_CARD = 2;
     public static final int SEDATIVES_CARD = 3;
     public static final int SPOTLIGHT_CARD = 4;
     public static final int TELEPORT_CARD = 5;
-    
+
     private ObjectCardBuilder() {
-        
+
     }
-    
+
     /**
      * Get a new random Object Card
      * @param game Current GameState
      * @param player The Player who wants to get an object card
      * @return The object card
      */
-    
+
     private static Random generator = new Random();
-    
+
     public static ObjectCard getRandomCard(GameState game) {
         return idToObjectCard(generator.nextInt(OBJECT_CARD_TYPES), game);
     }
-    
+
     public static ObjectCard idToObjectCard(int id, GameState game) {
         switch( id ) {
             case ADRENALINE_CARD:             return new AdrenalineCard(game, idToString(id));
@@ -51,7 +51,7 @@ public class ObjectCardBuilder {
             default:                           throw new InvalidCardException("Unknown card");
         }
     }
-    
+
     public static String idToString(int id) {
         switch( id ) {
             case ADRENALINE_CARD:             return "Adrenaline";

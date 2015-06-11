@@ -11,16 +11,16 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class RedHatchCard extends HatchCard {
 
-	public RedHatchCard(GameState state) {
+    public RedHatchCard(GameState state) {
         super(state);
     }
 
-	/** 
-	 * Return a new EndingTurnState
-	 */
+    /** 
+     * Return a new EndingTurnState
+     */
     @Override
-	public PlayerState getNextState() {
-	    return new NotMyTurnState(mGameState);
-	}
+    public PlayerState getNextState() {
+        return new NotMyTurnState(mGameState);
+    }
 
 }

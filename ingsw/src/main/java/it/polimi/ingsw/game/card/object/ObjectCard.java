@@ -19,27 +19,27 @@ public abstract class ObjectCard {
     protected GamePlayer mGamePlayer;
     protected final String mName;
     protected final int mId;
-    
+
     protected ObjectCard(GameState state, int id, String name) {
         mGameState = state;
         mGamePlayer = state.getCurrentPlayer();
         mName = name;
         mId = id;
     } 
-	
+
     /**
      * Resolve the effect of the card.
      * @return Next state for the invoker
      */
-	public abstract PlayerState doAction();
-	
-	public String getName() {
-	    return mName;
-	}
-	
-	public int getId() {
-	    return mId;
-	}
-	
-	public abstract boolean isUsable();
+    public abstract PlayerState doAction();
+
+    public String getName() {
+        return mName;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public abstract boolean isUsable();
 }

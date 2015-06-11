@@ -10,20 +10,20 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class AdrenalineCard extends ObjectCard {
 
-	public AdrenalineCard(GameState state, String name) {
+    public AdrenalineCard(GameState state, String name) {
         super(state, ObjectCardBuilder.ADRENALINE_CARD, name);
     }
 
-	/** 
-	 * Set adrenaline to true to the set player
-	 */
+    /** 
+     * Set adrenaline to true to the set player
+     */
     @Override
-	public PlayerState doAction() {
-	
-		mGamePlayer.setAdrenaline(true);
-		
-		return mGamePlayer.getCurrentState();
-	}
+    public PlayerState doAction() {
+
+        mGamePlayer.setAdrenaline(true);
+
+        return mGamePlayer.getCurrentState();
+    }
 
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()

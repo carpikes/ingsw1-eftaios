@@ -17,15 +17,15 @@ public abstract class HatchCard {
 
     protected GameState mGameState;
     protected GamePlayer mGamePlayer;
-	
+
     protected HatchCard(GameState state) {
         mGameState = state;
         mGamePlayer = state.getCurrentPlayer();
     } 
-    
+
     /**
      * Get next state after using this card
      * @return Next state
      */
-	public abstract PlayerState getNextState();
+    public abstract PlayerState getNextState();
 }

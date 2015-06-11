@@ -20,7 +20,7 @@ public class WinnerState extends PlayerState {
     public WinnerState(GameState state, Integer winnerPlayer) {
         super(state);
         LOG.log(Level.FINE, "Constructor");
-        
+
         state.broadcastPacket( new GameCommand(InfoOpcode.INFO_WINNER, winnerPlayer));
         state.sendPacketToPlayer(winnerPlayer, new GameCommand(GameOpcode.CMD_SC_WIN));
     }
@@ -32,7 +32,7 @@ public class WinnerState extends PlayerState {
     public PlayerState update() {
         return this;
     }
-    
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
      */

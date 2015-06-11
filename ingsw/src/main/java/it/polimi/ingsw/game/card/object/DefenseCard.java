@@ -10,20 +10,20 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class DefenseCard extends ObjectCard {
 
-	public DefenseCard(GameState state, String name) {
+    public DefenseCard(GameState state, String name) {
         super(state, ObjectCardBuilder.DEFENSE_CARD, name);
-        
+
         mGamePlayer.setDefense(true);
     }
 
-	/** 
-	 * Do nothing.
-	 */
+    /** 
+     * Do nothing.
+     */
     @Override
-	public PlayerState doAction() {
-		return null;
-	}
-    
+    public PlayerState doAction() {
+        return null;
+    }
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
      */

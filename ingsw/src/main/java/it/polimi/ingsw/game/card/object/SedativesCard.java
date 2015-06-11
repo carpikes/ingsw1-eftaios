@@ -9,20 +9,20 @@ import it.polimi.ingsw.game.state.PlayerState;
  * @since 2 Jun 2015
  */
 public class SedativesCard extends ObjectCard {
-    
-	public SedativesCard(GameState state, String name) {
+
+    public SedativesCard(GameState state, String name) {
         super(state, ObjectCardBuilder.SEDATIVES_CARD, name);
     }
 
-	/**
-	 * Force player NOT to draw a dangerous card during this turn
-	 */
+    /**
+     * Force player NOT to draw a dangerous card during this turn
+     */
     @Override
-	public PlayerState doAction() {
-		mGamePlayer.setShouldDrawDangerousCard(false);
-		return mGamePlayer.getCurrentState();
-	}
-    
+    public PlayerState doAction() {
+        mGamePlayer.setShouldDrawDangerousCard(false);
+        return mGamePlayer.getCurrentState();
+    }
+
     /* (non-Javadoc)
      * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
      */

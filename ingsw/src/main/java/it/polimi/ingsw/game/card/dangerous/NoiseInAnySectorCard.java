@@ -11,16 +11,16 @@ import it.polimi.ingsw.game.state.PlayerState;
  */
 public class NoiseInAnySectorCard extends DangerousCard {
 
-	public NoiseInAnySectorCard(GameState state) {
+    public NoiseInAnySectorCard(GameState state) {
         super(state);
     }
 
-	/** 
-	 * Send info to current player about the card and then move to NoiseInAnySectorState for next interactions with the user
-	 */
+    /** 
+     * Send info to current player about the card and then move to NoiseInAnySectorState for next interactions with the user
+     */
     @Override
-	public PlayerState doAction() {
+    public PlayerState doAction() {
         return new NoiseInAnySectorState(mGameState);
-	}
+    }
 
 }
