@@ -81,7 +81,7 @@ public class Server {
 
         mConnectedClients++;
 
-        if(mCurGame == null) {
+        if(mCurGame == null || mCurGame.getEffectiveClients() == 0) {
             mCurGame = new GameManager();
         }
 

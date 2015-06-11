@@ -150,7 +150,11 @@ public class GameManager {
             Client c = mClientsToRemove.remove();
             removeClient(c);
         }
+        
+        if(mClients.isEmpty())
+            Server.getInstance().enqueueRemoveGame(this);
 
+        
         if(!mIsRunning) {
             int mFinalConnClients = 0;
             // Game is ready but it is not running 
@@ -259,7 +263,7 @@ public class GameManager {
                 }
         }
 
-        if((mIsRunning && mState != null) || (!canAskAtLeastOne && mustAskForMap))
+        if(mState != null && ((mIsRunning) || (!canAskAtLeastOne && mustAskForMap)))
             mState.onPlayerDisconnect(index);
 
         LOG.log(Level.INFO, "Player disconnected. Game Running? " + String.valueOf(mIsRunning) + ". Clients connected: " + (getNumberOfClients() - mAwayClients));
@@ -353,6 +357,17 @@ public class GameManager {
                 c.handleDisconnect();
 
         Server.getInstance().enqueueRemoveGame(this);
+    }
+
+    /**
+     * @return
+     */
+    public int getEffectiveClients() {
+        int e = 0;
+        for(Client c : mClients)
+            if(c.isConnected())
+                e++;
+        return e;
     }
 
 }
