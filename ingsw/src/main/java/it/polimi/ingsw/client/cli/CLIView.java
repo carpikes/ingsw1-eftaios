@@ -4,9 +4,9 @@ import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
-import it.polimi.ingsw.game.network.EnemyInfo;
-import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.ViewCommand;
+import it.polimi.ingsw.game.common.PlayerInfo;
+import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.ViewCommand;
 
 import java.awt.Point;
 import java.util.List;
@@ -47,26 +47,41 @@ public class CLIView extends View {
     private final GameController mController;
     private GameStartInfo mContainer;
 
+    /** The constructor
+     * @param c Game Controller
+     */
     public CLIView(GameController c) {
         super(c);
         mController = c;
     }
     
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#startup()
+     */
     @Override
     public void startup() {
         CLIView.banner();
     }
     
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#run()
+     */
     @Override
     public void run() {
     }
     
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#askConnectionType(java.lang.String[])
+     */
     @Override
     public int askConnectionType(String[] params) {
         IO.write("Which connection do you want to use?");
         return IO.askInAList(params, false);
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#askUsername(java.lang.String)
+     */
     @Override
     public String askUsername(String message) {
         String name;
@@ -76,12 +91,18 @@ public class CLIView extends View {
         return name;
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#askMap(java.lang.String[])
+     */
     @Override
     public Integer askMap(String[] mapList) {
         IO.write("Choose a map:");
         return IO.askInAList(mapList, false);
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#askHost()
+     */
     @Override
     public String askHost() {
         IO.write("Type the hostname");
@@ -133,15 +154,23 @@ public class CLIView extends View {
         IO.write("Game is started! Good luck!");
         IO.write("Your role is: " + (container.isHuman()?"HUMAN":"ALIEN"));
         IO.write(String.format("%d players in game:", container.getPlayersList().length));
-        for(EnemyInfo e : container.getPlayersList())
+        for(PlayerInfo e : container.getPlayersList())
             IO.write("-> " + e.getUsername());
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#close()
+     */
     @Override
     public void close() {
         // EMPTY
     }
     
+    /** Handle a map view
+     * @param c ViewCommand
+     * @param canGoBack True if user can go back
+     * @return True if the command is handled successfully
+     */
     private boolean handleEnableMapView(ViewCommand c, boolean canGoBack) {
         Point newPos = null;
         Point curPos = null;
@@ -174,6 +203,11 @@ public class CLIView extends View {
         return true;
     }
     
+    /** Handle a ChooseObjectCard command
+     * @param c ViewCommand
+     * @param canGoBack True if user can go back
+     * @return True if the command is handled successfully
+     */
     private boolean handleChooseObjectCard(ViewCommand c, boolean canGoBack) {
         if(c.getArgs().length > 0 && c.getArgs() instanceof String[]) {
             String[] objs = (String[]) c.getArgs();
@@ -188,6 +222,11 @@ public class CLIView extends View {
         return false;
     }
     
+    /** Handle a DiscardObjectCard Command
+     * @param c ViewCommand
+     * @param canGoBack True if user can go back
+     * @return True if the command is handled successfully
+     */
     private boolean handleDiscardObjectCard(ViewCommand c, boolean canGoBack) {
         if(c.getArgs().length > 0 && c.getArgs() instanceof String[]) {
             String[] objs = (String[]) c.getArgs();
@@ -203,6 +242,9 @@ public class CLIView extends View {
         return false;
     }
     
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#handleCommand(java.util.List)
+     */
     @Override
     protected void handleCommand(List<ViewCommand> cmd) {
         ViewCommand c;
@@ -249,6 +291,9 @@ public class CLIView extends View {
         }
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#showInfo(java.lang.String, java.lang.String)
+     */
     @Override
     public void showInfo(String user, String message) {
         if(user != null)
@@ -257,6 +302,9 @@ public class CLIView extends View {
             IO.write("--INFO-- " + message);
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#showNoiseInSector(java.lang.String, java.awt.Point)
+     */
     @Override
     public void showNoiseInSector(String user, Point p) {
         showInfo(user, "NOISE IN SECTOR " + mMap.pointToString(p));

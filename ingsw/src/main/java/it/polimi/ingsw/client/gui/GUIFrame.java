@@ -3,9 +3,9 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.common.PlayerInfo;
+import it.polimi.ingsw.game.common.GameStartInfo;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.EnemyInfo;
-import it.polimi.ingsw.game.network.GameStartInfo;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -118,7 +118,7 @@ public class GUIFrame extends JFrame {
         bottomPanel.add( new JLabel("Players in game: "), BorderLayout.WEST );
         
         try {
-            EnemyInfo[] players = startInfo.getPlayersList();
+            PlayerInfo[] players = startInfo.getPlayersList();
             userLabel = new JLabel[ players.length ];
             
             FlowLayout flow = new FlowLayout();

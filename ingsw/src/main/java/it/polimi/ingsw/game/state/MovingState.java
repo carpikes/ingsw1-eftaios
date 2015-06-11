@@ -7,11 +7,11 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.hatch.HatchCardBuilder;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.ViewCommand;
-import it.polimi.ingsw.game.network.ViewOpcode;
-import it.polimi.ingsw.game.network.InfoOpcode;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.GameOpcode;
+import it.polimi.ingsw.game.common.InfoOpcode;
+import it.polimi.ingsw.game.common.ViewCommand;
+import it.polimi.ingsw.game.common.ViewOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
@@ -40,6 +40,9 @@ public class MovingState extends PlayerState {
         buildAndSendAvailableCommands();
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
+     */
     protected void buildAndSendAvailableCommands() {
         ArrayList<ViewCommand> availableCommands = new ArrayList<>();
         availableCommands.add(new ViewCommand(ViewOpcode.CMD_ENABLEMAPVIEW, mGamePlayer.getCurrentPosition(), mGamePlayer.getMaxMoves()));
@@ -84,6 +87,12 @@ public class MovingState extends PlayerState {
         return nextState;
     }
 
+    /** Handle a move
+     * @param player The player
+     * @param map The map
+     * @param chosenPos The chosen position
+     * @return Next state
+     */
     private PlayerState handleMove(GamePlayer player, GameMap map, Point chosenPos) {
         PlayerState nextState;
         mGameState.rawMoveTo(player, chosenPos);
@@ -101,6 +110,9 @@ public class MovingState extends PlayerState {
         return nextState;
     }
 
+    /** Draw an hatch card
+     * @return
+     */
     private PlayerState drawHatchCard( ) {
         GameMap map = mGameState.getMap();
 
@@ -111,6 +123,9 @@ public class MovingState extends PlayerState {
         return HatchCardBuilder.getRandomCard(mGameState).getNextState( );
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
+     */
     @Override
     public boolean stillInGame() {
         return true;

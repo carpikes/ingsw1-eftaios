@@ -5,14 +5,14 @@ import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.network.EnemyInfo;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.ViewCommand;
-import it.polimi.ingsw.game.network.InfoOpcode;
-import it.polimi.ingsw.game.network.CoreOpcode;
-import it.polimi.ingsw.game.network.Opcode;
+import it.polimi.ingsw.game.common.CoreOpcode;
+import it.polimi.ingsw.game.common.PlayerInfo;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.GameOpcode;
+import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.InfoOpcode;
+import it.polimi.ingsw.game.common.Opcode;
+import it.polimi.ingsw.game.common.ViewCommand;
 
 import java.awt.Point;
 import java.io.IOException;
@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 public class GameController implements OnReceiveListener {
     private static final Logger LOG = Logger.getLogger(GameController.class.getName());
     /** The view */
-    private View mView;
+    private final View mView;
     
     /** The connection */
     private Connection mConn;
@@ -49,34 +49,22 @@ public class GameController implements OnReceiveListener {
     
     private List<Integer> listOfCards = new ArrayList<>();
     
-    private int mCurTurn = 0;
+    private int mCurPlayerId = 0;
     
     /** The constructor */
     public GameController(String[] args) {
-        boolean mViewSet = false;
         
-        String[] viewList = ViewFactory.getViewList();
-        if(args.length == 1) {
-            for(int i = 0; i < viewList.length; i++) {
-                String v = viewList[i];
-                if(v.equalsIgnoreCase(args[0])) {
-                    mView = ViewFactory.getView( this, i );
-                    mViewSet = true;
-                    break;
-                }
-            }
-        }
-        
-        if(!mViewSet) {
-            CLIView tempView = new CLIView(this);
-        
-            int viewCode = tempView.askView( viewList );
-            mView = ViewFactory.getView(this, viewCode);
-        }
-        
-        mQueue = new LinkedBlockingQueue<GameCommand>();
+        mView = determineView(args);
+        mQueue = new LinkedBlockingQueue<>();
         mViewQueue = new LinkedBlockingQueue<>();
         
+        createQueueProcessorThread();
+    }
+
+    /**
+     * 
+     */
+    private void createQueueProcessorThread() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -93,6 +81,35 @@ public class GameController implements OnReceiveListener {
                 mView.close();
             }
         }).start();
+    }
+
+
+    /**
+     * @param args
+     * @param tempView
+     * @return
+     */
+    private View determineView(String[] args) {
+        View tempView = null;
+        
+        String[] viewList = ViewFactory.getViewList();
+        if(args.length == 1) {
+            for(int i = 0; i < viewList.length; i++) {
+                String v = viewList[i];
+                if(v.equalsIgnoreCase(args[0])) {
+                    tempView = ViewFactory.getView( this, i );
+                    break;
+                }
+            }
+        }
+        
+        if(tempView == null) {
+            tempView = new CLIView(this);
+        
+            int viewCode = tempView.askView( viewList );
+            tempView = ViewFactory.getView(this, viewCode);
+        }
+        return tempView;
     }
     
     
@@ -161,14 +178,14 @@ public class GameController implements OnReceiveListener {
         String curUser = null;
         
         if(mGameInfo != null && mGameInfo.getPlayersList() != null)
-        	curUser = mGameInfo.getPlayersList()[mCurTurn].getUsername();
+        	curUser = mGameInfo.getPlayersList()[mCurPlayerId].getUsername();
         
         Opcode op = cmd.getOpcode();
         
         if(op instanceof CoreOpcode) {
             parseCoreCmd(cmd);
         } else if(op instanceof GameOpcode) {
-            parseGameCmd(cmd, curUser);
+            parseGameCmd(cmd);
         } else if(op instanceof InfoOpcode) {
             parseInfoCmd(cmd, curUser);
         }
@@ -178,14 +195,11 @@ public class GameController implements OnReceiveListener {
     /* These commmands below are sent while game is running
      * and the map is loaded. 
      * 
-     * TODO: Add a check into each state if the used variables are initialized. 
-     * Or, instead, a giant try-catch might be useful.
-     * 
      * @param cmd The command
      * @param curUser Current username
      */
 	@SuppressWarnings("unchecked")
-    private void parseGameCmd(GameCommand cmd, String curUser) {
+    private void parseGameCmd(GameCommand cmd) {
 	    Object obj = null;
         GameOpcode gop = (GameOpcode) cmd.getOpcode();
         
@@ -200,17 +214,6 @@ public class GameController implements OnReceiveListener {
                         enqueueViewCommand((List<ViewCommand>) tmp);
                 }
                 break;
-
-            case CMD_SC_ADRENALINE_WRONG_STATE:
-                break;
-            case CMD_SC_CANNOT_USE_OBJ_CARD:
-                break;
-            case CMD_SC_DANGEROUS_CARD_DRAWN:
-                break;
-            case CMD_SC_END_OF_TURN:
-                break;
-            case CMD_SC_MOVE_DONE:
-                break;
             case CMD_SC_OBJECT_CARD_OBTAINED:
                 if(obj != null && obj instanceof Integer) {
                     listOfCards.add( (Integer)obj );
@@ -218,9 +221,7 @@ public class GameController implements OnReceiveListener {
                 }
                 break;
             case CMD_SC_MOVE_INVALID:
-            case CMD_SC_START_TURN:
-                break;
-            case CMD_SC_UPDATE_LOCAL_INFO:
+                mView.showError("Invalid mode");
                 break;
             case CMD_SC_LOSE:
                 mView.showInfo(null, "YOU'VE JUST LOST THE GAME. <3");
@@ -257,14 +258,14 @@ public class GameController implements OnReceiveListener {
                 break;
             case INFO_GOT_A_NEW_OBJ_CARD:
                 if(cmd.getArgs().length == 1 && cmd.getArgs()[0] instanceof Integer) {
-                    mGameInfo.getPlayersList()[mCurTurn].setNumberOfCards((Integer) cmd.getArgs()[0]);
+                    mGameInfo.getPlayersList()[mCurPlayerId].setNumberOfCards((Integer) cmd.getArgs()[0]);
                     mView.showInfo(curUser, "Draw an object card!");
                 }
                 break;
             case INFO_DISCARDED_OBJ_CARD:
                 if(cmd.getArgs().length == 2 && cmd.getArgs()[1] instanceof String) {
                     String name = (String) cmd.getArgs()[1];
-                    EnemyInfo e = mGameInfo.getPlayersList()[mCurTurn];
+                    PlayerInfo e = mGameInfo.getPlayersList()[mCurPlayerId];
                     e.setNumberOfCards(e.getNumberOfCards()-1);
                     mView.showInfo(curUser, "Discarded " + name + " card");
                 }
@@ -319,22 +320,24 @@ public class GameController implements OnReceiveListener {
                 break;
             case INFO_START_TURN:
                 if(cmd.getArgs().length == 1 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Integer) {
-                    mCurTurn = (Integer) cmd.getArgs()[0];
-                    if(mCurTurn == mMyTurn)
+                    mCurPlayerId = (Integer) cmd.getArgs()[0];
+                    if(mCurPlayerId == mMyTurn)
                         mView.onMyTurn();
                     else
-                        mView.onOtherTurn(mGameInfo.getPlayersList()[mCurTurn].getUsername());
+                        mView.onOtherTurn(mGameInfo.getPlayersList()[mCurPlayerId].getUsername());
                 }
                 break;
             case INFO_USED_HATCH:
                 if(cmd.getArgs().length == 1 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Point) {
                     mGameInfo.getMap().useHatch((Point) cmd.getArgs()[0]);
-                    // TODO mView.notifyMapUpdate();
                     mView.showInfo(curUser, "Used a hatch");
                 }
                 break;
             case INFO_WINNER:
                 mView.showInfo(curUser, "This player won the game!");
+                break;
+            case INFO_ALIEN_FULL:
+                mView.showInfo(curUser, "This alien is full");
                 break;
             default:
                 break;
@@ -362,7 +365,7 @@ public class GameController implements OnReceiveListener {
                 if(obj != null && obj instanceof Integer)
                     mView.updateLoginStat((Integer) obj);
                 break;
-            case CMD_SC_USERFAIL:
+            case CMD_SC_USERNAMEFAIL:
                 msg = "Invalid name or another player is using your name. Choose another one.";
             case CMD_SC_CHOOSEUSER:
                 do {
@@ -372,7 +375,7 @@ public class GameController implements OnReceiveListener {
                 } while(mMyUsername == null || mMyUsername.length() == 0);
                 mConn.sendPacket(new GameCommand(CoreOpcode.CMD_CS_USERNAME, mMyUsername));
                 break;
-            case CMD_SC_USEROK:
+            case CMD_SC_USERNAMEOK:
                 mView.showInfo(null, "Username accepted. Waiting for other players...");
                 break;
             case CMD_SC_MAPFAIL:
@@ -385,6 +388,7 @@ public class GameController implements OnReceiveListener {
                 mConn.sendPacket(new GameCommand(CoreOpcode.CMD_CS_LOADMAP, chosenMap));
                 break;
             case CMD_SC_MAPOK:
+                mView.showInfo(null, "Map successfully loaded");
                 break;
             case CMD_SC_RUN:
                 runGame(obj);

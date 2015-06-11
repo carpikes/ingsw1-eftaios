@@ -1,8 +1,8 @@
-package it.polimi.ingsw.game.network;
+package it.polimi.ingsw.game.common;
 
 import java.io.Serializable;
 
-public class EnemyInfo implements Serializable{
+public class PlayerInfo implements Serializable{
     /**
      * 
      */
@@ -10,7 +10,7 @@ public class EnemyInfo implements Serializable{
     private String mUsername;
     private int mNumberOfCards;
     
-    public EnemyInfo(String username) {
+    public PlayerInfo(String username) {
         mUsername = username;
         mNumberOfCards = 0;
     }

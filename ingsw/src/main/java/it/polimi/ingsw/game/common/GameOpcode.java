@@ -1,4 +1,4 @@
-package it.polimi.ingsw.game.network;
+package it.polimi.ingsw.game.common;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -22,15 +22,8 @@ public enum GameOpcode implements Opcode{
     /** GAME COMMANDS TO *A SINGLE* CLIENT */
     CMD_SC_AVAILABLE_COMMANDS,
     
-    CMD_SC_UPDATE_LOCAL_INFO,
-    CMD_SC_START_TURN,
-    CMD_SC_MOVE_DONE,
-    CMD_SC_DANGEROUS_CARD_DRAWN,
     CMD_SC_OBJECT_CARD_OBTAINED,
-    CMD_SC_ADRENALINE_WRONG_STATE,
-    CMD_SC_CANNOT_USE_OBJ_CARD,
     CMD_SC_MOVE_INVALID,
-    CMD_SC_END_OF_TURN,
     CMD_SC_LOSE,
     CMD_SC_WIN,
 }

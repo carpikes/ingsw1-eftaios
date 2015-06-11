@@ -12,7 +12,6 @@ public class TeleportCard extends ObjectCard {
     
 	public TeleportCard(GameState state, String name) {
         super(state, ObjectCardBuilder.TELEPORT_CARD, name);
-        // TODO Auto-generated constructor stub
     }
 
 	/**

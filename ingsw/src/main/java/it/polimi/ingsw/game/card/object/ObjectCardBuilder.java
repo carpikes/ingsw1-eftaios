@@ -23,6 +23,10 @@ public class ObjectCardBuilder {
     public static final int SPOTLIGHT_CARD = 4;
     public static final int TELEPORT_CARD = 5;
     
+    private ObjectCardBuilder() {
+        
+    }
+    
     /**
      * Get a new random Object Card
      * @param game Current GameState

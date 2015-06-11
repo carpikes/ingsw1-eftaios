@@ -14,7 +14,6 @@ public class GreenHatchCard extends HatchCard {
 
     public GreenHatchCard(GameState state) {
         super(state);
-        // TODO Auto-generated constructor stub
     }
 
 	/**

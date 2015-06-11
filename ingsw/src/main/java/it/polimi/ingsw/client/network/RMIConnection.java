@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.network;
 
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.ServerRMIMask;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.ServerRMIMask;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;

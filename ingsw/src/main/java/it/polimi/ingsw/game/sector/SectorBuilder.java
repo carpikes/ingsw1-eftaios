@@ -2,17 +2,12 @@ package it.polimi.ingsw.game.sector;
 
 import it.polimi.ingsw.exception.SectorException;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Builder for sectors. Create a new sector based on ID.
  * @author Michele
  * @since 3 Jun 2015
  */
 public class SectorBuilder {
-    private static final Logger LOG = Logger.getLogger(SectorBuilder.class.getName());
-    
     public static final int NOT_VALID = 0;
     public static final int NOT_DANGEROUS = 1;
     public static final int HATCH = 2;
@@ -41,16 +36,6 @@ public class SectorBuilder {
             case HUMAN:              return new Sector(HUMAN, false);
             case NOT_VALID:          return new Sector(NOT_VALID, false);
             default:                 throw new SectorException("Illegal sector code");
-        }
-    }
-    
-    public static boolean isValid(int id) {
-        try {
-            getSectorFor(id);
-            return true;
-        } catch(SectorException e) {
-            LOG.log(Level.FINEST, e.toString(), e);
-            return false;
         }
     }
 }

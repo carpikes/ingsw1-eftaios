@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.ServerRMIMask;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.ServerRMIMask;
 
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -149,9 +149,8 @@ public class ServerRMI implements Listener, ServerRMIMask {
         }
     }
 
-    /** Check if this listener is correctly shutted down
-     * 
-     * @return True if this listener is down
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.server.Listener#isDown()
      */
     @Override
     public synchronized boolean isDown() {
@@ -160,9 +159,8 @@ public class ServerRMI implements Listener, ServerRMIMask {
         return true;
     }
 
-    /** Check if this listener is running
-     * 
-     * @return True if this listener is correctly listening
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.server.Listener#isUp()
      */
     @Override
     public boolean isUp() {

@@ -6,13 +6,12 @@ package it.polimi.ingsw.testgame;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.InfoOpcode;
-import it.polimi.ingsw.game.network.Opcode;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.GameOpcode;
+import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.InfoOpcode;
+import it.polimi.ingsw.game.common.Opcode;
 import it.polimi.ingsw.game.sector.SectorBuilder;
-import it.polimi.ingsw.game.state.EndingTurnState;
 import it.polimi.ingsw.game.state.MoveDoneState;
 import it.polimi.ingsw.game.state.MovingState;
 import it.polimi.ingsw.game.state.NotMyTurnState;
@@ -123,6 +122,7 @@ public class TestGameState {
         // send position and update game
         Point newPosition = hatchPoints.iterator().next();
         game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, newPosition ) );
+        int id = game.getCurrentPlayer().getId();
         game.update();
         
         assertTrue( findGameCommandInQueue( game, InfoOpcode.INFO_USED_HATCH ) );
@@ -131,8 +131,8 @@ public class TestGameState {
         
         // since we're playing a 2-player game, there are only two possibilities:
         // 1) The player has won, leaving the other player alone -> the game ends
-        // 2) The player has moved into a broken hatch -> let the turn end
-        assertTrue( game.debugGameEnded() || state instanceof EndingTurnState );
+        // 2) The player has moved into a broken hatch -> let the other player start his turn
+        assertTrue( game.debugGameEnded() || (state instanceof StartTurnState && game.getCurrentPlayer().getId() != id));
     }
     
     /*

@@ -2,11 +2,11 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.common.CoreOpcode;
+import it.polimi.ingsw.game.common.PlayerInfo;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.GameStartInfo;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.CoreOpcode;
-import it.polimi.ingsw.game.network.EnemyInfo;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameStartInfo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -193,10 +193,10 @@ public class GameManager {
         LOG.log(Level.INFO, mClients.get(0).getUsername() + " is the first player");
         
         // Send infos to all players
-        EnemyInfo[] userList = new EnemyInfo[mClients.size()];
+        PlayerInfo[] userList = new PlayerInfo[mClients.size()];
         
         for(int i = 0; i < mClients.size(); i++)
-            userList[i] = new EnemyInfo(mClients.get(i).getUsername());
+            userList[i] = new PlayerInfo(mClients.get(i).getUsername());
         
         for(int i = 0; i < mClients.size(); i++) {
             GameStartInfo info = mState.buildInfoContainer(userList, i);

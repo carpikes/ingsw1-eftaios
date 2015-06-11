@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.network;
 
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.Opcode;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.Opcode;
 
 import java.io.IOException;
 

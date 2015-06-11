@@ -1,8 +1,6 @@
 package it.polimi.ingsw.game.card.object;
 
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.state.MovingState;
 import it.polimi.ingsw.game.state.PlayerState;
 
 /**
@@ -14,7 +12,6 @@ public class AdrenalineCard extends ObjectCard {
 
 	public AdrenalineCard(GameState state, String name) {
         super(state, ObjectCardBuilder.ADRENALINE_CARD, name);
-        // TODO Auto-generated constructor stub
     }
 
 	/** 
@@ -23,11 +20,7 @@ public class AdrenalineCard extends ObjectCard {
     @Override
 	public PlayerState doAction() {
 	
-		if( mGamePlayer.getCurrentState() instanceof MovingState ) {
-		    mGamePlayer.setAdrenaline(true);
-        } else {
-            mGameState.sendPacketToCurrentPlayer( GameOpcode.CMD_SC_ADRENALINE_WRONG_STATE ); 
-        }
+		mGamePlayer.setAdrenaline(true);
 		
 		return mGamePlayer.getCurrentState();
 	}

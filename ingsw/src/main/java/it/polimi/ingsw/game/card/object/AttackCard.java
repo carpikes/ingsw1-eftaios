@@ -12,7 +12,6 @@ public class AttackCard extends ObjectCard {
 
 	public AttackCard(GameState state, String name) {
         super(state, ObjectCardBuilder.ATTACK_CARD, name);
-        // TODO Auto-generated constructor stub
     }
 
 	/** 

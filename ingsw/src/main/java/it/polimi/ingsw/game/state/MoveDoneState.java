@@ -7,10 +7,10 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.dangerous.DangerousCardBuilder;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.ViewCommand;
-import it.polimi.ingsw.game.network.ViewOpcode;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.GameOpcode;
+import it.polimi.ingsw.game.common.ViewCommand;
+import it.polimi.ingsw.game.common.ViewOpcode;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.util.ArrayList;
@@ -21,6 +21,14 @@ import java.util.logging.Logger;
  * @author Michele
  * @since 25 May 2015
  */
+/**
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ *
+ */
+/**
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ *
+ */
 public class MoveDoneState extends PlayerState {
     private static final Logger LOG = Logger.getLogger(MoveDoneState.class.getName());
 
@@ -29,10 +37,12 @@ public class MoveDoneState extends PlayerState {
         LOG.log(Level.FINE, "Constructor");
 
         // tell the client it has to choose what to do after moving
-        mGameState.sendPacketToCurrentPlayer( GameOpcode.CMD_SC_MOVE_DONE );
         buildAndSendAvailableCommands();
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
+     */
     @Override
     protected void buildAndSendAvailableCommands() {
         GameMap map = mGameState.getMap();
@@ -90,14 +100,16 @@ public class MoveDoneState extends PlayerState {
         return nextState;
     }
 
-    /**
-     * @param data.mGameState
-     * @return 
+    /** Draw a dangerous card
+     * @return
      */
     private PlayerState drawDangerousCard( ) {                
         return DangerousCardBuilder.getRandomCard(mGameState).doAction( );
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
+     */
     @Override
     public boolean stillInGame() {
         return true;

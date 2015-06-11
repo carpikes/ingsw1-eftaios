@@ -13,7 +13,6 @@ public class SpotlightCard extends ObjectCard {
 
 	public SpotlightCard(GameState state, String name) {
         super(state, ObjectCardBuilder.SPOTLIGHT_CARD, name);
-        // TODO Auto-generated constructor stub
     }
 
 	/** 

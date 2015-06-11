@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.CoreOpcode;
+import it.polimi.ingsw.game.common.CoreOpcode;
+import it.polimi.ingsw.game.common.GameCommand;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,6 +13,10 @@ import java.util.logging.Logger;
 /** TCP connection Handler
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
+ */
+/**
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ *
  */
 public class ClientConnTCP extends ClientConn {
     private static final Logger LOG = Logger.getLogger(ClientConnTCP.class.getName());
@@ -37,7 +41,9 @@ public class ClientConnTCP extends ClientConn {
         mSocket = socket;
     }
 
-    /** Listen on incoming packets */
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
     @Override
     public void run() {
         try {
@@ -58,9 +64,8 @@ public class ClientConnTCP extends ClientConn {
         }
     }
 
-    /** Send a packet through this socket
-     * 
-     * @param pkt The packet
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.server.ClientConn#sendPacket(it.polimi.ingsw.game.common.GameCommand)
      */
     @Override
     public synchronized void sendPacket(GameCommand pkt) {
@@ -73,7 +78,9 @@ public class ClientConnTCP extends ClientConn {
         }
     }
 
-    /** Close this connection */
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.server.ClientConn#disconnect()
+     */
     @Override
     public synchronized void disconnect() {
         if(mOut != null) {
@@ -95,9 +102,8 @@ public class ClientConnTCP extends ClientConn {
         mSocket = null;
     }
     
-    /** Check if this client is connected
-     * 
-     * @return True if this client is online
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.server.ClientConn#isConnected()
      */
     @Override
     public synchronized boolean isConnected() {

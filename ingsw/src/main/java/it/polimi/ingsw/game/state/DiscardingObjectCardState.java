@@ -6,12 +6,12 @@ package it.polimi.ingsw.game.state;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.object.ObjectCard;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.GameOpcode;
+import it.polimi.ingsw.game.common.InfoOpcode;
+import it.polimi.ingsw.game.common.ViewCommand;
+import it.polimi.ingsw.game.common.ViewOpcode;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.InfoOpcode;
-import it.polimi.ingsw.game.network.ViewCommand;
-import it.polimi.ingsw.game.network.ViewOpcode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,6 +32,9 @@ public class DiscardingObjectCardState extends PlayerState {
         buildAndSendAvailableCommands();
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
+     */
     @Override
     protected void buildAndSendAvailableCommands() {
         ArrayList<ViewCommand> availableCommands = new ArrayList<>();
@@ -68,8 +71,13 @@ public class DiscardingObjectCardState extends PlayerState {
         return nextState;
     }
 
-    private PlayerState discardObjectCard(GameCommand packet, PlayerState nextState) {
-        int index = (int)packet.getArgs()[0];
+    /** Discard an object card
+     * @param cmd The command
+     * @param nextState Next state
+     * @return Next state
+     */
+    private PlayerState discardObjectCard(GameCommand cmd, PlayerState nextState) {
+        int index = (int)cmd.getArgs()[0];
         if( index >= 0 && index <= Config.MAX_NUMBER_OF_OBJ_CARDS ) { // <=, not <, because here we have a card over the limit 
             ObjectCard objectCard = mGamePlayer.removeObjectCard(index);
             mGameState.broadcastPacket( new GameCommand(InfoOpcode.INFO_DISCARDED_OBJ_CARD, objectCard.getId(), objectCard.getName()));

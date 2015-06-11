@@ -1,4 +1,4 @@
-package it.polimi.ingsw.game.network;
+package it.polimi.ingsw.game.common;
 
 import it.polimi.ingsw.game.GameMap;
 
@@ -14,41 +14,44 @@ public class GameStartInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** List of player usernames (and id!) */
-	private final EnemyInfo[] mUsers;
+	private final PlayerInfo[] mUsers;
 	
 	/** Are you human or alien? */
 	private final boolean mHuman;
 	private final GameMap mMap;
 	private final int id;
 	
-	public GameStartInfo(EnemyInfo[] usernames, int idUsername, boolean isHuman, GameMap map) {
-		mUsers = usernames;
+	public GameStartInfo(PlayerInfo[] info, int idUsername, boolean isHuman, GameMap map) {
+		mUsers = info;
 		mHuman = isHuman;
 		mMap = map;
 		id = idUsername;
 	}
 
 	/**
-	 * @return the mUsers
+	 * @return the Users
 	 */
-	public EnemyInfo[] getPlayersList() {
+	public PlayerInfo[] getPlayersList() {
 		return mUsers;
 	}
 
 	/**
-     * @return the mMap
+     * @return the Map
      */
     public GameMap getMap() {
         return mMap;
     }
 
     /**
-	 * @return the mHuman
+	 * @return True if is human
 	 */
 	public boolean isHuman() {
 		return mHuman;
 	}
 	
+	/**
+	 * @return the id
+	 */
 	public int getId() {
 	    return id;
 	}

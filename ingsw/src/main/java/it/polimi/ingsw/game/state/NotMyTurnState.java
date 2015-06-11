@@ -28,15 +28,20 @@ public class NotMyTurnState extends PlayerState {
         return this;
     }
     
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
+     */
     @Override
     public boolean stillInGame() {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
+     */
     @Override
     protected void buildAndSendAvailableCommands() {
-        // TODO Auto-generated method stub
-        
+
     }
 
 }

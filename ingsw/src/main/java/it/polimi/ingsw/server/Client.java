@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.CoreOpcode;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.Opcode;
+import it.polimi.ingsw.game.common.CoreOpcode;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.Opcode;
 
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -61,9 +61,9 @@ public class Client {
                                 String name = (String) args[0];
                                 if(mGame.canSetName(name) && mUser == null) {
                                     setUsername(name);
-                                    sendPacket(new GameCommand(CoreOpcode.CMD_SC_USEROK, mGame.getNumberOfClients(), mGame.getRemainingLoginTime()));
+                                    sendPacket(new GameCommand(CoreOpcode.CMD_SC_USERNAMEOK, mGame.getNumberOfClients(), mGame.getRemainingLoginTime()));
                                 } else
-                                    sendPacket(CoreOpcode.CMD_SC_USERFAIL);
+                                    sendPacket(CoreOpcode.CMD_SC_USERNAMEFAIL);
                                 break;
                             case CMD_CS_LOADMAP:
                                 if(args.length == 1 && args[0] instanceof Integer && mGame.setMap(this, (Integer)args[0]))

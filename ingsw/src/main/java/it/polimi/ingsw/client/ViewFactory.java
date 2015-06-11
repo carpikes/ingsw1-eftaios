@@ -10,10 +10,13 @@ public class ViewFactory {
     public static final int VIEW_CLI = 1;
     private static String[] tAssoc = {"GUI", "Console"};
 
+    private ViewFactory() {
+        
+    }
+    
     public static final String[] getViewList() {
         return tAssoc;
     }
-
     
     public static View getView(GameController c, int type) {
         switch(type) {

@@ -266,7 +266,7 @@ public class GamePlayer {
     public void setAdrenaline(boolean adrenaline) {
         if( role instanceof Human ) 
             ((Human) role).setAdrenaline(adrenaline);
-        else
+        else if(adrenaline)
             LOG.log(Level.SEVERE, "Used arenaline on an alien. What's Happening");
     }
 
@@ -314,9 +314,8 @@ public class GamePlayer {
      */
     public void addObjectCard(ObjectCard c) {
         mObjectCards.add(c);
-        if(c.isUsable()) {
+        if(c.isUsable())
             mUsableObjectCards.add(c);
-        }
     }
     
     /**
@@ -343,16 +342,22 @@ public class GamePlayer {
         mUsableObjectCards.remove(objectCard);
     }
     
+    /** Get the names of usable cards 
+     * @return The names array
+     */
     public String[] getNamesOfUsableCards() {
         return cardsToString(mUsableObjectCards);
     }
     
+    /** Get names of all cards
+     * @return The names array
+     */
     public String[] getNamesOfCards() {
         return cardsToString(mObjectCards);
     }
     
-    /**
-     * @param index
+    /** Remove an object card
+     * @param index Index of the card
      */
     public ObjectCard removeObjectCard(int index) {
         ObjectCard c = mObjectCards.remove(index);
@@ -360,6 +365,10 @@ public class GamePlayer {
         return c;
     }
     
+    /** Helper of getNamesOf*Cards()
+     * @param cards Cards array
+     * @return Array of names
+     */
     private String[] cardsToString(List<ObjectCard> cards) {
         String[] cardNames = new String[cards.size()];
         
@@ -371,6 +380,9 @@ public class GamePlayer {
         return cardNames;
     }
     
+    /** True if the player has adrenaline set
+     * @return A boolean value
+     */
     public boolean getAdrenaline() {
         if(role instanceof Human)
             return ((Human)role).hasUsedAdrenaline();

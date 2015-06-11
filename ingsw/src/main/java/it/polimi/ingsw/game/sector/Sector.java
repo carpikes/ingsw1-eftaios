@@ -2,7 +2,7 @@ package it.polimi.ingsw.game.sector;
 
 import java.io.Serializable;
 
-/*
+/**
  * Model for a sector.
  */
 public class Sector implements Serializable{
@@ -14,7 +14,6 @@ public class Sector implements Serializable{
     
     /** Players can get on/through this sector or not? */
     private boolean crossable;
-    //...
     
     public Sector( int id, boolean crossable ) {
         this.id = id;
@@ -28,7 +27,7 @@ public class Sector implements Serializable{
 	public int getId() { return id; }
 	
     /**
-     * Return true is this is NOT a NOT_VALID sector (off map)
+     * Return true if this is NOT a NOT_VALID sector (off map)
      */
     public boolean isValid() {
         return id != SectorBuilder.NOT_VALID;
@@ -36,7 +35,7 @@ public class Sector implements Serializable{
 
     /**
      * Check if this sector is crossable or not
-     * @return True if crossable
+     * @return True if it is crossable
      */
     public boolean isCrossable() {
         return crossable;

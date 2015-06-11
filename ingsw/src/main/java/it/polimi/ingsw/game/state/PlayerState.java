@@ -5,10 +5,10 @@ package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.ViewCommand;
-import it.polimi.ingsw.game.network.ViewOpcode;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.GameOpcode;
+import it.polimi.ingsw.game.common.ViewCommand;
+import it.polimi.ingsw.game.common.ViewOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 
 import java.io.Serializable;
@@ -38,22 +38,26 @@ public abstract class PlayerState {
     protected abstract void buildAndSendAvailableCommands();
     
 
-    /**
-     * @param pkt
-     * @return
+    /** Use an object card
+     * @param curState current state
+     * @param cmd Command
+     * @return New player state
      */
-    protected PlayerState useObjectCard(PlayerState curState, GameCommand pkt) {
+    protected PlayerState useObjectCard(PlayerState curState, GameCommand cmd) {
         PlayerState nextState;
-        if(pkt == null || pkt.getArgs() == null || pkt.getArgs().length == 0 || !(pkt.getArgs()[0] instanceof Integer))
+        if(cmd == null || cmd.getArgs() == null || cmd.getArgs().length == 0 || !(cmd.getArgs()[0] instanceof Integer))
             throw new IllegalStateOperationException("Which object card?");
         
-        nextState = mGameState.startUsingObjectCard( (Integer)pkt.getArgs()[0] );
+        nextState = mGameState.startUsingObjectCard( (Integer)cmd.getArgs()[0] );
         
         if(nextState.equals(curState))
             buildAndSendAvailableCommands();
         return nextState;
     }
         
+    /** Add an object card to the availableCommands
+     * @param availableCommands Input array
+     */
     protected void addObjectCardIfPossible(List<ViewCommand> availableCommands) {
         if(mGamePlayer.isObjectCardUsed() || mGamePlayer.getNumberOfUsableCards() == 0 || !mGamePlayer.isHuman())
             return;

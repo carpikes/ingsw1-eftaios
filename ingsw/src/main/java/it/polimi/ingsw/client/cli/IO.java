@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.network.ViewCommand;
+import it.polimi.ingsw.game.common.ViewCommand;
 
 import java.awt.Point;
 import java.io.BufferedReader;
@@ -117,6 +117,7 @@ class IO {
     			IO.write("Invalid position");
 		    } catch(Exception e) {
 		        IO.write("Invalid position");
+		        LOG.log(Level.FINEST, "", e);
 		    }
 		} while(true);
 	}

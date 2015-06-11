@@ -20,6 +20,10 @@ public class HatchCardBuilder {
     public static final int GREEN_HATCH_CARD = 0;
     public static final int RED_HATCH_CARD = 1;
     
+    private HatchCardBuilder() {
+        
+    }
+    
     /**
      * Give a random hatch card to set player
      * @param state GameState of the player

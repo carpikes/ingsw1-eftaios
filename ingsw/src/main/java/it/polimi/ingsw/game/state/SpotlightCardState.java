@@ -5,10 +5,10 @@ package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.ViewCommand;
-import it.polimi.ingsw.game.network.ViewOpcode;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.GameOpcode;
+import it.polimi.ingsw.game.common.ViewCommand;
+import it.polimi.ingsw.game.common.ViewOpcode;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -27,6 +27,9 @@ public class SpotlightCardState extends PlayerState {
         buildAndSendAvailableCommands();
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
+     */
     @Override
     protected void buildAndSendAvailableCommands() {
         ArrayList<ViewCommand> availableCommands = new ArrayList<>();
@@ -58,6 +61,9 @@ public class SpotlightCardState extends PlayerState {
         return nextState;
     }
     
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
+     */
     @Override
 	public boolean stillInGame() {
 		return true;

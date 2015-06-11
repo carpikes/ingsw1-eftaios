@@ -4,8 +4,8 @@
 package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.InfoOpcode;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.InfoOpcode;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,14 +34,19 @@ public class StartTurnState extends PlayerState {
         return new MovingState(mGameState);
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
+     */
     @Override
     public boolean stillInGame() {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
+     */
     @Override
     protected void buildAndSendAvailableCommands() {
-        // TODO Auto-generated method stub
 
     }
 }

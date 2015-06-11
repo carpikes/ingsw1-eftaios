@@ -3,8 +3,8 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.ViewCommand;
+import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.ViewCommand;
 
 import java.awt.Point;
 import java.util.List;
@@ -136,13 +136,10 @@ public class GUIView extends View {
                 break;
                 
             case CMD_ENABLEMAPVIEW:
-                if( c.getArgs().length > 0) {
-                    // start from a point and choose a position within x moves
+                if( c.getArgs().length > 0) // start from a point and choose a position within x moves
                     enableMap( (Point) c.getArgs()[0], (int) c.getArgs()[1] ); 
-                } else {
-                    // choose any position
+                else // choose any position
                     enableMap();
-                }
                 break;
                 
             case CMD_ATTACK:
@@ -250,18 +247,14 @@ public class GUIView extends View {
      */
     @Override
     public void startup() {
-        // TODO Auto-generated method stub
-        
     }
 
     /* (non-Javadoc)
-     * @see it.polimi.ingsw.client.View#showEnding(java.util.ArrayList, java.util.ArrayList)
+     * @see it.polimi.ingsw.client.View#showEnding(java.util.List, java.util.List)
      */
     @Override
-    public void showEnding(List<Integer> winnerList,
-            List<Integer> loserList) {
-        // TODO Auto-generated method stub
-        
+    public void showEnding(List<Integer> winnerList, List<Integer> loserList) {
+        // TODO Implementme
     }
 
     /* (non-Javadoc)

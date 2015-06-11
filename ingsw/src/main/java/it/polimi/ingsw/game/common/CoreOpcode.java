@@ -1,4 +1,4 @@
-package it.polimi.ingsw.game.network;
+package it.polimi.ingsw.game.common;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -13,8 +13,8 @@ public enum CoreOpcode implements Opcode {
     CMD_SC_TIME,
     CMD_SC_CHOOSEUSER,
     CMD_CS_USERNAME,
-    CMD_SC_USEROK,
-    CMD_SC_USERFAIL,
+    CMD_SC_USERNAMEOK,
+    CMD_SC_USERNAMEFAIL,
     CMD_SC_RUN,
     CMD_SC_CHOOSEMAP,
     CMD_CS_LOADMAP,

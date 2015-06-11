@@ -12,7 +12,6 @@ public class SedativesCard extends ObjectCard {
     
 	public SedativesCard(GameState state, String name) {
         super(state, ObjectCardBuilder.SEDATIVES_CARD, name);
-        // TODO Auto-generated constructor stub
     }
 
 	/**

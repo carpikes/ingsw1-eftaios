@@ -12,6 +12,14 @@ import java.util.logging.Logger;
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
  */
+/**
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ *
+ */
+/**
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ *
+ */
 class ServerTCP implements Listener {
     private static final Logger LOG = Logger.getLogger(ServerTCP.class.getName());
     
@@ -53,7 +61,9 @@ class ServerTCP implements Listener {
         }
     }
 
-    /** Run the listener */
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
     public void run() {
         try {
             mServer = new ServerSocket(mPort);
@@ -67,7 +77,9 @@ class ServerTCP implements Listener {
         }
     }
 
-    /** Shut down this listener */
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.server.Listener#tearDown()
+     */
     @Override
     public synchronized void tearDown() {
         mStopEvent = true;
@@ -79,9 +91,8 @@ class ServerTCP implements Listener {
         }
     }
 
-    /** Check if this listener is correctly shutted down
-     * 
-     * @return True if this listener is down
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.server.Listener#isDown()
      */
     @Override
     public synchronized boolean isDown() {
@@ -92,9 +103,8 @@ class ServerTCP implements Listener {
         return false;
     }
 
-    /** Check if this listener is running
-     * 
-     * @return True if this listener is correctly listening
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.server.Listener#isUp()
      */
     @Override
     public boolean isUp() {

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.Opcode;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.Opcode;
 
 /** Common client connection interface 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)

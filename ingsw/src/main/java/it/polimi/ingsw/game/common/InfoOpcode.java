@@ -1,4 +1,4 @@
-package it.polimi.ingsw.game.network;
+package it.polimi.ingsw.game.common;
 
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -21,4 +21,5 @@ public enum InfoOpcode implements Opcode {
     INFO_END_GAME,
     INFO_SPOTLIGHT, 
     INFO_AWAY, 
+    INFO_ALIEN_FULL, 
 }

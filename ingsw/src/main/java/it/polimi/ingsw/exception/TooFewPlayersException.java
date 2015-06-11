@@ -16,6 +16,5 @@ public class TooFewPlayersException extends RuntimeException {
 
     public TooFewPlayersException(String message) {
         super(message);
-        // TODO Auto-generated constructor stub
     }
 }

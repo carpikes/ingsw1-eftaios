@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.CoreOpcode;
+import it.polimi.ingsw.game.common.CoreOpcode;
+import it.polimi.ingsw.game.common.GameCommand;
 
 import java.rmi.RemoteException;
 import java.util.LinkedList;
@@ -44,9 +44,8 @@ public class ClientConnRMI extends ClientConn {
     public void run() {
     }
 
-    /** Send a packet through this socket
-     * 
-     * @param pkt The packet
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.server.ClientConn#sendPacket(it.polimi.ingsw.game.common.GameCommand)
      */
     @Override
     public void sendPacket(GameCommand pkt) {
@@ -55,7 +54,9 @@ public class ClientConnRMI extends ClientConn {
         }
     }
 
-    /** Close this connection */
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.server.ClientConn#disconnect()
+     */
     @Override
     public void disconnect() {
         sendPacket(CoreOpcode.CMD_BYE);

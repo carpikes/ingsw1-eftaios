@@ -5,9 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import it.polimi.ingsw.client.network.TCPConnection;
+import it.polimi.ingsw.game.common.CoreOpcode;
+import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.CoreOpcode;
 import it.polimi.ingsw.server.Server;
 
 import java.io.IOException;

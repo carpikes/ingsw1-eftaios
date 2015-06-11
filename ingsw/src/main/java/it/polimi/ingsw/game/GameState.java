@@ -4,12 +4,12 @@ import it.polimi.ingsw.exception.DebugException;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
+import it.polimi.ingsw.game.common.PlayerInfo;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.GameOpcode;
+import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.InfoOpcode;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.EnemyInfo;
-import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameOpcode;
-import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.InfoOpcode;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.Human;
 import it.polimi.ingsw.game.player.Role;
@@ -56,10 +56,10 @@ public class GameState {
     private final GameMap mMap;
     
     /** Players in game */
-    private ArrayList<GamePlayer> mPlayers;
+    private List<GamePlayer> mPlayers;
     
     /** Current turn id */
-    private int mTurnId = 0;
+    private int mCurPlayerId = 0;
 
     /** Number of rounds played */
     private int mRoundsPlayed = 0;
@@ -76,7 +76,7 @@ public class GameState {
         KILLED_HUMAN,
         GONE_OFFLINE,
         HUMAN_USED_HATCH
-    };
+    }
     
     private LastThings mLastThing = LastThings.NEVERMIND;
     
@@ -103,20 +103,27 @@ public class GameState {
         
         mPlayers = new ArrayList<>();
         List<Role> roles = RoleBuilder.generateRoles(gameManager.getNumberOfClients(), true);
+        int numberOfPlayers = gameManager.getNumberOfClients();
+        buildPlayersList(roles, numberOfPlayers);
         
-        for(int i = 0;i<gameManager.getNumberOfClients(); i++) {
+        if(mMap == null)
+            gameManager.shutdown();
+    }
+
+    /**
+     * @param roles
+     * @param numberOfPlayers
+     */
+    private void buildPlayersList(List<Role> roles, int numberOfPlayers) {
+        for(int i = 0;i<numberOfPlayers; i++) {
             Role role = roles.get(i);
-            boolean isMyTurn = (i == mTurnId);
             GamePlayer player = new GamePlayer(i, role, getMap().getStartingPoint(role instanceof Human));
             mPlayers.add(player);
-            if(isMyTurn)
+            if(i == mCurPlayerId) // is my turn
                 player.setCurrentState(new StartTurnState(this));
             else
                 player.setCurrentState(new NotMyTurnState(this));
         }
-        
-        if(mMap == null)
-            gameManager.shutdown();
     }
     
     /** DEBUG MODE CONSTRUCTOR
@@ -130,7 +137,7 @@ public class GameState {
             LOG.log(Level.SEVERE, "Missing map files: " + e.toString(), e);
         }
         
-        if(!areYouSureToEnableDebugMode.equalsIgnoreCase("YES"))
+        if(!("YES".equalsIgnoreCase(areYouSureToEnableDebugMode)))
             throw new DebugException("Cannot enable debug mode.");
         
         mMap = tmpMap;
@@ -143,19 +150,10 @@ public class GameState {
         
         mPlayers = new ArrayList<>();
         
-        mTurnId = startPlayerId;
+        mCurPlayerId = startPlayerId;
         List<Role> roles = RoleBuilder.generateRoles(numberOfPlayers, randomizePlayers);
         
-        for(int i = 0;i<numberOfPlayers; i++) {
-            Role role = roles.get(i);
-            boolean isMyTurn = (i == mTurnId);
-            GamePlayer player = new GamePlayer(i, role, getMap().getStartingPoint(role instanceof Human));
-            mPlayers.add(player);
-            if(isMyTurn)
-                player.setCurrentState(new StartTurnState(this));
-            else
-                player.setCurrentState(new NotMyTurnState(this));
-        }
+        buildPlayersList(roles, numberOfPlayers);
         
         if(mMap == null)
             throw new DebugException("Invalid map file");
@@ -168,7 +166,7 @@ public class GameState {
         if( !dDebugMode && !mManager.isRunning() )
             return;
         
-        if(dDebugMode && dGameOver == true)
+        if(dDebugMode && dGameOver)
             throw new DebugException("Game over");
         
         GamePlayer player = getCurrentPlayer();
@@ -178,7 +176,8 @@ public class GameState {
             nextState = player.getCurrentState().update();
             player.setCurrentState(nextState);
         } catch( IllegalStateOperationException e) {
-            LOG.log(Level.INFO, e.toString());
+            LOG.log(Level.INFO, e.toString(), e);
+            LOG.log(Level.FINEST, "", e);
         }
 
         // broadcast messages at the end of the turn
@@ -256,9 +255,7 @@ public class GameState {
                 nextState = objectCard.doAction();
                 return nextState;
             }
-        } 
-        
-        sendPacketToCurrentPlayer( GameOpcode.CMD_SC_CANNOT_USE_OBJ_CARD ); 
+        }
         
         return nextState;
     }
@@ -291,7 +288,7 @@ public class GameState {
             GamePlayer player = getCurrentPlayer();
             if( player.isAlien() ) {
                 player.setFull(true);
-                // TODO how about a notification here?
+                broadcastPacket(new GameCommand(InfoOpcode.INFO_ALIEN_FULL));
             }
         }
         
@@ -416,9 +413,9 @@ public class GameState {
      * @return The current player
      */
     public synchronized GamePlayer getCurrentPlayer() {
-        if(mTurnId == -1)
+        if(mCurPlayerId == -1)
             throw new RuntimeException("CurrentPlayer == -1. What's happening?");
-        return mPlayers.get( mTurnId ); 
+        return mPlayers.get( mCurPlayerId ); 
     }
 
     /** Get the game map
@@ -445,7 +442,7 @@ public class GameState {
      * @param i Player id (to send this packet)
      * @return Game infos
      */
-    public GameStartInfo buildInfoContainer(EnemyInfo[] userList, int i) {
+    public GameStartInfo buildInfoContainer(PlayerInfo[] userList, int i) {
         GameStartInfo info = new GameStartInfo(userList, i, mPlayers.get(i).isHuman(), mMap);
         return info;
     }
@@ -465,15 +462,15 @@ public class GameState {
     /** Switch to the next player */
     public void moveToNextPlayer() {
         int newTurnId = -1;
-        int lastTurnId = mTurnId;
+        int lastTurnId = mCurPlayerId;
         
         if(dDebugMode && dForceNextTurn != -1) {
             checkEndGame();
             
-            mTurnId = dForceNextTurn;
+            mCurPlayerId = dForceNextTurn;
             dForceNextTurn = -1;
         } else {
-            for( int currId = mTurnId + 1; currId < mTurnId + mPlayers.size(); ++currId ) {
+            for( int currId = mCurPlayerId + 1; currId < mCurPlayerId + mPlayers.size(); ++currId ) {
                 if( mPlayers.get(currId % mPlayers.size()).getCurrentState() instanceof NotMyTurnState ) {
                     newTurnId = currId % mPlayers.size();
                     break;
@@ -487,7 +484,7 @@ public class GameState {
             if(newTurnId == -1)
                 return;
             
-            mTurnId = newTurnId;
+            mCurPlayerId = newTurnId;
         }
         
         getCurrentPlayer().setCurrentState( new StartTurnState( this ) );
@@ -525,7 +522,7 @@ public class GameState {
      */
     public void sendPacketToCurrentPlayer(GameCommand networkPacket) {
         synchronized(mOutputQueue) {
-            mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(mTurnId, networkPacket));
+            mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(mCurPlayerId, networkPacket));
         }
     }
     
@@ -549,7 +546,7 @@ public class GameState {
      * @return The current turn
      */
     public int getTurnId() {
-        return mTurnId;
+        return mCurPlayerId;
     }
 
     /** Called when a client disconnects
@@ -558,7 +555,7 @@ public class GameState {
     public void onPlayerDisconnect(int id) {
         GamePlayer player = mPlayers.get(id);
         if(player != null) {
-            if(mTurnId == id) 
+            if(mCurPlayerId == id) 
                 moveToNextPlayer();
             player.setCurrentState(new AwayState(this));
             setLastThingDid(LastThings.GONE_OFFLINE);

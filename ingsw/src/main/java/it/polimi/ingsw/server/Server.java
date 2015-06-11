@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.exception.DebugException;
+import it.polimi.ingsw.game.common.CoreOpcode;
 import it.polimi.ingsw.game.config.Config;
-import it.polimi.ingsw.game.network.CoreOpcode;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
