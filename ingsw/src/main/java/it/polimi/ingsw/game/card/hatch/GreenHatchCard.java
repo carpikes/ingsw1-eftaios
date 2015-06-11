@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game.card.hatch;
 
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.GameState.LastThings;
 import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.WinnerState;
 
@@ -21,6 +22,7 @@ public class GreenHatchCard extends HatchCard {
 	 */
     @Override
 	public PlayerState getNextState() {
+        mGameState.setLastThingDid(LastThings.HUMAN_USED_HATCH);
 	    return new WinnerState(mGameState, mGamePlayer.getId());
 	}
 

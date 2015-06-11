@@ -13,6 +13,7 @@ import java.util.Random;
  * @since  2 Jun 2015
  */
 public class DangerousCardBuilder {
+    private static Random generator = new Random();
     public static final int DANGEROUS_CARD_TYPES = 3;
     
     public static final int NOISE_IN_YOUR_SECTOR = 0;
@@ -28,8 +29,6 @@ public class DangerousCardBuilder {
      * @return A dangerous sector card
      */
     public static DangerousCard getRandomCard( GameState gameState ) {
-        Random generator = new Random();
-        
         return getCard( gameState, generator.nextInt(DANGEROUS_CARD_TYPES) );
     }
     

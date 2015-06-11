@@ -14,7 +14,7 @@ import java.util.Random;
  * @since 2 Jun 2015
  */
 public class HatchCardBuilder {
-    
+    private static Random generator = new Random();
     public static final int HATCH_CARD_TYPES = 2;
     
     public static final int GREEN_HATCH_CARD = 0;
@@ -27,12 +27,10 @@ public class HatchCardBuilder {
      * @return An Hatch Card
      */
     public static HatchCard getRandomCard( GameState state ) {
-        Random generator = new Random();
-        
         switch( generator.nextInt(HATCH_CARD_TYPES) ) {
-        case GREEN_HATCH_CARD:        return new GreenHatchCard(state);
-        case RED_HATCH_CARD:          return new RedHatchCard(state);
-        default:                      throw new InvalidCardException("Unknown card");
+            case GREEN_HATCH_CARD:        return new GreenHatchCard(state);
+            case RED_HATCH_CARD:          return new RedHatchCard(state);
+            default:                      throw new InvalidCardException("Unknown card");
         }
     }
 }

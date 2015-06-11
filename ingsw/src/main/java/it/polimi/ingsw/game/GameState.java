@@ -71,6 +71,15 @@ public class GameState {
 
     private int dForceNextTurn = -1;
     
+    public static enum LastThings {
+        NEVERMIND,
+        KILLED_HUMAN,
+        GONE_OFFLINE,
+        HUMAN_USED_HATCH
+    };
+    
+    private LastThings mLastThing = LastThings.NEVERMIND;
+    
     /**
      * Constructs a new game.
      * @param gameManager The GameManager that created this game.
@@ -180,6 +189,14 @@ public class GameState {
     }
     
     /** Flush the output queue */
+    public void clearOutputQueue() {
+        if(dDebugMode)
+            return;
+        
+        mOutputQueue.clear();
+    }
+    
+    /** Flush the output queue */
     public void flushOutputQueue() {
         if(dDebugMode)
             return;
@@ -204,8 +221,7 @@ public class GameState {
         GamePlayer player = getCurrentPlayer();
         ObjectCard newCard = ObjectCardBuilder.getRandomCard( this );
         PlayerState nextState;
-        
-        // FIXME maybe an id is better here!
+
         player.addObjectCard(newCard);
         
         broadcastPacket( new GameCommand(InfoOpcode.INFO_GOT_A_NEW_OBJ_CARD, player.getNumberOfCards()));
@@ -254,7 +270,6 @@ public class GameState {
     public void attack(Point currentPosition) {
         ArrayList<Integer> killedPlayers = new ArrayList<>();
         ArrayList<Integer> defendedPlayers = new ArrayList<>();
-        boolean killedHumans = false;
         
         for(int i = 0; i < mPlayers.size(); i++) {
             GamePlayer player = mPlayers.get(i);
@@ -264,7 +279,7 @@ public class GameState {
                     defendedPlayers.add(i);
                 } else {
                     if(player.isHuman())
-                        killedHumans = true;
+                        setLastThingDid(LastThings.KILLED_HUMAN);
                     player.setCurrentState( new LoserState(this, i) );        
                     killedPlayers.add(i); 
                 }
@@ -282,7 +297,7 @@ public class GameState {
         
         broadcastPacket( new GameCommand(InfoOpcode.INFO_PLAYER_ATTACKED, currentPosition, killedPlayers, defendedPlayers) );
         
-        checkEndGame(killedHumans);
+        checkEndGame();
     }
     
     /** End game conditions: [<who win?>]
@@ -294,7 +309,7 @@ public class GameState {
      * 
      * @param justKilledHumans True if this function is called after an attack and there are killed humans
      */
-    private void checkEndGame(boolean justKilledHumans) {
+    private void checkEndGame() {
         boolean allWinnersMode = false; // set to true if inGamePlayers < MIN PLAYERS
         int aliveHumans = 0;
         int inGamePlayers = 0;
@@ -307,13 +322,13 @@ public class GameState {
                     aliveHumans++;
             }
         
-        if(inGamePlayers < Config.GAME_MIN_PLAYERS)
+        if(inGamePlayers < Config.GAME_MIN_PLAYERS && (mLastThing == LastThings.GONE_OFFLINE || mLastThing == LastThings.NEVERMIND))
             allWinnersMode = true;
         
-        if((aliveHumans == 0 && justKilledHumans) ||                // (1)
-           (aliveHumans > 0 && remainingHatches == 0) ||            // (2)
-           (mRoundsPlayed > Config.MAX_NUMBER_OF_TURNS) ||          // (3)
-           (inGamePlayers < Config.GAME_MIN_PLAYERS)) {             // (4)
+        if((aliveHumans == 0 && mLastThing == LastThings.KILLED_HUMAN)   ||     // (1)
+           (aliveHumans > 0 && remainingHatches == 0)                    ||     // (2)
+           (mRoundsPlayed > Config.MAX_NUMBER_OF_TURNS)                  ||     // (3)
+           (inGamePlayers < Config.GAME_MIN_PLAYERS)) {                         // (4)
             
             // So, the game will end.
             // Let's gather some stats
@@ -321,13 +336,13 @@ public class GameState {
             // Move all players either into WinnerState or LoserState 
             for(int i = 0; i < mPlayers.size(); i++) {
                 GamePlayer p = mPlayers.get(i);
-                if((p.stillInGame() && (p.isAlien() || allWinnersMode)))
+                if((p.stillInGame() && ((p.isAlien() && mLastThing != LastThings.HUMAN_USED_HATCH)|| allWinnersMode)))
                     p.setCurrentState(new WinnerState(this, i));
-                else if(p.getCurrentState() instanceof AwayState || (p.isHuman() && p.stillInGame()))
+                else if(!(p.getCurrentState() instanceof WinnerState))
                     p.setCurrentState(new LoserState(this, i));
             }
             
-            flushOutputQueue();
+            clearOutputQueue();
             
             // Fill this two arrays
             ArrayList<Integer> winnersList = new ArrayList<>();
@@ -453,7 +468,7 @@ public class GameState {
         int lastTurnId = mTurnId;
         
         if(dDebugMode && dForceNextTurn != -1) {
-            checkEndGame(false);
+            checkEndGame();
             
             mTurnId = dForceNextTurn;
             dForceNextTurn = -1;
@@ -468,7 +483,7 @@ public class GameState {
             if(newTurnId <= lastTurnId)
                 mRoundsPlayed ++;
             
-            checkEndGame(false);
+            checkEndGame();
             if(newTurnId == -1)
                 return;
             
@@ -546,9 +561,10 @@ public class GameState {
             if(mTurnId == id) 
                 moveToNextPlayer();
             player.setCurrentState(new AwayState(this));
+            setLastThingDid(LastThings.GONE_OFFLINE);
         }
         
-        checkEndGame(false);
+        checkEndGame();
     }
 
     /** Send a packet to the specified player
@@ -561,6 +577,9 @@ public class GameState {
         }
     }
 
+    public synchronized void setLastThingDid(LastThings ltd) {
+        mLastThing = ltd;
+    }
     
     /** ====== DEBUG ====== */
     
@@ -611,4 +630,6 @@ public class GameState {
         
         return this.dGameOver;
     }
+    
+    
 }
