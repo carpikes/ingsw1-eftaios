@@ -91,8 +91,13 @@ public class Hexagon {
         if(playerOn)
             real = ColorPalette.PLAYER_ON;
         
-        if( noise )
+        if( noise ) {
+            double k = System.currentTimeMillis() / 250.0;
             real = ColorPalette.NOISE;
+            real = new Color((int)(Math.abs(Math.cos(k)) * (255-real.getRed()) + real.getRed()), 
+                             (int)(Math.abs(Math.cos(k)) * (255-real.getGreen()) + real.getGreen()), 
+                             (int)(Math.abs(Math.cos(k)) * (255-real.getBlue()) + real.getBlue()), 0xff);
+        }
         
         if(!enabled) {
             drawStroke = false;
