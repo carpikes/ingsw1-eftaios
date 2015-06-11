@@ -3,11 +3,10 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.config.Config;
+import it.polimi.ingsw.game.network.CoreOpcode;
 import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameCommand;
-import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
-import it.polimi.ingsw.game.network.CoreOpcode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -203,22 +202,13 @@ public class GameManager {
 
         mIsRunning = true;
     }
-
-    /** Send a packet without arguments to all players connected
-     * 
-     * @param opcode Packet opcode
-     */
-    public void broadcastPacket(GameOpcode opcode) {
-        for(Client c : mClients)
-            if(c.isConnected())
-                c.sendPacket(opcode);
-    }
-    
+   
     /** Send a packet to all players connected
      * 
      * @param pkt Packet
      */
     public synchronized void broadcastPacket(GameCommand pkt) {
+        LOG.log(Level.FINE, "Broadcasting " + pkt.getOpcode().toString());
         for(Client c : mClients)
             if(c.isConnected())
                 c.sendPacket(pkt);

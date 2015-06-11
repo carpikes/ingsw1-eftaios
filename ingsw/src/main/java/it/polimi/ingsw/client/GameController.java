@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.network.EnemyInfo;
 import it.polimi.ingsw.game.network.GameCommand;
 import it.polimi.ingsw.game.network.GameOpcode;
 import it.polimi.ingsw.game.network.GameStartInfo;
@@ -257,7 +258,15 @@ public class GameController implements OnReceiveListener {
             case INFO_GOT_A_NEW_OBJ_CARD:
                 if(cmd.getArgs().length == 1 && cmd.getArgs()[0] instanceof Integer) {
                     mGameInfo.getPlayersList()[mCurTurn].setNumberOfCards((Integer) cmd.getArgs()[0]);
-                    mView.showInfo(curUser, "Got a new object card!");
+                    mView.showInfo(curUser, "Draw an object card!");
+                }
+                break;
+            case INFO_DISCARDED_OBJ_CARD:
+                if(cmd.getArgs().length == 2 && cmd.getArgs()[1] instanceof String) {
+                    String name = (String) cmd.getArgs()[1];
+                    EnemyInfo e = mGameInfo.getPlayersList()[mCurTurn];
+                    e.setNumberOfCards(e.getNumberOfCards()-1);
+                    mView.showInfo(curUser, "Discarded " + name + " card");
                 }
                 break;
             case INFO_HAS_MOVED:
@@ -300,9 +309,7 @@ public class GameController implements OnReceiveListener {
                 if(cmd.getArgs().length == 2 && cmd.getArgs()[1] instanceof String) {
                     String name = (String) cmd.getArgs()[1];
                     mView.showInfo(curUser, "Used the object card '" + name + "'");
-                } else
-                    mView.showInfo(curUser, "Used a weird object card without a valid name");
-                
+                }
                 break;
             case INFO_SILENCE:
                 mView.showInfo(curUser, "Extracted dangerous card: Silence.");

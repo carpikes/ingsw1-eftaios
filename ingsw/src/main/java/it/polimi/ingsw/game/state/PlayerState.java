@@ -48,6 +48,7 @@ public abstract class PlayerState {
             throw new IllegalStateOperationException("Which object card?");
         
         nextState = mGameState.startUsingObjectCard( (Integer)pkt.getArgs()[0] );
+        
         if(nextState.equals(curState))
             buildAndSendAvailableCommands();
         return nextState;

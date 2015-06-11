@@ -73,6 +73,9 @@ public class MovingState extends PlayerState {
                     mGameState.sendPacketToCurrentPlayer(GameOpcode.CMD_SC_MOVE_INVALID);
             } else if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD && mGamePlayer.getNumberOfUsableCards() > 0) {
                 nextState = useObjectCard(this, packet);
+                
+                // This call is important (Adrenaline card!) 
+                availableSectors = mGameState.getCellsWithMaxDistance();
             } else {
                 throw new IllegalStateOperationException("You can only move. Discarding command.");
             }

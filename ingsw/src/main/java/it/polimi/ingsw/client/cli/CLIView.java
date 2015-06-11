@@ -175,7 +175,7 @@ public class CLIView extends View {
     }
     
     private boolean handleChooseObjectCard(ViewCommand c, boolean canGoBack) {
-        if(c.getArgs().length == 1 && c.getArgs() instanceof String[]) {
+        if(c.getArgs().length > 0 && c.getArgs() instanceof String[]) {
             String[] objs = (String[]) c.getArgs();
             IO.write("Which card do you want to use?" + (canGoBack?" (or type - to go back)":""));
             Integer choice = IO.askInAList(objs, canGoBack);
@@ -183,12 +183,13 @@ public class CLIView extends View {
                 return false;
             mController.sendChosenObjectCard(choice);
             return true;
-        }
+        } else 
+            IO.write("ERROR: " + c.getArgs().length);
         return false;
     }
     
     private boolean handleDiscardObjectCard(ViewCommand c, boolean canGoBack) {
-        if(c.getArgs().length == 1 && c.getArgs() instanceof String[]) {
+        if(c.getArgs().length > 0 && c.getArgs() instanceof String[]) {
             String[] objs = (String[]) c.getArgs();
             IO.write("Which card do you want to discard?" + (canGoBack?" (or type - to go back)":""));
             Integer i = IO.askInAList(objs, canGoBack);
@@ -197,7 +198,8 @@ public class CLIView extends View {
                 return false;
             mController.sendDiscardObjectCard(i);
             return true;
-        }
+        } else
+            IO.write("ERROR: " + c.getArgs().length);
         return false;
     }
     

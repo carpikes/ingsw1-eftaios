@@ -3,11 +3,10 @@
  */
 package it.polimi.ingsw.game.card.dangerous;
 
-import java.util.Random;
-
 import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.player.GamePlayer;
+
+import java.util.Random;
 
 /** Class used to get a random Dangerous Card.
  * @author  Michele

@@ -8,6 +8,8 @@ import it.polimi.ingsw.game.state.PlayerState;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class representing an in-game player. It contains all the cards, the role, the current state...
@@ -15,6 +17,7 @@ import java.util.List;
  * @since  May 19, 2015
  */
 public class GamePlayer {
+    private static final Logger LOG = Logger.getLogger(GamePlayer.class.getName());
     
     /** Position on board */
     private Point mPosition;
@@ -263,6 +266,8 @@ public class GamePlayer {
     public void setAdrenaline(boolean adrenaline) {
         if( role instanceof Human ) 
             ((Human) role).setAdrenaline(adrenaline);
+        else
+            LOG.log(Level.SEVERE, "Used arenaline on an alien. What's Happening");
     }
 
     /**
@@ -349,9 +354,10 @@ public class GamePlayer {
     /**
      * @param index
      */
-    public void removeObjectCard(int index) {
+    public ObjectCard removeObjectCard(int index) {
         ObjectCard c = mObjectCards.remove(index);
         mUsableObjectCards.remove(c);
+        return c;
     }
     
     private String[] cardsToString(List<ObjectCard> cards) {

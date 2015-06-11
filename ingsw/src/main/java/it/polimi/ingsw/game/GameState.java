@@ -207,11 +207,12 @@ public class GameState {
         
         // FIXME maybe an id is better here!
         player.addObjectCard(newCard);
+        
+        broadcastPacket( new GameCommand(InfoOpcode.INFO_GOT_A_NEW_OBJ_CARD, player.getNumberOfCards()));
         sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, (Integer)newCard.getId()) );
         
         // We're ok, proceed
-        if( player.getNumberOfCards() < Config.MAX_NUMBER_OF_OBJ_CARDS ) {
-            broadcastPacket( new GameCommand(InfoOpcode.INFO_GOT_A_NEW_OBJ_CARD, player.getNumberOfCards()));
+        if( player.getNumberOfCards() <= Config.MAX_NUMBER_OF_OBJ_CARDS ) {
             nextState = new EndingTurnState(this);
         } else {
             // tell the user he has to drop or use a card
