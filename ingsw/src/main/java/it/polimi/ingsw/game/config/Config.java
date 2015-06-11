@@ -1,5 +1,7 @@
 package it.polimi.ingsw.game.config;
 
+import javax.swing.border.EmptyBorder;
+
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 17, 2015
@@ -42,7 +44,22 @@ public class Config {
     public static final long CLIENT_TCP_PING_TIME           = 5000;
 
     // GUI settings
-    public static final int GUI_NOISE_ANIMATION_TIME        = 30000;
+    public static final int WIDTH = 1024;
+    public static final int WIDTH_LEFT  = 745;
+    public static final int WIDTH_RIGHT  = WIDTH - WIDTH_LEFT;
+
+    public static final int HEIGHT = 768;
+    public static final int HEIGHT_BOTTOM = 50;
+    public static final int HEIGHT_TOP = HEIGHT - HEIGHT_BOTTOM;
+
+    public static final int PANEL_MARGIN = 10;
+    public static final int CARD_HGAP = 5;
+    public static final int CARD_VGAP = 5;
+
+    public static final int USERS_HGAP = 10;    
+
+    public static final int CARD_WIDTH = WIDTH_RIGHT - 2 * PANEL_MARGIN - 2 * CARD_HGAP;
+    public static final int CARD_HEIGHT = CARD_WIDTH * 745 / 490; // values based on image size
 
     private Config() {}
 }

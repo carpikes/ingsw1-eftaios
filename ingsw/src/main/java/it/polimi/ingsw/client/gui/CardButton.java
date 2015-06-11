@@ -33,14 +33,15 @@ public class CardButton extends JButton {
 
     private float alpha = 1f;
 
+    private int myId;
     private boolean canBeDiscarded;
 
-    public CardButton( final CardButtons type, GameController c ) {
+    public CardButton( final CardButtons type, GameController c, int id) {
         super( );
 
         controller = c;
         this.type = type;
-
+        myId = id;
         canBeDiscarded = false;
         changeTo( type );
 
@@ -48,9 +49,9 @@ public class CardButton extends JButton {
             public void mouseClicked(MouseEvent e) {
                 if( ((JButton)e.getSource() ).isEnabled() ) {
                     if( SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
-                        controller.sendChosenObjectCard( type.getId() );
+                        controller.sendChosenObjectCard( myId );
                     } else if (canBeDiscarded && SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
-                        controller.sendDiscardObjectCard( type.getId() );
+                        controller.sendDiscardObjectCard( myId );
                     }
                 }
             }

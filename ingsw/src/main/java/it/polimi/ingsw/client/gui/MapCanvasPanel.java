@@ -193,7 +193,7 @@ public class MapCanvasPanel extends JPanel {
         super.paintComponent(g);     // paint parent's background
 
         Graphics2D g2d = (Graphics2D)g;
-        setBackground(Color.WHITE);  // set background color for this JPanel
+        setBackground(ColorPalette.BACKGROUND);  // set background color for this JPanel
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 

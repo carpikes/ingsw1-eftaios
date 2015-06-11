@@ -3,8 +3,8 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.GameStartInfo;
+import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.config.Config;
 
 import java.awt.BorderLayout;
@@ -45,31 +45,14 @@ public class GUIFrame extends JFrame {
     private transient final GameController mController;
 
     // Constants
-    private static final int WIDTH = 1024;
-    private static final int WIDTH_LEFT  = 745;
-    private static final int WIDTH_RIGHT  = WIDTH - WIDTH_LEFT;
-
-    private static final int HEIGHT = 768;
-    private static final int HEIGHT_BOTTOM = 50;
-    private static final int HEIGHT_TOP = HEIGHT - HEIGHT_BOTTOM;
-
-    private static final int PANEL_MARGIN = 10;
-    private static EmptyBorder RIGHT_PANEL_MARGIN = new EmptyBorder(PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN);
-    private static final int CARD_HGAP = 5;
-    private static final int CARD_VGAP = 5;
-
-    private static final int USERS_HGAP = 10;    
-
-    private static final int CARD_WIDTH = WIDTH_RIGHT - 2 * PANEL_MARGIN - 2 * CARD_HGAP;
-    private static final int CARD_HEIGHT = CARD_WIDTH * 745 / 490; // values based on image size
-
+    private static EmptyBorder RIGHT_PANEL_MARGIN = new EmptyBorder(Config.PANEL_MARGIN, Config.PANEL_MARGIN, Config.PANEL_MARGIN, Config.PANEL_MARGIN);
     private static final Insets TEXT_AREA_PADDING = new Insets(5, 5, 5, 5);
     private static final EmptyBorder TEXT_AREA_MARGIN = new EmptyBorder( 10, 0, 10, 0 );
 
-    private static final Dimension mDimensionLeftPanel = new Dimension(WIDTH_LEFT, HEIGHT_TOP);
-    private static final Dimension mDimensionRightPanel = new Dimension(WIDTH_RIGHT, HEIGHT_TOP);
-    private static final Dimension mDimensionCardPanel = new Dimension(WIDTH_RIGHT, CARD_HEIGHT);
-    private static final Dimension mDimensionBottomPanel = new Dimension(WIDTH, HEIGHT_BOTTOM);
+    private static final Dimension mDimensionLeftPanel = new Dimension(Config.WIDTH_LEFT, Config.HEIGHT_TOP);
+    private static final Dimension mDimensionRightPanel = new Dimension(Config.WIDTH_RIGHT, Config.HEIGHT_TOP);
+    private static final Dimension mDimensionCardPanel = new Dimension(Config.WIDTH_RIGHT, Config.CARD_HEIGHT);
+    private static final Dimension mDimensionBottomPanel = new Dimension(Config.WIDTH, Config.HEIGHT_BOTTOM);
 
     // Drawing canvas on the left
     private MapCanvasPanel mMapCanvas;
@@ -96,7 +79,7 @@ public class GUIFrame extends JFrame {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);   
         setTitle("Escape from the Aliens in Outer Space");
-        setSize(WIDTH, HEIGHT);
+        setSize(Config.WIDTH, Config.HEIGHT);
         setLocationRelativeTo(null);
         setResizable(false);
 
@@ -122,7 +105,7 @@ public class GUIFrame extends JFrame {
             userLabel = new JLabel[ players.length ];
 
             FlowLayout flow = new FlowLayout();
-            flow.setHgap( USERS_HGAP );
+            flow.setHgap( Config.USERS_HGAP );
             JPanel listOfUsers = new JPanel( flow );
 
             for( int i = 0; i < players.length; ++i ) {
@@ -236,14 +219,14 @@ public class GUIFrame extends JFrame {
     private JPanel createCardPanel(JPanel rightPanel) {
         GridLayout layout = new GridLayout(0, 2);
 
-        layout.setHgap( CARD_HGAP );
-        layout.setVgap( CARD_VGAP );
+        layout.setHgap( Config.CARD_HGAP );
+        layout.setVgap( Config.CARD_VGAP );
 
         JPanel cardPanel = new JPanel( layout ); // set 2 card per line, "unlimited" number of rows
         cardPanel.setPreferredSize(mDimensionCardPanel);
 
         for( int i = 0; i < numberOfCardButtons; ++i ) {
-            cardButtons[i] = new CardButton( CardButtons.NULL, mController );
+            cardButtons[i] = new CardButton( CardButtons.NULL, mController, i);
             cardPanel.add( cardButtons[i] );
         }
 
@@ -273,7 +256,7 @@ public class GUIFrame extends JFrame {
         if(mLoginCanvas == null)
             throw new RuntimeException("Map is already loaded");
         try {
-            mMapCanvas = new MapCanvasPanel(mController, map, WIDTH_LEFT, HEIGHT_TOP, startingPoint);
+            mMapCanvas = new MapCanvasPanel(mController, map, Config.WIDTH_LEFT, Config.HEIGHT_TOP, startingPoint);
             mMapCanvas.setPreferredSize(mDimensionLeftPanel);
 
             remove(mLoginCanvas);
