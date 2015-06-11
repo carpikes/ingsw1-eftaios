@@ -218,23 +218,23 @@ public class GameState {
          */
         public PlayerState getObjectCard( ) {
             GamePlayer player = getCurrentPlayer();
-                ObjectCard newCard = ObjectCardBuilder.getRandomCard( this );
-                PlayerState nextState;
-                
-                player.addObjectCard(newCard);
-                
-                broadcastPacket( new GameCommand(InfoOpcode.INFO_GOT_A_NEW_OBJ_CARD) );
-                sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, (Integer)newCard.getId()) );
-                
-                // We're ok, proceed
-                if( player.getNumberOfCards() <= Config.MAX_NUMBER_OF_OBJ_CARDS ) {
-                    nextState = new EndingTurnState(this);
-                } else {
-                    // tell the user he has to drop or use a card
-                    nextState = new DiscardingObjectCardState(this);
-                }
-            
-                return nextState;
+            ObjectCard newCard = ObjectCardBuilder.getRandomCard( this );
+            PlayerState nextState;
+
+            player.addObjectCard(newCard);
+
+            broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, player.getNumberOfCards() ) );
+            sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, (Integer)newCard.getId()) );
+
+            // We're ok, proceed
+            if( player.getNumberOfCards() <= Config.MAX_NUMBER_OF_OBJ_CARDS ) {
+                nextState = new EndingTurnState(this);
+            } else {
+                // tell the user he has to drop or use a card
+                nextState = new DiscardingObjectCardState(this);
+            }
+
+            return nextState;
         }
     
         /** Method invoked when someone sends a CMD_CS_USE_OBJ_CARD command. Invoke the correct underlying method 
@@ -244,20 +244,23 @@ public class GameState {
          */
         public PlayerState startUsingObjectCard(Integer objectCardPos) {
             GamePlayer player = getCurrentPlayer();
-                PlayerState nextState = player.getCurrentState();
-                
-                if(player.isHuman() && !player.isObjectCardUsed() && player.getNumberOfUsableCards() > objectCardPos && objectCardPos >= 0) {   
-                    ObjectCard objectCard = player.useObjectCard(objectCardPos);
-                        if(objectCard != null) {
-                            broadcastPacket( new GameCommand(InfoOpcode.INFO_OBJ_CARD_USED, objectCard.getId(), objectCard.getName()) );
-                                
-                                getCurrentPlayer().setObjectCardUsed(true);
-                                nextState = objectCard.doAction();
-                                return nextState;
-                        }
+            PlayerState nextState = player.getCurrentState();
+
+            if(player.isHuman() && !player.isObjectCardUsed() && player.getNumberOfUsableCards() > objectCardPos && objectCardPos >= 0) {   
+                ObjectCard objectCard = player.useObjectCard(objectCardPos);
+                if(objectCard != null) {
+                    broadcastPacket( new GameCommand(InfoOpcode.INFO_OBJ_CARD_USED, objectCard.getId(), objectCard.getName()) );
+
+                    player.setObjectCardUsed(true);
+                    this.sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_DROP_CARD, objectCardPos) );
+                    broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, player.getNumberOfCards() ) );
+
+                    nextState = objectCard.doAction();
+                    return nextState;
                 }
-            
-                return nextState;
+            }
+
+            return nextState;
         }
     
         /** Kills all players in a position. It is used when an alien sends an attack command or 

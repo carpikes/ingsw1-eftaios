@@ -3,6 +3,8 @@ package it.polimi.ingsw.game.common;
 import it.polimi.ingsw.game.GameMap;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alain
@@ -20,12 +22,14 @@ public class GameInfo implements Serializable {
     private final boolean mHuman;
     private final GameMap mMap;
     private final int id;
+    private final List<Integer> listOfCards;
 
     public GameInfo(PlayerInfo[] info, int idUsername, boolean isHuman, GameMap map) {
         mUsers = info;
         mHuman = isHuman;
         mMap = map;
         id = idUsername;
+        listOfCards = new ArrayList<>();
     }
 
     /**
@@ -54,5 +58,9 @@ public class GameInfo implements Serializable {
      */
     public int getId() {
         return id;
+    }
+
+    public List<Integer> getListOfCards() {
+        return listOfCards;
     }
 }

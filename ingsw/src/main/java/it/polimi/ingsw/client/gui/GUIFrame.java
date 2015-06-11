@@ -336,9 +336,9 @@ public class GUIFrame extends JFrame {
 
         for( CardButton btn : cardButtons ) {
             if( value ) {
-                btn.setEnabled( btn.getType().isEnabled() );
+                btn.setCanBeUsed( btn.getType().isEnabled() );
             } else {
-                btn.setEnabled( false );
+                btn.setCanBeUsed( false );
             }
         } 
     }
@@ -426,7 +426,7 @@ public class GUIFrame extends JFrame {
      * @param info 
      * 
      */
-    public void updatePlayersInfoDisplay(PlayerInfo info, int idPlayer) {
+    public void updatePlayerInfoDisplay(PlayerInfo info, int idPlayer) {
         gameInfo.getPlayersList()[idPlayer] = info;
         
         this.createTextForLabel( idPlayer );

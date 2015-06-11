@@ -80,7 +80,15 @@ public class DiscardingObjectCardState extends PlayerState {
         int index = (int)cmd.getArgs()[0];
         if( index >= 0 && index <= Config.MAX_NUMBER_OF_OBJ_CARDS ) { // <=, not <, because here we have a card over the limit 
             ObjectCard objectCard = mGamePlayer.removeObjectCard(index);
+            
+            // don't let the user use another object card too!
+            mGamePlayer.setObjectCardUsed(true);
+            
+            // Show everyone the card you discarded and update info
             mGameState.broadcastPacket( new GameCommand(InfoOpcode.INFO_DISCARDED_OBJ_CARD, objectCard.getId(), objectCard.getName()));
+            mGameState.broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, mGamePlayer.getNumberOfCards() ));
+            mGameState.sendPacketToCurrentPlayer( new GameCommand( GameOpcode.CMD_SC_DROP_CARD, index) );
+            
             nextState = new EndingTurnState(mGameState);
         } else {
             throw new IllegalStateOperationException("Wrong index for card. Discarding packet.");

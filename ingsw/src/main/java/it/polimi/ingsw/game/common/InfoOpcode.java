@@ -16,7 +16,7 @@ public enum InfoOpcode implements Opcode {
     INFO_OBJ_CARD_USED,
     INFO_NOISE,
     INFO_SILENCE, 
-    INFO_GOT_A_NEW_OBJ_CARD,
+    INFO_CHANGED_NUMBER_OF_CARDS,
     INFO_DISCARDED_OBJ_CARD,
     INFO_END_GAME,
     INFO_SPOTLIGHT, 

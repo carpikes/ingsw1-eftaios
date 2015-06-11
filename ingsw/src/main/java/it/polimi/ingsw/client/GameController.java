@@ -47,8 +47,6 @@ public class GameController implements OnReceiveListener {
     private Integer mMyTurn = null;
     private String mMyUsername = null;
 
-    private List<Integer> listOfCards = new ArrayList<>();
-
     private int mCurPlayerId = 0;
 
     /** The constructor */
@@ -216,13 +214,25 @@ public class GameController implements OnReceiveListener {
                 break;
             case CMD_SC_OBJECT_CARD_OBTAINED:
                 if(obj != null && obj instanceof Integer) {
+                    List<Integer> listOfCards = mGameInfo.getListOfCards();
                     listOfCards.add( (Integer)obj );
                     mView.notifyObjectCardListChange( listOfCards );
                 }
                 break;
             case CMD_SC_MOVE_INVALID:
-                mView.showError("Invalid mode");
+                mView.showError("Invalid move");
                 break;
+                
+            case CMD_SC_DROP_CARD:
+                if(obj != null && obj instanceof Integer) {
+                    try {
+                        int index = (Integer)obj;
+                        mGameInfo.getListOfCards().remove( index );
+                        mView.notifyObjectCardListChange( mGameInfo.getListOfCards() );
+                    } catch( IndexOutOfBoundsException e ) {
+                        LOG.warning( "Trying to dropping a non-existent card" );
+                    }
+                }
             case CMD_SC_LOSE:
                 mView.showInfo(null, "YOU'VE JUST LOST THE GAME. <3");
                 break;
@@ -256,16 +266,19 @@ public class GameController implements OnReceiveListener {
                     }
                 }
                 break;
-            case INFO_GOT_A_NEW_OBJ_CARD:
+            case INFO_CHANGED_NUMBER_OF_CARDS:
                 PlayerInfo playerInfo = mGameInfo.getPlayersList()[mCurPlayerId]; 
-                
-                // update count of cards for current player
-                playerInfo.setNumberOfCards( playerInfo.getNumberOfCards() + 1 );
 
-                // update info of current status for all players and show a message
-                mView.updatePlayersInfoDisplay( playerInfo, mCurPlayerId );
+                if(cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Integer) {
+                    int count = (int)cmd.getArgs()[0];
+                    // update count of cards for current player
+                    playerInfo.setNumberOfCards( count );
 
-                mView.showInfo(curUser, "New object card drawn!");
+                    // update info of current status for all players and show a message
+                    mView.updatePlayerInfoDisplay( playerInfo, mCurPlayerId );
+
+                    mView.showInfo(curUser, "has " + count + " cards");
+                }
 
                 break;
             case INFO_DISCARDED_OBJ_CARD:

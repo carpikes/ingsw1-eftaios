@@ -24,6 +24,7 @@ public enum GameOpcode implements Opcode{
 
     CMD_SC_OBJECT_CARD_OBTAINED,
     CMD_SC_MOVE_INVALID,
+    CMD_SC_DROP_CARD,
     CMD_SC_LOSE,
     CMD_SC_WIN,
 }

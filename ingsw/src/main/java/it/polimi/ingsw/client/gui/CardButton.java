@@ -35,6 +35,7 @@ public class CardButton extends JButton {
 
     private int myId;
     private boolean canBeDiscarded;
+    private boolean canBeUsed;
 
     public CardButton( final CardButtons type, GameController c, int id) {
         super( );
@@ -42,13 +43,16 @@ public class CardButton extends JButton {
         controller = c;
         this.type = type;
         myId = id;
+        
         canBeDiscarded = false;
+        canBeUsed = false;
+           
         changeTo( type );
 
         this.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
                 if( ((JButton)e.getSource() ).isEnabled() ) {
-                    if( SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
+                    if( canBeUsed && SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
                         controller.sendChosenObjectCard( myId );
                     } else if (canBeDiscarded && SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
                         controller.sendDiscardObjectCard( myId );
@@ -61,13 +65,13 @@ public class CardButton extends JButton {
             public void mouseReleased(MouseEvent e) { }
 
             public void mouseEntered(MouseEvent e) { 
-                if( ((JButton)e.getSource() ).isEnabled() ) {
+                if( canBeUsed || canBeDiscarded ) {
                     setAlpha(0.5f);
                 }
             }
 
             public void mouseExited(MouseEvent e) { 
-                if( ((JButton)e.getSource() ).isEnabled() ) {
+                if( canBeUsed || canBeDiscarded ) {
                     setAlpha(1f);
                 }
             }
@@ -114,6 +118,10 @@ public class CardButton extends JButton {
      */
     public void setCanBeDiscarded(boolean value) {
         canBeDiscarded = value;
+    }
+    
+    public void setCanBeUsed(boolean value) {
+        canBeUsed = value;
     }
 
 }
