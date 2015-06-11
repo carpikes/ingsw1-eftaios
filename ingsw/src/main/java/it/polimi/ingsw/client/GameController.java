@@ -363,7 +363,7 @@ public class GameController implements OnReceiveListener {
                     mView.updateLoginStat((Integer) obj);
                 break;
             case CMD_SC_USERFAIL:
-                msg = "Another player is using your name. Choose another one.";
+                msg = "Invalid name or another player is using your name. Choose another one.";
             case CMD_SC_CHOOSEUSER:
                 do {
                     mMyUsername = mView.askUsername("".equals(msg)?"Choose a username":msg);

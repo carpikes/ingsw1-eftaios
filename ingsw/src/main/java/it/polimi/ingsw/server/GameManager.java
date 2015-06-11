@@ -124,6 +124,9 @@ public class GameManager {
         if(name == null)
             return false;
         
+        if(name.length() > 32)
+            return false;
+        
         for(Client c : mClients) {
             if(name.equalsIgnoreCase(c.getUsername()))
                 return false;
