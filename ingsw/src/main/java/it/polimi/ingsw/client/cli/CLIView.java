@@ -382,5 +382,26 @@ public class CLIView extends View {
         // TODO Guarda la GUI come reference per questo!
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#handleSpotlightResult(java.awt.Point[])
+     */
+    @Override
+    public void handleSpotlightResult(Point chosenPoint, Point[] playersFound) {
+        boolean spottedAtLeastOne = false;
+        
+        IO.write("***** SPOTLIGHT RESULTS (" + mContainer.getMap().pointToString(chosenPoint) + ") *****\n");
+        for(int i = 0; i < playersFound.length; i++) {
+            Point p = playersFound[i];
+            if(p != null) {
+                IO.write(" -> " + mContainer.getPlayersList()[i].getUsername() + " spotted in sector " + mContainer.getMap().pointToString(p));
+                spottedAtLeastOne = true;
+            }
+        }
+        
+        if(!spottedAtLeastOne)
+            IO.write("No players are in those sectors\n");
+        IO.write("\n************************************\n");
+    }
+
 
 }

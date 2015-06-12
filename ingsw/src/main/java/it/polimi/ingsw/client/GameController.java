@@ -352,7 +352,14 @@ public class GameController implements OnReceiveListener {
                 mView.showInfo(curUser, "Extracted dangerous card: Silence.");
                 break;
             case INFO_SPOTLIGHT:
-                mView.showInfo(curUser, "Spotlight. Not implemented yet"); // TODO here
+                if(cmd.getArgs().length == 2 && cmd.getArgs()[0] instanceof Point && cmd.getArgs()[1] instanceof Point[]) {
+                    Point chosenPoint = (Point) cmd.getArgs()[0];
+                    Point[] playersFound = (Point []) cmd.getArgs()[1];
+                    
+                    mView.showInfo(curUser, "Used spotlight.");
+                    mView.handleSpotlightResult(chosenPoint, playersFound);
+                } else
+                    mView.showInfo(curUser, "Used spotlight but I got an invalid packet");
                 break;
             case INFO_START_TURN:
                 if(cmd.getArgs().length == 1 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Integer) {

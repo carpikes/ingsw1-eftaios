@@ -196,7 +196,7 @@ public class GameMap implements Serializable {
                 currentPoint = frontier.poll();
 
                 if( currentPoint != null ) {
-                    ArrayList<Point> neighbors = getNeighbourAccessibleSectors( currentPoint, isHuman );
+                    ArrayList<Point> neighbors = getNeighbourAccessibleSectors( currentPoint, isHuman, false);
 
                     frontier.addAll( neighbors );
                     frontier.add( delimiter );
@@ -226,7 +226,7 @@ public class GameMap implements Serializable {
      * @param currentPosition The starting sector
      * @return A list of all neighbours
      */
-    public ArrayList<Point> getNeighbourAccessibleSectors( Point currentPosition, boolean isHuman ) {
+    public ArrayList<Point> getNeighbourAccessibleSectors( Point currentPosition, boolean isHuman, boolean allSectors) {
         // get x and y for simplicity's sake
         int x = currentPosition.x;
         int y = currentPosition.y;
@@ -248,7 +248,9 @@ public class GameMap implements Serializable {
 
                     if( this.isWithinBounds( p ) ){
                         Sector currentSector = this.getSectorAt(p);
-                        if( currentSector.isCrossable() && !(currentSector.getId() == SectorBuilder.HATCH && !isHuman) )
+                        if(allSectors && currentSector.isValid())
+                            sectors.add(p);
+                        else if( currentSector.isCrossable() && !(currentSector.getId() == SectorBuilder.HATCH && !isHuman) )
                             sectors.add(p);
                     }
                 }

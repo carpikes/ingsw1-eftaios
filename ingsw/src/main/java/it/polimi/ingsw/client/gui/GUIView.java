@@ -291,5 +291,16 @@ public class GUIView extends View {
     public void updatePlayerInfoDisplay( int idPlayer ) {
         mMainFrame.updatePlayerInfoDisplay( idPlayer );
     }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#handleSpotlightResult(java.awt.Point[])
+     */
+    @Override
+    public void handleSpotlightResult(Point chosenPoint, Point[] playersFound) {
+        // TODO Guarda CLI.
+        // Info varie: playersFound.length == numero player
+        // i player non spottati sono null nell'array
+        
+    }
   
 }

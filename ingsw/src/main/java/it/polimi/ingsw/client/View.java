@@ -113,4 +113,9 @@ public abstract class View {
      */
     public abstract void updatePlayerInfoDisplay( int idPlayer );
 
+    /** Handle a spotlight result. (e.g. n players spotted)
+     * @param coords Player coordinates. null = not spotted
+     */
+    public abstract void handleSpotlightResult(Point chosenPoint, Point[] playersFound);
+
 }
