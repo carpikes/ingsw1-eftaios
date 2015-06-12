@@ -27,7 +27,7 @@ public class ConnectionFactory {
         switch(type) {
             case CONNECTION_TCP: return new TCPConnection();
             case CONNECTION_RMI: return new RMIConnection();
+            default:             return null;
         }
-        return null;
     }
 }

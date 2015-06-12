@@ -35,7 +35,7 @@ class LoginCanvasPanel extends JPanel {
     private int mPlayers = 0;
 
     public LoginCanvasPanel() {
-        mBigFont = new Font("Helvetica", Font.PLAIN, 48);
+        mBigFont = new Font("Helvetica", Font.PLAIN, 40);
         mSmallFont = new Font("Helvetica", Font.PLAIN, 24);
 
         new Timer(25, new ActionListener() {

@@ -8,6 +8,7 @@ import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.ViewCommand;
 
 import java.awt.Point;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Set;
 
@@ -122,7 +123,7 @@ public class GUIView extends View {
     @Override
     public void close() {
         if(mMainFrame != null) {
-            mMainFrame.setVisible(false);
+            mMainFrame.dispatchEvent(new WindowEvent(mMainFrame, WindowEvent.WINDOW_CLOSING));
         }
     }
 
@@ -255,7 +256,7 @@ public class GUIView extends View {
      */
     @Override
     public void showEnding(List<Integer> winnerList, List<Integer> loserList) {
-        // TODO Implementme
+        JOptionPane.showMessageDialog(null, "OK");
     }
 
     /* (non-Javadoc)
@@ -273,6 +274,5 @@ public class GUIView extends View {
     public void updatePlayerInfoDisplay( PlayerInfo info, int idPlayer ) {
         mMainFrame.updatePlayerInfoDisplay( info, idPlayer );
     }
-    
-    
+  
 }

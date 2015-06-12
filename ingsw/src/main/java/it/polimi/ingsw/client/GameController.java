@@ -36,7 +36,7 @@ public class GameController implements OnReceiveListener {
     private Connection mConn;
 
     /** List of incoming packets/events */
-    private final LinkedBlockingQueue<GameCommand> mQueue;
+    private final LinkedBlockingQueue<GameCommand> mCommandQueue;
     private final LinkedBlockingQueue<List<ViewCommand>> mViewQueue;
 
     /** True if the client must be shut down */
@@ -53,16 +53,16 @@ public class GameController implements OnReceiveListener {
     public GameController(String[] args) {
 
         mView = determineView(args);
-        mQueue = new LinkedBlockingQueue<>();
+        mCommandQueue = new LinkedBlockingQueue<>();
         mViewQueue = new LinkedBlockingQueue<>();
 
-        createQueueProcessorThread();
+        createViewCommandQueueThread();
     }
 
     /**
      * 
      */
-    private void createQueueProcessorThread() {
+    private void createViewCommandQueueThread() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -70,13 +70,13 @@ public class GameController implements OnReceiveListener {
                     while(isRunning()) {
                         List<ViewCommand> cmd = mViewQueue.poll(100, TimeUnit.MILLISECONDS);
                         if(cmd != null) 
-                            mView.handleCommand(cmd); // TO BE CHANGED TO -> handleCommands()
+                            mView.handleCommand(cmd);
                     }
                 } catch(InterruptedException e) {
                     LOG.log(Level.FINEST, e.toString(), e);
                 }
-                GameController.this.stop();
-                mView.close();
+
+
             }
         }).start();
     }
@@ -125,7 +125,7 @@ public class GameController implements OnReceiveListener {
             return;
 
         if(!askInfo())
-            return;
+            mView.close();
 
         try {
             mConn.connect();
@@ -136,13 +136,13 @@ public class GameController implements OnReceiveListener {
             mView.run();
 
             while(!mStopEvent) {
-                GameCommand cmd = mQueue.poll(1, TimeUnit.SECONDS);
+                GameCommand cmd = mCommandQueue.poll(1, TimeUnit.SECONDS);
                 if(cmd == null)
                     continue;
 
                 processCommand(cmd);
             }
-            mView.close();
+
         } catch (IOException e) {
             mView.showError(e.toString());
             LOG.log(Level.FINER, e.toString(), e);
@@ -150,6 +150,7 @@ public class GameController implements OnReceiveListener {
             LOG.log(Level.FINER, e.toString(), e);
         }
         stop();
+        mView.close();
         return;
     }
 
@@ -164,9 +165,10 @@ public class GameController implements OnReceiveListener {
 
         mConn.setOnReceiveListener(this);
 
-        String host = mView.askHost();
-        if(host == null || host.trim().length() == 0)
-            return false;
+        String host;
+        do {
+            host = mView.askHost();
+        } while( host == null || host.trim().length() == 0);
 
         mConn.setHost(host.trim());
         return true;
@@ -427,8 +429,8 @@ public class GameController implements OnReceiveListener {
     /** This method handles an incoming packet */
     @Override
     public void onReceive(GameCommand obj) {
-        synchronized(mQueue) {
-            mQueue.add(obj);
+        synchronized(mCommandQueue) {
+            mCommandQueue.add(obj);
         }
     }
 

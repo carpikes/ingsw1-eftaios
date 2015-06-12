@@ -1,7 +1,5 @@
 package it.polimi.ingsw.game.config;
 
-import javax.swing.border.EmptyBorder;
-
 /**
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 17, 2015
