@@ -48,6 +48,7 @@ public class GameController implements OnReceiveListener {
     private String mMyUsername = null;
 
     private int mCurPlayerId = 0;
+    private boolean hostDone = false;
 
     /** The constructor */
     public GameController(String[] args) {
@@ -124,17 +125,30 @@ public class GameController implements OnReceiveListener {
         if(mView == null)
             return;
 
-        if(!askInfo())
+        mView.startup();
+        
+        if( !setupConnection() )
             mView.close();
+        
+        do {
+            try {
+                setupHost();
+                
+                while(!mConn.isOnline()) 
+                    Thread.sleep(100);
+                
+                hostDone = true;
+            } catch (IOException e) {
+                mView.showError("Unable to connecto to the specified host");
+                LOG.log(Level.FINER, e.toString(), e);
+            } catch (InterruptedException e) {
+                LOG.log(Level.FINER, e.toString(), e);
+            }    
+        } while( !hostDone  );
+
+        mView.run();
 
         try {
-            mConn.connect();
-
-            while(!mConn.isOnline()) 
-                Thread.sleep(100);
-
-            mView.run();
-
             while(!mStopEvent) {
                 GameCommand cmd = mCommandQueue.poll(1, TimeUnit.SECONDS);
                 if(cmd == null)
@@ -142,21 +156,27 @@ public class GameController implements OnReceiveListener {
 
                 processCommand(cmd);
             }
-
-        } catch (IOException e) {
-            mView.showError(e.toString());
-            LOG.log(Level.FINER, e.toString(), e);
         } catch (InterruptedException e) {
-            LOG.log(Level.FINER, e.toString(), e);
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+
         stop();
         mView.close();
         return;
     }
+    
+    private void setupHost() throws IOException {
+        String host;
+        do {
+            host = mView.askHost();
+        } while( host == null || host.trim().length() == 0);
 
-    private boolean askInfo() {
-        mView.startup();
+        mConn.setHost(host.trim());
+        mConn.connect();
+    }
 
+    private boolean setupConnection() {
         String[] connList = ConnectionFactory.getConnectionList();
         int conn = mView.askConnectionType(connList);
         mConn = ConnectionFactory.getConnection(conn);
@@ -164,13 +184,7 @@ public class GameController implements OnReceiveListener {
             return false;
 
         mConn.setOnReceiveListener(this);
-
-        String host;
-        do {
-            host = mView.askHost();
-        } while( host == null || host.trim().length() == 0);
-
-        mConn.setHost(host.trim());
+        
         return true;
     }
 
