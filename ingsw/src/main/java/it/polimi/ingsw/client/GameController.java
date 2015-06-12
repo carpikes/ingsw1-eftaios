@@ -249,6 +249,7 @@ public class GameController implements OnReceiveListener {
                         LOG.warning( "Trying to dropping a non-existent card" );
                     }
                 }
+                break;
             case CMD_SC_LOSE:
                 mView.showInfo(null, "YOU'VE JUST LOST THE GAME. <3");
                 break;
