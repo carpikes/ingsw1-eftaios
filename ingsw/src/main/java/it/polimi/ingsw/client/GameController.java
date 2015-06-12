@@ -451,7 +451,7 @@ public class GameController implements OnReceiveListener {
     /** This method handles a disconnect event */
     @Override
     public void onDisconnect() {
-        stop();
+        mStopEvent = true;
     }
 
     public boolean isRunning() {
@@ -460,6 +460,7 @@ public class GameController implements OnReceiveListener {
 
     public void stop() {
         mStopEvent = true;
+        mConn.disconnect();
     }
 
     public GameMap getMap() {
