@@ -366,7 +366,7 @@ public class CLIView extends View {
             cards.append(" ");
         }
 
-        if(cards.length() == 0)
+        if(listOfCards.size() == 0)
             cards.append("[ YOU HAVE NO OBJECT CARDS ]");
         else 
             cards.append("]");
