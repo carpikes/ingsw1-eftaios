@@ -33,6 +33,10 @@ class IO {
                 System.out.print("> ");
                 System.out.flush();
                 String m = mReader.readLine();
+                
+                if(m == null)
+                    System.exit(0); // console shut down
+                
                 if(minusAvailable && m.equals("-"))
                     return null;
 
@@ -50,7 +54,10 @@ class IO {
         try {
             System.out.print("> ");
             System.out.flush();
-            return mReader.readLine().trim();
+            String s = mReader.readLine();
+            if(s == null)
+                System.exit(0); // console shut down
+            return s.trim();
         } catch (Exception e) {
             LOG.log(Level.FINEST, e.toString(), e);
         }
