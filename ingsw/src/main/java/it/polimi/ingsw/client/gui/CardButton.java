@@ -3,6 +3,7 @@
  */
 package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
+import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
@@ -85,6 +86,10 @@ public class CardButton extends JButton {
 
             setBorder(BorderFactory.createEmptyBorder());
             setContentAreaFilled(false);
+            
+            if( type != CardButtons.NULL )
+                setToolTipText( ObjectCardBuilder.idToString( type.getId() ) );
+            
             setEnabled( type.isEnabled() );
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Cannot create " + type.toString() + " card button. Please check your assets in img folder.", e);

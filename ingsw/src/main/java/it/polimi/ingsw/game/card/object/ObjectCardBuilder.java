@@ -60,7 +60,7 @@ public class ObjectCardBuilder {
             case SEDATIVES_CARD:              return "Sedatives";
             case SPOTLIGHT_CARD:              return "Spotlight";
             case TELEPORT_CARD:               return "Teleport";
-            default:                           throw new InvalidCardException("Unknown card");
+            default:                          throw new InvalidCardException("Unknown card");
         }
     }
 }

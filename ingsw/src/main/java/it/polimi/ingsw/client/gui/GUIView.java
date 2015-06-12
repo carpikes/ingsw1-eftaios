@@ -256,7 +256,24 @@ public class GUIView extends View {
      */
     @Override
     public void showEnding(List<Integer> winnerList, List<Integer> loserList) {
-        JOptionPane.showMessageDialog(null, "OK");
+        StringBuilder endingMessage = new StringBuilder();
+        PlayerInfo[] players = gameInfo.getPlayersList();
+        
+        endingMessage.append("### WINNERS ###\n");
+        for( int winnerId : winnerList )
+            endingMessage.append("> " + players[winnerId].getUsername() + "\n");
+        
+        endingMessage.append("### LOSERS ###\n");
+        for( int loserId : loserList )
+            endingMessage.append("> " + players[loserId].getUsername() + "\n");
+        
+        String title;
+        if( winnerList.contains( gameInfo.getId() ) )
+            title = "YOU WIN!";
+        else
+            title = "YOU LOSE!";
+        
+        JOptionPane.showMessageDialog(null, endingMessage.toString(), title, JOptionPane.PLAIN_MESSAGE );
     }
 
     /* (non-Javadoc)
