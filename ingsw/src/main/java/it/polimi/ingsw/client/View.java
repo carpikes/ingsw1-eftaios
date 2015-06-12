@@ -111,6 +111,6 @@ public abstract class View {
     /**
      * 
      */
-    public abstract void updatePlayerInfoDisplay( PlayerInfo info, int idPlayer );
+    public abstract void updatePlayerInfoDisplay( int idPlayer );
 
 }

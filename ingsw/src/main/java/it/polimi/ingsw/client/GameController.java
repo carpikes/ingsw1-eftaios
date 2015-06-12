@@ -291,7 +291,7 @@ public class GameController implements OnReceiveListener {
                     playerInfo.setNumberOfCards( count );
 
                     // update info of current status for all players and show a message
-                    mView.updatePlayerInfoDisplay( playerInfo, mCurPlayerId );
+                    mView.updatePlayerInfoDisplay( mCurPlayerId );
 
                     mView.showInfo(curUser, "has " + count + " cards");
                 }

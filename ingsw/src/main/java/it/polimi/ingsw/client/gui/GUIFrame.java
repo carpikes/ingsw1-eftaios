@@ -426,9 +426,7 @@ public class GUIFrame extends JFrame {
      * @param info 
      * 
      */
-    public void updatePlayerInfoDisplay(PlayerInfo info, int idPlayer) {
-        gameInfo.getPlayersList()[idPlayer] = info;
-        
+    public void updatePlayerInfoDisplay(int idPlayer) {        
         this.createTextForLabel( idPlayer );
     }
 }

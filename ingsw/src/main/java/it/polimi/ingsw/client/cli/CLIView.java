@@ -378,7 +378,7 @@ public class CLIView extends View {
      * @see it.polimi.ingsw.client.View#updatePlayersInfoDisplay(it.polimi.ingsw.game.common.PlayerInfo, int)
      */
     @Override
-    public void updatePlayerInfoDisplay(PlayerInfo info, int idPlayer) {
+    public void updatePlayerInfoDisplay( int idPlayer ) {
         // TODO Guarda la GUI come reference per questo!
     }
 

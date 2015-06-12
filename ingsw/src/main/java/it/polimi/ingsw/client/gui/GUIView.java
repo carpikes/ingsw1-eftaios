@@ -288,8 +288,8 @@ public class GUIView extends View {
      * @see it.polimi.ingsw.client.View#updatePlayersInfoDisplay()
      */
     @Override
-    public void updatePlayerInfoDisplay( PlayerInfo info, int idPlayer ) {
-        mMainFrame.updatePlayerInfoDisplay( info, idPlayer );
+    public void updatePlayerInfoDisplay( int idPlayer ) {
+        mMainFrame.updatePlayerInfoDisplay( idPlayer );
     }
   
 }
