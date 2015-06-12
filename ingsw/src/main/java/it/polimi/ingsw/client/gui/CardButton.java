@@ -37,7 +37,7 @@ public class CardButton extends JButton {
     private boolean canBeDiscarded;
     private boolean canBeUsed;
 
-    public CardButton( final CardButtons type, GameController c, int id) {
+    public CardButton( final CardButtons type, GameController c, int id ) {
         super( );
 
         controller = c;

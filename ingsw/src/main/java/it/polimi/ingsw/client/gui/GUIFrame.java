@@ -245,7 +245,7 @@ public class GUIFrame extends JFrame {
         cardPanel.setPreferredSize(mDimensionCardPanel);
 
         for( int i = 0; i < numberOfCardButtons; ++i ) {
-            cardButtons[i] = new CardButton( CardButtons.NULL, mController, i);
+            cardButtons[i] = new CardButton( CardButtons.NULL, mController, i );
             cardPanel.add( cardButtons[i] );
         }
 

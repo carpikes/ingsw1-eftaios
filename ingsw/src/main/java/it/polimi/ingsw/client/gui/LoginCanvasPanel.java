@@ -1,15 +1,22 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.game.config.Config;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -19,6 +26,8 @@ import javax.swing.Timer;
  *
  */
 class LoginCanvasPanel extends JPanel {
+    private static final Logger LOG = Logger.getLogger( LoginCanvasPanel.class.getName() );
+    
     private static final long serialVersionUID = 1L;
     private Font mBigFont;
     private Font mSmallFont;
@@ -46,28 +55,36 @@ class LoginCanvasPanel extends JPanel {
         super.paintComponent(g);     // paint parent's background
 
         Graphics2D g2d = (Graphics2D)g;
-        setBackground(Color.WHITE);  // set background color for this JPanel
+        
+        setBackground(Color.BLACK);  // set background color for this JPanel
+        try {
+            Image img = ImageIO.read(new File("img/loginbg.jpg"));
+            g.drawImage(img, 0, 0, null);
+        } catch( IOException e ) {
+            LOG.warning("Cannot load login image!");
+        }
+        setForeground(Color.WHITE);
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        int nextY = 0;
-        nextY = drawCentered(g2d, mBigFont, "Waiting for other players",nextY);
-        nextY = drawCentered(g2d, mSmallFont, "Players online: " + mPlayers, nextY + 20);
+        int nextY = Config.HEIGHT*2/3;
+        nextY = drawRightAligned(g2d, mBigFont, "Waiting for other players",nextY);
+        nextY = drawRightAligned(g2d, mSmallFont, "Players online: " + mPlayers, nextY + 20);
 
         int dt = (int) (mTime - (int)(System.currentTimeMillis()/1000));
         if(mTime >= 0 && dt >= 0)
-            nextY = drawCentered(g2d, mSmallFont, "Remaining time: " + dt + "s",nextY);
+            nextY = drawRightAligned(g2d, mSmallFont, "Remaining time: " + dt + "s",nextY);
         else
-            nextY = drawCentered(g2d, mSmallFont, "Starting...",nextY);
+            nextY = drawRightAligned(g2d, mSmallFont, "Starting...",nextY);
     }
 
-    private int drawCentered(Graphics2D g, Font font, String str, int y) {
+    private int drawRightAligned(Graphics2D g, Font font, String str, int y) {
         FontRenderContext frc = g.getFontRenderContext();
         Rectangle2D win = g.getClipBounds();
         Rectangle2D rect = font.getStringBounds(str, frc);
 
         g.setFont(font);
-        g.drawString(str, (int)(win.getWidth() - rect.getWidth())/2 , (int) rect.getHeight() + y);
+        g.drawString(str, (int)(win.getWidth() - rect.getWidth()) - 20, (int) rect.getHeight() + y);
         return (int) (rect.getHeight() + y);
     }
 
