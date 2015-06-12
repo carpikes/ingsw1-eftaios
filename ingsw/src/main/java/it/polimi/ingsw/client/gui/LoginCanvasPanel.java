@@ -35,7 +35,7 @@ class LoginCanvasPanel extends JPanel {
     private int mPlayers = 0;
 
     public LoginCanvasPanel() {
-        mBigFont = new Font("Helvetica", Font.PLAIN, 40);
+        mBigFont = new Font("Helvetica", Font.PLAIN, 36);
         mSmallFont = new Font("Helvetica", Font.PLAIN, 24);
 
         new Timer(25, new ActionListener() {
@@ -58,10 +58,13 @@ class LoginCanvasPanel extends JPanel {
         
         setBackground(Color.BLACK);  // set background color for this JPanel
         try {
-            Image img = ImageIO.read(new File("img/loginbg.jpg"));
-            g.drawImage(img, 0, 0, null);
+            Image bg = ImageIO.read(new File("img/loginbg.jpg"));
+            g.drawImage(bg, 0, 0, null);
+            
+            Image logo = ImageIO.read(new File("img/logo.png"));
+            g.drawImage(logo, (int)(g2d.getClipBounds().getWidth() - logo.getWidth(null) - 60), 60, null);
         } catch( IOException e ) {
-            LOG.warning("Cannot load login image!");
+            LOG.warning("Cannot load login images!");
         }
         setForeground(Color.WHITE);
 
@@ -84,7 +87,7 @@ class LoginCanvasPanel extends JPanel {
         Rectangle2D rect = font.getStringBounds(str, frc);
 
         g.setFont(font);
-        g.drawString(str, (int)(win.getWidth() - rect.getWidth()) - 20, (int) rect.getHeight() + y);
+        g.drawString(str, (int)(win.getWidth() - rect.getWidth()) - 60, (int) rect.getHeight() + y);
         return (int) (rect.getHeight() + y);
     }
 
