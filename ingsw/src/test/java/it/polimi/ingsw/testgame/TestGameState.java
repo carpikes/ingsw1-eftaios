@@ -5,15 +5,22 @@ package it.polimi.ingsw.testgame;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.card.dangerous.DangerousCard;
+import it.polimi.ingsw.game.card.dangerous.NoiseInAnySectorCard;
+import it.polimi.ingsw.game.card.object.AttackCard;
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.GameOpcode;
 import it.polimi.ingsw.game.common.InfoOpcode;
 import it.polimi.ingsw.game.common.Opcode;
 import it.polimi.ingsw.game.sector.SectorBuilder;
+import it.polimi.ingsw.game.state.DiscardingObjectCardState;
+import it.polimi.ingsw.game.state.EndingTurnState;
 import it.polimi.ingsw.game.state.MoveDoneState;
 import it.polimi.ingsw.game.state.MovingState;
+import it.polimi.ingsw.game.state.NoiseInAnySectorState;
 import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.StartTurnState;
@@ -177,6 +184,57 @@ public class TestGameState {
     }
 
     @Test
+    public void testDiscardObjectCardState() {
+        GameState game = this.playToMoveDoneState(true, true, true);
+        PlayerState p = new DiscardingObjectCardState(game);
+        assertTrue(p.update() instanceof EndingTurnState);
+        
+        for(int i = 0; i < 4; i++)
+            game.getCurrentPlayer().addObjectCard(new AttackCard(game, "Attack"));
+        p = new DiscardingObjectCardState(game);
+        p.update();
+        
+        game.enqueuePacket(new GameCommand(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD, 0));
+        assertTrue(p.update() instanceof EndingTurnState);
+        
+        game.getCurrentPlayer().addObjectCard(new AttackCard(game, "Attack"));
+        p = new DiscardingObjectCardState(game);
+        p.update();
+        
+        game.enqueuePacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD, 0));
+        assertTrue(p.update() != null);
+    }
+    
+    @Test
+    public void testSectorState() {
+        GameState game = this.playToMoveDoneState(true, true, true);
+        PlayerState p = new NoiseInAnySectorState(game);
+        p.update();
+        game.enqueuePacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, hatchPoints.iterator().next()));
+        assertTrue(p.update() != null);
+        assertTrue(p.stillInGame());
+    }
+    
+    @Test(expected=IllegalStateOperationException.class)
+    public void testSectorStateFailure() {
+        GameState game = this.playToMoveDoneState(true, true, true);
+        PlayerState p = new NoiseInAnySectorState(game);
+        p.update();
+        game.enqueuePacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, new Point(900,900)));
+        p.update();
+    }
+    
+    @Test(expected=IllegalStateOperationException.class)
+    public void testSectorStateFailure2() {
+        GameState game = this.playToMoveDoneState(true, true, true);
+        DangerousCard c = new NoiseInAnySectorCard(game);
+        PlayerState p = c.doAction();
+        p.update();
+        game.enqueuePacket(new GameCommand(GameOpcode.CMD_CS_ATTACK));
+        p.update();
+    }
+
+    @Test
     public void testHumanAttack() {
         // play as an alien till reaching move done state
         GameState game = this.playToMoveDoneState(true, true, true);
@@ -196,25 +254,25 @@ public class TestGameState {
         game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_DRAW_DANGEROUS_CARD) );
         clearMessageQueue(game);
         game.update();
-
-
     }
-    /*
-       @Test
-       public void testInvalidActionInMovingState() {
-       GameState game = new GameState("YES", DEBUG_ID, NUMBER_OF_PLAYERS, START_ID, true);
-
-// move to moving state
-game.update();
-
-// drop previous messages
-clearMessageQueue(game);
-
-// send an invalid position
-game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD) );
-game.update();
-       }
-       */
+    
+    @Test(expected=IllegalStateOperationException.class)
+    public void testInvalidActionInMovingState() {
+        GameState game = playToMoveDoneState(false, false, true);
+    
+        // move to moving state
+        game.update();
+        
+        // drop previous messages
+        clearMessageQueue(game);
+        
+        assertTrue(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD.toString().length() > 0);
+        // send an invalid position
+        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD) );
+        PlayerState p = game.getCurrentPlayer().getCurrentState();
+        p.update();
+    }
+       
 
     /*----- END OF TESTS ----- */
 

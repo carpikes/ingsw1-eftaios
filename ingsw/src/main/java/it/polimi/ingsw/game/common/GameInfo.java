@@ -22,7 +22,7 @@ public class GameInfo implements Serializable {
     private final boolean mHuman;
     private final GameMap mMap;
     private final int id;
-    private final List<Integer> listOfCards;
+    private final ArrayList<Integer> listOfCards;
 
     public GameInfo(PlayerInfo[] info, int idUsername, boolean isHuman, GameMap map) {
         mUsers = info;

@@ -14,6 +14,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
@@ -65,6 +66,7 @@ class LoginCanvasPanel extends JPanel {
             g.drawImage(logo, (int)(g2d.getClipBounds().getWidth() - logo.getWidth(null) - 60), 60, null);
         } catch( IOException e ) {
             LOG.warning("Cannot load login images!");
+            LOG.log(Level.FINEST, e.toString(), e);
         }
         setForeground(Color.WHITE);
 

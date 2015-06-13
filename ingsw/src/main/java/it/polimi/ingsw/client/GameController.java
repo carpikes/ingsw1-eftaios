@@ -157,8 +157,7 @@ public class GameController implements OnReceiveListener {
                 processCommand(cmd);
             }
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.log(Level.FINEST, e.toString(), e);
         }
 
         stop();
@@ -247,6 +246,7 @@ public class GameController implements OnReceiveListener {
                         mView.notifyObjectCardListChange( mGameInfo.getListOfCards() );
                     } catch( IndexOutOfBoundsException e ) {
                         LOG.warning( "Trying to dropping a non-existent card" );
+                        LOG.log(Level.FINEST, e.toString(), e);
                     }
                 }
                 break;
