@@ -24,7 +24,9 @@ public class Sector implements Serializable{
      * Get type of sector
      * @return ID sector
      */
-    public int getId() { return id; }
+    public int getId() { 
+        return id; 
+    }
 
     /**
      * Return true if this is NOT a NOT_VALID sector (off map)

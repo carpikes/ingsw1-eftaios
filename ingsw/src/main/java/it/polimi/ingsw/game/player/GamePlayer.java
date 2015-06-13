@@ -114,7 +114,7 @@ public class GamePlayer {
      * @return True if it is valid
      */
     public boolean isValidDistance(int distance) {
-        return (distance > 0 && distance <= this.getMaxMoves());
+        return distance > 0 && distance <= this.getMaxMoves();
     }
 
     /**

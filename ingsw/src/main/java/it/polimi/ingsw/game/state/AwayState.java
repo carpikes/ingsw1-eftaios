@@ -43,7 +43,7 @@ public class AwayState extends PlayerState {
      */
     @Override
     protected void buildAndSendAvailableCommands() {
-
+        // no commands
     }
 
 }

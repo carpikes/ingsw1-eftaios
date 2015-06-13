@@ -3,7 +3,12 @@
  */
 package it.polimi.ingsw.testgame.player;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.card.object.DefenseCard;
+import it.polimi.ingsw.game.card.object.TeleportCard;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.player.Alien;
 import it.polimi.ingsw.game.player.GamePlayer;
@@ -43,6 +48,8 @@ public class TestGamePlayer {
         GamePlayer human = new GamePlayer( 0, new Human(), new Point(0,0) );
         GamePlayer alien = new GamePlayer( 1, new Alien(), new Point(0,0) );
 
+        assertTrue( human.getRole() instanceof Human );
+        assertTrue( alien.getRole() instanceof Alien );
         assertTrue( human.isHuman() && alien.isAlien() );
         assertFalse( human.isAlien() || alien.isHuman() );
     }
@@ -88,5 +95,32 @@ public class TestGamePlayer {
 
         assertTrue( alien.isFull() );
         assertTrue( alien.getMaxMoves() == Config.MAX_ALIEN_FULL_MOVES );
+    }
+    
+    @Test
+    public void testCards() {
+        GameState game = new GameState("YES", 1, 2, 0, true);
+        GamePlayer human = new GamePlayer( 0, new Human(), new Point(0,0) );
+        
+        human.setObjectCardUsed(true);
+        assertTrue(human.isObjectCardUsed());
+        
+        human.setShouldDrawDangerousCard(false);
+        assertFalse(human.shouldDrawDangerousCard());
+        
+        assertEquals(human.getStateBeforeSpotlightCard(), null);
+        
+        human.addObjectCard(new DefenseCard(game, "Defense"));
+        human.resetValues();
+        
+        assertEquals(human.getNumberOfCards(), 1);
+        assertEquals(human.getNumberOfUsableCards(), 0);
+        
+        human.dropDefense();
+        assertEquals(human.getNumberOfCards(), 0);
+        
+        human.addObjectCard(new TeleportCard(game, "Teleport"));
+        human.useObjectCard(0);
+        assertEquals(human.getNumberOfCards(), 0);
     }
 }

@@ -5,7 +5,6 @@ import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.sector.Sector;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;

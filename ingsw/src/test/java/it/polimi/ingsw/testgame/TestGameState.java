@@ -7,8 +7,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.GameOpcode;
 import it.polimi.ingsw.game.common.GameInfo;
+import it.polimi.ingsw.game.common.GameOpcode;
 import it.polimi.ingsw.game.common.InfoOpcode;
 import it.polimi.ingsw.game.common.Opcode;
 import it.polimi.ingsw.game.sector.SectorBuilder;
@@ -17,6 +17,10 @@ import it.polimi.ingsw.game.state.MovingState;
 import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.StartTurnState;
+import it.polimi.ingsw.server.Client;
+import it.polimi.ingsw.server.ClientConn;
+import it.polimi.ingsw.server.GameManager;
+import it.polimi.ingsw.testserver.ServerToClientMock;
 
 import java.awt.Point;
 import java.util.HashSet;
@@ -52,7 +56,21 @@ public class TestGameState {
 
         assertTrue( game.getCurrentPlayer().getCurrentState() instanceof MovingState ); 
     }
-
+    
+    @Test
+    public void testRealConstructor() {
+        GameManager gm = new GameManager();
+        ClientConn c1 = new ServerToClientMock();
+        ClientConn c2 = new ServerToClientMock();
+        c1.run();
+        c2.run();
+        gm.addPlayer(new Client(c1, gm));
+        gm.addPlayer(new Client(c2, gm));
+        
+        GameState game = new GameState(gm, 1);
+        assertFalse(game.isDebugModeEnabled());
+    }
+    
     /**
      * Check if server acknowledges a wrong position
      */

@@ -16,37 +16,37 @@ import java.util.logging.Logger;
  */
 public class StartTurnState extends PlayerState {
     private static final Logger LOG = Logger.getLogger(StartTurnState.class.getName());
-        public StartTurnState(GameState state) {
-            super(state);
-                LOG.log(Level.FINE, "Constructor");
-                
-                mGamePlayer.resetValues();
-                
-                // tell everybody I'm starting playing!
-                state.broadcastPacket( new GameCommand(InfoOpcode.INFO_START_TURN, state.getTurnId()) );
-        }
-    
-        /* (non-Javadoc)
-         * @see it.polimi.ingsw.game.state.State#update()
-         */
-        @Override
-        public PlayerState update() {       
-            return new MovingState(mGameState);
-        }
-    
-        /* (non-Javadoc)
-         * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
-         */
-        @Override
-        public boolean stillInGame() {
-            return true;
-        }
-    
-        /* (non-Javadoc)
-         * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
-         */
-        @Override
-        protected void buildAndSendAvailableCommands() {
-            
-        }
+    public StartTurnState(GameState state) {
+        super(state);
+        LOG.log(Level.FINE, "Constructor");
+        
+        mGamePlayer.resetValues();
+        
+        // tell everybody I'm starting playing!
+        state.broadcastPacket( new GameCommand(InfoOpcode.INFO_START_TURN, state.getTurnId()) );
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.State#update()
+     */
+    @Override
+    public PlayerState update() {       
+        return new MovingState(mGameState);
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
+     */
+    @Override
+    public boolean stillInGame() {
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
+     */
+    @Override
+    protected void buildAndSendAvailableCommands() {
+        // no commands
+    }
 }

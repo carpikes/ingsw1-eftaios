@@ -41,7 +41,7 @@ public class NotMyTurnState extends PlayerState {
      */
     @Override
     protected void buildAndSendAvailableCommands() {
-
+        // no commands
     }
 
 }

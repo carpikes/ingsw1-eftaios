@@ -46,7 +46,7 @@ public class WinnerState extends PlayerState {
      */
     @Override
     protected void buildAndSendAvailableCommands() {
-
+        // no commands
     }
 
 }
