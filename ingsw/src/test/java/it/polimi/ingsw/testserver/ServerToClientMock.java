@@ -7,46 +7,54 @@ import it.polimi.ingsw.server.ClientConn;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/**
+/** ClientConn mock
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 18, 2015
  */
-
 public class ServerToClientMock extends ClientConn {
-
+    /** Incoming queue */
     Queue<GameCommand> fakeIncomingPackets;
 
+    /** Constructor */
     public ServerToClientMock() {
         fakeIncomingPackets = new LinkedList<>();
     }
 
+    /** Run this (fake) connection */
     @Override
     public void run() {
         mIsConnected = true;
         return;
     }
 
+    /** Send a command to the (fake) client 
+     *
+     * @param cmd The command 
+     */
     @Override
-
-    public void sendPacket(GameCommand pkt) {
-        fakeIncomingPackets.add( pkt );
+    public void sendPacket(GameCommand cmd) {
+        fakeIncomingPackets.add( cmd );
     }
 
+    /** Disconnect */
     @Override
     public void disconnect() {
         mIsConnected = false;
         return;
     }
 
+    /** Emulate a client disconnect */
     public void emulateDisconnect() {
         if(mClient != null)
             mClient.handleDisconnect();
     }
 
+    /** Emulate a packet read */
     public void emulateReadPacket(GameCommand pkt) {
         mClient.handlePacket(pkt);
     }
 
+    /** Get the client */
     public Client exposeClient() {
         return mClient;
     }

@@ -12,12 +12,13 @@ import it.polimi.ingsw.game.common.ViewOpcode;
 
 import org.junit.Test;
 
-/**
+/** Some misc tests
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
- *
+ * @since Jun 13, 2015
  */
 public class TestMiscFeatures {
 
+    /** Test if PlayerInfo is working as expected */
     @Test
     public void testPlayerInfo() {
         PlayerInfo p = new PlayerInfo("test");
@@ -26,6 +27,7 @@ public class TestMiscFeatures {
         assertEquals(p.getNumberOfCards(), 5);
     }
     
+    /** Test if ViewOpcode and ViewCommand are working as expected */
     @Test
     public void testViewOpcode() {
         ViewOpcode v = ViewOpcode.CMD_ATTACK;
@@ -34,6 +36,7 @@ public class TestMiscFeatures {
         assertEquals(c.getArgs().length, 0);
     }
     
+    /** Test if GameInfo is working as expected */
     @Test
     public void testGameInfo() throws IOException {
         GameMap map = GameMap.createFromId(1);

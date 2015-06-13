@@ -37,19 +37,29 @@ import java.util.Set;
 
 import org.junit.Test;
 
-/**
+/** GameState tests
  * @author Michele
  * @since 8 Jun 2015
  */
 public class TestGameState {
 
+    /** Map id */
     public static final int MAP_ID = 3;
+    
+    /** Number of players */
     public static final int NUMBER_OF_PLAYERS = 2;
+    
+    /** First player id */
     public static final int START_ID = 0;
 
-    Set<Point> dangerousPoints = new HashSet<>();
-    Set<Point> notDangerousPoints = new HashSet<>();
-    Set<Point> hatchPoints = new HashSet<>();
+    /** Dangerous Points */
+    private Set<Point> dangerousPoints = new HashSet<>();
+    
+    /** Not dangerous points */
+    private Set<Point> notDangerousPoints = new HashSet<>();
+    
+    /** Hatch */
+    private Set<Point> hatchPoints = new HashSet<>();
 
     /**
      * Checks if a game moves to "moving state" after first update for current player
@@ -64,6 +74,9 @@ public class TestGameState {
         assertTrue( game.getCurrentPlayer().getCurrentState() instanceof MovingState ); 
     }
     
+    /** 
+     * Check if the real constructor(not the debug one) is working as expected 
+     */
     @Test
     public void testRealConstructor() {
         GameManager gm = new GameManager();
@@ -160,7 +173,7 @@ public class TestGameState {
         assertTrue( game.debugGameEnded() || (state instanceof StartTurnState && game.getCurrentPlayer().getId() != id));
     }
 
-    /*
+    /**
      * Test if an alien CANNOT go to an hatch
      */
     @Test
@@ -171,6 +184,9 @@ public class TestGameState {
         assertTrue( hatchPoints.isEmpty() );
     }
 
+    /**
+     * Test if an alien can attack
+     */
     @Test
     public void testAlienAttack() {
         // play as an alien till reaching move done state
@@ -183,6 +199,9 @@ public class TestGameState {
         assertTrue( findGameCommandInQueue(game, InfoOpcode.INFO_PLAYER_ATTACKED) );
     }
 
+    /**
+     * Test the DiscardObjectCardState
+     */
     @Test
     public void testDiscardObjectCardState() {
         GameState game = this.playToMoveDoneState(true, true, true);
@@ -205,6 +224,9 @@ public class TestGameState {
         assertTrue(p.update() != null);
     }
     
+    /**
+     * Test the SectorState
+     */
     @Test
     public void testSectorState() {
         GameState game = this.playToMoveDoneState(true, true, true);
@@ -215,6 +237,9 @@ public class TestGameState {
         assertTrue(p.stillInGame());
     }
     
+    /**
+     * Test the exception thrown while choosing an impossible map position
+     */
     @Test(expected=IllegalStateOperationException.class)
     public void testSectorStateFailure() {
         GameState game = this.playToMoveDoneState(true, true, true);
@@ -224,6 +249,9 @@ public class TestGameState {
         p.update();
     }
     
+    /**
+     * Test the exception thrown if the user tries a wrong command
+     */
     @Test(expected=IllegalStateOperationException.class)
     public void testSectorStateFailure2() {
         GameState game = this.playToMoveDoneState(true, true, true);
@@ -234,6 +262,9 @@ public class TestGameState {
         p.update();
     }
 
+    /**
+     * Test a human attack
+     */
     @Test
     public void testHumanAttack() {
         // play as an alien till reaching move done state
@@ -247,6 +278,9 @@ public class TestGameState {
         assertFalse( findGameCommandInQueue(game, InfoOpcode.INFO_PLAYER_ATTACKED) );
     }
 
+    /**
+     * Try to draw a dangerous card
+     */
     @Test
     public void testDrawDangerousCard() {
         GameState game = playToMoveDoneState(false, false, true);
@@ -256,6 +290,9 @@ public class TestGameState {
         game.update();
     }
     
+    /**
+     * Test and invalid action in MovingState
+     */
     @Test(expected=IllegalStateOperationException.class)
     public void testInvalidActionInMovingState() {
         GameState game = playToMoveDoneState(false, false, true);

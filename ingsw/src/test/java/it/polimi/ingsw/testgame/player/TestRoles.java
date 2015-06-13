@@ -16,12 +16,15 @@ import java.util.List;
 
 import org.junit.Test;
 
-/**
+/** Test game roles
  * @author Michele
  * @since 2 Jun 2015
  */
 public class TestRoles {
 
+    /**
+     * Check if the role factory is working as expected
+     */
     @Test
     public void testRoleFactory() {
         // test for odd and even numbers
@@ -29,11 +32,17 @@ public class TestRoles {
         testRoleFactoryHelper( 6 );
     }
 
+    /**
+     * Check what happens if there are too few players
+     */
     @Test(expected=TooFewPlayersException.class)
     public void tooFewPlayers() {
         RoleBuilder.generateRoles(0, true);
     }
     
+    /**
+     * Test the Role Generator
+     */
     @Test
     public void testGenerator() {
         for(int i = 2; i < 8; i++) {
@@ -54,6 +63,10 @@ public class TestRoles {
         
     }
 
+    /**
+     * Helper of TestRoleFactory
+     * @param numberOfPlayers Number of players
+     */
     private void testRoleFactoryHelper( int numberOfPlayers ) {
         int humans = 0; 
         int aliens = 0;
@@ -72,16 +85,17 @@ public class TestRoles {
         assertEquals( aliens, numberOfAliens(numberOfPlayers) );
     }
 
-    /**
-     * @param numberOfPlayers
-     * @return
+    /** Get the number of aliens given a number of players
+     * @param numberOfPlayers Number of players in game
+     * @return Number of aliens
      */
     private int numberOfAliens(int numberOfPlayers) {
         return numberOfPlayers - numberOfHumans( numberOfPlayers );
     }
 
-    /**
-     * @return
+    /** Get the number of humans given a number of players
+     * @param numberOfPlayers Number of players in game
+     * @return Number of humans
      */
     private int numberOfHumans( int numberOfPlayers ) {
         return numberOfPlayers / 2;

@@ -18,12 +18,15 @@ import java.awt.Point;
 
 import org.junit.Test;
 
-/**
+/** Test GamePlayer
  * @author Michele
  * @since 2 Jun 2015
  */
 public class TestGamePlayer {
 
+    /**
+     * Assert that aliens can't have defense card active
+     */
     @Test
     public void testPreventAlienDefense() {
         GamePlayer alien = new GamePlayer( 0, new Alien(), new Point(0,0) );
@@ -32,6 +35,9 @@ public class TestGamePlayer {
         assertFalse( alien.isDefenseEnabled() );
     }
 
+    /**
+     * Check human defense
+     */
     @Test
     public void testDropDefense() {
         GamePlayer human = new GamePlayer( 0,new Human(), new Point(0,0) );
@@ -43,6 +49,9 @@ public class TestGamePlayer {
         assertFalse( human.isDefenseEnabled() );
     }
 
+    /**
+     * Assert that role checks are working
+     */
     @Test
     public void testIsCorrectRole() {
         GamePlayer human = new GamePlayer( 0, new Human(), new Point(0,0) );
@@ -54,6 +63,9 @@ public class TestGamePlayer {
         assertFalse( human.isAlien() || alien.isHuman() );
     }
 
+    /**
+     * Test adrenaline on humans
+     */
     @Test
     public void testAdrenalineOnHuman() {
         GamePlayer human = new GamePlayer( 0, new Human(), new Point(0,0) );
@@ -62,6 +74,9 @@ public class TestGamePlayer {
         assertTrue( human.getAdrenaline() );
     }
 
+    /** 
+     * Test adrenaline on aliens
+     */
     @Test
     public void testAdrenalineOnAlien() {
         GamePlayer alien = new GamePlayer( 0, new Alien(), new Point(0,0) );
@@ -70,6 +85,9 @@ public class TestGamePlayer {
         assertFalse( alien.getAdrenaline() );
     }
 
+    /** 
+     * Test human reachable distance
+     */
     @Test
     public void testHumanDistance() {
         GamePlayer human = new GamePlayer( 0, new Human(), new Point(0,0) );
@@ -77,6 +95,9 @@ public class TestGamePlayer {
         assertFalse( human.isValidDistance( 2 ) || human.isValidDistance( -1 ) );
     }
 
+    /**
+     * Test human reachable distance with adrenaline
+     */
     @Test
     public void testAdrenalineHumanDistance() {
         GamePlayer human = new GamePlayer( 0, new Human(), new Point(0,0) );
@@ -88,6 +109,9 @@ public class TestGamePlayer {
         assertFalse( human.isValidDistance( 2 ) );
     }
 
+    /**
+     * Test what happens when alien is full
+     */
     @Test
     public void testAlienFull() {
         GamePlayer alien = new GamePlayer( 0, new Alien(), new Point(0,0) );
@@ -97,6 +121,9 @@ public class TestGamePlayer {
         assertTrue( alien.getMaxMoves() == Config.MAX_ALIEN_FULL_MOVES );
     }
     
+    /**
+     * Test cards
+     */
     @Test
     public void testCards() {
         GameState game = new GameState("YES", 1, 2, 0, true);

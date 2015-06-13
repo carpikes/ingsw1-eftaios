@@ -7,12 +7,13 @@ import it.polimi.ingsw.game.card.dangerous.DangerousCardBuilder;
 
 import org.junit.Test;
 
-/**
+/** Test Dangerous Cards
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
- *
+ * @since Jun 13, 2015
  */
 public class TestDangerousCards {
 
+    /** Check that there are no errors while generating cards */
     @Test
     public void TestCards() {
         GameState game = new GameState("YES", 0,2,0, true);

@@ -14,6 +14,7 @@ import org.junit.Test;
  */
 public class TestObjectCards {
 
+    /** For each possible object card, check that all things (name, id, ...) are working */
     @Test
     public void testCardNames() {
         GameState game = new GameState("YES", 1, 4, 0, true);

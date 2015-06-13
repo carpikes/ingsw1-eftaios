@@ -23,7 +23,7 @@ import org.junit.Test;
  */
 
 public class TestServer {
-    /**
+    /** Startup the server
      * @throws java.lang.Exception Throws exception if something is wrong
      */
     @BeforeClass
@@ -31,8 +31,9 @@ public class TestServer {
         new Thread(new Runnable() { public void run() { Server.getInstance().runServer(true); } }).start();
     }
 
+    /** Test the login */
     @Test
-    public void testGame() {
+    public void testLogin() {
 
         ServerToClientMock[] conns = new ServerToClientMock[Config.GAME_MAX_PLAYERS];
 
@@ -56,6 +57,7 @@ public class TestServer {
 
     }
 
+    /** Load stress test */
     @Ignore
     public void testLoad() {
         TCPConnection[] conns = new TCPConnection[Config.SERVER_MAX_CLIENTS];
@@ -103,6 +105,7 @@ public class TestServer {
         assertEquals(Server.getInstance().getConnectedClients(), 0);
     }
 
+    /** Test some commands */
     @Test
     public void testClient() {
         ServerToClientMock conn = new ServerToClientMock();
@@ -141,6 +144,7 @@ public class TestServer {
         assertEquals(Server.getInstance().getConnectedClients(), clientsBefore);
     }
 
+    /** Test tcp connection */
     @Ignore
     @Test
     public void testTCP() {
@@ -157,12 +161,11 @@ public class TestServer {
         assertEquals(conn.isOnline(), false);
     }
 
-    /**
+    /** Shut down
      * @throws java.lang.Exception Throws exception if something is wrong
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        //System.out.println("------------------Tearing down------------------");
         Server.getInstance().tearDown();
     }
 }

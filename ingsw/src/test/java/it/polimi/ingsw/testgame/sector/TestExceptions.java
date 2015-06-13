@@ -11,12 +11,13 @@ import it.polimi.ingsw.exception.TooFewPlayersException;
 
 import org.junit.Test;
 
-/**
+/** Test exceptions
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
- *
+ * @since Jun 13, 2015
  */
 public class TestExceptions {
 
+    /** Check if all exceptions are working */
     @Test
     public void TestException() {
         assertTrue(new CommandNotValidException("test1").toString().contains("test1"));
