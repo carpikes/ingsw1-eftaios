@@ -127,8 +127,9 @@ public class GameController implements OnReceiveListener {
 
         mView.startup();
         
-        if( !setupConnection() )
-            mView.close();
+        setupConnection();
+        //if( !setupConnection() )
+        //    mView.close();
         
         do {
             try {
@@ -161,7 +162,6 @@ public class GameController implements OnReceiveListener {
         }
 
         stop();
-        mView.close();
         return;
     }
     
@@ -278,6 +278,7 @@ public class GameController implements OnReceiveListener {
                     if(cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof ArrayList<?> && obj2 != null && obj2 instanceof ArrayList<?>) {
                         List<Integer> winnerList = (List<Integer>) obj;
                         List<Integer> loserList = (List<Integer>) obj2;
+                        
                         mView.showEnding(winnerList, loserList);
                         stop();
                     }

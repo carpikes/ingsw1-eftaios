@@ -76,9 +76,6 @@ public abstract class View {
      */
     public abstract void switchToMainScreen(GameInfo container);
 
-    /** Notify a closed connection */
-    public abstract void close();
-
     protected abstract void handleCommand(List<ViewCommand> cmd);
 
     public abstract void showInfo(String user, String message);
@@ -97,8 +94,9 @@ public abstract class View {
     public abstract void startup();
 
     /**
-     * @param winnerList
-     * @param loserList
+     * @param winnerList The list of winners' id
+     * @param loserList The list of losers's id
+     * @return True when the game has to be stopped
      */
     public abstract void showEnding(List<Integer> winnerList, List<Integer> loserList);
 

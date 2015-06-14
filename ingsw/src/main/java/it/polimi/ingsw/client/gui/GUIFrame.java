@@ -16,9 +16,13 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,7 +61,8 @@ public class GUIFrame extends JFrame {
     // Drawing canvas on the left
     private MapCanvasPanel mMapCanvas;
     private LoginCanvasPanel mLoginCanvas;
-
+    private EndingCanvasPanel mEndingCanvas;
+    
     // elements on right panel
     private final int numberOfCardButtons = Config.MAX_NUMBER_OF_OBJ_CARDS + 1;
     private CardButton[] cardButtons = new CardButton[ numberOfCardButtons ];
@@ -131,12 +136,7 @@ public class GUIFrame extends JFrame {
 
     private void createTextForLabel(int i) {
         PlayerInfo[] players = gameInfo.getPlayersList();
-        
-/*        for( PlayerInfo p : players ) {
-            System.out.println( "Index: " + i );
-            System.out.println( p.getUsername() + " " + p.getNumberOfCards() );
-        }*/
-            
+
         String txt = "[" + (i+1) + "] ";
 
         if( i == gameInfo.getId() ) {
@@ -294,7 +294,6 @@ public class GUIFrame extends JFrame {
         } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
             LOG.log(Level.SEVERE, "File is not well formatted: " + e);
             mController.stop();
-            setVisible(false);
         }
     }
 
@@ -429,5 +428,26 @@ public class GUIFrame extends JFrame {
     public void updatePlayerInfoDisplay(int idPlayer) {        
         this.createTextForLabel( idPlayer );
     }
+
+    /**
+     * @param winnerList
+     * @param loserList
+     * @return
+     */
+    public void showEnding(List<Integer> winnerList, List<Integer> loserList) {
+        mEndingCanvas = new EndingCanvasPanel(gameInfo, winnerList, loserList);
+        mEndingCanvas.setPreferredSize(mDimensionLeftPanel);
+
+        // SWING FUCK*NG BUG: DO NOT USE REMOVE ALL()!
+        this.remove( mMapCanvas );
+        this.remove( bottomPanel );
+        this.remove( rightPanel );
+        
+        this.add( mEndingCanvas, BorderLayout.CENTER );
+        
+        validate();
+        repaint();
+    }
+
 }
 

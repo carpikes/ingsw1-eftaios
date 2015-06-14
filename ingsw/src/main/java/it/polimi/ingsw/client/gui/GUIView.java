@@ -121,13 +121,6 @@ public class GUIView extends View {
     }
 
     @Override
-    public void close() {
-        if(mMainFrame != null) {
-            mMainFrame.dispatchEvent(new WindowEvent(mMainFrame, WindowEvent.WINDOW_CLOSING));
-        }
-    }
-
-    @Override
     protected void handleCommand(List<ViewCommand> cmd) {
         resetViewStatus();
 
@@ -257,24 +250,7 @@ public class GUIView extends View {
      */
     @Override
     public void showEnding(List<Integer> winnerList, List<Integer> loserList) {
-        StringBuilder endingMessage = new StringBuilder();
-        PlayerInfo[] players = gameInfo.getPlayersList();
-        
-        endingMessage.append("### WINNERS ###\n");
-        for( int winnerId : winnerList )
-            endingMessage.append("> " + players[winnerId].getUsername() + "\n");
-        
-        endingMessage.append("### LOSERS ###\n");
-        for( int loserId : loserList )
-            endingMessage.append("> " + players[loserId].getUsername() + "\n");
-        
-        String title;
-        if( winnerList.contains( gameInfo.getId() ) )
-            title = "YOU WIN!";
-        else
-            title = "YOU LOSE!";
-        
-        JOptionPane.showMessageDialog(null, endingMessage.toString(), title, JOptionPane.PLAIN_MESSAGE );
+        mMainFrame.showEnding( winnerList, loserList );
     }
 
     /* (non-Javadoc)

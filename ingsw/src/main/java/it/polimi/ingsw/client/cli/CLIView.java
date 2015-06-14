@@ -158,14 +158,6 @@ public class CLIView extends View {
             IO.write("-> " + e.getUsername());
     }
 
-    /* (non-Javadoc)
-     * @see it.polimi.ingsw.client.View#close()
-     */
-    @Override
-    public void close() {
-        // EMPTY
-    }
-
     /** Handle a map view
      * @param c ViewCommand
      * @param canGoBack True if user can go back
@@ -350,6 +342,8 @@ public class CLIView extends View {
             for(Integer i : loserList)
                 IO.write(" -> " + mContainer.getPlayersList()[i].getUsername());
         }
+        
+        
     }
 
     /* (non-Javadoc)
