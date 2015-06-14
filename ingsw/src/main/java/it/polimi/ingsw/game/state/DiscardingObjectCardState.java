@@ -86,7 +86,7 @@ public class DiscardingObjectCardState extends PlayerState {
             
             // Show everyone the card you discarded and update info
             mGameState.broadcastPacket( new GameCommand(InfoOpcode.INFO_DISCARDED_OBJ_CARD, objectCard.getId(), objectCard.getName()));
-            mGameState.broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, mGamePlayer.getNumberOfCards() ));
+            mGameState.broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, mGamePlayer.getId(), mGamePlayer.getNumberOfCards() ));
             mGameState.sendPacketToCurrentPlayer( new GameCommand( GameOpcode.CMD_SC_DROP_CARD, index) );
             
             nextState = new EndingTurnState(mGameState);

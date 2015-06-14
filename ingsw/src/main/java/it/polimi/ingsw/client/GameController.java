@@ -284,7 +284,7 @@ public class GameController implements OnReceiveListener {
                 }
                 break;
             case INFO_CHANGED_NUMBER_OF_CARDS:
-                if(cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Integer && cmd.getArgs()[1] instanceof Integer) {
+                if(cmd.getArgs().length == 2 && cmd.getArgs()[0] != null && cmd.getArgs()[1] != null && cmd.getArgs()[0] instanceof Integer && cmd.getArgs()[1] instanceof Integer) {
                     int id = (int)cmd.getArgs()[0];
                     int count = (int)cmd.getArgs()[1];
                     

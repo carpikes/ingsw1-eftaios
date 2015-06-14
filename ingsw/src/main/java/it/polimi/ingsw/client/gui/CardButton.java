@@ -66,13 +66,13 @@ public class CardButton extends JButton {
             public void mouseReleased(MouseEvent e) { }
 
             public void mouseEntered(MouseEvent e) { 
-                if( canBeUsed || canBeDiscarded ) {
+                if( canBeUsed ) {
                     setAlpha(0.5f);
                 }
             }
 
             public void mouseExited(MouseEvent e) { 
-                if( canBeUsed || canBeDiscarded ) {
+                if( canBeUsed ) {
                     setAlpha(1f);
                 }
             }
@@ -90,7 +90,6 @@ public class CardButton extends JButton {
             if( type != CardButtons.NULL )
                 setToolTipText( ObjectCardBuilder.idToString( type.getId() ) );
             
-            setEnabled( type.isEnabled() );
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Cannot create " + type.toString() + " card button. Please check your assets in img folder.", e);
         }
@@ -111,6 +110,7 @@ public class CardButton extends JButton {
     {
         Graphics2D g2 = (Graphics2D) g;
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+                
         super.paintComponent(g2);
     }
 
@@ -127,6 +127,11 @@ public class CardButton extends JButton {
     
     public void setCanBeUsed(boolean value) {
         canBeUsed = value;
+        
+        if( !canBeUsed )
+            setAlpha(0.5f);
+        else
+            setAlpha(1f);
     }
 
 }

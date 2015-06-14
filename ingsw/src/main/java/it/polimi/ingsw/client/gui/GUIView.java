@@ -134,6 +134,7 @@ public class GUIView extends View {
         for(ViewCommand c : cmd) {
             switch(c.getOpcode()) {
                 case CMD_CHOOSEOBJECTCARD:
+                    //this.showInfo("TEST", gameInfo.getListOfCards().toString());
                     setCanSelectObjCard( true );
                     break;
 
