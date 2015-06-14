@@ -56,8 +56,6 @@ class EndingCanvasPanel extends JPanel {
         mBigFont = new Font("Helvetica", Font.PLAIN, 48);
         mMediumFont = new Font("Helvetica", Font.PLAIN, 36);
         mSmallFont = new Font("Helvetica", Font.PLAIN, 24);
-
-        constructStrings( mGameInfo.getPlayersList() );
         
         new Timer(25, new ActionListener() {
 
@@ -74,23 +72,17 @@ class EndingCanvasPanel extends JPanel {
 
     /**
      * @param playerInfos 
+     * @return 
      * 
      */
-    private void constructStrings(PlayerInfo[] playerInfos) {
-        StringBuilder winners = new StringBuilder();
+    private int writePlayers( Graphics2D g2d, int offsetY, List<Integer> listOfPlayers ) {
+        PlayerInfo[] players = mGameInfo.getPlayersList();
         
-        for( int id : mWinnerList ) {
-            winners.append(playerInfos[ id ].getUsername() + "\n");
+        for( int id : listOfPlayers ) {
+            offsetY = drawRightAligned(g2d, mSmallFont, players[ id ].getUsername(), offsetY + 20);
         }
         
-        StringBuilder losers = new StringBuilder();
-        
-        for( int id : mLoserList ) {
-            losers.append(playerInfos[ id ].getUsername() + "\n");
-        }
-        
-        winnerString = winners.toString();
-        loserString = losers.toString();
+        return offsetY;
     }
 
     @Override
@@ -117,10 +109,10 @@ class EndingCanvasPanel extends JPanel {
         nextY = drawRightAligned(g2d, mBigFont, title,nextY);
         
         nextY = drawRightAligned(g2d, mMediumFont, "Winners:", nextY + 80);
-        nextY = drawRightAligned(g2d, mSmallFont, winnerString, nextY + 20);
+        nextY = writePlayers( g2d, nextY, mWinnerList );
         
         nextY = drawRightAligned(g2d, mMediumFont, "Losers:", nextY + 40);
-        nextY = drawRightAligned(g2d, mSmallFont, loserString, nextY + 20);
+        nextY = writePlayers( g2d, nextY, mLoserList );
     }
 
     private int drawRightAligned(Graphics2D g, Font font, String str, int y) {
