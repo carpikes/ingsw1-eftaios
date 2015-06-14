@@ -306,7 +306,7 @@ public class GamePlayer {
 
     /** ===== OBJECT CARDS ===== */
 
-    /**
+    /** Use an object card
      * @param objectCardPos
      * @return
      */
@@ -317,6 +317,19 @@ public class GamePlayer {
 
         return c;
     }
+    
+    /** Find the id of this card in the main array
+     * @param objectCardPos
+     * @return
+     */
+    public Integer findObjectCardId(int index) {
+        ObjectCard c = mUsableObjectCards.get(index);
+        int n = mObjectCards.indexOf(c);
+        if(n == -1)
+            return null;
+        return n;
+    }
+
 
     /**
      * Add an object cards for this player

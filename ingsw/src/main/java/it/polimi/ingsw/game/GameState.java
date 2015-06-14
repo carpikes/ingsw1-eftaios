@@ -44,42 +44,42 @@ import java.util.logging.Logger;
  */
 public class GameState {
     private static final Logger LOG = Logger.getLogger(GameState.class.getName());
-    
+
     /** Game Manager */
     private final GameManager mManager;
-    
+
     /** Input and output queue */
     private final Queue<GameCommand> mInputQueue;
     private final Queue<Map.Entry<Integer,GameCommand>> mOutputQueue;
-    
+
     /** Game map */
     private final GameMap mMap;
-    
+
     /** Players in game */
     private List<GamePlayer> mPlayers;
-    
+
     /** Current turn id */
     private int mCurPlayerId = 0;
-    
+
     /** Number of rounds played */
     private int mRoundsPlayed = 0;
-    
+
     /** Debug mode */
     private final boolean dDebugMode;
-    
+
     private boolean dGameOver = false;
-    
+
     private int dForceNextTurn = -1;
-    
+
     public static enum LastThings {
         NEVERMIND,
-            KILLED_HUMAN,
-            GONE_OFFLINE,
-            HUMAN_USED_HATCH
+        KILLED_HUMAN,
+        GONE_OFFLINE,
+        HUMAN_USED_HATCH
     }
 
     private LastThings mLastThing = LastThings.NEVERMIND;
-    
+
     /**
      * Constructs a new game.
      * @param gameManager The GameManager that created this game.
@@ -94,18 +94,18 @@ public class GameState {
             LOG.log(Level.SEVERE, "Missing map files: " + e.toString(), e);
         }
         mMap = tmpMap;
-        
+
         dDebugMode = false;
         mManager = gameManager;
-        
+
         mInputQueue = new LinkedList<>();
         mOutputQueue = new LinkedList<>();
-        
+
         mPlayers = new ArrayList<>();
         List<Role> roles = RoleBuilder.generateRoles(gameManager.getNumberOfClients(), true);
         int numberOfPlayers = gameManager.getNumberOfClients();
         buildPlayersList(roles, numberOfPlayers);
-        
+
         if(mMap == null)
             gameManager.shutdown();
     }
@@ -136,25 +136,25 @@ public class GameState {
         } catch(IOException e) {
             LOG.log(Level.SEVERE, "Missing map files: " + e.toString(), e);
         }
-    
+
         if(!("YES".equalsIgnoreCase(areYouSureToEnableDebugMode)))
             throw new DebugException("Cannot enable debug mode.");
-        
+
         mMap = tmpMap;
-        
+
         dDebugMode = true;
         mManager = null;
-        
+
         mInputQueue = new LinkedList<>();
         mOutputQueue = new LinkedList<>();
-        
+
         mPlayers = new ArrayList<>();
-        
+
         mCurPlayerId = startPlayerId;
         List<Role> roles = RoleBuilder.generateRoles(numberOfPlayers, randomizePlayers);
-        
+
         buildPlayersList(roles, numberOfPlayers);
-        
+
         if(mMap == null)
             throw new DebugException("Invalid map file");
     }
@@ -165,24 +165,24 @@ public class GameState {
     public void update() {
         if( !dDebugMode && !mManager.isRunning() )
             return;
-                
+
         if(dDebugMode && dGameOver)
             throw new DebugException("Game over");
-                
+
         GamePlayer player = getCurrentPlayer();
         PlayerState nextState = null;
-        
+
         try {
             nextState = player.getCurrentState().update();
-                player.setCurrentState(nextState);
+            player.setCurrentState(nextState);
         } catch( IllegalStateOperationException e) {
             LOG.log(Level.INFO, e.toString(), e);
-                LOG.log(Level.FINEST, "", e);
+            LOG.log(Level.FINEST, "", e);
         }
-        
+
         // broadcast messages at the end of the turn
         flushOutputQueue();
-        
+
         if(nextState != null && (nextState instanceof NotMyTurnState || !nextState.stillInGame()))
             moveToNextPlayer();
     }
@@ -191,7 +191,7 @@ public class GameState {
     public void clearOutputQueue() {
         if(dDebugMode)
             return;
-                
+
         mOutputQueue.clear();
     }
 
@@ -199,14 +199,14 @@ public class GameState {
     public void flushOutputQueue() {
         if(dDebugMode)
             return;
-                
+
         if( !mOutputQueue.isEmpty() ) {
             for( Map.Entry<Integer, GameCommand> pkt : mOutputQueue )
                 if(pkt.getKey().equals(-1))
                     mManager.broadcastPacket(pkt.getValue());
                 else
                     mManager.sendDirectPacket(pkt.getKey(), pkt.getValue());
-            
+
             mOutputQueue.clear();
         }
     }
@@ -218,7 +218,7 @@ public class GameState {
     public PlayerState getObjectCard( ) {
         GamePlayer player = getCurrentPlayer();
         ObjectCard newCard = ObjectCardBuilder.getRandomCard( this );
-        
+
         PlayerState nextState;
 
         player.addObjectCard(newCard);
@@ -246,13 +246,14 @@ public class GameState {
         GamePlayer player = getCurrentPlayer();
         PlayerState nextState = player.getCurrentState();
 
-        if(player.isHuman() && !player.isObjectCardUsed() && player.getNumberOfUsableCards() > objectCardPos && objectCardPos >= 0) {   
+        if(player.isHuman() && !player.isObjectCardUsed() && player.getNumberOfUsableCards() > objectCardPos && objectCardPos >= 0) {
+            Integer idInMainArr = player.findObjectCardId(objectCardPos);
             ObjectCard objectCard = player.useObjectCard(objectCardPos);
-            if(objectCard != null) {
+            if(objectCard != null && idInMainArr != null) {
                 broadcastPacket( new GameCommand(InfoOpcode.INFO_OBJ_CARD_USED, objectCard.getId(), objectCard.getName()) );
 
                 player.setObjectCardUsed(true);
-                this.sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_DROP_CARD, objectCardPos) );
+                this.sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_DROP_CARD, idInMainArr) );
                 broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, player.getId(), player.getNumberOfCards() ) );
 
                 nextState = objectCard.doAction();
@@ -270,7 +271,7 @@ public class GameState {
     public void attack(Point currentPosition) {
         ArrayList<Integer> killedPlayers = new ArrayList<>();
         ArrayList<Integer> defendedPlayers = new ArrayList<>();
-        
+
         for(int i = 0; i < mPlayers.size(); i++) {
             GamePlayer player = mPlayers.get(i);
             if( player != getCurrentPlayer() && player.getCurrentPosition().equals(currentPosition) && player.stillInGame()) {
@@ -291,7 +292,7 @@ public class GameState {
                 }
             }
         }
-    
+
         // set the player as full if he has an alien role
         if( !killedPlayers.isEmpty() ) {
             GamePlayer player = getCurrentPlayer();
@@ -300,13 +301,15 @@ public class GameState {
                 broadcastPacket(new GameCommand(InfoOpcode.INFO_ALIEN_FULL));
             }
         }
-    
+
         broadcastPacket( new GameCommand(InfoOpcode.INFO_PLAYER_ATTACKED, currentPosition, killedPlayers, defendedPlayers) );
-        
+
         checkEndGame();
     }
 
-    /** End game conditions: [<who win?>]
+    /** Check if the game is over and, if so, remove it and notify players
+     *
+     * End game conditions: [<who win?>]
      * 
      * (1) [ALIENS] If aliens eliminate last living human
      * (2) [ALIENS] No spaceships left && some humans are still in game
@@ -318,27 +321,27 @@ public class GameState {
     private void checkEndGame() {
         boolean allWinnersMode = false; // set to true if inGamePlayers < MIN PLAYERS
         int aliveHumans = 0;
-    int inGamePlayers = 0;
-    int remainingHatches = mMap.getRemainingHatches();
-    
-    for(GamePlayer p : mPlayers)
-        if(p.stillInGame()) {
-            inGamePlayers++;
-            if(p.isHuman())
-                aliveHumans++;
-        }
+        int inGamePlayers = 0;
+        int remainingHatches = mMap.getRemainingHatches();
 
-    if(inGamePlayers < Config.GAME_MIN_PLAYERS && (mLastThing == LastThings.GONE_OFFLINE || mLastThing == LastThings.NEVERMIND))
-        allWinnersMode = true;
-            
+        for(GamePlayer p : mPlayers)
+            if(p.stillInGame()) {
+                inGamePlayers++;
+                if(p.isHuman())
+                    aliveHumans++;
+            }
+
+        if(inGamePlayers < Config.GAME_MIN_PLAYERS && (mLastThing == LastThings.GONE_OFFLINE || mLastThing == LastThings.NEVERMIND))
+            allWinnersMode = true;
+
         if((aliveHumans == 0 && mLastThing == LastThings.KILLED_HUMAN)   ||     // (1)
            (aliveHumans > 0 && remainingHatches == 0)                    ||     // (2)
            (mRoundsPlayed > Config.MAX_NUMBER_OF_TURNS)                  ||     // (3)
            (inGamePlayers < Config.GAME_MIN_PLAYERS)) {                         // (4)
-        
+
             // So, the game will end.
             // Let's gather some stats
-            
+
             // Move all players either into WinnerState or LoserState 
             for(int i = 0; i < mPlayers.size(); i++) {
                 GamePlayer p = mPlayers.get(i);
@@ -347,13 +350,13 @@ public class GameState {
                 else if(!(p.getCurrentState() instanceof WinnerState))
                     p.setCurrentState(new LoserState(this, i));
             }
-        
+
             clearOutputQueue();
-            
+
             // Fill this two arrays
             ArrayList<Integer> winnersList = new ArrayList<>();
             ArrayList<Integer> loserList = new ArrayList<>();
-            
+
             for(int i = 0; i < mPlayers.size(); i++) {
                 GamePlayer p = mPlayers.get(i);
                 PlayerState s = p.getCurrentState();
@@ -364,15 +367,15 @@ public class GameState {
                 else
                     throw new RuntimeException("There are players who are neither winner nor loser. What's happening?");
             }
-        
+
             broadcastPacket( new GameCommand(InfoOpcode.INFO_END_GAME, winnersList, loserList));
             flushOutputQueue();
-            
+
             if(!dDebugMode)
                 mManager.shutdown();
             else
                 dGameOver = true;
-        }
+                }
     }
 
     /**
@@ -392,7 +395,7 @@ public class GameState {
     public void spotlightAction(Point point) {
         ArrayList<Point> sectors = getMap().getNeighbourAccessibleSectors(point, getCurrentPlayer().isHuman(), true);
         sectors.add(point);
-        
+
         Point[] caughtPlayers = new Point[mPlayers.size()];
         for(int i = 0; i < mPlayers.size(); i++) {
             GamePlayer player = mPlayers.get(i);
@@ -400,12 +403,12 @@ public class GameState {
             if(sectors.contains( player.getCurrentPosition()))
                 caughtPlayers[i] = player.getCurrentPosition();
         }
-    
+
         broadcastPacket( new GameCommand( InfoOpcode.INFO_SPOTLIGHT, point, caughtPlayers) );
     }
 
     /* -----------------------------------------------*/
-    
+
     /** Read a packet from the input queue
      * 
      * @return The read packet
@@ -471,30 +474,30 @@ public class GameState {
     public void moveToNextPlayer() {
         int newTurnId = -1;
         int lastTurnId = mCurPlayerId;
-        
+
         if(dDebugMode && dForceNextTurn != -1) {
             checkEndGame();
-                
-                mCurPlayerId = dForceNextTurn;
-                dForceNextTurn = -1;
+
+            mCurPlayerId = dForceNextTurn;
+            dForceNextTurn = -1;
         } else {
             for( int currId = mCurPlayerId + 1; currId < mCurPlayerId + mPlayers.size(); ++currId ) {
                 if( mPlayers.get(currId % mPlayers.size()).getCurrentState() instanceof NotMyTurnState ) {
                     newTurnId = currId % mPlayers.size();
-                        break;
+                    break;
                 }
             }
-        
+
             if(newTurnId <= lastTurnId)
                 mRoundsPlayed ++;
-                    
+
             checkEndGame();
             if(newTurnId == -1)
                 return;
-                    
+
             mCurPlayerId = newTurnId;
         }
-        
+
         getCurrentPlayer().setCurrentState( new StartTurnState( this ) );
     }
 
@@ -541,11 +544,11 @@ public class GameState {
      */
     public int getNumberOfPlayersInSector( Point p ) {
         int counter = 0;
-        
+
         for( GamePlayer player : mPlayers )
             if( player.stillInGame() && player.getCurrentPosition().equals(p) )
                 counter++;
-                    
+
         return counter;
     }
 
@@ -568,7 +571,7 @@ public class GameState {
             player.setCurrentState(new AwayState(this));
             setLastThingDid(LastThings.GONE_OFFLINE);
         }
-    
+
         checkEndGame();
     }
 
@@ -587,8 +590,8 @@ public class GameState {
     }
 
     /** ====== DEBUG ====== */
-    
-    
+
+
     /** [DEBUG] Get the output queue
      *
      * @return The output packet queue
@@ -596,14 +599,14 @@ public class GameState {
     public Queue<Map.Entry<Integer,GameCommand>> debugGetOutputQueue() {
         if(!dDebugMode)
             throw new DebugException("Cannot use this method in normal mode");
-                
+
         Queue<Map.Entry<Integer,GameCommand>> q = new LinkedList<>();
-        
+
         for( Map.Entry<Integer, GameCommand> pkt : mOutputQueue )
             q.add(pkt);
-        
+
         mOutputQueue.clear();
-        
+
         return q;
     }
 
@@ -625,14 +628,14 @@ public class GameState {
     public GamePlayer debugGetPlayer(int playerId) {
         if(!dDebugMode)
             throw new DebugException("Cannot use this method in normal mode");
-        
+
         return mPlayers.get(playerId);
     }
 
     public boolean debugGameEnded() {
         if(!dDebugMode)
             throw new DebugException("Cannot use this method in normal mode");
-        
+
         return this.dGameOver;
     }
 
@@ -643,5 +646,5 @@ public class GameState {
         return dDebugMode;
     }
 
-    
+
 }
