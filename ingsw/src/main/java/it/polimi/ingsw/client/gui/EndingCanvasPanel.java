@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.game.common.GameInfo;
+import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.config.Config;
 
 import java.awt.Color;
@@ -35,12 +36,16 @@ class EndingCanvasPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private Font mBigFont;
     private Font mSmallFont;
+    private Font mMediumFont;
     
     private boolean mIsWinner;
     private List<Integer> mWinnerList;
     private List<Integer> mLoserList;
     private GameInfo mGameInfo;
 
+    private String winnerString;
+    private String loserString;
+    
     public EndingCanvasPanel( GameInfo gameInfo, List<Integer> winnerList, List<Integer> loserList ) {
         
         mGameInfo = gameInfo;
@@ -48,9 +53,12 @@ class EndingCanvasPanel extends JPanel {
         mWinnerList = winnerList;
         mLoserList = loserList;
         
-        mBigFont = new Font("Helvetica", Font.PLAIN, 36);
+        mBigFont = new Font("Helvetica", Font.PLAIN, 48);
+        mMediumFont = new Font("Helvetica", Font.PLAIN, 36);
         mSmallFont = new Font("Helvetica", Font.PLAIN, 24);
 
+        constructStrings( mGameInfo.getPlayersList() );
+        
         new Timer(25, new ActionListener() {
 
             @Override
@@ -62,6 +70,27 @@ class EndingCanvasPanel extends JPanel {
 
         }).start();
 
+    }
+
+    /**
+     * @param playerInfos 
+     * 
+     */
+    private void constructStrings(PlayerInfo[] playerInfos) {
+        StringBuilder winners = new StringBuilder();
+        
+        for( int id : mWinnerList ) {
+            winners.append(playerInfos[ id ].getUsername() + "\n");
+        }
+        
+        StringBuilder losers = new StringBuilder();
+        
+        for( int id : mLoserList ) {
+            losers.append(playerInfos[ id ].getUsername() + "\n");
+        }
+        
+        winnerString = winners.toString();
+        loserString = losers.toString();
     }
 
     @Override
@@ -81,13 +110,18 @@ class EndingCanvasPanel extends JPanel {
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        int nextY = Config.HEIGHT/2;
+        int nextY = 20;
         
         String title = (mIsWinner) ? "YOU WIN!" : "YOU LOSE!";
         
         nextY = drawRightAligned(g2d, mBigFont, title,nextY);
         
-        nextY = drawRightAligned(g2d, mBigFont, "Winners:", nextY + 20);
+        nextY = drawRightAligned(g2d, mMediumFont, "Winners:", nextY + 80);
+        nextY = drawRightAligned(g2d, mSmallFont, winnerString, nextY + 20);
+        
+        nextY = drawRightAligned(g2d, mMediumFont, "Losers:", nextY + 40);
+        nextY = drawRightAligned(g2d, mSmallFont, loserString, nextY + 20);
+        
     }
 
     private int drawRightAligned(Graphics2D g, Font font, String str, int y) {
