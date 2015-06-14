@@ -331,7 +331,7 @@ public class GameState {
      *
      * End game conditions: [<who win?>]
      * 
-     * (1) [ALIENS] If aliens eliminate last living human
+     * (1) [ALIENS] No humans in game (general case of "If aliens eliminate last living human") 
      * (2) [ALIENS] No spaceships left && some humans are still in game
      * (3) [ALIENS] 39 rounds have been played before any human escape.
      * (4) [?ALIVE] Players connected <= 2
@@ -354,10 +354,10 @@ public class GameState {
         if(inGamePlayers < Config.GAME_MIN_PLAYERS && (mLastThing == LastThings.GONE_OFFLINE || mLastThing == LastThings.NEVERMIND))
             allWinnersMode = true;
 
-        if((aliveHumans == 0 && mLastThing == LastThings.KILLED_HUMAN)   ||     // (1)
-           (aliveHumans > 0 && remainingHatches == 0)                    ||     // (2)
-           (mRoundsPlayed > Config.MAX_NUMBER_OF_TURNS)                  ||     // (3)
-           (inGamePlayers < Config.GAME_MIN_PLAYERS)) {                         // (4)
+        if((aliveHumans == 0)                               || // (1)
+           (aliveHumans > 0 && remainingHatches == 0)       || // (2)
+           (mRoundsPlayed > Config.MAX_NUMBER_OF_TURNS)     || // (3)
+           (inGamePlayers < Config.GAME_MIN_PLAYERS)) {        // (4)
 
             // So, the game will end.
             // Let's gather some stats
