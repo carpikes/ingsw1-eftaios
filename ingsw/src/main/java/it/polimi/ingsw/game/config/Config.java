@@ -16,6 +16,7 @@ public class Config {
     public static final int GAME_MIN_PLAYERS                = 2;
     public static final int GAME_MAX_PLAYERS                = 8;
     public static final int GAME_WAITING_SECS               = 5;
+    public static final int GAME_MAX_SECONDS_PER_TURN       = 120;
 
     public static final int GAME_MAP_WIDTH                  = 23;
     public static final int GAME_MAP_HEIGHT                 = 14;

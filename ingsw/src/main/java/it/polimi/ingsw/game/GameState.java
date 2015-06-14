@@ -64,13 +64,19 @@ public class GameState {
     /** Number of rounds played */
     private int mRoundsPlayed = 0;
 
+    /** Current turn start time*/
+    private long mCurTurnStartTime = 0;
+
     /** Debug mode */
     private final boolean dDebugMode;
 
+    /** [DEBUG] Game over */
     private boolean dGameOver = false;
 
+    /** [DEBUG] If != -1, set this player as next */
     private int dForceNextTurn = -1;
 
+    /** Last actions in game */
     public static enum LastThings {
         NEVERMIND,
         KILLED_HUMAN,
@@ -78,6 +84,7 @@ public class GameState {
         HUMAN_USED_HATCH
     }
 
+    /** Last action */
     private LastThings mLastThing = LastThings.NEVERMIND;
 
     /**
@@ -108,6 +115,8 @@ public class GameState {
 
         if(mMap == null)
             gameManager.shutdown();
+        
+        mCurTurnStartTime = System.currentTimeMillis()/1000;
     }
 
     /**
@@ -157,6 +166,8 @@ public class GameState {
 
         if(mMap == null)
             throw new DebugException("Invalid map file");
+        
+        mCurTurnStartTime = System.currentTimeMillis()/1000;
     }
 
     /**
@@ -172,14 +183,23 @@ public class GameState {
         GamePlayer player = getCurrentPlayer();
         PlayerState nextState = null;
 
-        try {
-            nextState = player.getCurrentState().update();
+        // Check for timeout
+        long curTime = System.currentTimeMillis() / 1000;
+        
+        // Timeout elapsed
+        if(curTime > mCurTurnStartTime + Config.GAME_MAX_SECONDS_PER_TURN) {
+            nextState = new AwayState(this);
             player.setCurrentState(nextState);
-        } catch( IllegalStateOperationException e) {
-            LOG.log(Level.INFO, e.toString(), e);
-            LOG.log(Level.FINEST, "", e);
+        } else {
+            try {
+                nextState = player.getCurrentState().update();
+                player.setCurrentState(nextState);
+            } catch( IllegalStateOperationException e) {
+                LOG.log(Level.INFO, e.toString(), e);
+                LOG.log(Level.FINEST, "", e);
+            }
         }
-
+        
         // broadcast messages at the end of the turn
         flushOutputQueue();
 
@@ -499,6 +519,7 @@ public class GameState {
         }
 
         getCurrentPlayer().setCurrentState( new StartTurnState( this ) );
+        mCurTurnStartTime = System.currentTimeMillis()/1000;
     }
 
     /** Broadcast a packet
