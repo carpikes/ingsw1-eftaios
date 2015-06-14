@@ -21,6 +21,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -417,7 +418,7 @@ public class GUIFrame extends JFrame {
      * 
      */
     public void resetNoise() {
-        mMapCanvas.resetNoise();
+        mMapCanvas.resetBlinkingElements();
     }
 
     /**
@@ -447,6 +448,13 @@ public class GUIFrame extends JFrame {
         
         validate();
         repaint();
+    }
+
+    /**
+     * @param data
+     */
+    public void setSpotlightData(Map<String, Point> data) {
+        mMapCanvas.setSpotlightData( data );
     }
 
 }

@@ -121,7 +121,6 @@ class EndingCanvasPanel extends JPanel {
         
         nextY = drawRightAligned(g2d, mMediumFont, "Losers:", nextY + 40);
         nextY = drawRightAligned(g2d, mSmallFont, loserString, nextY + 20);
-        
     }
 
     private int drawRightAligned(Graphics2D g, Font font, String str, int y) {

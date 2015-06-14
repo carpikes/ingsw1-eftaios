@@ -4,12 +4,12 @@ import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.common.GameInfo;
-import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.ViewCommand;
 
 import java.awt.Point;
-import java.awt.event.WindowEvent;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
@@ -274,10 +274,16 @@ public class GUIView extends View {
      */
     @Override
     public void handleSpotlightResult(Point chosenPoint, Point[] playersFound) {
-        // TODO Guarda CLI.
-        // Info varie: playersFound.length == numero player
-        // i player non spottati sono null nell'array
+        Map<String, Point> data = new HashMap<String, Point>();
         
+        for(int i = 0; i < playersFound.length; i++) {
+            Point p = playersFound[i];
+            if(p != null) {
+                data.put( gameInfo.getPlayersList()[ i ].getUsername(), p);
+            }
+        }
+        
+        mMainFrame.setSpotlightData( data );
     }
   
 }

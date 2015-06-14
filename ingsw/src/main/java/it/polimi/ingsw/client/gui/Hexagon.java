@@ -71,16 +71,16 @@ public class Hexagon {
         return mSize;
     }
 
+    
     /**
-     * Draw hex at given coordinates.
-     *
-     * @param g2d The Graphics2D object where to draw on
-     * @param playerOn True if the current player is on this sector
-     * @param enabled True if this sector is enabled
-     * @param mouseOnThis True if the mouse is hovering this sector
+     * 
+     * @param g2d
+     * @param playerOn
+     * @param enabled
+     * @param mouseOnThis
+     * @param shouldBlink
      */
-
-    public void draw(Graphics2D g2d, boolean playerOn, boolean enabled, boolean mouseOnThis, boolean noise) {
+    public void draw(Graphics2D g2d, boolean playerOn, boolean enabled, boolean mouseOnThis, boolean shouldBlink, Color colorBlink) {
         if( mColor == null )
             return;
 
@@ -91,9 +91,10 @@ public class Hexagon {
         if(playerOn)
             real = ColorPalette.PLAYER_ON;
 
-        if( noise ) {
+        if( shouldBlink ) {
+            // blinking effect
             double k = System.currentTimeMillis() / 250.0;
-            real = ColorPalette.NOISE;
+            real = colorBlink;
             real = new Color((int)(Math.abs(Math.cos(k)) * (255-real.getRed()) + real.getRed()), 
                     (int)(Math.abs(Math.cos(k)) * (255-real.getGreen()) + real.getGreen()), 
                     (int)(Math.abs(Math.cos(k)) * (255-real.getBlue()) + real.getBlue()), 0xff);

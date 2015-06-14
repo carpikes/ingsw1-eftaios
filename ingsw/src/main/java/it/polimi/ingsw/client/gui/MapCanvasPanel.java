@@ -5,6 +5,7 @@ import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.sector.Sector;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -15,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimerTask;
 
@@ -59,8 +61,11 @@ public class MapCanvasPanel extends JPanel {
 
     // The sector where the noise has been heard
     private Point mNoisePosition = null;
-
+    private Map<String, Point> mSpotlightSectors = null;
+    
     private transient final GameController mController;
+
+    private Color blinkingColor = null;
 
     /**
      * Instantiates a new map canvas panel.
@@ -217,8 +222,10 @@ public class MapCanvasPanel extends JPanel {
                 if(p == null)
                     continue;
 
-                boolean isPlayerWhereTheMouseIs = p.equals(mPlayerPosition);
-                boolean isNoiseSector = handleNoise(p);
+                boolean isPlayerHere = p.equals(mPlayerPosition);
+                
+                blinkingColor = null;
+                boolean shouldBlink = shoudBlink(p);
 
                 boolean enabled;
                 if( mEnabledCells != null && !mEnabledCells.contains(p) )
@@ -226,17 +233,32 @@ public class MapCanvasPanel extends JPanel {
                 else
                     enabled = true;
 
-                mHexagons[p.y][p.x].draw(g2d, isPlayerWhereTheMouseIs, enabled, (i == GameMap.ROWS), isNoiseSector );
+                mHexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, (i == GameMap.ROWS), shouldBlink, blinkingColor );
             }
     }
-
-    private boolean handleNoise(Point p) {
-        if( p.equals( mNoisePosition ) ) 
-            return true; 
-        else 
+    
+    private boolean shouldDrawNoise( Point p ) {
+        if( mNoisePosition != null && p.equals( mNoisePosition ) ) {
+            blinkingColor = ColorPalette.NOISE;
+            return true;
+        } else {
+           return false;
+        }
+    }
+    
+    private boolean shouldDrawSpotlight( Point p ) {
+        if( mSpotlightSectors != null && mSpotlightSectors.values().contains(p) ) {
+            blinkingColor = ColorPalette.SPOTLIGHT;
+            return true;
+        } else {
             return false;
+        }
     }
 
+    private boolean shoudBlink(Point p) {
+        return shouldDrawNoise(p) || shouldDrawSpotlight(p); // || shouldDrawAttack(p);
+    }
+ 
     /**
      * Checks if column % 2 == 0.
      *
@@ -289,14 +311,22 @@ public class MapCanvasPanel extends JPanel {
     /**
      * 
      */
-    public void resetNoise() {
+    public void resetBlinkingElements() {
         java.util.Timer timer = new java.util.Timer();
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 mNoisePosition = null;
+                mSpotlightSectors = null;
             }
         }, 2*1000);
+    }
+
+    /**
+     * @param data
+     */
+    public void setSpotlightData(Map<String, Point> data) {
+        mSpotlightSectors = data;
     }
 }

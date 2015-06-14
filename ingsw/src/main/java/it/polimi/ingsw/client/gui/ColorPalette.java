@@ -13,6 +13,11 @@ public class ColorPalette {
     public static final Color USED_HATCH               = new Color(178,0,0);
     public static final Color HUMAN                    = new Color(50,0,0);
     public static final Color STROKE                   = Color.DARK_GRAY;
-    public static final Color NOISE                    = Color.GREEN;
+
     public static final Color NOT_VALID                = null;
+    
+    // blinking colors
+    public static final Color NOISE                    = Color.GREEN;
+    public static final Color ATTACK                   = Color.RED;
+    public static final Color SPOTLIGHT                = Color.BLACK;
 }

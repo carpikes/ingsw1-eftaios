@@ -19,7 +19,6 @@ public class AdrenalineCard extends ObjectCard {
      */
     @Override
     public PlayerState doAction() {
-
         mGamePlayer.setAdrenaline(true);
 
         return mGamePlayer.getCurrentState();
