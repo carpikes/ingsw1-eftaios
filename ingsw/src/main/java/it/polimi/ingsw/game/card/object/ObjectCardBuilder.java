@@ -5,8 +5,7 @@ package it.polimi.ingsw.game.card.object;
 
 import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.GameState;
-
-import java.util.Random;
+import it.polimi.ingsw.game.common.Rand;
 
 /**
  * Class for getting a random Object Card.
@@ -34,10 +33,8 @@ public class ObjectCardBuilder {
      * @return The object card
      */
 
-    private static Random generator = new Random();
-
     public static ObjectCard getRandomCard(GameState game) {
-        return idToObjectCard(generator.nextInt(OBJECT_CARD_TYPES), game);
+        return idToObjectCard(Rand.nextInt(OBJECT_CARD_TYPES), game);
     }
 
     public static ObjectCard idToObjectCard(int id, GameState game) {

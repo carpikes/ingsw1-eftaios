@@ -5,8 +5,7 @@ package it.polimi.ingsw.game.card.hatch;
 
 import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.GameState;
-
-import java.util.Random;
+import it.polimi.ingsw.game.common.Rand;
 
 /**
  * Class for getting a random hatch card.
@@ -14,7 +13,6 @@ import java.util.Random;
  * @since 2 Jun 2015
  */
 public class HatchCardBuilder {
-    private static Random generator = new Random();
     public static final int HATCH_CARD_TYPES = 2;
 
     public static final int GREEN_HATCH_CARD = 0;
@@ -31,7 +29,7 @@ public class HatchCardBuilder {
      * @return An Hatch Card
      */
     public static HatchCard getRandomCard( GameState state ) {
-        switch( generator.nextInt(HATCH_CARD_TYPES) ) {
+        switch( Rand.nextInt(HATCH_CARD_TYPES) ) {
             case GREEN_HATCH_CARD:        return new GreenHatchCard(state);
             case RED_HATCH_CARD:          return new RedHatchCard(state);
             default:                      throw new InvalidCardException("Unknown card");

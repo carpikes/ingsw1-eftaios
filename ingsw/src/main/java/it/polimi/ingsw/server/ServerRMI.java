@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.Rand;
 import it.polimi.ingsw.game.common.ServerRMIMask;
 
 import java.rmi.AccessException;
@@ -26,9 +27,6 @@ public class ServerRMI implements Listener, ServerRMIMask {
 
     /** HashMap with connected clients */
     private HashMap<String, ClientConnRMI> mMap;
-
-    /** Random generator */
-    private Random mRandom = new Random();
 
     /** RMI Registry instance */
     private Registry mRegistry;
@@ -72,7 +70,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
     public String registerAndGetId() throws RemoteException {
         StringBuilder id = new StringBuilder();
         for(int i=0;i<32;i++)
-            id.append((char)('0' + mRandom.nextInt(10)));
+            id.append((char)('0' + Rand.nextInt(10)));
 
         String ids = id.toString();
         ClientConnRMI conn = new ClientConnRMI(this, ids);

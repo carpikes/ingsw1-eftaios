@@ -5,15 +5,13 @@ package it.polimi.ingsw.game.card.dangerous;
 
 import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.GameState;
-
-import java.util.Random;
+import it.polimi.ingsw.game.common.Rand;
 
 /** Class used to get a random Dangerous Card.
  * @author  Michele
  * @since  2 Jun 2015
  */
 public class DangerousCardBuilder {
-    private static Random generator = new Random();
     public static final int DANGEROUS_CARD_TYPES = 3;
 
     public static final int NOISE_IN_YOUR_SECTOR = 0;
@@ -29,7 +27,7 @@ public class DangerousCardBuilder {
      * @return A dangerous sector card
      */
     public static DangerousCard getRandomCard( GameState gameState ) {
-        return getCard( gameState, generator.nextInt(DANGEROUS_CARD_TYPES) );
+        return getCard( gameState, Rand.nextInt(DANGEROUS_CARD_TYPES) );
     }
 
     public static DangerousCard getCard( GameState gameState, int id ) {
