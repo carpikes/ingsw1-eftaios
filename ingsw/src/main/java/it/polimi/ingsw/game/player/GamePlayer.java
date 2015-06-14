@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game.player;
 
+import it.polimi.ingsw.exception.DefenseException;
 import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.card.object.DefenseCard;
 import it.polimi.ingsw.game.card.object.ObjectCard;
@@ -272,17 +273,26 @@ public class GamePlayer {
 
     /**
      * Used when someone attacks this player but the defense is enabled.
+     * @return index of the card dropped
      */
-    public void dropDefense() {        
-        for( int i = 0; i < mObjectCards.size(); ++i ) {
+    public int dropDefense() throws DefenseException {    
+        int i = 0;
+        int deckSize = mObjectCards.size();
+        
+        for( ; i < deckSize; ++i ) {
             if( mObjectCards.get(i) instanceof DefenseCard ) {
                 mObjectCards.remove(i);
-                break;
+                break;  
             }
         } 
+        
+        if( i == deckSize ) 
+            throw new DefenseException("Trying to remove a defense card, but none were found in your deck!");
 
         // there could be more than one defense card
         setDefense( this.hasDefenseCard() );
+        
+        return i;
     }
 
     /**

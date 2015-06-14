@@ -37,7 +37,8 @@ public class ObjectCardBuilder {
     private static Random generator = new Random();
 
     public static ObjectCard getRandomCard(GameState game) {
-        return idToObjectCard(generator.nextInt(OBJECT_CARD_TYPES), game);
+        return new DefenseCard(game, "Defense");
+        //return idToObjectCard(generator.nextInt(OBJECT_CARD_TYPES), game);
     }
 
     public static ObjectCard idToObjectCard(int id, GameState game) {

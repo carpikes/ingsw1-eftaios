@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game;
 
 import it.polimi.ingsw.exception.DebugException;
+import it.polimi.ingsw.exception.DefenseException;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
@@ -217,11 +218,12 @@ public class GameState {
     public PlayerState getObjectCard( ) {
         GamePlayer player = getCurrentPlayer();
         ObjectCard newCard = ObjectCardBuilder.getRandomCard( this );
+        
         PlayerState nextState;
 
         player.addObjectCard(newCard);
 
-        broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, player.getNumberOfCards() ) );
+        broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, player.getId(), player.getNumberOfCards() ) );
         sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, (Integer)newCard.getId()) );
 
         // We're ok, proceed
@@ -251,7 +253,7 @@ public class GameState {
 
                 player.setObjectCardUsed(true);
                 this.sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_DROP_CARD, objectCardPos) );
-                broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, player.getNumberOfCards() ) );
+                broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, player.getId(), player.getNumberOfCards() ) );
 
                 nextState = objectCard.doAction();
                 return nextState;
@@ -273,8 +275,14 @@ public class GameState {
             GamePlayer player = mPlayers.get(i);
             if( player != getCurrentPlayer() && player.getCurrentPosition().equals(currentPosition) && player.stillInGame()) {
                 if( player.isDefenseEnabled() ) {
-                    player.dropDefense();
-                    defendedPlayers.add(i);
+                    try {
+                        int indexCard = player.dropDefense();
+                        broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, i, player.getNumberOfCards() ) );
+                        this.sendPacketToPlayer( i, new GameCommand(GameOpcode.CMD_SC_DROP_CARD, indexCard) );
+                        defendedPlayers.add(i);
+                    } catch( DefenseException e ) {
+                        LOG.warning(e.getLocalizedMessage());
+                    }
                 } else {
                     if(player.isHuman())
                         setLastThingDid(LastThings.KILLED_HUMAN);

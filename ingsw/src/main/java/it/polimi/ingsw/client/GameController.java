@@ -284,15 +284,17 @@ public class GameController implements OnReceiveListener {
                 }
                 break;
             case INFO_CHANGED_NUMBER_OF_CARDS:
-                PlayerInfo playerInfo = mGameInfo.getPlayersList()[mCurPlayerId]; 
-
-                if(cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Integer) {
-                    int count = (int)cmd.getArgs()[0];
+                if(cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Integer && cmd.getArgs()[1] instanceof Integer) {
+                    int id = (int)cmd.getArgs()[0];
+                    int count = (int)cmd.getArgs()[1];
+                    
+                    PlayerInfo playerInfo = mGameInfo.getPlayersList()[ id ]; 
+                    
                     // update count of cards for current player
                     playerInfo.setNumberOfCards( count );
 
                     // update info of current status for all players and show a message
-                    mView.updatePlayerInfoDisplay( mCurPlayerId );
+                    mView.updatePlayerInfoDisplay( id );
 
                     mView.showInfo(curUser, "has " + count + " cards");
                 }
