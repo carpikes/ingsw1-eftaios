@@ -317,8 +317,8 @@ public class GameController implements OnReceiveListener {
                         && cmd.getArgs()[2] instanceof ArrayList<?>) {
                     Point p = (Point) cmd.getArgs()[0];
 
-                    mView.showInfo(curUser, "Player just attacked in sector " + mGameInfo.getMap().pointToString(p));
-
+                    mView.handleAttack(curUser, p);
+                    
                     List<Integer> killedList = (List<Integer>) cmd.getArgs()[1];
                     if(killedList == null || killedList.isEmpty())
                         mView.showInfo(curUser, "Nobody has been killed");

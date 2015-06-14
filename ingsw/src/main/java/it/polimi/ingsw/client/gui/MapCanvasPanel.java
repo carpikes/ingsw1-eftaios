@@ -59,14 +59,15 @@ public class MapCanvasPanel extends JPanel {
 
     private Point mPlayerPosition;
 
-    // The sector where the noise has been heard
+    // Blinking sectors
     private Point mNoisePosition = null;
     private Map<String, Point> mSpotlightSectors = null;
+    private Point mAttackPoint = null;
+    private Color blinkingColor = null;
     
     private transient final GameController mController;
 
-    private Color blinkingColor = null;
-
+    
     /**
      * Instantiates a new map canvas panel.
      *
@@ -254,9 +255,18 @@ public class MapCanvasPanel extends JPanel {
             return false;
         }
     }
+    
+    private boolean shouldDrawAttack(Point p) {
+        if( mAttackPoint != null && p.equals( mAttackPoint ) ) {
+            blinkingColor = ColorPalette.ATTACK;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     private boolean shoudBlink(Point p) {
-        return shouldDrawNoise(p) || shouldDrawSpotlight(p); // || shouldDrawAttack(p);
+        return shouldDrawNoise(p) || shouldDrawSpotlight(p) || shouldDrawAttack(p);
     }
  
     /**
@@ -319,6 +329,7 @@ public class MapCanvasPanel extends JPanel {
             public void run() {
                 mNoisePosition = null;
                 mSpotlightSectors = null;
+                mAttackPoint = null;
             }
         }, 2*1000);
     }
@@ -328,5 +339,12 @@ public class MapCanvasPanel extends JPanel {
      */
     public void setSpotlightData(Map<String, Point> data) {
         mSpotlightSectors = data;
+    }
+
+    /**
+     * @param p
+     */
+    public void handleAttack(Point p) {
+        mAttackPoint = p;
     }
 }

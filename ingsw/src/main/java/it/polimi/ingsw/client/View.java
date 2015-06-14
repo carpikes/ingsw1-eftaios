@@ -115,4 +115,9 @@ public abstract class View {
      */
     public abstract void handleSpotlightResult(Point chosenPoint, Point[] playersFound);
 
+    /**
+     * @param p
+     */
+    public abstract void handleAttack(String user, Point p);
+
 }

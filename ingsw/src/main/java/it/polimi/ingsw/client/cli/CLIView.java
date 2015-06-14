@@ -397,5 +397,13 @@ public class CLIView extends View {
         IO.write("\n************************************\n");
     }
 
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#handleAttack(java.awt.Point)
+     */
+    @Override
+    public void handleAttack(String user, Point p) {
+        showInfo(user, "Player just attacked in sector " + mContainer.getMap().pointToString(p));
+    }
+
 
 }

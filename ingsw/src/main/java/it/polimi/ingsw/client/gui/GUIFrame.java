@@ -457,5 +457,12 @@ public class GUIFrame extends JFrame {
         mMapCanvas.setSpotlightData( data );
     }
 
+    /**
+     * @param p
+     */
+    public void handleAttack(Point p) {
+        mMapCanvas.handleAttack( p );
+    }
+
 }
 

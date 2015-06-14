@@ -285,5 +285,13 @@ public class GUIView extends View {
         
         mMainFrame.setSpotlightData( data );
     }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#handleAttack(java.lang.String, java.awt.Point)
+     */
+    @Override
+    public void handleAttack(String user, Point p) {
+        mMainFrame.handleAttack( p );
+    }
   
 }
