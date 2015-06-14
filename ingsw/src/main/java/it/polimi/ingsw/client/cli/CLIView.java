@@ -324,7 +324,7 @@ public class CLIView extends View {
     @Override
     public void showEnding(List<Integer> winnerList, List<Integer> loserList) {
         IO.write("*******************");
-        IO.write("**   GAME OVER   **");
+        IO.write("**    THE END    **");
         IO.write("*******************\n");
 
         if(winnerList.isEmpty()) 
