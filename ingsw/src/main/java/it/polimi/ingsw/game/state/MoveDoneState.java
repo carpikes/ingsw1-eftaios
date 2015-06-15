@@ -52,7 +52,7 @@ public class MoveDoneState extends PlayerState {
         if(mGamePlayer.isAlien())
             availableCommands.add(new ViewCommand(ViewOpcode.CMD_ATTACK));
 
-        if(map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS)
+        if(map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS && mGamePlayer.shouldDrawDangerousCard())
             availableCommands.add(new ViewCommand(ViewOpcode.CMD_DRAWDANGEROUSCARD));
         else
             availableCommands.add(new ViewCommand(ViewOpcode.CMD_ENDTURN));
@@ -80,7 +80,7 @@ public class MoveDoneState extends PlayerState {
             } else if( mGamePlayer.isAlien() && packet.getOpcode() == GameOpcode.CMD_CS_ATTACK ) {
                 mGameState.attack( mGamePlayer.getCurrentPosition() );
                 nextState = new EndingTurnState(mGameState);
-            } else if( map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS ) {
+            } else if( map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS && mGamePlayer.shouldDrawDangerousCard() ) {
                 // DANGEROUS: either draw a card OR attack
                 if( packet.getOpcode() == GameOpcode.CMD_CS_DRAW_DANGEROUS_CARD ) {
                     nextState = drawDangerousCard( );
@@ -88,7 +88,6 @@ public class MoveDoneState extends PlayerState {
                     throw new IllegalStateOperationException("Discarding command.");
                 }
             } else {
-                // NOT DANGEROUS: either attack or pass
                 if( packet.getOpcode() == GameOpcode.CMD_CS_END_TURN ) {
                     nextState = new NotMyTurnState(mGameState);
                 } else {
