@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
@@ -15,28 +12,42 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Michele
+/** Player state abstract class
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
  */
 public abstract class PlayerState {
+    /** GameState */
     protected final GameState mGameState;
+
+    /** GamePlayer */
     protected final GamePlayer mGamePlayer;
 
+    /** Constructor
+     *
+     * @param state GameState
+     */
     protected PlayerState(GameState state) {
         mGameState = state;
         mGamePlayer = state.getCurrentPlayer();
     } 
 
+    /** Send available commands to the player
+     *
+     * @param availableCommands Commands to send
+     */
     protected void sendAvailableCommands(ArrayList<ViewCommand> availableCommands) {
         mGameState.sendPacketToCurrentPlayer(new GameCommand(GameOpcode.CMD_SC_AVAILABLE_COMMANDS, availableCommands));
     }
 
+    /** Update the game */
     public abstract PlayerState update();
 
+    /** Is the player still in game? */
     public abstract boolean stillInGame();
-    protected abstract void buildAndSendAvailableCommands();
 
+    /** Build and send available commands */
+    protected abstract void buildAndSendAvailableCommands();
 
     /** Use an object card
      * @param curState current state

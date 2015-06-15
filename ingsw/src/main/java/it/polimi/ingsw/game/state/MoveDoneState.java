@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
@@ -18,16 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author Michele
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
- */
-/**
- * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
- *
- */
-/**
- * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
- *
  */
 public class MoveDoneState extends PlayerState {
     private static final Logger LOG = Logger.getLogger(MoveDoneState.class.getName());
@@ -36,11 +25,11 @@ public class MoveDoneState extends PlayerState {
         super(state);
         LOG.log(Level.FINE, "Constructor");
 
-        // tell the client it has to choose what to do after moving
+        /** tell the client it has to choose what to do after moving */
         buildAndSendAvailableCommands();
     }
 
-    /* (non-Javadoc)
+    /** Build and send available commands
      * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
      */
     @Override
@@ -61,8 +50,9 @@ public class MoveDoneState extends PlayerState {
         sendAvailableCommands(availableCommands);
     }
 
-    /* (non-Javadoc)
+    /** Update the game
      * @see it.polimi.ingsw.game.state.State#update()
+     * @return New player state
      */
     @Override
     public PlayerState update() {
@@ -71,17 +61,17 @@ public class MoveDoneState extends PlayerState {
 
         PlayerState nextState = this;
 
-        // If we actually received a command from the client...
+        /** If we actually received a command from the client... */
         if( packet != null ) {
-            // if you used an object card...
+            /** if you used an object card... */
             if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD  && mGamePlayer.getNumberOfUsableCards() > 0) {
                 nextState = useObjectCard(this, packet);
-                // if you attacked..
+                /** if you attacked.. */
             } else if( mGamePlayer.isAlien() && packet.getOpcode() == GameOpcode.CMD_CS_ATTACK ) {
                 mGameState.attack( mGamePlayer.getCurrentPosition() );
                 nextState = new EndingTurnState(mGameState);
             } else if( map.getSectorAt( mGamePlayer.getCurrentPosition() ).getId() == SectorBuilder.DANGEROUS && mGamePlayer.shouldDrawDangerousCard() ) {
-                // DANGEROUS: either draw a card OR attack
+                /** DANGEROUS: either draw a card OR attack */
                 if( packet.getOpcode() == GameOpcode.CMD_CS_DRAW_DANGEROUS_CARD ) {
                     nextState = drawDangerousCard( );
                 } else {
@@ -106,8 +96,9 @@ public class MoveDoneState extends PlayerState {
         return DangerousCardBuilder.getRandomCard(mGameState).doAction( );
     }
 
-    /* (non-Javadoc)
+    /** Is the player still in game?
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
+     * @return True if the player is still in game
      */
     @Override
     public boolean stillInGame() {

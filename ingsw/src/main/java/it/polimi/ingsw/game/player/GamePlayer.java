@@ -12,12 +12,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Class representing an in-game player. It contains all the cards, the role, the current state...
+/** Class representing an in-game player. 
+ * It contains all the cards, the role, the current state...
+ *
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 19, 2015
  */
 public class GamePlayer {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(GamePlayer.class.getName());
 
     /** Position on board */
@@ -34,6 +36,8 @@ public class GamePlayer {
 
     /** Object cards the player owns */
     private List < ObjectCard > mObjectCards;
+
+    /** Usable object cards the player owns */
     private List < ObjectCard > mUsableObjectCards;
 
     /** Alien or human? */
@@ -65,52 +69,51 @@ public class GamePlayer {
         mId = id; 
     }
 
-    /**
-     * Get current player state
+    /** Get current player state
+     *
      * @return Player state
      */
     public PlayerState getCurrentState() {
         return currentState;
     }
 
-    /**
-     * Set current player state
+    /** Set current player state
+     *
      * @param currentState The state
      */
     public void setCurrentState(PlayerState currentState) {
         this.currentState = currentState;
     }
 
-    /**
-     * Check if defense is enabled (if you have a defense card)
+    /** Check if defense is enabled (if you have a defense card)
+     *
      * @return True if defense enabled
      */
     public boolean isDefenseEnabled() {
         return defense;
     }
 
-    /**
-     * Set defense to enabled / disabled
+    /** Set defense to enabled / disabled
+     *
      * @param defense The value to use
      */
     public void setDefense(boolean defense) {
-        // only humans can activate a defense system!
+        /** only humans can activate a defense system! */
         if( this.isHuman() )
             this.defense = defense;
         else
             this.defense = false;
     }
 
-    /**
-     * Get current position on board
+    /** Get current position on board
      * @return The position
      */
     public Point getCurrentPosition() {
         return mPosition;
     }
 
-    /**
-     * Calculate if the given distance is valid based on getMaxMoves() value
+    /** Calculate if the given distance is valid based on getMaxMoves() value
+     *
      * @param distance The number of sectors you have to cross
      * @return True if it is valid
      */
@@ -118,98 +121,96 @@ public class GamePlayer {
         return distance > 0 && distance <= this.getMaxMoves();
     }
 
-    /**
-     * Set current position to the specified one
+    /** Set current position to the specified one
+     *
      * @param position The position where to move the player
      */
     public void setCurrentPosition(Point position) {
         this.mPosition = position;
     }
 
-    /**
-     * Get role of the player (alien or human)
+    /** Get role of the player (alien or human)
+     *
      * @return The role
      */
     public Role getRole() {
         return role;
     }
 
-    /**
-     * Check if player is an alien
+    /** Check if player is an alien
+     *
      * @return True if alien
      */
     public boolean isAlien() {
         return role instanceof Alien;
     }
 
-    /**
-     * Check if player is a human
+    /** Check if player is a human
+     *
      * @return True if human
      */
     public boolean isHuman() {
         return role instanceof Human;
     }
 
-    /**
-     * Check if the player has already used an object card during this turn
+    /** Check if the player has already used an object card during this turn
+     *
      * @return True if he has already used one
      */
     public boolean isObjectCardUsed() {
         return objectCardUsed;
     }
 
-    /** 
-     * Set the value of objectCardUsed to the value specified by the parameter
+    /** Set the value of objectCardUsed to the value specified by the parameter
+     *
      * @param objectCardUsed The value to use
      */
     public void setObjectCardUsed(boolean objectCardUsed) {
         this.objectCardUsed = objectCardUsed;
     }
 
-    /**
-     * Get ID for this player
+    /** Get ID for this player
+     *
      * @return The ID
      */
     public int getId() {
         return mId;
     }
 
-    /**
-     * Check if this player has to draw a dangerous card during this turn
+    /** Check if this player has to draw a dangerous card during this turn
+     *
      * @return True if he has to draw a dangerous card
      */
     public boolean shouldDrawDangerousCard() {
         return drawDangerousCard;
     }
 
-    /** 
-     * Set the value of shouldDrawDangerousCard.
+    /** Set the value of shouldDrawDangerousCard.
+     *
      * @param shouldDrawDangerousCard The value to use
      */
     public void setShouldDrawDangerousCard(boolean shouldDrawDangerousCard) {
         this.drawDangerousCard = shouldDrawDangerousCard;
     }
 
-    /** 
-     * Get the player state before using Spotlight Card during this turn. Always null
-     * unless he has used a Spotlight Card. 
+    /** Get the player state before using Spotlight Card during this turn. 
+     * Always null unless he has used a Spotlight Card. 
+     *
      * @return The state beforce using a spotlight card
      */
     public PlayerState getStateBeforeSpotlightCard() {
         return stateBeforeSpotlightCard;
     }
 
-    /** 
-     * Set the state before using Spotlight Card
+    /** Set the state before using Spotlight Card
+     *
      * @param stateBefore The state before using Spotlight Card
      */
     public void setStateBeforeSpotlightCard(PlayerState stateBefore) {
         this.stateBeforeSpotlightCard = stateBefore;
     }
 
-    /**
-     * Reset values at the beginning of each turn.
-     */
+    /** Reset values at the beginning of each turn. */
     public void resetValues() {
         defense = hasDefenseCard();
         objectCardUsed = false;
@@ -218,8 +219,8 @@ public class GamePlayer {
         setAdrenaline(false);
     }
 
-    /**
-     * Check if the player has a defense card in his own deck
+    /** * Check if the player has a defense card in his own deck
+     *
      * @return True if has at least one defense card.
      */
     private boolean hasDefenseCard() {
@@ -232,16 +233,17 @@ public class GamePlayer {
         return false;
     }
 
-    /**
-     * Get how many sectors he can cross based on the role specified.
+    /** Get how many sectors he can cross based on the role specified.
+     *
      * @return The maximum number of moves
      */
     public int getMaxMoves() {
         return role.getMaxMoves();
     }
 
-    /** 
-     * Check if this player has eaten during this turn. Always returns false for a human
+    /** Check if this player has eaten during this turn. 
+     * Always returns false for a human
+     *
      * @return True if he has eaten
      */
     public boolean isFull() {
@@ -251,8 +253,9 @@ public class GamePlayer {
             return false;
     }
 
-    /**
-     * Set the player to full or not. Ignored when used on a human.
+    /** Set the player to full or not. 
+     * Ignored when used on a human.
+     *
      * @param isFull
      */
     public void setFull(boolean isFull) {
@@ -260,8 +263,9 @@ public class GamePlayer {
             ((Alien) role).setHasEaten(isFull);
     }
 
-    /**
-     * Set adrenaline to used or not. Only valid on humans, ignored on aliens.
+    /** Set adrenaline to used or not. 
+     * Only valid on humans, ignored on aliens.
+     *
      * @param adrenaline The value to use
      */
     public void setAdrenaline(boolean adrenaline) {
@@ -271,8 +275,8 @@ public class GamePlayer {
             LOG.log(Level.SEVERE, "Used arenaline on an alien. What's Happening");
     }
 
-    /**
-     * Used when someone attacks this player but the defense is enabled.
+    /** Used when someone attacks this player but the defense is enabled.
+     *
      * @return index of the card dropped
      */
     public int dropDefense() throws DefenseException {    
@@ -289,14 +293,14 @@ public class GamePlayer {
         if( i == deckSize ) 
             throw new DefenseException("Trying to remove a defense card, but none were found in your deck!");
 
-        // there could be more than one defense card
+        /** there could be more than one defense card */
         setDefense( this.hasDefenseCard() );
         
         return i;
     }
 
-    /**
-     * Check if this player is still in game.
+    /** Check if this player is still in game.
+     *
      * @return True if still playing (not in winner, loser, away state)
      */
     public boolean stillInGame() {
@@ -307,6 +311,7 @@ public class GamePlayer {
     /** ===== OBJECT CARDS ===== */
 
     /** Use an object card
+     *
      * @param objectCardPos
      * @return
      */
@@ -319,6 +324,7 @@ public class GamePlayer {
     }
     
     /** Find the id of this card in the main array
+     *
      * @param objectCardPos
      * @return
      */
@@ -331,8 +337,8 @@ public class GamePlayer {
     }
 
 
-    /**
-     * Add an object cards for this player
+    /** Add an object cards for this player
+     *
      * @return The deck of object cards
      */
     public void addObjectCard(ObjectCard c) {
@@ -341,24 +347,25 @@ public class GamePlayer {
             mUsableObjectCards.add(c);
     }
 
-    /**
-     * Get how many cards the player is holding at the moment
+    /** Get how many cards the player is holding at the moment
+     *
      * @return The number of cards
      */
     public int getNumberOfCards() {
         return mObjectCards.size();
     }
 
-    /**
-     * Get how many *usable* cards the player is holding at the moment
+    /** Get how many *usable* cards the player is holding at the moment
+     *
      * @return The number of cards
      */
     public int getNumberOfUsableCards() {
         return mUsableObjectCards.size();
     }
 
-    /**
-     * @param objectCard
+    /** Remove an object card
+     *
+     * @param objectCard The object card to remove
      */
     public void removeObjectCard(ObjectCard objectCard) {
         mObjectCards.remove(objectCard);
@@ -366,6 +373,7 @@ public class GamePlayer {
     }
 
     /** Get the names of usable cards 
+     *
      * @return The names array
      */
     public String[] getNamesOfUsableCards() {
@@ -373,6 +381,7 @@ public class GamePlayer {
     }
 
     /** Get names of all cards
+     *
      * @return The names array
      */
     public String[] getNamesOfCards() {
@@ -380,6 +389,7 @@ public class GamePlayer {
     }
 
     /** Remove an object card
+     *
      * @param index Index of the card
      */
     public ObjectCard removeObjectCard(int index) {
@@ -389,6 +399,7 @@ public class GamePlayer {
     }
 
     /** Helper of getNamesOf*Cards()
+     *
      * @param cards Cards array
      * @return Array of names
      */
@@ -404,6 +415,7 @@ public class GamePlayer {
     }
 
     /** True if the player has adrenaline set
+     *
      * @return A boolean value
      */
     public boolean getAdrenaline() {

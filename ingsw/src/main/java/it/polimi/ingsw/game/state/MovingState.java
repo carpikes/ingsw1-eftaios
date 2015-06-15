@@ -40,7 +40,7 @@ public class MovingState extends PlayerState {
         buildAndSendAvailableCommands();
     }
 
-    /* (non-Javadoc)
+    /** Build and send available commands
      * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
      */
     protected void buildAndSendAvailableCommands() {
@@ -51,8 +51,9 @@ public class MovingState extends PlayerState {
         sendAvailableCommands(availableCommands);
     }
 
-    /* (non-Javadoc)
+    /** Update the game
      * @see it.polimi.ingsw.game.state.State#update()
+     * @return New player state
      */
     @Override
     public PlayerState update() {
@@ -111,7 +112,7 @@ public class MovingState extends PlayerState {
     }
 
     /** Draw an hatch card
-     * @return
+     * @return The hatch card
      */
     private PlayerState drawHatchCard( ) {
         GameMap map = mGameState.getMap();
@@ -123,8 +124,9 @@ public class MovingState extends PlayerState {
         return HatchCardBuilder.getRandomCard(mGameState).getNextState( );
     }
 
-    /* (non-Javadoc)
+    /** Is the player still in game?
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
+     * @return True if the player is still in game
      */
     @Override
     public boolean stillInGame() {

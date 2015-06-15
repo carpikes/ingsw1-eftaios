@@ -18,9 +18,16 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
+/** Game Map manager
+ *
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
+ * @since Far, so far...
+ */
 public class GameMap implements Serializable {
+    /** Serial version */
     private static final long serialVersionUID = 1L;
 
+    /** Map files */
     private static final String[] mapFiles = {
         "maps/fermi.txt",
         "maps/galilei.txt",
@@ -28,12 +35,19 @@ public class GameMap implements Serializable {
         "maps/debug.txt"
     };
 
-    // including not crossable sectors
+    /** Number of rows per map, including not crossable sectors */
     public static final int ROWS = 14;
+
+    /** Number of columns per map, including not crossable sectors */
     public static final int COLUMNS = 23;
 
+    /** The board */
     private Sector[][] mBoard;
+
+    /** Starting points */
     private final Point mHumanStartingPoint, mAlienStartingPoint;
+
+    /** Number of hatches in this map */
     private int mNumberOfHatches = 0;
 
     /** Private constructor
@@ -120,6 +134,7 @@ public class GameMap implements Serializable {
     }
 
     /** Check if given point is inside the map
+     *
      * @param destination
      * @return
      */
@@ -175,6 +190,7 @@ public class GameMap implements Serializable {
     }
 
     /** Return the cells within the specified range
+     *
      * @param currentPosition Starting position
      * @param maxMoves Range
      * @return
@@ -213,8 +229,9 @@ public class GameMap implements Serializable {
         return sectors;
     }
 
-    /**
-     * Get neighbour cells starting from the given position. Note that only dangerous, not dangerous and hatch sectors
+    /** Get neighbour cells starting from the given position. 
+     *
+     * Note that only dangerous, not dangerous and hatch sectors
      * are given. Remember that in a mxn matrix, these (x) are the sectors accessible from O is the column is even:
      * - x -
      * x O x
@@ -223,11 +240,12 @@ public class GameMap implements Serializable {
      * x x x
      * x O x
      * - x -
+     *
      * @param currentPosition The starting sector
      * @return A list of all neighbours
      */
     public ArrayList<Point> getNeighbourAccessibleSectors( Point currentPosition, boolean isHuman, boolean allSectors) {
-        // get x and y for simplicity's sake
+        /** get x and y for simplicity's sake */
         int x = currentPosition.x;
         int y = currentPosition.y;
 
@@ -236,7 +254,7 @@ public class GameMap implements Serializable {
         for( int i = -1; i <= 1; ++i ) {
             for( int j = -1; j <= 1; ++j ) {
 
-                // exclude the - sectors
+                /** exclude the - sectors */
                 boolean isValid = (i == 0 && j != 0);
                 if(currentPosition.x % 2 == 0) 
                     isValid |= (i == 1 && j == 0) || (i == -1);

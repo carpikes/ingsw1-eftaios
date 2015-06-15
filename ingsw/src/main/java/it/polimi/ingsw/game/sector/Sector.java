@@ -2,11 +2,13 @@ package it.polimi.ingsw.game.sector;
 
 import java.io.Serializable;
 
-/**
- * Model for a sector.
+/** Model for a sector.
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
+ * @since May, 2015
  */
 public class Sector implements Serializable{
 
+    /** Serial version */
     private static final long serialVersionUID = 1L;
 
     /** The type of sector */
@@ -15,28 +17,34 @@ public class Sector implements Serializable{
     /** Players can get on/through this sector or not? */
     private boolean crossable;
 
+    /** Constructor
+     *
+     * @param id Sector id
+     * @param crossable True if crossable
+     */
     public Sector( int id, boolean crossable ) {
         this.id = id;
         this.crossable = crossable;
     }
 
-    /**
-     * Get type of sector
+    /** Get type of sector
+     *
      * @return ID sector
      */
     public int getId() { 
         return id; 
     }
 
-    /**
-     * Return true if this is NOT a NOT_VALID sector (off map)
+    /** Return true if this is NOT a NOT_VALID sector (off map)
+     *
+     * @return True if it is a valid sector
      */
     public boolean isValid() {
         return id != SectorBuilder.NOT_VALID;
     }
 
-    /**
-     * Check if this sector is crossable or not
+    /** Check if this sector is crossable or not
+     *
      * @return True if it is crossable
      */
     public boolean isCrossable() {

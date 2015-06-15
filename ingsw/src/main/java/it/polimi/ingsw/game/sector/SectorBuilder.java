@@ -2,26 +2,46 @@ package it.polimi.ingsw.game.sector;
 
 import it.polimi.ingsw.exception.SectorException;
 
-/**
- * Builder for sectors. Create a new sector based on ID.
- * @author Michele
+/** Builder for sectors. 
+ * Create a new sector based on ID.
+ *
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 3 Jun 2015
  */
 public class SectorBuilder {
+    /** Sector types */
+
+    /** Not valid sector type */
     public static final int NOT_VALID = 0;
+
+    /** Not dangerous sector type */
     public static final int NOT_DANGEROUS = 1;
+
+    /** Hatch sector type */
     public static final int HATCH = 2;
+
+    /** Dangerous sector type */
     public static final int DANGEROUS = 3;
+
+    /** Used hatch sector type */
     public static final int USED_HATCH = 4;
+
+    /** Alien sector type */
     public static final int ALIEN = 8;
+
+    /** Human sector type */
     public static final int HUMAN = 9;
 
+    /** Number of sectors */
     public static final int MAX_COUNT = HUMAN+1;
 
-    private SectorBuilder() {}
+    /** Private constructor */
+    private SectorBuilder() {
+    
+    }
 
-    /**
-     * Create a new sector according to the ID given.
+    /** Create a new sector according to the ID given.
+     *
      * @param id The type of sector
      * @return A new sector
      * @throws SectorException Thrown when sector ID not valid

@@ -7,17 +7,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Class for creating the roles for the player in a game
- * @author Michele
+/** Class for creating the roles for the player in a game
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 3 Jun 2015
  */
 public class RoleBuilder {
 
-    private RoleBuilder() { }
+    /** Private constructor */
+    private RoleBuilder() { 
+    
+    }
 
-    /**
-     * Generate a list of roles, half humans and half aliens. 
+    /** Generate a list of roles, half humans and half aliens. 
+     *
      * @param numberOfPlayers The number of roles it has to create
      * @return The list of roles
      */

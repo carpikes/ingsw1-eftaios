@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
@@ -19,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author Michele
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
  */
 public class DiscardingObjectCardState extends PlayerState {
@@ -32,7 +29,7 @@ public class DiscardingObjectCardState extends PlayerState {
         buildAndSendAvailableCommands();
     }
 
-    /* (non-Javadoc)
+    /** Build and send available commands
      * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
      */
     @Override
@@ -46,8 +43,9 @@ public class DiscardingObjectCardState extends PlayerState {
         }
     }
 
-    /* (non-Javadoc)
+    /** Update the game
      * @see it.polimi.ingsw.game.state.State#update()
+     * @return New player state
      */
     @Override
     public PlayerState update() {
@@ -78,13 +76,14 @@ public class DiscardingObjectCardState extends PlayerState {
      */
     private PlayerState discardObjectCard(GameCommand cmd, PlayerState nextState) {
         int index = (int)cmd.getArgs()[0];
-        if( index >= 0 && index <= Config.MAX_NUMBER_OF_OBJ_CARDS ) { // <=, not <, because here we have a card over the limit 
+        /** <=, not <, because here we have a card over the limit  */
+        if( index >= 0 && index <= Config.MAX_NUMBER_OF_OBJ_CARDS ) { 
             ObjectCard objectCard = mGamePlayer.removeObjectCard(index);
             
-            // don't let the user use another object card too!
+            /** don't let the user use another object card too! */
             mGamePlayer.setObjectCardUsed(true);
             
-            // Show everyone the card you discarded and update info
+            /** Show everyone the card you discarded and update info */
             mGameState.broadcastPacket( new GameCommand(InfoOpcode.INFO_DISCARDED_OBJ_CARD, objectCard.getId(), objectCard.getName()));
             mGameState.broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, mGamePlayer.getId(), mGamePlayer.getNumberOfCards() ));
             mGameState.sendPacketToCurrentPlayer( new GameCommand( GameOpcode.CMD_SC_DROP_CARD, index) );
@@ -96,6 +95,10 @@ public class DiscardingObjectCardState extends PlayerState {
         return nextState;
     }
 
+    /** is the player still in game?
+     * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
+     * @return True if the player is still in game
+     */
     @Override
     public boolean stillInGame() {
         return true;

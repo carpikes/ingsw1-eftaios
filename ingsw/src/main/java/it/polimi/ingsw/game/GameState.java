@@ -39,10 +39,12 @@ import java.util.logging.Logger;
 
 /** Class representing the current state of the game. It is the beating heart of the game: it holds
  * a list of all players, the mGameManager and an event queue of messages coming from the clients.
+ * 
  * @author Michele Albanese (michele.albanese@mail.polimi.it) 
  * @since  May 21, 2015
  */
 public class GameState {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(GameState.class.getName());
 
     /** Game Manager */
@@ -128,7 +130,8 @@ public class GameState {
             Role role = roles.get(i);
             GamePlayer player = new GamePlayer(i, role, getMap().getStartingPoint(role instanceof Human));
             mPlayers.add(player);
-            if(i == mCurPlayerId) // is my turn
+            /** Is my turn? */
+            if(i == mCurPlayerId)
                 player.setCurrentState(new StartTurnState(this));
             else
                 player.setCurrentState(new NotMyTurnState(this));
@@ -171,7 +174,8 @@ public class GameState {
     }
 
     /**
-     * Method called by the server hosting the games. According to the current player's state, it lets the game flow.
+     * Method called by the server hosting the games. 
+     * According to the current player's state, it lets the game flow.
      */
     public void update() {
         if( !dDebugMode && !mManager.isRunning() )
@@ -183,10 +187,10 @@ public class GameState {
         GamePlayer player = getCurrentPlayer();
         PlayerState nextState = null;
 
-        // Check for timeout
+        /** Check for timeout */
         long curTime = System.currentTimeMillis() / 1000;
         
-        // Timeout elapsed
+        /** Timeout elapsed */
         if(curTime > mCurTurnStartTime + Config.GAME_MAX_SECONDS_PER_TURN) {
             nextState = new AwayState(this);
             player.setCurrentState(nextState);
@@ -200,7 +204,7 @@ public class GameState {
             }
         }
         
-        // broadcast messages at the end of the turn
+        /** broadcast messages at the end of the turn */
         flushOutputQueue();
 
         if(nextState != null && (nextState instanceof NotMyTurnState || !nextState.stillInGame()))
@@ -246,19 +250,22 @@ public class GameState {
         broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, player.getId(), player.getNumberOfCards() ) );
         sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, (Integer)newCard.getId()) );
 
-        // We're ok, proceed
+        /** We're ok, proceed */
         if( player.getNumberOfCards() <= Config.MAX_NUMBER_OF_OBJ_CARDS ) {
             nextState = new EndingTurnState(this);
         } else {
-            // tell the user he has to drop or use a card
+            /** tell the user he has to drop or use a card */
             nextState = new DiscardingObjectCardState(this);
         }
 
         return nextState;
     }
 
-    /** Method invoked when someone sends a CMD_CS_USE_OBJ_CARD command. Invoke the correct underlying method 
+    /** Method invoked when someone sends a CMD_CS_USE_OBJ_CARD command. 
+     *
+     * Invoke the correct underlying method 
      * (attack() for Attack card..., moveTo() for Teleport card...)
+     *
      * @param objectCard The card the user wants to use
      * @return Next PlayerState for current player
      */
@@ -284,7 +291,8 @@ public class GameState {
         return nextState;
     }
 
-    /** Kills all players in a position. It is used when an alien sends an attack command or 
+    /** Kills all players in a position. 
+     * It is used when an alien sends an attack command or 
      * when a human player draws an Attack object card. 
      * @param currentPosition The point where the players wants to attack
      */
@@ -313,7 +321,7 @@ public class GameState {
             }
         }
 
-        // set the player as full if he has an alien role
+        /** set the player as full if he has an alien role */
         if( !killedPlayers.isEmpty() ) {
             GamePlayer player = getCurrentPlayer();
             if( player.isAlien() ) {
@@ -327,7 +335,7 @@ public class GameState {
         checkEndGame();
     }
 
-    /** Check if the game is over and, if so, remove it and notify players
+    /** Check if the game is over and, if so, remove it and notify players.
      *
      * End game conditions: [<who win?>]
      * 
@@ -339,9 +347,16 @@ public class GameState {
      * @param justKilledHumans True if this function is called after an attack and there are killed humans
      */
     private void checkEndGame() {
+        /** This variable is set tu true if inGamePlayers < MIN_PLAYERS and noone has just win or killed */
         boolean allWinnersMode = false; // set to true if inGamePlayers < MIN PLAYERS
+
+        /** Alive humans */
         int aliveHumans = 0;
+
+        /** Number of players in game */
         int inGamePlayers = 0;
+
+        /** Number of remaining hatches */
         int remainingHatches = mMap.getRemainingHatches();
 
         for(GamePlayer p : mPlayers)
@@ -359,10 +374,10 @@ public class GameState {
            (mRoundsPlayed > Config.MAX_NUMBER_OF_TURNS)     || // (3)
            (inGamePlayers < Config.GAME_MIN_PLAYERS)) {        // (4)
 
-            // So, the game will end.
-            // Let's gather some stats
-
-            // Move all players either into WinnerState or LoserState 
+            /** So, the game will end.
+             * Let's gather some stats
+             * Move all players either into WinnerState or LoserState
+             */
             for(int i = 0; i < mPlayers.size(); i++) {
                 GamePlayer p = mPlayers.get(i);
                 if((p.stillInGame() && ((p.isAlien() && mLastThing != LastThings.HUMAN_USED_HATCH)|| allWinnersMode)))
@@ -373,7 +388,7 @@ public class GameState {
 
             clearOutputQueue();
 
-            // Fill this two arrays
+            /** Fill this two arrays */
             ArrayList<Integer> winnersList = new ArrayList<>();
             ArrayList<Integer> loserList = new ArrayList<>();
 
@@ -398,8 +413,9 @@ public class GameState {
                 }
     }
 
-    /**
-     * Moves current player in a position. It is used by the Teleport card and when moving during
+    /** Moves current player in a position. 
+     *
+     * It is used by the Teleport card and when moving during
      * the normal flow of the game.
      * @param dest Where to move 
      */
@@ -409,7 +425,9 @@ public class GameState {
         }
     }
 
-    /** Invoked in SpotLightCardState. It lists all people in the set position and in the 6 surrounding it.
+    /** Invoked in SpotLightCardState. 
+     *
+     * It lists all people in the set position and in the 6 surrounding it.
      * @param point The position where the card takes effect.
      */
     public void spotlightAction(Point point) {
@@ -582,6 +600,7 @@ public class GameState {
     }
 
     /** Called when a client disconnects
+     *
      * @param id
      */
     public void onPlayerDisconnect(int id) {
@@ -597,6 +616,7 @@ public class GameState {
     }
 
     /** Send a packet to the specified player
+     *
      * @param player The player
      * @param pkt The packet
      */
@@ -610,7 +630,7 @@ public class GameState {
         mLastThing = ltd;
     }
 
-    /** ====== DEBUG ====== */
+    /** ====== DEBUG FUNCTIONS ====== */
 
 
     /** [DEBUG] Get the output queue
@@ -641,7 +661,9 @@ public class GameState {
         dForceNextTurn = id;
     }
 
-    /** Get the player object. Useful to add card or change values
+    /** Get the player object. 
+     *
+     * Useful to add card or change values
      * 
      * @param playerId The player id [0-7]
      * @return The player object
@@ -653,6 +675,10 @@ public class GameState {
         return mPlayers.get(playerId);
     }
 
+    /** If the game is in debug mode, check if the game is end.
+     *
+     * @return True if the game is end.
+     */
     public boolean debugGameEnded() {
         if(!dDebugMode)
             throw new DebugException("Cannot use this method in normal mode");
@@ -661,11 +687,10 @@ public class GameState {
     }
 
     /** Check if debug mode is enabled
+     *
      * @return True if game is in debug mode
      */
     public boolean isDebugModeEnabled() {
         return dDebugMode;
     }
-
-
 }

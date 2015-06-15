@@ -29,8 +29,9 @@ public class NoiseInAnySectorState extends PlayerState {
         buildAndSendAvailableCommands();
     }
 
-    /* (non-Javadoc)
+    /** Update the game
      * @see it.polimi.ingsw.game.state.State#update()
+     * @return New player state
      */
     @Override
     public PlayerState update() {
@@ -53,7 +54,7 @@ public class NoiseInAnySectorState extends PlayerState {
         return nextState;
     }
     
-    /* (non-Javadoc)
+    /** Build and send available commands
      * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
      */
     @Override
@@ -63,8 +64,9 @@ public class NoiseInAnySectorState extends PlayerState {
         sendAvailableCommands(availableCommands);
     }
 
-    /* (non-Javadoc)
+    /** Is the player still in game?
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
+     * @return True if the player is still in game
      */
     @Override
     public boolean stillInGame() {
