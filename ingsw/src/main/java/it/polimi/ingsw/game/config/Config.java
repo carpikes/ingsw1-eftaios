@@ -116,5 +116,7 @@ public class Config {
     public static final int SMALL_FONT_SIZE = 24;
 
     /** Private constructor */
-    private Config() {}
+    private Config() {
+        
+    }
 }

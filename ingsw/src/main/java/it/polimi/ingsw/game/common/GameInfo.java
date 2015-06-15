@@ -29,7 +29,7 @@ public class GameInfo implements Serializable {
     private final int id;
 
     /** List of cards */
-    private final ArrayList<Integer> listOfCards;
+    private final List<Integer> listOfCards;
 
     /** Constructor
      *

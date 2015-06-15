@@ -47,7 +47,7 @@ public class SectorBuilder {
      * @return A new sector
      * @throws SectorException Thrown when sector ID not valid
      */
-    public static Sector getSectorFor(int id) throws SectorException  {
+    public static Sector getSectorFor(int id) {
         switch(id) {
             case ALIEN:              return new Sector(ALIEN, false);
             case DANGEROUS:          return new Sector(DANGEROUS, true);

@@ -9,6 +9,14 @@ import java.security.SecureRandom;
  * @since Jun 14, 2015
  */
 public class Rand {
+    
+    /**
+     * Unused.
+     */
+    private Rand() {
+        
+    }
+    
     /** Random source */
     private static SecureRandom randSource = new SecureRandom();
     

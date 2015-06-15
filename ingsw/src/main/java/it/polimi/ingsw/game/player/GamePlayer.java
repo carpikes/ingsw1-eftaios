@@ -280,7 +280,7 @@ public class GamePlayer {
      *
      * @return index of the card dropped
      */
-    public int dropDefense() throws DefenseException {    
+    public int dropDefense() {    
         int i = 0;
         int deckSize = mObjectCards.size();
         

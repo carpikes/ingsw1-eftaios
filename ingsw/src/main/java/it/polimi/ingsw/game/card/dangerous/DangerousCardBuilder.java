@@ -16,7 +16,9 @@ public class DangerousCardBuilder {
     public static final int NOISE_IN_ANY_SECTOR = 1;
     public static final int SILENCE = 2;
 
-    private DangerousCardBuilder() { }
+    private DangerousCardBuilder() { 
+        
+    }
 
     /** Get a random Dangerous Sector Card and give it to the player.
      *
