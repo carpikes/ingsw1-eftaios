@@ -30,17 +30,6 @@ public class NoiseInAnySectorState extends PlayerState {
     }
 
     /* (non-Javadoc)
-     * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
-     */
-    @Override
-    protected void buildAndSendAvailableCommands() {
-        ArrayList<ViewCommand> availableCommands = new ArrayList<>();
-        availableCommands.add(new ViewCommand(ViewOpcode.CMD_ENABLEMAPVIEW));
-        
-        sendAvailableCommands(availableCommands);
-    }
-
-    /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
      */
     @Override
@@ -48,8 +37,8 @@ public class NoiseInAnySectorState extends PlayerState {
         GameCommand packet = mGameState.getPacketFromQueue();
         
         PlayerState nextState = this;
-        
         if( packet != null ) {
+            
             if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_MAP_POSITION && packet.getArgs().length == 1) {
                 Point p = (Point) packet.getArgs()[0];
                 if(p != null && mGameState.getMap().isWithinBounds(p)) {
@@ -62,6 +51,16 @@ public class NoiseInAnySectorState extends PlayerState {
         }
     
         return nextState;
+    }
+    
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
+     */
+    @Override
+    protected void buildAndSendAvailableCommands() {
+        ArrayList<ViewCommand> availableCommands = new ArrayList<>();
+        availableCommands.add(new ViewCommand(ViewOpcode.CMD_ENABLEMAPVIEW));
+        sendAvailableCommands(availableCommands);
     }
 
     /* (non-Javadoc)
