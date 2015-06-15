@@ -55,25 +55,24 @@ public class MapCanvasPanel extends JPanel {
 
     private boolean mClickedOnCell = false;
 
-    private transient final Object mRenderLoopMutex = new Object();
+    private final transient Object mRenderLoopMutex = new Object();
 
     private Point mPlayerPosition;
 
     // Blinking sectors
     private Point mNoisePosition = null;
-    private Map<String, Point> mSpotlightSectors = null;
+    private transient Map<String, Point> mSpotlightSectors = null;
     private Point mAttackPoint = null;
     private Color blinkingColor = null;
     
-    private transient final GameController mController;
+    private final transient GameController mController;
 
-    
-    /**
-     * Instantiates a new map canvas panel.
-     *
-     * @param map the map to be drawn
-     * @param mCanvasWidth the canvas width
-     * @param mCanvasHeight the canvas height
+    /** Create the map canvas.
+     * @param controller The local game controller
+     * @param map The map to be displayed
+     * @param canvasWidth The width of this canvas
+     * @param canvasHeight The height of this canvas 
+     * @param playerPosition The starting position of this player's screen
      */
     public MapCanvasPanel( GameController controller, GameMap map, int canvasWidth, int canvasHeight, Point playerPosition) {
         // initialization 
@@ -118,11 +117,15 @@ public class MapCanvasPanel extends JPanel {
         }).start();
     }
 
-    /** Methods for detecting mouse position and clicking */
+    /** 
+     * Methods for detecting mouse position and clicking 
+     * */
     private void addMouseListeners() {
         addMouseListener( new MouseListener() {
             @Override
-            public void mousePressed(MouseEvent e) { }
+            public void mousePressed(MouseEvent e) {
+                // not used
+            }
 
             @Override
             public void mouseClicked(MouseEvent arg0) { 
@@ -150,13 +153,19 @@ public class MapCanvasPanel extends JPanel {
             }
 
             @Override
-            public void mouseEntered(MouseEvent e) { }
+            public void mouseEntered(MouseEvent e) {
+                // not used
+            }
 
             @Override
-            public void mouseExited(MouseEvent e) { }
+            public void mouseExited(MouseEvent e) {
+                // not used
+            }
 
             @Override
-            public void mouseReleased(MouseEvent e) { }
+            public void mouseReleased(MouseEvent e) {
+                // not used
+            }
         });
 
         addMouseMotionListener( new MouseMotionListener() {
@@ -175,13 +184,15 @@ public class MapCanvasPanel extends JPanel {
             }
 
             @Override
-            public void mouseDragged(MouseEvent e) { }
+            public void mouseDragged(MouseEvent e) { 
+                // not used
+            }
         });
     }
 
 
     /**
-     * Calculate values for mHexagons.
+     * Calculate values (width, height and margins) for mHexagons.
      */
     private void calculateValuesForHexagons() {
         // Reference: http://www.redblobgames.com/grids/mHexagons/
@@ -190,7 +201,7 @@ public class MapCanvasPanel extends JPanel {
         mMarginHeight = (int)((mCanvasHeight - mHexHeight * ( GameMap.ROWS + 0.5 )) / 2.0);
     }
 
-    /* (non-Javadoc)
+    /** Paint this canvas.
      * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
      */
     @Override
@@ -209,13 +220,15 @@ public class MapCanvasPanel extends JPanel {
     }
 
     /**
-     * Draw mHexagons.
+     * Draw all hexagons, called by paintComponent().
      *
      * @param g2d The Graphics2D object where to draw on
      */
     private void drawHexagons(Graphics2D g2d) { 
+        // for every hexagon..
         for( int i = 0; i <= GameMap.ROWS; ++i ) 
             for( int j = 0; j < GameMap.COLUMNS; ++j ) {
+                
                 Point p = mHoveringCellCoords;
                 if(i != GameMap.ROWS)
                     p = new Point(j,i);
@@ -223,21 +236,29 @@ public class MapCanvasPanel extends JPanel {
                 if(p == null)
                     continue;
 
+                // this is the player position
                 boolean isPlayerHere = p.equals(mPlayerPosition);
                 
+                // check if this sector should blink
                 blinkingColor = null;
                 boolean shouldBlink = shoudBlink(p);
 
+                // check if this should be enabled
                 boolean enabled;
                 if( mEnabledCells != null && !mEnabledCells.contains(p) )
                     enabled = false;
                 else
                     enabled = true;
 
-                mHexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, (i == GameMap.ROWS), shouldBlink, blinkingColor );
+                // delegate the actual drawing according the values set in this function
+                mHexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, i == GameMap.ROWS, shouldBlink, blinkingColor );
             }
     }
     
+    /** Check if this sector should blink for a noise
+     * @param p The point to compare with
+     * @return True if this should blink
+     */
     private boolean shouldDrawNoise( Point p ) {
         if( mNoisePosition != null && p.equals( mNoisePosition ) ) {
             blinkingColor = ColorPalette.NOISE.getColor();
@@ -247,6 +268,10 @@ public class MapCanvasPanel extends JPanel {
         }
     }
     
+    /** Check if this sector should blink for a spotlight action
+     * @param p The point to compare with
+     * @return True if this should blink
+     */
     private boolean shouldDrawSpotlight( Point p ) {
         if( mSpotlightSectors != null && mSpotlightSectors.values().contains(p) ) {
             blinkingColor = ColorPalette.SPOTLIGHT.getColor();
@@ -256,6 +281,10 @@ public class MapCanvasPanel extends JPanel {
         }
     }
     
+    /** Check if this sector should blink for an attack action
+     * @param p The point to compare with
+     * @return True if this should blink
+     */
     private boolean shouldDrawAttack(Point p) {
         if( mAttackPoint != null && p.equals( mAttackPoint ) ) {
             blinkingColor = ColorPalette.ATTACK.getColor();
@@ -265,6 +294,10 @@ public class MapCanvasPanel extends JPanel {
         }
     }
 
+    /** Check if a sector should blink (delegates to the other shouldDraw* functions)
+     * @param p The point to compare with
+     * @return True if this should blink
+     */
     private boolean shoudBlink(Point p) {
         return shouldDrawNoise(p) || shouldDrawSpotlight(p) || shouldDrawAttack(p);
     }
@@ -279,6 +312,9 @@ public class MapCanvasPanel extends JPanel {
         return col % 2 == 0;
     }
 
+    /** Get the sector where the player clicked
+     * @return The point where he clicked
+     */
     public Point getChosenMapCell() {
         if(mClickedOnCell) {
             mClickedOnCell = false;
@@ -288,12 +324,19 @@ public class MapCanvasPanel extends JPanel {
         return null;
     }
 
+    /** Initialize mEnabledCells property for later drawing
+     * @param pnt The set to use
+     */
     public void setEnabledCells(Set<Point> pnt) {
         synchronized(mRenderLoopMutex) {
             mEnabledCells = pnt;
         }
     }
 
+    /** Get a crossable point at the given point
+     * @param p The point 
+     * @return
+     */
     private Point getCell(Point p) {
         for( int i = 0; i < mHexagons.length; ++i )
             for( int j = 0; j < mHexagons[i].length; ++j )
@@ -306,24 +349,27 @@ public class MapCanvasPanel extends JPanel {
         return null;
     }
 
+    /** Set current player position
+     * @param point The position of the player
+     */
     public void setPlayerPosition(Point point) {
         mPlayerPosition = point;
     }
 
-    /**
-     * @param user
-     * @param p
+    /** Set noise position
+     * @param p The point where the noise should be drawn
      */
-    public void showNoiseInSector(String user, Point p) {
+    public void showNoiseInSector(Point p) {
         mNoisePosition = p;
     }
 
-    /**
+    /** Toggle all blinking sectors to their default colors after 2 seconds
      * 
      */
     public void resetBlinkingElements() {
         java.util.Timer timer = new java.util.Timer();
 
+        long duration = 2*1000L;
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -331,18 +377,18 @@ public class MapCanvasPanel extends JPanel {
                 mSpotlightSectors = null;
                 mAttackPoint = null;
             }
-        }, 2*1000);
+        }, duration);
     }
 
-    /**
-     * @param data
+    /** Set the map of spotlight blinking sectors
+     * @param data The map to be used
      */
     public void setSpotlightData(Map<String, Point> data) {
         mSpotlightSectors = data;
     }
 
-    /**
-     * @param p
+    /** Set the blinking sector for an attack
+     * @param p The chosen point 
      */
     public void handleAttack(Point p) {
         mAttackPoint = p;

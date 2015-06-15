@@ -106,6 +106,14 @@ public class Config {
 
     /** Card height (based on image size) */
     public static final int CARD_HEIGHT = CARD_WIDTH * 745 / 490;
+    
+    /** Default font for the login and ending screens */
+    public static final String DEFAULT_FONT = "Helvetica";
+    
+    /** Font sizes */
+    public static final int BIG_FONT_SIZE = 48;
+    public static final int MEDIUM_FONT_SIZE = 36;
+    public static final int SMALL_FONT_SIZE = 24;
 
     /** Private constructor */
     private Config() {}

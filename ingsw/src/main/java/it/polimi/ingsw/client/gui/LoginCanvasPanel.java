@@ -21,7 +21,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-/**
+/** The login canvas 
  * @author Alain
  * @since 24/mag/2015
  *
@@ -51,6 +51,9 @@ class LoginCanvasPanel extends JPanel {
         }).start();
     }
 
+    /** Paint this component
+     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);     // paint parent's background
@@ -83,6 +86,13 @@ class LoginCanvasPanel extends JPanel {
             nextY = drawRightAligned(g2d, mSmallFont, "Starting...",nextY);
     }
 
+    /** Draw a string to the right of the screen
+     * @param g The graphics context 
+     * @param font The font used
+     * @param str The string to display
+     * @param y The Y offset
+     * @return The updated Y offset
+     */
     private int drawRightAligned(Graphics2D g, Font font, String str, int y) {
         FontRenderContext frc = g.getFontRenderContext();
         Rectangle2D win = g.getClipBounds();
@@ -93,9 +103,16 @@ class LoginCanvasPanel extends JPanel {
         return (int) (rect.getHeight() + y);
     }
 
+    /** Set remaining time 
+     * @param remainingTime The time to use
+     */
     public void setTime(int remainingTime) {
         mTime = (int) (System.currentTimeMillis()/1000 + remainingTime);
     }
+    
+    /** Set number of players connected to this game
+     * @param newPlayers The number of players
+     */
     public void setPlayers(int newPlayers) {
         mPlayers = newPlayers;
     }

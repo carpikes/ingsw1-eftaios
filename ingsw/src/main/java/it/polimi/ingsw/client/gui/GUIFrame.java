@@ -452,7 +452,7 @@ public class GUIFrame extends JFrame {
      */
     public void showNoiseInSector(String user, Point p) {
         showInfo(user, "NOISE IN SECTOR " + gameInfo.getMap().pointToString(p));
-        mMapCanvas.showNoiseInSector(user, p);
+        mMapCanvas.showNoiseInSector(p);
     }
 
     /** Delegate to map canvas underlying function 

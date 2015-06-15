@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.PlayerInfo;
+import it.polimi.ingsw.game.config.Config;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -22,7 +23,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-/**
+/** The ending canvas with winners and losers stats.
  * @author Alain
  * @since 24/mag/2015
  *
@@ -36,20 +37,28 @@ class EndingCanvasPanel extends JPanel {
     private Font mMediumFont;
     
     private boolean mIsWinner;
-    private List<Integer> mWinnerList;
-    private List<Integer> mLoserList;
+    private transient List<Integer> mWinnerList;
+    private transient List<Integer> mLoserList;
     private GameInfo mGameInfo;
-
+    
+    /** Create the final panel
+     * @param gameInfo The local game info 
+     * @param winnerList The list of winners' id
+     * @param loserList The list of losers' id
+     */
     public EndingCanvasPanel( GameInfo gameInfo, List<Integer> winnerList, List<Integer> loserList ) {
         
         mGameInfo = gameInfo;
+        
+        // save lists
         mIsWinner = winnerList.contains( mGameInfo.getId() );
         mWinnerList = winnerList;
         mLoserList = loserList;
         
-        mBigFont = new Font("Helvetica", Font.PLAIN, 48);
-        mMediumFont = new Font("Helvetica", Font.PLAIN, 36);
-        mSmallFont = new Font("Helvetica", Font.PLAIN, 24);
+        // create fonts
+        mBigFont = new Font( Config.DEFAULT_FONT, Font.PLAIN, Config.BIG_FONT_SIZE);
+        mMediumFont = new Font( Config.DEFAULT_FONT, Font.PLAIN, Config.MEDIUM_FONT_SIZE);
+        mSmallFont = new Font( Config.DEFAULT_FONT, Font.PLAIN, Config.SMALL_FONT_SIZE);
         
         new Timer(25, new ActionListener() {
 
@@ -64,21 +73,27 @@ class EndingCanvasPanel extends JPanel {
 
     }
 
-    /**
-     * @param playerInfos 
-     * @return 
-     * 
+
+    /** Write a list of usernames corresponding to the listOfPlayers IDs
+     * @param g2d The graphics context
+     * @param offsetY The Y offset from where to start 
+     * @param listOfPlayers The list of all IDs
+     * @return The updated Y offset
      */
     private int writePlayers( Graphics2D g2d, int offsetY, List<Integer> listOfPlayers ) {
         PlayerInfo[] players = mGameInfo.getPlayersList();
         
+        int y = offsetY;
         for( int id : listOfPlayers ) {
-            offsetY = drawRightAligned(g2d, mSmallFont, players[ id ].getUsername(), offsetY + 20);
+            y = drawRightAligned(g2d, mSmallFont, players[ id ].getUsername(), y + 20);
         }
         
-        return offsetY;
+        return y;
     }
 
+    /** Draw the canvas
+     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);     // paint parent's background
@@ -86,29 +101,40 @@ class EndingCanvasPanel extends JPanel {
         Graphics2D g2d = (Graphics2D)g;
         
         setBackground(Color.BLACK);  // set background color for this JPanel
+        
         try {
             Image bg = ImageIO.read(new File("img/ending.jpg"));
             g.drawImage(bg, 0, 0, null);
         } catch( IOException e ) {
-            LOG.warning("Cannot load ending images!");
+            LOG.warning("Cannot load ending images: " + e);
         }
+        
         setForeground(Color.WHITE);
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        int nextY = 20;
-        
+        // The title
         String title = (mIsWinner) ? "YOU WIN!" : "YOU LOSE!";
         
+        int nextY = 20;
         nextY = drawRightAligned(g2d, mBigFont, title,nextY);
         
+        // list of winners 
         nextY = drawRightAligned(g2d, mMediumFont, "Winners:", nextY + 80);
         nextY = writePlayers( g2d, nextY, mWinnerList );
         
+        // list of losers
         nextY = drawRightAligned(g2d, mMediumFont, "Losers:", nextY + 40);
         nextY = writePlayers( g2d, nextY, mLoserList );
     }
 
+    /** Draw a string to the right of the screen
+     * @param g The graphics context 
+     * @param font The font used
+     * @param str The string to display
+     * @param y The Y offset
+     * @return The updated Y offset
+     */
     private int drawRightAligned(Graphics2D g, Font font, String str, int y) {
         FontRenderContext frc = g.getFontRenderContext();
         Rectangle2D win = g.getClipBounds();
