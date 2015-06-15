@@ -27,13 +27,13 @@ public class GamePlayer {
     private Point mPosition;
 
     /** Defense enabled? (defense card used or not) */
-    private boolean defense;
+    private boolean mDefense;
 
     /** Object card already used in current turn */
-    private boolean objectCardUsed;
+    private boolean mObjectCardUsed;
 
     /** Sedatives card used? */
-    private boolean drawDangerousCard;
+    private boolean mDrawDangerousCard;
 
     /** Object cards the player owns */
     private List < ObjectCard > mObjectCards;
@@ -45,16 +45,16 @@ public class GamePlayer {
     private final Role role;
 
     /** Current state in game for the player */
-    private PlayerState currentState;
+    private PlayerState mCurrentState;
 
     /** State before using SpotlightCard */
-    private PlayerState stateBeforeSpotlightCard;
+    private PlayerState mStateBeforeSpotlightCard;
 
     /** ID in game */
     private int mId;
 
-    /**
-     * Create a new player for the game
+    /** Create a new player for the game
+     * 
      * @param id ID in game
      * @param playerRole Role of the player (alien or human)
      * @param game The game he's playing
@@ -75,7 +75,7 @@ public class GamePlayer {
      * @return Player state
      */
     public PlayerState getCurrentState() {
-        return currentState;
+        return mCurrentState;
     }
 
     /** Set current player state
@@ -83,7 +83,7 @@ public class GamePlayer {
      * @param currentState The state
      */
     public void setCurrentState(PlayerState currentState) {
-        this.currentState = currentState;
+        mCurrentState = currentState;
     }
 
     /** Check if defense is enabled (if you have a defense card)
@@ -91,7 +91,7 @@ public class GamePlayer {
      * @return True if defense enabled
      */
     public boolean isDefenseEnabled() {
-        return defense;
+        return mDefense;
     }
 
     /** Set defense to enabled / disabled
@@ -100,10 +100,10 @@ public class GamePlayer {
      */
     public void setDefense(boolean defense) {
         /** only humans can activate a defense system! */
-        if( this.isHuman() )
-            this.defense = defense;
+        if( isHuman() )
+            mDefense = defense;
         else
-            this.defense = false;
+            mDefense = false;
     }
 
     /** Get current position on board
@@ -119,7 +119,7 @@ public class GamePlayer {
      * @return True if it is valid
      */
     public boolean isValidDistance(int distance) {
-        return distance > 0 && distance <= this.getMaxMoves();
+        return distance > 0 && distance <= getMaxMoves();
     }
 
     /** Set current position to the specified one
@@ -127,7 +127,7 @@ public class GamePlayer {
      * @param position The position where to move the player
      */
     public void setCurrentPosition(Point position) {
-        this.mPosition = position;
+        mPosition = position;
     }
 
     /** Get role of the player (alien or human)
@@ -159,7 +159,7 @@ public class GamePlayer {
      * @return True if he has already used one
      */
     public boolean isObjectCardUsed() {
-        return objectCardUsed;
+        return mObjectCardUsed;
     }
 
     /** Set the value of objectCardUsed to the value specified by the parameter
@@ -167,7 +167,7 @@ public class GamePlayer {
      * @param objectCardUsed The value to use
      */
     public void setObjectCardUsed(boolean objectCardUsed) {
-        this.objectCardUsed = objectCardUsed;
+        mObjectCardUsed = objectCardUsed;
     }
 
     /** Get ID for this player
@@ -183,7 +183,7 @@ public class GamePlayer {
      * @return True if he has to draw a dangerous card
      */
     public boolean shouldDrawDangerousCard() {
-        return drawDangerousCard;
+        return mDrawDangerousCard;
     }
 
     /** Set the value of shouldDrawDangerousCard.
@@ -191,7 +191,7 @@ public class GamePlayer {
      * @param shouldDrawDangerousCard The value to use
      */
     public void setShouldDrawDangerousCard(boolean shouldDrawDangerousCard) {
-        this.drawDangerousCard = shouldDrawDangerousCard;
+        mDrawDangerousCard = shouldDrawDangerousCard;
     }
 
     /** Get the player state before using Spotlight Card during this turn. 
@@ -200,7 +200,7 @@ public class GamePlayer {
      * @return The state beforce using a spotlight card
      */
     public PlayerState getStateBeforeSpotlightCard() {
-        return stateBeforeSpotlightCard;
+        return mStateBeforeSpotlightCard;
     }
 
     /** Set the state before using Spotlight Card
@@ -208,19 +208,19 @@ public class GamePlayer {
      * @param stateBefore The state before using Spotlight Card
      */
     public void setStateBeforeSpotlightCard(PlayerState stateBefore) {
-        this.stateBeforeSpotlightCard = stateBefore;
+        mStateBeforeSpotlightCard = stateBefore;
     }
 
     /** Reset values at the beginning of each turn. */
     public void resetValues() {
-        defense = hasDefenseCard();
-        objectCardUsed = false;
-        drawDangerousCard = true;
-        stateBeforeSpotlightCard = null;
+        mDefense = hasDefenseCard();
+        mObjectCardUsed = false;
+        mDrawDangerousCard = true;
+        mStateBeforeSpotlightCard = null;
         setAdrenaline(false);
     }
 
-    /** * Check if the player has a defense card in his own deck
+    /** Check if the player has a defense card in his own deck
      *
      * @return True if has at least one defense card.
      */
@@ -295,7 +295,7 @@ public class GamePlayer {
             throw new DefenseException("Trying to remove a defense card, but none were found in your deck!");
 
         /** there could be more than one defense card */
-        setDefense( this.hasDefenseCard() );
+        setDefense( hasDefenseCard() );
         
         return i;
     }
@@ -305,7 +305,7 @@ public class GamePlayer {
      * @return True if still playing (not in winner, loser, away state)
      */
     public boolean stillInGame() {
-        return currentState.stillInGame();
+        return mCurrentState.stillInGame();
     }
 
 
@@ -326,8 +326,8 @@ public class GamePlayer {
     
     /** Find the id of this card in the main array
      *
-     * @param objectCardPos
-     * @return
+     * @param index Index of this card in the USABLE deck
+     * @return Index of this card in the MAIN deck
      */
     public Integer findObjectCardId(int index) {
         ObjectCard c = mUsableObjectCards.get(index);
@@ -392,6 +392,7 @@ public class GamePlayer {
     /** Remove an object card
      *
      * @param index Index of the card
+     * @return The removed object card
      */
     public ObjectCard removeObjectCard(int index) {
         ObjectCard c = mObjectCards.remove(index);

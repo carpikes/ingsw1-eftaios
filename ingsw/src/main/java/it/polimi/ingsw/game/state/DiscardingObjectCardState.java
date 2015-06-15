@@ -16,11 +16,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Discarding Object Card State
+ * 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
  */
 public class DiscardingObjectCardState extends PlayerState {
+    
     /** Logger */
     private static final Logger LOG = Logger.getLogger(DiscardingObjectCardState.class.getName());
 

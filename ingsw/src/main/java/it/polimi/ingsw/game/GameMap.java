@@ -30,7 +30,7 @@ public class GameMap implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** Map files */
-    private static final String[] mapFiles = {
+    private static final String[] mMapFiles = {
         "maps/fermi.txt",
         "maps/galilei.txt",
         "maps/galvani.txt",
@@ -160,7 +160,7 @@ public class GameMap implements Serializable {
      * @return The list of maps
      */
     public static String[] getListOfMaps() {
-        return mapFiles;
+        return mMapFiles;
     }
 
     /** Check if the given mapId is valid
@@ -173,7 +173,7 @@ public class GameMap implements Serializable {
         if(mapId == -1)
             return true;
 
-        if(mapId >= 0 && mapId < mapFiles.length)
+        if(mapId >= 0 && mapId < mMapFiles.length)
             return true;
         return false;
     }
@@ -188,7 +188,7 @@ public class GameMap implements Serializable {
         if(!isValidMap(mapId))
             throw new InvalidMapIdException("Invalid map id");
 
-        return GameMap.createFromMapFile(new File(mapFiles[mapId]));
+        return GameMap.createFromMapFile(new File(mMapFiles[mapId]));
     }
 
     /** Return the cells within the specified range
@@ -267,8 +267,8 @@ public class GameMap implements Serializable {
                 if( isValid ) {
                     Point p = new Point(x+j, y+i);
 
-                    if( this.isWithinBounds( p ) ){
-                        Sector currentSector = this.getSectorAt(p);
+                    if( isWithinBounds( p ) ){
+                        Sector currentSector = getSectorAt(p);
                         if(allSectors && currentSector.isValid())
                             sectors.add(p);
                         else if( currentSector.isCrossable() && !(currentSector.getId() == SectorBuilder.HATCH && !isHuman) )

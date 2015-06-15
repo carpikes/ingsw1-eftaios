@@ -20,9 +20,7 @@ public class TeleportCard extends ObjectCard {
         super(state, ObjectCardBuilder.TELEPORT_CARD, name);
     }
 
-    /**
-     * Move player to starting point
-     */
+    /** Move player to starting point */
     @Override
     public PlayerState doAction() {        
         mGameState.rawMoveTo( mGamePlayer, mGameState.getMap().getStartingPoint(true) );
@@ -30,8 +28,8 @@ public class TeleportCard extends ObjectCard {
     }
 
     /** Is this card usable?
+     * 
      * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
-     *
      * @return True if is usable
      */
     @Override

@@ -23,17 +23,15 @@ public class DefenseCard extends ObjectCard {
         mGamePlayer.setDefense(true);
     }
 
-    /** 
-     * Do nothing.
-     */
+    /** Do nothing. */
     @Override
     public PlayerState doAction() {
         return null;
     }
 
     /** Is this card usable?
+     * 
      * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
-     *
      * @return True if is usable
      */
     @Override

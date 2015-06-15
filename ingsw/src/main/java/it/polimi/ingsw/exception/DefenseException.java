@@ -7,6 +7,7 @@ package it.polimi.ingsw.exception;
  * @since 2 Jun 2015
  */
 public class DefenseException extends RuntimeException {
+
     /** Serial version */
     private static final long serialVersionUID = 8333712152333516001L;
 

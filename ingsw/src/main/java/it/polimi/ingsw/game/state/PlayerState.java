@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Player state abstract class
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015

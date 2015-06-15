@@ -20,9 +20,7 @@ public class AdrenalineCard extends ObjectCard {
         super(state, ObjectCardBuilder.ADRENALINE_CARD, name);
     }
 
-    /** 
-     * Set adrenaline to true to the set player
-     */
+    /** Set adrenaline to true to the set player */
     @Override
     public PlayerState doAction() {
         mGamePlayer.setAdrenaline(true);
@@ -31,6 +29,7 @@ public class AdrenalineCard extends ObjectCard {
     }
 
     /** Is Usable?
+     * 
      * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
      * @return True if is usable
      */

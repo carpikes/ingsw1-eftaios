@@ -39,6 +39,7 @@ import java.util.logging.Logger;
 public class GameController implements OnReceiveListener {
     /** Logger */
     private static final Logger LOG = Logger.getLogger(GameController.class.getName());
+    
     /** The view */
     private final View mView;
 
@@ -58,7 +59,7 @@ public class GameController implements OnReceiveListener {
     private String mMyUsername = null;
 
     private int mCurPlayerId = 0;
-    private boolean hostDone = false;
+    private boolean mHostDone = false;
 
     /** The constructor */
     public GameController(String[] args) {
@@ -149,14 +150,14 @@ public class GameController implements OnReceiveListener {
                 while(!mConn.isOnline()) 
                     Thread.sleep(100);
                 
-                hostDone = true;
+                mHostDone = true;
             } catch (IOException e) {
                 mView.showError("Unable to connecto to the specified host");
                 LOG.log(Level.FINER, e.toString(), e);
             } catch (InterruptedException e) {
                 LOG.log(Level.FINER, e.toString(), e);
             }    
-        } while( !hostDone  );
+        } while( !mHostDone  );
 
         /** starts the view */
         mView.run();

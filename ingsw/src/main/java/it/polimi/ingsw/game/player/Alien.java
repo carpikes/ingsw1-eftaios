@@ -20,6 +20,7 @@ public class Alien implements Role {
     }
 
     /** Get number of max moves
+     * 
      * @see it.polimi.ingsw.game.player.Role#getMaxMoves()
      */
     @Override

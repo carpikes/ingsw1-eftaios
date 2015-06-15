@@ -34,7 +34,7 @@ public class ObjectCardBuilder {
 
     /** Private Constructor */
     private ObjectCardBuilder() {
-        // Nothing here
+        /** Nothing here */
     }
 
     /** Get a new random Object Card

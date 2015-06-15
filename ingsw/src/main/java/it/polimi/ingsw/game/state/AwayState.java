@@ -7,12 +7,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Away State
+ * 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
  */
 public class AwayState extends PlayerState {
+    
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(AwayState.class.getName());
+    
+    /** Constructor
+     * 
+     * @param state Game State
+     */
     public AwayState(GameState state) {
         super(state);
         LOG.log(Level.FINE, "Constructor");
@@ -21,6 +29,7 @@ public class AwayState extends PlayerState {
     }
 
     /** Update the game
+     * 
      * @see it.polimi.ingsw.game.state.State#update()
      * @return New player state
      */
@@ -30,6 +39,7 @@ public class AwayState extends PlayerState {
     }
 
     /** Is the player still in game?
+     * 
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
      * @return True if the player is still in game
      */
@@ -39,6 +49,7 @@ public class AwayState extends PlayerState {
     }
 
     /** Build and send available commands
+     * 
      * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
      */
     @Override

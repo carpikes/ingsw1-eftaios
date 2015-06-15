@@ -9,11 +9,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Winner state
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
  */
 public class WinnerState extends PlayerState {
+
     /** Logger */
     private static final Logger LOG = Logger.getLogger(WinnerState.class.getName());
 
@@ -31,6 +33,7 @@ public class WinnerState extends PlayerState {
     }
 
     /** Update the game
+     *
      * @see it.polimi.ingsw.game.state.State#update()
      * @return New player state
      */
@@ -40,6 +43,7 @@ public class WinnerState extends PlayerState {
     }
 
     /** Is the player still in game?
+     *
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
      * @return True if the player is still in game
      */
@@ -49,6 +53,7 @@ public class WinnerState extends PlayerState {
     }
 
     /** Build and send available commands
+     *
      * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
      */
     @Override

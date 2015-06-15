@@ -31,13 +31,13 @@ public class CardButton extends JButton {
     private static final Logger LOG = Logger.getLogger( CardButton.class.getName() );
 
     /** Type of card */
-    private CardButtons type;
+    private CardButtons mType;
     
     /** Game controller */
-    private transient GameController controller;
+    private transient GameController mController;
 
     /** Visibility */
-    private float alpha = 1f;
+    private float mAlpha = 1f;
 
     /** Card id */
     private int mCardId;
@@ -46,10 +46,10 @@ public class CardButton extends JButton {
     private int mUsableCardId;
 
     /** Can be discarded? */
-    private boolean canBeDiscarded;
+    private boolean mCanBeDiscarded;
 
     /** Can be used? */
-    private boolean canBeUsed;
+    private boolean mCanBeUsed;
 
 
     /** Constructor for creating a new CardButton.
@@ -64,25 +64,25 @@ public class CardButton extends JButton {
         super( );
 
         /** initialize */
-        controller = c;
-        canBeDiscarded = false;
-        canBeUsed = false;
+        mController = c;
+        mCanBeDiscarded = false;
+        mCanBeUsed = false;
 
         /** set properties according to type */
         changeTo( type, cardId, usableCardId );
 
         /** add left-click and right-click listeners */
-        this.addMouseListener(new MouseListener() {
+        addMouseListener(new MouseListener() {
             
             @Override
             public void mouseClicked(MouseEvent e) {
                 if( ((JButton)e.getSource() ).isEnabled() ) {
-                    if( canBeUsed && SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1 && mUsableCardId != -1 ) {
+                    if( mCanBeUsed && SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1 && mUsableCardId != -1 ) {
                         /** use card with LEFT CLICK */
-                        controller.sendChosenObjectCard( mUsableCardId );
-                    } else if (canBeDiscarded && SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
+                        mController.sendChosenObjectCard( mUsableCardId );
+                    } else if (mCanBeDiscarded && SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
                         /** discard card with RIGHT CLICK */
-                        controller.sendDiscardObjectCard( mCardId );
+                        mController.sendDiscardObjectCard( mCardId );
                     }
                 }
             }
@@ -112,7 +112,7 @@ public class CardButton extends JButton {
             @Override
             public void mouseEntered(MouseEvent e) { 
                 /** set half-transparent property to this card */
-                if( canBeUsed ) {
+                if( mCanBeUsed ) {
                     setAlpha(0.5f);
                 }
             }
@@ -124,7 +124,7 @@ public class CardButton extends JButton {
             @Override
             public void mouseExited(MouseEvent e) { 
                 /** make this card opaque */
-                if( canBeUsed ) {
+                if( mCanBeUsed ) {
                     setAlpha(1f);
                 }
             }
@@ -139,7 +139,7 @@ public class CardButton extends JButton {
      */
     public void changeTo(CardButtons type, int id, int usableId) {
         try {
-            this.type = type;
+            mType = type;
             
             /** change image */
             setIcon( new ImageIcon( ImageIO.read( type.getImageFile() ) ) );
@@ -166,7 +166,7 @@ public class CardButton extends JButton {
      */
     public float getAlpha()
     {
-        return alpha;
+        return mAlpha;
     }
 
     /** Set a value for the alpha channel and repaint the screen
@@ -175,7 +175,7 @@ public class CardButton extends JButton {
      */
     public void setAlpha(float alpha)
     {
-        this.alpha = alpha;
+        mAlpha = alpha;
         repaint();
     }
 
@@ -188,7 +188,7 @@ public class CardButton extends JButton {
         Graphics2D g2 = (Graphics2D) g;
         
         /** apply transparent effect */
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, mAlpha));
 
         super.paintComponent(g2);
     }
@@ -198,7 +198,7 @@ public class CardButton extends JButton {
      * @return Card button
      */
     public CardButtons getType() {
-        return type;
+        return mType;
     }
 
     /** Set whether you can discard this card
@@ -206,7 +206,7 @@ public class CardButton extends JButton {
      * @param value True if you want to discard it
      */
     public void setCanBeDiscarded(boolean value) {
-        canBeDiscarded = value;
+        mCanBeDiscarded = value;
     }
 
     /** Set whether you can use this card
@@ -214,10 +214,10 @@ public class CardButton extends JButton {
      * @param value True if you want to use it
      */
     public void setCanBeUsed(boolean value) {
-        canBeUsed = value;
+        mCanBeUsed = value;
 
         /** Change transparency according to canBeUsed value */
-        if( !canBeUsed )
+        if( !mCanBeUsed )
             setAlpha(0.5f);
         else
             setAlpha(1f);

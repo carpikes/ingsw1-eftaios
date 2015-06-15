@@ -7,6 +7,7 @@ import java.io.Serializable;
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 public class ViewCommand implements Serializable{
+    
     /** Serial version */
     private static final long serialVersionUID = 1L;
 

@@ -91,8 +91,8 @@ public class MapCanvasPanel extends JPanel {
     public MapCanvasPanel( GameController controller, GameMap map, int canvasWidth, int canvasHeight, Point playerPosition) {
         /** initialization  */
         mController = controller;
-        this.mCanvasWidth = canvasWidth;
-        this.mCanvasHeight = canvasHeight;
+        mCanvasWidth = canvasWidth;
+        mCanvasHeight = canvasHeight;
         mHexagons = new Hexagon[GameMap.ROWS][GameMap.COLUMNS];
         mGameMap = map;
         mHoveringCellCoords = null;

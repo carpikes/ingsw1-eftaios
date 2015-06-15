@@ -3,6 +3,7 @@ package it.polimi.ingsw.game.common;
 import java.io.Serializable;
 
 /** Info about the current player
+ * 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */

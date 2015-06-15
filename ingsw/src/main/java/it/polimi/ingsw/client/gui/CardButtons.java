@@ -19,11 +19,11 @@ public enum CardButtons {
     NULL( -1, new File("img/null.png"), false);
 
     /** Card id */
-    private int id;
+    private int mId;
     /** Image file */
-    private File imgFile;
+    private File mImgFile;
     /** Is enabled? */
-    private boolean enabled;
+    private boolean mEnabled;
 
     /** Private constructor
      *
@@ -32,9 +32,9 @@ public enum CardButtons {
      * @param enabled Enabled
      */
     private CardButtons( int id, File file, boolean enabled ) {
-        this.id = id;
-        this.imgFile = file;
-        this.enabled = enabled;
+        mId = id;
+        mImgFile = file;
+        mEnabled = enabled;
     }
 
     /** Get the card id
@@ -42,7 +42,7 @@ public enum CardButtons {
      * @return The id
      */
     public int getId() {
-        return id;
+        return mId;
     }
 
     /** The the card image file
@@ -50,7 +50,7 @@ public enum CardButtons {
      * @return The image file
      */
     public File getImageFile() {
-        return imgFile;
+        return mImgFile;
     }
 
     /** Is this card enables?
@@ -58,7 +58,7 @@ public enum CardButtons {
      * @return True if is enabled
      */
     public boolean isEnabled() {
-        return enabled;
+        return mEnabled;
     }
 
 }

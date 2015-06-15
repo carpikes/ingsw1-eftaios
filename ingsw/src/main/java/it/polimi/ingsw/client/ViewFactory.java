@@ -17,7 +17,7 @@ public class ViewFactory {
     public static final int VIEW_CLI = 1;
 
     /** Names */
-    private static String[] tAssoc = {"GUI", "Console"};
+    private static String[] mAssoc = {"GUI", "Console"};
 
     /** Private constructor */
     private ViewFactory() {
@@ -29,7 +29,7 @@ public class ViewFactory {
      * @return View list
      */
     public static final String[] getViewList() {
-        return tAssoc;
+        return mAssoc;
     }
 
     /** Get the chosen view

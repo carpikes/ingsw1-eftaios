@@ -9,15 +9,12 @@ import java.security.SecureRandom;
  * @since Jun 14, 2015
  */
 public class Rand {
-    
-    /** Random source */
+    /** Random source with high entropy */
     private static SecureRandom randSource = new SecureRandom();
     
-    /**
-     * Unused.
-     */
+    /** Private constructor */
     private Rand() {
-        
+        /** Unused. */
     }
     
     /** Next int

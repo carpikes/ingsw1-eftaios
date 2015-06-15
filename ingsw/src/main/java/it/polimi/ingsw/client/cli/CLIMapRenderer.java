@@ -16,7 +16,7 @@ import java.util.Set;
 public class CLIMapRenderer {
 
     /** Sector pattern */
-    private static final String[] pattern = {
+    private static final String[] mPattern = {
         "  ____  ",
         " /****\\ ",
         "/*yyyy*\\",
@@ -25,7 +25,7 @@ public class CLIMapRenderer {
     };
 
     /** Sector types */
-    private static final String[] types = {"????","    ","HTCH","DANG","USED","????","????","????","ALJN","HUMN"};
+    private static final String[] mTypes = {"????","    ","HTCH","DANG","USED","????","????","????","ALJN","HUMN"};
 
     /** Private constructor */
     private CLIMapRenderer() {
@@ -38,8 +38,8 @@ public class CLIMapRenderer {
      * @param enabledPoints Set of enabled sector (or null = all enabled)
      */
     public static void renderMap(GameMap map, Point curPos, Set<Point> enabledPoints) {
-        final int py = pattern.length;
-        final int px = pattern[0].length();
+        final int py = mPattern.length;
+        final int px = mPattern[0].length();
         int upperPoint = -1, lowerPoint = -1;
         int leftMostPoint = -1, rightMostPoint = -1;
 
@@ -56,7 +56,7 @@ public class CLIMapRenderer {
                 Sector sector = map.getSectorAt(j, i);
                 if(sector.getId() != SectorBuilder.NOT_VALID) {
                     String str = map.pointToString(j, i);
-                    String str2 = types[sector.getId()];
+                    String str2 = mTypes[sector.getId()];
                     int spos = 0, spos2 = 0;
 
                     /** Highlight: Player is here */
@@ -76,7 +76,7 @@ public class CLIMapRenderer {
                             int bfy = (j%2)*2 + i*(py-1) + y;
                             int bfx = j*(px-2) + x;
 
-                            char t = pattern[y].charAt(x);
+                            char t = mPattern[y].charAt(x);
 
                             /** Replace magic chars */
                             if(t == ' ')

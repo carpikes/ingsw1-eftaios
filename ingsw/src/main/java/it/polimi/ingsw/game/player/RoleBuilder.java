@@ -17,7 +17,7 @@ public class RoleBuilder {
 
     /** Private constructor */
     private RoleBuilder() { 
-    
+        /** Not used */
     }
 
     /** Generate a list of roles, half humans and half aliens. 

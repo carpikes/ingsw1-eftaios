@@ -22,11 +22,11 @@ public class HatchCardBuilder {
 
     /** Private Constructor */
     private HatchCardBuilder() {
-
+        /** Empty constructor */
     }
 
-    /**
-     * Give a random hatch card to set player
+    /** Give a random hatch card to set player
+     * 
      * @param state GameState of the player
      * @param player Player who draws the card
      * @return An Hatch Card

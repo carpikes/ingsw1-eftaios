@@ -17,6 +17,7 @@ import java.util.logging.Logger;
  * @since 25 May 2015
  */
 public class EndingTurnState extends PlayerState {
+    
     /** Logger */
     private static final Logger LOG = Logger.getLogger(EndingTurnState.class.getName());
 
@@ -32,6 +33,7 @@ public class EndingTurnState extends PlayerState {
     }
 
     /** Build and send available commands
+     * 
      * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
      */
     @Override
@@ -44,6 +46,7 @@ public class EndingTurnState extends PlayerState {
     }
 
     /** Update the game
+     * 
      * @see it.polimi.ingsw.game.state.State#update()
      * @return New player state
      */
@@ -66,6 +69,7 @@ public class EndingTurnState extends PlayerState {
 
 
     /** Is the player still in game?
+     * 
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
      * @return True if the player is still in game
      */

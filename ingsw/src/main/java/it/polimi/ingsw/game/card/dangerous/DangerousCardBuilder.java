@@ -5,6 +5,7 @@ import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.common.Rand;
 
 /** Class used to get a random Dangerous Card.
+ * 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  2 Jun 2015
@@ -16,8 +17,9 @@ public class DangerousCardBuilder {
     public static final int NOISE_IN_ANY_SECTOR = 1;
     public static final int SILENCE = 2;
 
+    /** Constructor */
     private DangerousCardBuilder() { 
-        
+        /** Empty constructor */
     }
 
     /** Get a random Dangerous Sector Card and give it to the player.

@@ -21,9 +21,7 @@ public class SpotlightCard extends ObjectCard {
         super(state, ObjectCardBuilder.SPOTLIGHT_CARD, name);
     }
 
-    /** 
-     * Move to SpotlightCardState
-     */
+    /** Move to SpotlightCardState */
     @Override
     public PlayerState doAction() {
         mGamePlayer.setStateBeforeSpotlightCard( mGamePlayer.getCurrentState() );
@@ -32,8 +30,8 @@ public class SpotlightCard extends ObjectCard {
     }
 
     /** Is this card usable?
+     * 
      * @see it.polimi.ingsw.game.card.object.ObjectCard#isUsable()
-     *
      * @return True if is usable
      */
     @Override

@@ -12,12 +12,12 @@ import it.polimi.ingsw.game.config.Config;
 public class Human implements Role {
 
     /** Is the adrenaline used? */
-    private boolean adrenalineUsed;
+    private boolean mAdrenalineUsed;
 
     /** Human constructor */
     public Human( ) {
         super();
-        this.adrenalineUsed = false;
+        mAdrenalineUsed = false;
     }
 
     /** Get number of max moves
@@ -27,7 +27,7 @@ public class Human implements Role {
      */
     @Override
     public int getMaxMoves() {
-        if( adrenalineUsed ) 
+        if( mAdrenalineUsed ) 
             return Config.MAX_HUMAN_ADRENALINE_MOVES;
         else
             return Config.MAX_HUMAN_MOVES;
@@ -38,7 +38,7 @@ public class Human implements Role {
      * @return True if adrenaline is active
      */
     public boolean hasUsedAdrenaline() {
-        return adrenalineUsed;
+        return mAdrenalineUsed;
     }
 
     /** Set adrenaline to used / not used.
@@ -46,7 +46,7 @@ public class Human implements Role {
      * @param adrenaline The value to use
      */
     public void setAdrenaline(boolean adrenaline) {
-        adrenalineUsed = adrenaline;
+        mAdrenalineUsed = adrenaline;
     }
 
 }

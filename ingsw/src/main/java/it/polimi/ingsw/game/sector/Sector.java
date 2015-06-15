@@ -3,6 +3,7 @@ package it.polimi.ingsw.game.sector;
 import java.io.Serializable;
 
 /** Model for a sector.
+ * 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since May, 2015
@@ -13,10 +14,10 @@ public class Sector implements Serializable{
     private static final long serialVersionUID = 1L;
 
     /** The type of sector */
-    private int id;
+    private int mId;
 
     /** Players can get on/through this sector or not? */
-    private boolean crossable;
+    private boolean mIsCrossable;
 
     /** Constructor
      *
@@ -24,8 +25,8 @@ public class Sector implements Serializable{
      * @param crossable True if crossable
      */
     public Sector( int id, boolean crossable ) {
-        this.id = id;
-        this.crossable = crossable;
+        mId = id;
+        mIsCrossable = crossable;
     }
 
     /** Get type of sector
@@ -33,7 +34,7 @@ public class Sector implements Serializable{
      * @return ID sector
      */
     public int getId() { 
-        return id; 
+        return mId; 
     }
 
     /** Return true if this is NOT a NOT_VALID sector (off map)
@@ -41,7 +42,7 @@ public class Sector implements Serializable{
      * @return True if it is a valid sector
      */
     public boolean isValid() {
-        return id != SectorBuilder.NOT_VALID;
+        return mId != SectorBuilder.NOT_VALID;
     }
 
     /** Check if this sector is crossable or not
@@ -49,6 +50,6 @@ public class Sector implements Serializable{
      * @return True if it is crossable
      */
     public boolean isCrossable() {
-        return crossable;
+        return mIsCrossable;
     }
 }

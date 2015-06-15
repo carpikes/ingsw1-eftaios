@@ -32,10 +32,10 @@ public class Hexagon {
      * @param hexagonPath Shape of hexagon
      */
     public Hexagon(Point center, int size, Polygon hexagonPath, int type) {
-        this.mCenter = center;
-        this.mSize = size;
-        this.mPath = hexagonPath;
-
+        mCenter = center;
+        mSize = size;
+        mPath = hexagonPath;
+        
         mColor = HexagonFactory.getHexagonColorPalette(type).getColor();
     }
     

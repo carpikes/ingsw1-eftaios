@@ -11,7 +11,7 @@ public class TooFewPlayersException extends RuntimeException {
     /** Serial version */
     private static final long serialVersionUID = 1718771915030754653L;
 
-    /** Constructor
+    /** Invoke superclass constructor
      *
      * @param message msg
      */

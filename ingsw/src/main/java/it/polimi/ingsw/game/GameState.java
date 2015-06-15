@@ -47,13 +47,16 @@ import java.util.logging.Logger;
  * @since  May 21, 2015
  */
 public class GameState {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(GameState.class.getName());
 
     /** Game Manager */
     private final GameManager mManager;
 
-    /** Input and output queue */
+    /** Input queue */
     private final Queue<GameCommand> mInputQueue;
+    
+    /** Output queue */
     private final Queue<Map.Entry<Integer,GameCommand>> mOutputQueue;
 
     /** Game map */
@@ -71,15 +74,6 @@ public class GameState {
     /** Current turn start time*/
     private long mCurTurnStartTime = 0;
 
-    /** Debug mode */
-    private final boolean dDebugMode;
-
-    /** [DEBUG] Game over */
-    private boolean dGameOver = false;
-
-    /** [DEBUG] If != -1, set this player as next */
-    private int dForceNextTurn = -1;
-
     /** Last actions in game */
     public static enum LastThings {
         NEVERMIND,
@@ -91,8 +85,17 @@ public class GameState {
     /** Last action */
     private LastThings mLastThing = LastThings.NEVERMIND;
 
-    /**
-     * Constructs a new game.
+    /** Debug mode */
+    private final boolean dDebugMode;
+
+    /** [DEBUG] Game over */
+    private boolean dGameOver = false;
+
+    /** [DEBUG] If != -1, set this player as next */
+    private int dForceNextTurn = -1;
+
+    /** Constructs a new game.
+     * 
      * @param gameManager The GameManager that created this game.
      * @param mapId Id of the map
      * @param clients List of connections of all players
@@ -124,6 +127,7 @@ public class GameState {
     }
 
     /** Build the player list
+     * 
      * @param roles Array of roles
      * @param numberOfPlayers Number of players
      */
@@ -285,7 +289,7 @@ public class GameState {
                 broadcastPacket( new GameCommand(InfoOpcode.INFO_OBJ_CARD_USED, objectCard.getId(), objectCard.getName()) );
 
                 player.setObjectCardUsed(true);
-                this.sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_DROP_CARD, idInMainArr) );
+                sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_DROP_CARD, idInMainArr) );
                 broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, player.getId(), player.getNumberOfCards() ) );
 
                 nextState = objectCard.doAction();
@@ -312,7 +316,7 @@ public class GameState {
                     try {
                         int indexCard = player.dropDefense();
                         broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, i, player.getNumberOfCards() ) );
-                        this.sendPacketToPlayer( i, new GameCommand(GameOpcode.CMD_SC_DROP_CARD, indexCard) );
+                        sendPacketToPlayer( i, new GameCommand(GameOpcode.CMD_SC_DROP_CARD, indexCard) );
                         defendedPlayers.add(i);
                     } catch( DefenseException e ) {
                         LOG.warning(e.getLocalizedMessage());
@@ -683,7 +687,7 @@ public class GameState {
         if(!dDebugMode)
             throw new DebugException("Cannot use this method in normal mode");
 
-        return this.dGameOver;
+        return dGameOver;
     }
 
     /** Check if debug mode is enabled

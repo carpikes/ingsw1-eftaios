@@ -20,9 +20,7 @@ public class SedativesCard extends ObjectCard {
         super(state, ObjectCardBuilder.SEDATIVES_CARD, name);
     }
 
-    /**
-     * Force player NOT to draw a dangerous card during this turn
-     */
+    /** Force player NOT to draw a dangerous card during this turn */
     @Override
     public PlayerState doAction() {
         mGamePlayer.setShouldDrawDangerousCard(false);

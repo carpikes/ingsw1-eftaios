@@ -13,6 +13,7 @@ import java.util.List;
  * @since 22/mag/2015
  */
 public class GameInfo implements Serializable {
+    
     /** Serial version */
     private static final long serialVersionUID = 1L;
 
@@ -47,6 +48,7 @@ public class GameInfo implements Serializable {
     }
 
     /** Get the player list
+     * 
      * @return Player list
      */
     public PlayerInfo[] getPlayersList() {
@@ -54,6 +56,7 @@ public class GameInfo implements Serializable {
     }
 
     /** Get the map
+     * 
      * @return the Map
      */
     public GameMap getMap() {
@@ -61,6 +64,7 @@ public class GameInfo implements Serializable {
     }
 
     /** Is the player human?
+     * 
      * @return True if is human
      */
     public boolean isHuman() {
@@ -68,6 +72,7 @@ public class GameInfo implements Serializable {
     }
 
     /** Get the player id
+     * 
      * @return the id
      */
     public int getId() {

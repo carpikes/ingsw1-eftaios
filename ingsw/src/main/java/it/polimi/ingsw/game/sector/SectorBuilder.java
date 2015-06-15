@@ -38,7 +38,7 @@ public class SectorBuilder {
 
     /** Private constructor */
     private SectorBuilder() {
-    
+        /** Not used */
     }
 
     /** Create a new sector according to the ID given.

@@ -8,11 +8,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Start Turn State
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
  */
 public class StartTurnState extends PlayerState {
+
     /** Logger */
     private static final Logger LOG = Logger.getLogger(StartTurnState.class.getName());
 
@@ -31,8 +33,8 @@ public class StartTurnState extends PlayerState {
     }
 
     /** Update
+     *
      * @see it.polimi.ingsw.game.state.State#update()
-     * 
      * @return New State
      */
     @Override
@@ -41,8 +43,8 @@ public class StartTurnState extends PlayerState {
     }
 
     /** Is the player still in game
-     * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
      *
+     * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
      * @return True if the player is still in game
      */
     @Override
@@ -51,6 +53,7 @@ public class StartTurnState extends PlayerState {
     }
 
     /** Build and send available commands
+     *
      * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
      */
     @Override

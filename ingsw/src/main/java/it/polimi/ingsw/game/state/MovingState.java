@@ -20,11 +20,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Moving State
+ * 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
  */
 public class MovingState extends PlayerState {
+    
     /** Logger */
     private static final Logger LOG = Logger.getLogger(MovingState.class.getName());
 
@@ -65,23 +67,25 @@ public class MovingState extends PlayerState {
 
         PlayerState nextState = this;
 
-        // If we actually received a command from the client...
+        /** If we actually received a command from the client... */
         if( packet != null ) {
-            // If the user said he wanted to move..
+            /** If the user said he wanted to move.. */
             if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_MAP_POSITION ) {
                 Object obj = packet.getArgs()[0];
                 if(obj != null && obj instanceof Point) {
                     Point chosenPos = (Point) obj;
                     if(chosenPos != null && availableSectors.contains(chosenPos)) {
                         nextState = handleMove(mGamePlayer, map, chosenPos);
-                    } else // invalid position
+                    } else {
+                        /** invalid position */
                         mGameState.sendPacketToCurrentPlayer(GameOpcode.CMD_SC_MOVE_INVALID);
+                    }
                 } else
                     mGameState.sendPacketToCurrentPlayer(GameOpcode.CMD_SC_MOVE_INVALID);
             } else if( packet.getOpcode() == GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD && mGamePlayer.getNumberOfUsableCards() > 0) {
                 nextState = useObjectCard(this, packet);
 
-                // This call is important (Adrenaline card!) 
+                /** This call is important (Adrenaline card!)  */
                 availableSectors = mGameState.getCellsWithMaxDistance();
             } else {
                 throw new IllegalStateOperationException("You can only move. Discarding command.");
@@ -92,6 +96,7 @@ public class MovingState extends PlayerState {
     }
 
     /** Handle a move
+     *
      * @param player The player
      * @param map The map
      * @param chosenPos The chosen position
@@ -102,29 +107,30 @@ public class MovingState extends PlayerState {
         mGameState.rawMoveTo(player, chosenPos);
 
         Sector sector = map.getSectorAt( player.getCurrentPosition() );
-        // If we are on an hatch sector, draw an hatch card and act accordingly
-        if( sector.getId() == SectorBuilder.HATCH ) {
+        /** If we are on an hatch sector, draw an hatch card and act accordingly */
+        if( sector.getId() == SectorBuilder.HATCH )
             nextState = drawHatchCard( );
-        } else {
-            nextState =  new MoveDoneState(mGameState);
-        }
+        else
+            nextState = new MoveDoneState(mGameState);
         return nextState;
     }
 
     /** Draw an hatch card
-     * @return
+     *
+     * @return The hatch card
      */
     private PlayerState drawHatchCard( ) {
         GameMap map = mGameState.getMap();
 
         map.useHatch(mGamePlayer.getCurrentPosition());
-        // set current cell as no more accessible
+        /** set current cell as no more accessible */
         mGameState.broadcastPacket( new GameCommand( InfoOpcode.INFO_USED_HATCH, mGamePlayer.getCurrentPosition() ) );
 
         return HatchCardBuilder.getRandomCard(mGameState).getNextState( );
     }
 
-    /* (non-Javadoc)
+    /** Is the player still in game?
+     *
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
      */
     @Override

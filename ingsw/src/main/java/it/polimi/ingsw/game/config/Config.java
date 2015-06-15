@@ -117,6 +117,6 @@ public class Config {
 
     /** Private constructor */
     private Config() {
-        
+        /** Unused */
     }
 }

@@ -6,11 +6,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Not my turn State
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
  */
 public class NotMyTurnState extends PlayerState {
+
     /** Logger */
     private static final Logger LOG = Logger.getLogger(NotMyTurnState.class.getName());
 

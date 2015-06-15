@@ -67,17 +67,17 @@ public class GUIFrame extends JFrame {
     
     /** elements on right panel */
     private static final int NUMBER_OF_CARD_BUTTONS = Config.MAX_NUMBER_OF_OBJ_CARDS + 1;
-    private CardButton[] cardButtons = new CardButton[ NUMBER_OF_CARD_BUTTONS ];
+    private CardButton[] mCardButtons = new CardButton[ NUMBER_OF_CARD_BUTTONS ];
 
-    private JPanel bottomPanel, rightPanel, cardPanel, actionButtonsPanel;
-    private JScrollPane scrollTextAreaPane;
+    private JPanel mBottomPanel, mRightPanel, mCardPanel, mActionButtonsPanel;
+    private JScrollPane mScrollTextAreaPane;
 
-    private JTextArea textArea;
-    private JButton btnAttack, btnDrawDangerousCard, btnEndTurn;
+    private JTextArea mTextArea;
+    private JButton mBtnAttack, mBtnDrawDangerousCard, mBtnEndTurn;
 
-    private JLabel[] userLabel;
+    private JLabel[] mUserLabel;
 
-    private GameInfo gameInfo = null;
+    private GameInfo mGameInfo = null;
 
     /** Create the main frame
      *
@@ -102,39 +102,39 @@ public class GUIFrame extends JFrame {
     /** Create player's info panel */
     private void createBottomPanel() {
         /** general settings */
-        bottomPanel = new JPanel(  );
+        mBottomPanel = new JPanel(  );
 
-        bottomPanel.setPreferredSize( mDimensionBottomPanel );
-        bottomPanel.setBorder( RIGHT_PANEL_MARGIN );
-        bottomPanel.setLayout( new BorderLayout() );
+        mBottomPanel.setPreferredSize( mDimensionBottomPanel );
+        mBottomPanel.setBorder( RIGHT_PANEL_MARGIN );
+        mBottomPanel.setLayout( new BorderLayout() );
 
-        bottomPanel.add( new JLabel( gameInfo.getPlayersList().length + " players in game: "), BorderLayout.WEST );
+        mBottomPanel.add( new JLabel( mGameInfo.getPlayersList().length + " players in game: "), BorderLayout.WEST );
 
-        PlayerInfo[] players = gameInfo.getPlayersList();
-        userLabel = new JLabel[ players.length ];
+        PlayerInfo[] players = mGameInfo.getPlayersList();
+        mUserLabel = new JLabel[ players.length ];
 
         FlowLayout flow = new FlowLayout();
         flow.setHgap( Config.USERS_HGAP );
         JPanel listOfUsers = new JPanel( flow );
         
         for( int i = 0; i < players.length; ++i ) {
-            userLabel[i] = new JLabel(  );
+            mUserLabel[i] = new JLabel(  );
         }
         
         updateLabels( );
         
         for( int i = 0; i < players.length; ++i ) {
-            listOfUsers.add( userLabel[i] );
+            listOfUsers.add( mUserLabel[i] );
         }
         
-        bottomPanel.add( listOfUsers, BorderLayout.CENTER);
-        this.add( bottomPanel, BorderLayout.SOUTH );
+        mBottomPanel.add( listOfUsers, BorderLayout.CENTER);
+        add( mBottomPanel, BorderLayout.SOUTH );
     }
 
     
     /** Update all player info labels */
     private void updateLabels() {
-        PlayerInfo[] players = gameInfo.getPlayersList();
+        PlayerInfo[] players = mGameInfo.getPlayersList();
         
         for( int i = 0; i < players.length; ++i ) {
             createTextForLabel(i);
@@ -146,46 +146,46 @@ public class GUIFrame extends JFrame {
      * @param i The index of the player
      */
     private void createTextForLabel(int i) {
-        PlayerInfo[] players = gameInfo.getPlayersList();
+        PlayerInfo[] players = mGameInfo.getPlayersList();
 
         String txt = "[" + (i+1) + "] ";
 
-        if( i == gameInfo.getId() ) {
+        if( i == mGameInfo.getId() ) {
             /** Red foreground for current player */
-            userLabel[i].setForeground( Color.RED );
-            txt += (gameInfo.isHuman()) ? "** HUMAN ** " : "** ALIEN ** ";
+            mUserLabel[i].setForeground( Color.RED );
+            txt += (mGameInfo.isHuman()) ? "** HUMAN ** " : "** ALIEN ** ";
         } else {
-            userLabel[i].setForeground( Color.BLACK );
+            mUserLabel[i].setForeground( Color.BLACK );
         }
 
         txt +=  players[i].getUsername() + " - " + players[i].getNumberOfCards() + " object cards";
 
-        userLabel[i].setText( txt );
+        mUserLabel[i].setText( txt );
     }
 
     /** Create right panel with cards, text area and action buttons */
     private void createRightPanel() {
         /** general settings */
-        rightPanel = new JPanel(  );
+        mRightPanel = new JPanel(  );
 
-        rightPanel.setPreferredSize( mDimensionRightPanel );
-        rightPanel.setBorder( RIGHT_PANEL_MARGIN );
-        rightPanel.setLayout( new BorderLayout() );
+        mRightPanel.setPreferredSize( mDimensionRightPanel );
+        mRightPanel.setBorder( RIGHT_PANEL_MARGIN );
+        mRightPanel.setLayout( new BorderLayout() );
 
         /** card panel */
-        cardPanel = createCardPanel();
-        rightPanel.add(cardPanel, BorderLayout.NORTH);
+        mCardPanel = createCardPanel();
+        mRightPanel.add(mCardPanel, BorderLayout.NORTH);
 
         /** Message Area */
-        scrollTextAreaPane = createMessageArea();
-        rightPanel.add(scrollTextAreaPane, BorderLayout.CENTER);
+        mScrollTextAreaPane = createMessageArea();
+        mRightPanel.add(mScrollTextAreaPane, BorderLayout.CENTER);
 
         /** Action buttons panel  */
-        actionButtonsPanel = createActionPanel();
-        rightPanel.add(actionButtonsPanel, BorderLayout.SOUTH);
+        mActionButtonsPanel = createActionPanel();
+        mRightPanel.add(mActionButtonsPanel, BorderLayout.SOUTH);
 
         /** add all this to parent's frame */
-        this.add(rightPanel, BorderLayout.EAST);
+        add(mRightPanel, BorderLayout.EAST);
     }
 
     /** Create action button panel (the one below the text area)
@@ -195,8 +195,8 @@ public class GUIFrame extends JFrame {
     private JPanel createActionPanel() {
         JPanel actionPanel = new JPanel( new GridLayout(2,2) );
 
-        btnAttack = new JButton("Attack");
-        btnAttack.addActionListener( new ActionListener() {
+        mBtnAttack = new JButton("Attack");
+        mBtnAttack.addActionListener( new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -204,8 +204,8 @@ public class GUIFrame extends JFrame {
             }
         });
 
-        btnDrawDangerousCard = new JButton("Dangerous Card");
-        btnDrawDangerousCard.addActionListener( new ActionListener() {
+        mBtnDrawDangerousCard = new JButton("Dangerous Card");
+        mBtnDrawDangerousCard.addActionListener( new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -213,8 +213,8 @@ public class GUIFrame extends JFrame {
             }
         });
 
-        btnEndTurn = new JButton("End Turn");
-        btnEndTurn.addActionListener( new ActionListener() {
+        mBtnEndTurn = new JButton("End Turn");
+        mBtnEndTurn.addActionListener( new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -223,9 +223,9 @@ public class GUIFrame extends JFrame {
             }
         });
 
-        actionPanel.add( btnAttack );
-        actionPanel.add( btnDrawDangerousCard );
-        actionPanel.add( btnEndTurn );
+        actionPanel.add( mBtnAttack );
+        actionPanel.add( mBtnDrawDangerousCard );
+        actionPanel.add( mBtnEndTurn );
 
         return actionPanel;
     }
@@ -235,16 +235,16 @@ public class GUIFrame extends JFrame {
      * @return The text area
      */
     private JScrollPane createMessageArea() {
-        textArea = new JTextArea( 5, 20 );
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        textArea.setEditable(false);
-        textArea.setMargin( TEXT_AREA_PADDING );
+        mTextArea = new JTextArea( 5, 20 );
+        mTextArea.setLineWrap(true);
+        mTextArea.setWrapStyleWord(true);
+        mTextArea.setEditable(false);
+        mTextArea.setMargin( TEXT_AREA_PADDING );
 
-        JScrollPane scrollPane = new JScrollPane(textArea); 
+        JScrollPane scrollPane = new JScrollPane(mTextArea); 
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+        DefaultCaret caret = (DefaultCaret)mTextArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         scrollPane.setBorder( TEXT_AREA_MARGIN );
@@ -266,8 +266,8 @@ public class GUIFrame extends JFrame {
         cardTempPanel.setPreferredSize(mDimensionCardPanel);
 
         for( int i = 0; i < NUMBER_OF_CARD_BUTTONS; ++i ) {
-            cardButtons[i] = new CardButton( CardButtons.NULL, mController, i, -1 );
-            cardTempPanel.add( cardButtons[i] );
+            mCardButtons[i] = new CardButton( CardButtons.NULL, mController, i, -1 );
+            cardTempPanel.add( mCardButtons[i] );
         }
 
         return cardTempPanel;
@@ -296,8 +296,8 @@ public class GUIFrame extends JFrame {
         mLoginCanvas = new LoginCanvasPanel( );
         mLoginCanvas.setPreferredSize(mDimensionLeftPanel);
 
-        if( rightPanel != null )
-            rightPanel.setVisible(false);
+        if( mRightPanel != null )
+            mRightPanel.setVisible(false);
 
         add(mLoginCanvas, BorderLayout.CENTER);
     }
@@ -319,8 +319,8 @@ public class GUIFrame extends JFrame {
             add(mMapCanvas, BorderLayout.CENTER);
             mLoginCanvas = null;
 
-            if( rightPanel != null )
-                rightPanel.setVisible( true );
+            if( mRightPanel != null )
+                mRightPanel.setVisible( true );
 
             createBottomPanel();
 
@@ -366,9 +366,9 @@ public class GUIFrame extends JFrame {
      */
     public void showInfo(String user, String message) {
         if( user != null )
-            textArea.append( String.format("%s: %s%n%n", user, message) );
+            mTextArea.append( String.format("%s: %s%n%n", user, message) );
         else 
-            textArea.append( String.format("-- INFO --: %s%n%n", message) );
+            mTextArea.append( String.format("-- INFO --: %s%n%n", message) );
     }
 
     /** Set game info about players' usernames and number of cards
@@ -376,7 +376,7 @@ public class GUIFrame extends JFrame {
      * @param container The source of data
      */
     public void setGameInfo(GameInfo container) {
-        gameInfo  = container;
+        mGameInfo  = container;
     }
 
     /** Enable card buttons if you can use them (you're not an alien and you're not selecting a defense card)
@@ -384,7 +384,7 @@ public class GUIFrame extends JFrame {
      * @param value The value to set
      */
     public void setCanSelectObjCard(boolean value) {
-        for( CardButton btn : cardButtons ) {
+        for( CardButton btn : mCardButtons ) {
             if( value ) {
                 btn.setCanBeUsed( btn.getType().isEnabled() );
             } else {
@@ -398,7 +398,7 @@ public class GUIFrame extends JFrame {
      * @param value The value to use
      */
     public void setAttackEnabled(boolean value) {
-        btnAttack.setEnabled( value );
+        mBtnAttack.setEnabled( value );
     }
 
     /** Enable right click action on card buttons
@@ -406,7 +406,7 @@ public class GUIFrame extends JFrame {
      * @param value The value to use
      */
     public void setDiscardObjCardEnabled(boolean value) {
-        for( CardButton btn : cardButtons ) {
+        for( CardButton btn : mCardButtons ) {
             btn.setCanBeDiscarded( value );
         }
     }
@@ -416,7 +416,7 @@ public class GUIFrame extends JFrame {
      * @param value The value to use
      */
     public void setEndTurnEnabled(boolean value) {
-        btnEndTurn.setEnabled( value );
+        mBtnEndTurn.setEnabled( value );
     }
 
     /** Enable draw dangerous card button
@@ -424,7 +424,7 @@ public class GUIFrame extends JFrame {
      * @param value The value to use
      */
     public void setCanDrawDangerousCard(boolean value) {
-        btnDrawDangerousCard.setEnabled( value );
+        mBtnDrawDangerousCard.setEnabled( value );
     }
 
     /** Reset all buttons and disable map selection (used at the beginning of every player state) */
@@ -449,12 +449,12 @@ public class GUIFrame extends JFrame {
 
                 for( CardButtons btn : CardButtons.values() ) {
                     if( btn.getId() == idCard ) {
-                        cardButtons[i].changeTo( btn, i, ( !btn.isEnabled() ) ? -1 : usableIndex++ );
+                        mCardButtons[i].changeTo( btn, i, ( !btn.isEnabled() ) ? -1 : usableIndex++ );
                     }
                 }
             } catch( IndexOutOfBoundsException e ) {
                 LOG.log(Level.FINER, e.toString(), e);
-                cardButtons[i].changeTo( CardButtons.NULL, i, -1 );
+                mCardButtons[i].changeTo( CardButtons.NULL, i, -1 );
             }
         }
     }
@@ -465,7 +465,7 @@ public class GUIFrame extends JFrame {
      * @param p The point where the action took place
      */
     public void showNoiseInSector(String user, Point p) {
-        showInfo(user, "NOISE IN SECTOR " + gameInfo.getMap().pointToString(p));
+        showInfo(user, "NOISE IN SECTOR " + mGameInfo.getMap().pointToString(p));
         mMapCanvas.showNoiseInSector(p);
     }
 
@@ -479,7 +479,7 @@ public class GUIFrame extends JFrame {
      * @param idPlayer The id of the player
      */
     public void updatePlayerInfoDisplay(int idPlayer) {        
-        this.createTextForLabel( idPlayer );
+        createTextForLabel( idPlayer );
     }
 
     /** Remove all elements and show ending screen
@@ -488,15 +488,15 @@ public class GUIFrame extends JFrame {
      * @param loserList The list of all losers' id
      */
     public void showEnding(List<Integer> winnerList, List<Integer> loserList) {
-        mEndingCanvas = new EndingCanvasPanel(gameInfo, winnerList, loserList);
+        mEndingCanvas = new EndingCanvasPanel(mGameInfo, winnerList, loserList);
         mEndingCanvas.setPreferredSize(mDimensionLeftPanel);
 
         /** SWING FUCK*NG BUG: DO NOT USE REMOVE ALL()! */
-        this.remove( mMapCanvas );
-        this.remove( bottomPanel );
-        this.remove( rightPanel );
+        remove( mMapCanvas );
+        remove( mBottomPanel );
+        remove( mRightPanel );
         
-        this.add( mEndingCanvas, BorderLayout.CENTER );
+        add( mEndingCanvas, BorderLayout.CENTER );
         
         validate();
         repaint();

@@ -21,9 +21,7 @@ public class RedHatchCard extends HatchCard {
         super(state);
     }
 
-    /** 
-     * Return a new EndingTurnState
-     */
+    /** Return a new EndingTurnState */
     @Override
     public PlayerState getNextState() {
         return new NotMyTurnState(mGameState);
