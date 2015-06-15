@@ -4,14 +4,15 @@ import it.polimi.ingsw.client.cli.CLIView;
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
+import it.polimi.ingsw.exception.InvalidGameInfoException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.common.CoreOpcode;
-import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.GameOpcode;
 import it.polimi.ingsw.game.common.GameInfo;
+import it.polimi.ingsw.game.common.GameOpcode;
 import it.polimi.ingsw.game.common.InfoOpcode;
 import it.polimi.ingsw.game.common.Opcode;
+import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.ViewCommand;
 
 import java.awt.Point;
@@ -23,7 +24,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Client controller
+/** Client game controller. It is the supervisor of whatever happens on the client side.
+ * It is the proxy for any communication between client and server. 
+ * Whenever a server sends a message to the client, this class is responsible for
+ * analyzing the command and delegate the effects to the underlying view.
+ * Whenever a clients sends a message, it delegates the actual sending to the underlying connection
+ * responsible for it.
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 18, 2015
  */
@@ -60,7 +66,7 @@ public class GameController implements OnReceiveListener {
         createViewCommandQueueThread();
     }
 
-    /**
+    /** Create the thread responsible for getting new View Commands
      * 
      */
     private void createViewCommandQueueThread() {
@@ -83,10 +89,9 @@ public class GameController implements OnReceiveListener {
     }
 
 
-    /**
-     * @param args
-     * @param tempView
-     * @return
+    /** Determine initial view. 
+     * @param args The view list
+     * @return The temporary, initial view
      */
     private View determineView(String[] args) {
         View tempView = null;
@@ -112,7 +117,10 @@ public class GameController implements OnReceiveListener {
     }
 
 
-    protected void enqueueViewCommand(List<ViewCommand> arrayList) {
+    /** Add a list of view commands to be then processed by the view.
+     * @param arrayList A list of Viewcommands to be added
+     */
+    protected void enqueueViewCommands(List<ViewCommand> arrayList) {
         try {
             mViewQueue.put(arrayList);
         } catch(InterruptedException e) {
@@ -120,17 +128,20 @@ public class GameController implements OnReceiveListener {
         }
     }
 
-    /** Main loop */
+    /** Main loop of the game
+     * 
+     */
     public void run() {
         if(mView == null)
             return;
 
+        // show statup with current view
         mView.startup();
         
+        // handle connection
         setupConnection();
-        //if( !setupConnection() )
-        //    mView.close();
         
+        // handle host
         do {
             try {
                 setupHost();
@@ -147,8 +158,10 @@ public class GameController implements OnReceiveListener {
             }    
         } while( !hostDone  );
 
+        // starts the view
         mView.run();
 
+        // keep getting commands till the end of the game
         try {
             while(!mStopEvent) {
                 GameCommand cmd = mCommandQueue.poll(1, TimeUnit.SECONDS);
@@ -161,10 +174,13 @@ public class GameController implements OnReceiveListener {
             LOG.log(Level.FINEST, e.toString(), e);
         }
 
+        // stops the game
         stop();
-        return;
     }
     
+    /** Ask for a host and connect to it
+     * @throws IOException
+     */
     private void setupHost() throws IOException {
         String host;
         do {
@@ -175,6 +191,9 @@ public class GameController implements OnReceiveListener {
         mConn.connect();
     }
 
+    /** Ask for a connection type
+     * @return Whether this choice was successful or not
+     */
     private boolean setupConnection() {
         String[] connList = ConnectionFactory.getConnectionList();
         int conn = mView.askConnectionType(connList);
@@ -187,6 +206,9 @@ public class GameController implements OnReceiveListener {
         return true;
     }
 
+    /** Process a command by delegating the work to the core/game/info command parser
+     * @param cmd The game command to be parsed
+     */
     private void processCommand(GameCommand cmd) {
         String curUser = null;
 
@@ -205,11 +227,8 @@ public class GameController implements OnReceiveListener {
     }
 
 
-    /* These commmands below are sent while game is running
-     * and the map is loaded. 
-     * 
-     * @param cmd The command
-     * @param curUser Current username
+    /** Handle a game command (a command that is sent while the game is running)
+     * @param cmd The command to be processed
      */
     @SuppressWarnings("unchecked")
     private void parseGameCmd(GameCommand cmd) {
@@ -221,34 +240,17 @@ public class GameController implements OnReceiveListener {
 
         switch(gop) {
             case CMD_SC_AVAILABLE_COMMANDS:
-                if(obj != null && obj instanceof ArrayList<?>) {
-                    List<?> tmp = (List<?>) obj;
-                    if(!tmp.isEmpty() && tmp.get(0) instanceof ViewCommand)
-                        enqueueViewCommand((List<ViewCommand>) tmp);
-                }
+            handleAvailableCommands(obj);
                 break;
             case CMD_SC_OBJECT_CARD_OBTAINED:
-                if(obj != null && obj instanceof Integer) {
-                    List<Integer> listOfCards = mGameInfo.getListOfCards();
-                    listOfCards.add( (Integer)obj );
-                    mView.notifyObjectCardListChange( listOfCards );
-                }
+            handleObjectCardObtained(obj);
                 break;
             case CMD_SC_MOVE_INVALID:
                 mView.showError("Invalid move");
                 break;
                 
             case CMD_SC_DROP_CARD:
-                if(obj != null && obj instanceof Integer) {
-                    try {
-                        int index = (Integer)obj;
-                        mGameInfo.getListOfCards().remove( index );
-                        mView.notifyObjectCardListChange( mGameInfo.getListOfCards() );
-                    } catch( IndexOutOfBoundsException e ) {
-                        LOG.warning( "Trying to dropping a non-existent card" );
-                        LOG.log(Level.FINEST, e.toString(), e);
-                    }
-                }
+            handleDropCard(obj);
                 break;
             case CMD_SC_LOSE:
                 mView.showInfo(null, "YOU'VE JUST LOST THE GAME. <3");
@@ -261,10 +263,47 @@ public class GameController implements OnReceiveListener {
         }
     }
 
-    /** Parse an InfoCommand
-     * 
-     * @param cmd The command
-     * @param curUser Current username
+    /** Handle a drop card command
+     * @param obj Command parameter
+     */
+    private void handleDropCard(Object obj) {
+        if(obj != null && obj instanceof Integer) {
+            try {
+                int index = (Integer)obj;
+                mGameInfo.getListOfCards().remove( index );
+                mView.notifyObjectCardListChange( mGameInfo.getListOfCards() );
+            } catch( IndexOutOfBoundsException e ) {
+                LOG.warning( "Trying to dropping a non-existent card" );
+                LOG.log(Level.FINEST, e.toString(), e);
+            }
+        }
+    }
+
+    /** Handle an object card obtained command
+     * @param obj Command parameter
+     */
+    private void handleObjectCardObtained(Object obj) {
+        if(obj != null && obj instanceof Integer) {
+            List<Integer> listOfCards = mGameInfo.getListOfCards();
+            listOfCards.add( (Integer)obj );
+            mView.notifyObjectCardListChange( listOfCards );
+        }
+    }
+
+    /** Called when you get all available commands during your current state
+     * @param obj Command parameter
+     */
+    private void handleAvailableCommands(Object obj) {
+        if(obj != null && obj instanceof ArrayList<?>) {
+            List<?> tmp = (List<?>) obj;
+            if(!tmp.isEmpty() && tmp.get(0) instanceof ViewCommand)
+                enqueueViewCommands((List<ViewCommand>) tmp);
+        }
+    }
+
+    /** Handle an info command (which is sent to all players)
+     * @param cmd The command to be processed
+     * @param curUser The player that sent this message
      */
     @SuppressWarnings("unchecked")
     private void parseInfoCmd(GameCommand cmd, String curUser) {
@@ -272,112 +311,41 @@ public class GameController implements OnReceiveListener {
 
         switch(op) {
             case INFO_END_GAME:
-                if(cmd.getArgs().length == 2) {
-                    Object obj = cmd.getArgs()[0];
-                    Object obj2 = cmd.getArgs()[1];
-                    if(cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof ArrayList<?> && obj2 != null && obj2 instanceof ArrayList<?>) {
-                        List<Integer> winnerList = (List<Integer>) obj;
-                        List<Integer> loserList = (List<Integer>) obj2;
-                        
-                        mView.showEnding(winnerList, loserList);
-                        stop();
-                    }
-                }
+            handleInfoEndGame(cmd);
                 break;
             case INFO_CHANGED_NUMBER_OF_CARDS:
-                if(cmd.getArgs().length == 2 && cmd.getArgs()[0] != null && cmd.getArgs()[1] != null && cmd.getArgs()[0] instanceof Integer && cmd.getArgs()[1] instanceof Integer) {
-                    int id = (int)cmd.getArgs()[0];
-                    int count = (int)cmd.getArgs()[1];
-                    
-                    PlayerInfo playerInfo = mGameInfo.getPlayersList()[ id ]; 
-                    
-                    // update count of cards for current player
-                    playerInfo.setNumberOfCards( count );
-
-                    // update info of current status for all players and show a message
-                    mView.updatePlayerInfoDisplay( id );
-
-                    mView.showInfo(curUser, "has " + count + " cards");
-                }
+            handleInfoChangedNumberOfCards(cmd, curUser);
 
                 break;
             case INFO_DISCARDED_OBJ_CARD:
-                if(cmd.getArgs().length == 2 && cmd.getArgs()[1] instanceof String) {
-                    String name = (String) cmd.getArgs()[1];
-                    PlayerInfo e = mGameInfo.getPlayersList()[mCurPlayerId];
-                    e.setNumberOfCards(e.getNumberOfCards()-1);
-                    mView.showInfo(curUser, "Discarded " + name + " card");
-                }
+            handleInfoDiscardedObjectCard(cmd, curUser);
                 break;
             case INFO_HAS_MOVED:
                 mView.showInfo(curUser, "Player has moved");
                 break;
             case INFO_PLAYER_ATTACKED:
-                if(cmd.getArgs().length == 3 && cmd.getArgs()[0] instanceof Point && cmd.getArgs()[1] instanceof ArrayList<?>
-                        && cmd.getArgs()[2] instanceof ArrayList<?>) {
-                    Point p = (Point) cmd.getArgs()[0];
-
-                    mView.handleAttack(curUser, p);
-                    
-                    List<Integer> killedList = (List<Integer>) cmd.getArgs()[1];
-                    if(killedList == null || killedList.isEmpty())
-                        mView.showInfo(curUser, "Nobody has been killed");
-                    else
-                        for(Integer i : killedList)
-                            mView.showInfo(curUser, mGameInfo.getPlayersList()[i].getUsername() + " has been killed");
-
-                    List<Integer> defendedList = (List<Integer>) cmd.getArgs()[2];
-                    if(defendedList != null && !defendedList.isEmpty())
-                        for(Integer i : defendedList)
-                            mView.showInfo(curUser, mGameInfo.getPlayersList()[i].getUsername() + " has been attacked, but survived");
-                        }
+            handleInfoPlayerAttacked(cmd, curUser);
                 break;
             case INFO_LOSER:
                 mView.showInfo(curUser, "This player lost the game");
                 break;
             case INFO_NOISE:
-                if(cmd.getArgs().length == 1) {
-                    Object obj = cmd.getArgs()[0];
-                    if(obj != null && obj instanceof Point) {
-                        Point p = (Point) obj;
-
-                        mView.showNoiseInSector(curUser, p);
-                    }
-                }
+            handleInfoNoise(cmd, curUser);
                 break;
             case INFO_OBJ_CARD_USED:
-                if(cmd.getArgs().length == 2 && cmd.getArgs()[1] instanceof String) {
-                    String name = (String) cmd.getArgs()[1];
-                    mView.showInfo(curUser, "Used the object card '" + name + "'");
-                }
+            handleInfoObjectCardUsed(cmd, curUser);
                 break;
             case INFO_SILENCE:
                 mView.showInfo(curUser, "Extracted dangerous card: Silence.");
                 break;
             case INFO_SPOTLIGHT:
-                if(cmd.getArgs().length == 2 && cmd.getArgs()[0] instanceof Point && cmd.getArgs()[1] instanceof Point[]) {
-                    Point chosenPoint = (Point) cmd.getArgs()[0];
-                    Point[] playersFound = (Point []) cmd.getArgs()[1];
-                    
-                    mView.showInfo(curUser, "Used spotlight.");
-                    mView.handleSpotlightResult(chosenPoint, playersFound);
-                } else
-                    mView.showInfo(curUser, "Used spotlight but I got an invalid packet");
+            handleInfoSpotlight(cmd, curUser);
                 break;
             case INFO_START_TURN:
-                if(cmd.getArgs().length == 1 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Integer) {
-                    mCurPlayerId = (Integer) cmd.getArgs()[0];
-                    if(mCurPlayerId == mMyTurn)
-                        mView.onMyTurn();
-                    else
-                        mView.onOtherTurn(mGameInfo.getPlayersList()[mCurPlayerId].getUsername());
-                }
+            handleInfoStartTurn(cmd);
                 break;
             case INFO_USED_HATCH:
-                if(cmd.getArgs().length == 1 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Point) {
-                    mGameInfo.getMap().useHatch((Point) cmd.getArgs()[0]);
-                    mView.showInfo(curUser, "Used a hatch");
-                }
+            handleInfoUsedHatch(cmd, curUser);
                 break;
             case INFO_WINNER:
                 mView.showInfo(curUser, "This player won the game!");
@@ -390,9 +358,151 @@ public class GameController implements OnReceiveListener {
         }
     }
 
-    /** Parse a CoreCommand
-     * 
-     * @param cmd The command
+    /** Handle a used hatch info
+     * @param cmd The command to be processed
+     * @param curUser The user that sent this message
+     */
+    private void handleInfoUsedHatch(GameCommand cmd, String curUser) {
+        if(cmd.getArgs().length == 1 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Point) {
+            mGameInfo.getMap().useHatch((Point) cmd.getArgs()[0]);
+            mView.showInfo(curUser, "Used a hatch");
+        }
+    }
+
+    /** Handle an object card used info
+     * @param cmd The command to be processed
+     * @param curUser The user that sent this message
+     */
+    private void handleInfoObjectCardUsed(GameCommand cmd, String curUser) {
+        if(cmd.getArgs().length == 2 && cmd.getArgs()[1] instanceof String) {
+            String name = (String) cmd.getArgs()[1];
+            mView.showInfo(curUser, "Used the object card '" + name + "'");
+        }
+    }
+
+    /** Handle a start turn info
+     * @param cmd The command to be processed
+     */
+    private void handleInfoStartTurn(GameCommand cmd) {
+        if(cmd.getArgs().length == 1 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Integer) {
+            mCurPlayerId = (Integer) cmd.getArgs()[0];
+            if(mCurPlayerId == mMyTurn)
+                mView.onMyTurn();
+            else
+                mView.onOtherTurn(mGameInfo.getPlayersList()[mCurPlayerId].getUsername());
+        }
+    }
+
+    /** Handle a spotlight info
+     * @param cmd The command to be processed
+     * @param curUser The user that sent this message
+     */
+    private void handleInfoSpotlight(GameCommand cmd, String curUser) {
+        if(cmd.getArgs().length == 2 && cmd.getArgs()[0] instanceof Point && cmd.getArgs()[1] instanceof Point[]) {
+            Point chosenPoint = (Point) cmd.getArgs()[0];
+            Point[] playersFound = (Point []) cmd.getArgs()[1];
+            
+            mView.showInfo(curUser, "Used spotlight.");
+            mView.handleSpotlightResult(chosenPoint, playersFound);
+        } else
+            mView.showInfo(curUser, "Used spotlight but I got an invalid packet");
+    }
+
+    /** Handle a noise info
+     * @param cmd The command to be processed
+     * @param curUser The user that sent this message
+     */
+    private void handleInfoNoise(GameCommand cmd, String curUser) {
+        if(cmd.getArgs().length == 1) {
+            Object obj = cmd.getArgs()[0];
+            if(obj != null && obj instanceof Point) {
+                Point p = (Point) obj;
+
+                mView.showNoiseInSector(curUser, p);
+            }
+        }
+    }
+
+    /** Handle a player attacked info
+     * @param cmd The command to be processed
+     * @param curUser The user that sent this message
+     */
+    private void handleInfoPlayerAttacked(GameCommand cmd, String curUser) {
+        if(cmd.getArgs().length == 3 && cmd.getArgs()[0] instanceof Point && cmd.getArgs()[1] instanceof ArrayList<?>
+                && cmd.getArgs()[2] instanceof ArrayList<?>) {
+            Point p = (Point) cmd.getArgs()[0];
+
+            mView.handleAttack(curUser, p);
+            
+            // create killed people list
+            List<Integer> killedList = (List<Integer>) cmd.getArgs()[1];
+            if(killedList == null || killedList.isEmpty())
+                mView.showInfo(curUser, "Nobody has been killed");
+            else
+                for(Integer i : killedList)
+                    mView.showInfo(curUser, mGameInfo.getPlayersList()[i].getUsername() + " has been killed");
+
+            // create defended people list
+            List<Integer> defendedList = (List<Integer>) cmd.getArgs()[2];
+            if(defendedList != null && !defendedList.isEmpty())
+                for(Integer i : defendedList)
+                    mView.showInfo(curUser, mGameInfo.getPlayersList()[i].getUsername() + " has been attacked, but survived");
+                }
+    }
+
+    /** Handle a discarded object card info
+     * @param cmd The command to be processed
+     * @param curUser The user that sent this message
+     */
+    private void handleInfoDiscardedObjectCard(GameCommand cmd, String curUser) {
+        if(cmd.getArgs().length == 2 && cmd.getArgs()[1] instanceof String) {
+            String name = (String) cmd.getArgs()[1];
+            PlayerInfo e = mGameInfo.getPlayersList()[mCurPlayerId];
+            e.setNumberOfCards(e.getNumberOfCards()-1);
+            mView.showInfo(curUser, "Discarded " + name + " card");
+        }
+    }
+
+    /** Handle a changed number of cards info
+     * @param cmd The command to be processed
+     * @param curUser The user that sent this message
+     */
+    private void handleInfoChangedNumberOfCards(GameCommand cmd, String curUser) {
+        if(cmd.getArgs().length == 2 && cmd.getArgs()[0] != null && cmd.getArgs()[1] != null && cmd.getArgs()[0] instanceof Integer && cmd.getArgs()[1] instanceof Integer) {
+            int id = (int)cmd.getArgs()[0];
+            int count = (int)cmd.getArgs()[1];
+            
+            PlayerInfo playerInfo = mGameInfo.getPlayersList()[ id ]; 
+            
+            // update count of cards for current player
+            playerInfo.setNumberOfCards( count );
+
+            // update info of current status for all players and show a message
+            mView.updatePlayerInfoDisplay( id );
+
+            mView.showInfo(curUser, "has " + count + " cards");
+        }
+    }
+
+    /** Handle an end game info
+     * @param cmd The command to be processed
+     */
+    private void handleInfoEndGame(GameCommand cmd) {
+        if(cmd.getArgs().length == 2) {
+            Object obj = cmd.getArgs()[0];
+            Object obj2 = cmd.getArgs()[1];
+            if(cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof ArrayList<?> && obj2 != null && obj2 instanceof ArrayList<?>) {
+                List<Integer> winnerList = (List<Integer>) obj;
+                List<Integer> loserList = (List<Integer>) obj2;
+                
+                mView.showEnding(winnerList, loserList);
+                stop();
+            }
+        }
+    }
+
+    /** Process a core command (the ones that are not directly related to the game)
+     * @param cmd The command to be processed
      */
     private void parseCoreCmd(GameCommand cmd) {
         String msg = "";
@@ -414,24 +524,14 @@ public class GameController implements OnReceiveListener {
             case CMD_SC_USERNAMEFAIL:
                 msg = "Invalid name or another player is using your name. Choose another one.";
             case CMD_SC_CHOOSEUSER:
-                do {
-                    mMyUsername = mView.askUsername("".equals(msg)?"Choose a username":msg);
-                    if(mMyUsername != null)
-                        mMyUsername = mMyUsername.trim();
-                } while(mMyUsername == null || mMyUsername.length() == 0);
-                mConn.sendPacket(new GameCommand(CoreOpcode.CMD_CS_USERNAME, mMyUsername));
+            handleChooseUser(msg);
                 break;
             case CMD_SC_USERNAMEOK:
                 mView.showInfo(null, "Username accepted. Waiting for other players...");
                 break;
             case CMD_SC_MAPFAIL:
             case CMD_SC_CHOOSEMAP:
-                Integer chosenMap;
-                do {
-                    chosenMap = mView.askMap((String[])cmd.getArgs());
-                } while(chosenMap == null);
-
-                mConn.sendPacket(new GameCommand(CoreOpcode.CMD_CS_LOADMAP, chosenMap));
+            handleChooseMap(cmd);
                 break;
             case CMD_SC_MAPOK:
                 mView.showInfo(null, "Map successfully loaded");
@@ -451,7 +551,33 @@ public class GameController implements OnReceiveListener {
         }
     }
 
-    /** This method handles an incoming packet */
+    /** Send to the server the chosen map
+     * @param cmd The command with all the maps available on the server
+     */
+    private void handleChooseMap(GameCommand cmd) {
+        Integer chosenMap;
+        do {
+            chosenMap = mView.askMap((String[])cmd.getArgs());
+        } while(chosenMap == null);
+
+        mConn.sendPacket(new GameCommand(CoreOpcode.CMD_CS_LOADMAP, chosenMap));
+    }
+
+    /** Send to the server a username
+     * @param msg 
+     */
+    private void handleChooseUser(String msg) {
+        do {
+            mMyUsername = mView.askUsername("".equals(msg)?"Choose a username":msg);
+            if(mMyUsername != null)
+                mMyUsername = mMyUsername.trim();
+        } while(mMyUsername == null || mMyUsername.length() == 0);
+        mConn.sendPacket(new GameCommand(CoreOpcode.CMD_CS_USERNAME, mMyUsername));
+    }
+
+    /** This method handles an incoming packet
+     * @see it.polimi.ingsw.client.network.OnReceiveListener#onReceive(it.polimi.ingsw.game.common.GameCommand)
+     */
     @Override
     public void onReceive(GameCommand obj) {
         synchronized(mCommandQueue) {
@@ -459,52 +585,81 @@ public class GameController implements OnReceiveListener {
         }
     }
 
-    /** This method handles a disconnect event */
+    /** This method handles a disconnect event
+     * @see it.polimi.ingsw.client.network.OnReceiveListener#onDisconnect()
+     */
     @Override
     public void onDisconnect() {
         mStopEvent = true;
     }
 
+    /** Check if the game is still running
+     * @return True if still running
+     */
     public boolean isRunning() {
         return !mStopEvent;
     }
 
+    /** Stop the game
+     * 
+     */
     public void stop() {
         mStopEvent = true;
         mConn.disconnect();
     }
 
+    /** Return current loaded map
+     * @return The map
+     */
     public GameMap getMap() {
         return mGameInfo.getMap();
     }
 
+    /** Send the chosen map position
+     * @param mCurHexCoords The point on the map
+     */
     public void onMapPositionChosen(Point mCurHexCoords) {
         mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, mCurHexCoords));
     }
 
+    /** Send a draw dangerous card command
+     * 
+     */
     public void drawDangerousCard() {
         mConn.sendPacket(GameOpcode.CMD_CS_DRAW_DANGEROUS_CARD);
     }
 
+    /** Send an end turn command
+     * 
+     */
     public void endTurn() {
         mConn.sendPacket(GameOpcode.CMD_CS_END_TURN);
     }
 
+    /** Send an attack command
+     * 
+     */
     public void attack() {
         mConn.sendPacket(GameOpcode.CMD_CS_ATTACK);
     }
 
-    /**
-     * @param choice
+    /** Send a chosen card command
+     * @param choice The card you chose
      */
     public void sendChosenObjectCard(int choice) {
         mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD, choice));
     }
 
+    /** Send a discard object command
+     * @param choice The card to be discarded
+     */
     public void sendDiscardObjectCard(int choice) {
         mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD, choice));
     }
 
+    /** Start the game
+     * @param obj Command with a gameInfo
+     */
     private void runGame(Object obj) {
         if (obj != null && obj instanceof GameInfo) {
             mGameInfo = (GameInfo) obj;
@@ -516,6 +671,6 @@ public class GameController implements OnReceiveListener {
             }
             mView.switchToMainScreen(mGameInfo);
         } else
-            throw new RuntimeException("Can't get game infos!");
+            throw new InvalidGameInfoException("Can't get game infos!");
     }
 }
