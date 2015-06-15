@@ -53,6 +53,7 @@ public class Server {
     /** Debug mode */
     private boolean dDebugMode = false;
 
+    /** Constructor */
     private Server() { 
         mServers = new ArrayList<Listener>();
         mGamesRunning = new ArrayList<GameManager>();

@@ -5,6 +5,7 @@ import it.polimi.ingsw.game.common.Opcode;
 import it.polimi.ingsw.game.config.Config;
 
 /** Common client connection interface 
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
  */

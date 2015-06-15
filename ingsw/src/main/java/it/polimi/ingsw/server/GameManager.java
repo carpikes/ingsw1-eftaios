@@ -18,10 +18,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Game manager
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 9, 2015
  */
 public class GameManager {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(GameManager.class.getName());
 
     /** Game is running. New players can't connect to this game */
@@ -39,10 +41,13 @@ public class GameManager {
     /** Game state */
     private GameState mState = null;
 
+    /** Number of away clients */
     private int mAwayClients = 0;
 
+    /** List of clients that will be removed at next update cycle */
     private Queue<Client> mClientsToRemove = new LinkedList<Client>();
 
+    /** Constructor */
     public GameManager() {
         mStartTime = System.currentTimeMillis();
     }
@@ -61,7 +66,7 @@ public class GameManager {
         client.sendPacket(CoreOpcode.CMD_SC_CHOOSEUSER);
         broadcastPacket(new GameCommand(CoreOpcode.CMD_SC_STAT, (Integer) mClients.size()));
 
-        // @first client: ask for map
+        /** @first client: ask for map*/
         if(mClients.size() == 1)
             askForMap(client);
 
@@ -140,12 +145,12 @@ public class GameManager {
      */
     public synchronized void update() {
 
-        // check connection for every client
+        /** check connection for every client */
         for(Client c : mClients)
             if(c != null)
                 c.update();
 
-        // remove client if needed
+        /** remove client if needed */
         while(!mClientsToRemove.isEmpty()) {
             Client c = mClientsToRemove.remove();
             removeClient(c);
@@ -157,37 +162,37 @@ public class GameManager {
         
         if(!mIsRunning) {
             int mFinalConnClients = 0;
-            // Game is ready but it is not running 
+            /** Game is ready but it is not running */
             for(Client client : mClients) {
                 if(!client.isConnected())
                     throw new RuntimeException("Client can't be inactive before the game is started. What's happening?");
 
                 if(!client.hasUsername()) {
-                    // Some slow users still haven't typed their name
+                    /** Some slow users still haven't typed their name*/
                     return;
                 }
                 mFinalConnClients++;
             }
 
-            // map not chosen yet
+            /** map not chosen yet */
             if(mChosenMapId == null)
                 return;
 
-            // game is ready to start
+            /** game is ready to start */
             if(mFinalConnClients >= Config.GAME_MIN_PLAYERS)
                 startGame();
             else
                 shutdown();
         } else {
             if(mState != null)
-                // update game
+                /** update game */
                 mState.update();
         }
     }
 
     /** Start a game */
     private void startGame() {
-        // Let the game begin
+        /** Let the game begin */
         LOG.log(Level.INFO, "Players ready! Rolling the dice and starting up...");
 
         Collections.shuffle(mClients);
@@ -196,7 +201,7 @@ public class GameManager {
 
         LOG.log(Level.INFO, mClients.get(0).getUsername() + " is the first player");
 
-        // Send infos to all players
+        /** Send infos to all players */
         PlayerInfo[] userList = new PlayerInfo[mClients.size()];
 
         for(int i = 0; i < mClients.size(); i++)
@@ -233,7 +238,7 @@ public class GameManager {
         if(index == 0 && mChosenMapId == null)
             mustAskForMap = true;
 
-        // DO NOT REMOVE THE CLIENT IF THE GAME IS RUNNING.
+        /** DO NOT REMOVE THE CLIENT IF THE GAME IS RUNNING.*/
         if(mIsRunning)
             mAwayClients++;
         else
@@ -243,17 +248,18 @@ public class GameManager {
         if(mAwayClients > getNumberOfClients())
             throw new RuntimeException("AwayClients >= ConnectedClients. What's Happening?");
 
-        // Decrement global user counter
+        /** Decrement global user counter*/
         Server.getInstance().removeClient();
 
         broadcastPacket(new GameCommand(CoreOpcode.CMD_SC_STAT, getNumberOfClients() - mAwayClients));
 
-        // FIXME: Could be possible that a client joins the game while enqueued for removal?
+        /** FIXME: Could be possible that a client joins the game while enqueued for removal?*/
         if(getNumberOfClients() - mAwayClients == 0)
             Server.getInstance().enqueueRemoveGame(this);
 
         boolean canAskAtLeastOne = false;
-        // Game is still alive
+
+        /** Game is still alive*/
         if(mustAskForMap && !mClients.isEmpty()) {
             for(Client c : mClients)
                 if(c.isConnected()) {
@@ -359,8 +365,10 @@ public class GameManager {
         Server.getInstance().enqueueRemoveGame(this);
     }
 
-    /**
-     * @return
+    /** Return the REAL number of connected clients
+     * Complexity: O(n)
+     *
+     * @return Number of connected clients
      */
     public int getEffectiveClients() {
         int e = 0;

@@ -8,10 +8,12 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /** RMI Connection Handler
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 16, 2015
  */
 public class ClientConnRMI extends ClientConn {
+
     /** Outgoing packets */
     private Queue<GameCommand> mOutgoingQueue;
 
@@ -39,12 +41,14 @@ public class ClientConnRMI extends ClientConn {
         mServer = server;
     }
 
-    /** Empty method, RMI does not need a separate thread */
+    /** Empty method, RMI does not need a separate thread
+     * @see java.lang.Runnable#run()
+     */
     @Override
     public void run() {
     }
 
-    /* (non-Javadoc)
+    /** Send a GameCommand to this client
      * @see it.polimi.ingsw.server.ClientConn#sendPacket(it.polimi.ingsw.game.common.GameCommand)
      */
     @Override
@@ -54,7 +58,7 @@ public class ClientConnRMI extends ClientConn {
         }
     }
 
-    /* (non-Javadoc)
+    /** Disconnect 
      * @see it.polimi.ingsw.server.ClientConn#disconnect()
      */
     @Override

@@ -11,11 +11,11 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** RMI Server Listener
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 16, 2015
  */
@@ -34,11 +34,14 @@ public class ServerRMI implements Listener, ServerRMIMask {
     /** True if the RMI service is running */
     private boolean mIsUp = false;
 
+    /** Constructor */
     public ServerRMI() {
         mMap = new HashMap<String, ClientConnRMI>();
     }
 
-    /** Run the RMI listener */
+    /** Run the RMI listener
+     * @see java.lang.Runnable#run()
+     */
     @Override
     public void run() {
         try {
@@ -128,7 +131,9 @@ public class ServerRMI implements Listener, ServerRMIMask {
         mMap.remove(clientId);
     }
 
-    /** Shut down this listener */
+    /** Shut down this listener
+     * @see it.polimi.ingsw.server.Listener#tearDown()
+     */
     @Override
     public synchronized void tearDown() {
         try {
@@ -147,8 +152,9 @@ public class ServerRMI implements Listener, ServerRMIMask {
         }
     }
 
-    /* (non-Javadoc)
+    /** True if this listener is shut down
      * @see it.polimi.ingsw.server.Listener#isDown()
+     * @return True if is down
      */
     @Override
     public synchronized boolean isDown() {
@@ -157,8 +163,9 @@ public class ServerRMI implements Listener, ServerRMIMask {
         return true;
     }
 
-    /* (non-Javadoc)
+    /** True if this listener is loaded successfully
      * @see it.polimi.ingsw.server.Listener#isUp()
+     * @return True if is loaded
      */
     @Override
     public boolean isUp() {

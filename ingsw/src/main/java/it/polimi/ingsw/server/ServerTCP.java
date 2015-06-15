@@ -9,16 +9,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** TCP Server Listener
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
- */
-/**
- * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
- *
- */
-/**
- * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
- *
  */
 class ServerTCP implements Listener {
     private static final Logger LOG = Logger.getLogger(ServerTCP.class.getName());
@@ -61,7 +54,7 @@ class ServerTCP implements Listener {
         }
     }
 
-    /* (non-Javadoc)
+    /** Run the TCP listener
      * @see java.lang.Runnable#run()
      */
     public void run() {
@@ -77,7 +70,7 @@ class ServerTCP implements Listener {
         }
     }
 
-    /* (non-Javadoc)
+    /** Shut down this listener
      * @see it.polimi.ingsw.server.Listener#tearDown()
      */
     @Override
@@ -91,8 +84,9 @@ class ServerTCP implements Listener {
         }
     }
 
-    /* (non-Javadoc)
+    /** True if this listener is shut down
      * @see it.polimi.ingsw.server.Listener#isDown()
+     * @return True if is down
      */
     @Override
     public synchronized boolean isDown() {
@@ -103,8 +97,9 @@ class ServerTCP implements Listener {
         return false;
     }
 
-    /* (non-Javadoc)
+    /** True if this listener is loaded successfully
      * @see it.polimi.ingsw.server.Listener#isUp()
+     * @return True if is loaded
      */
     @Override
     public boolean isUp() {

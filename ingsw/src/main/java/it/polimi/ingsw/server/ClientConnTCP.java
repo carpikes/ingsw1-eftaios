@@ -11,12 +11,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** TCP connection Handler
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
- */
-/**
- * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
- *
  */
 public class ClientConnTCP extends ClientConn {
     private static final Logger LOG = Logger.getLogger(ClientConnTCP.class.getName());
@@ -41,7 +38,8 @@ public class ClientConnTCP extends ClientConn {
         mSocket = socket;
     }
 
-    /* (non-Javadoc)
+    /** Run the reader thread
+     *
      * @see java.lang.Runnable#run()
      */
     @Override
@@ -64,7 +62,7 @@ public class ClientConnTCP extends ClientConn {
         }
     }
 
-    /* (non-Javadoc)
+    /** Send a GameCommand to this client
      * @see it.polimi.ingsw.server.ClientConn#sendPacket(it.polimi.ingsw.game.common.GameCommand)
      */
     @Override
@@ -78,7 +76,7 @@ public class ClientConnTCP extends ClientConn {
         }
     }
 
-    /* (non-Javadoc)
+    /** Disconnect 
      * @see it.polimi.ingsw.server.ClientConn#disconnect()
      */
     @Override
@@ -102,8 +100,10 @@ public class ClientConnTCP extends ClientConn {
         mSocket = null;
     }
 
-    /* (non-Javadoc)
+    /** Return true if the socket is connected
+     *
      * @see it.polimi.ingsw.server.ClientConn#isConnected()
+     * @return True if this connection is established
      */
     @Override
     public synchronized boolean isConnected() {

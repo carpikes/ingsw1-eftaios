@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server;
 
 /** Common server listeners interface
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 18, 2015
  */

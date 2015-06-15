@@ -9,10 +9,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Player (connection) manager
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 8, 2015
  */
-
 public class Client {
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
 
@@ -52,7 +52,7 @@ public class Client {
                 if(args == null || args.length == 0)
                     return;
 
-                // Choosing username
+                /** Choosing username */
                 synchronized(mGame) {
                     if(pkt.getOpcode() instanceof CoreOpcode) {
                         CoreOpcode opcode = (CoreOpcode) pkt.getOpcode();
@@ -150,10 +150,18 @@ public class Client {
         }
     }
 
+    /** Return the Connection
+     *
+     * @return The connection
+     */
     public ClientConn getConnection() {
         return mConn;
     }
 
+    /** Returns true if this connection is established
+     *
+     * @return True if online
+     */
     public boolean isConnected() {
         return mConn.isConnected();
     }
