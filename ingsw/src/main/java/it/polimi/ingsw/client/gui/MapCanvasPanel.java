@@ -24,50 +24,64 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /** Panel where the map is drawn. It is used in {@link GUIFrame} class. 
+ *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 public class MapCanvasPanel extends JPanel {
 
     private static final long serialVersionUID = -5583245069814214909L;
 
-    // the map being loaded
+    /** the map being loaded */
     private GameMap mGameMap;
 
-    // the array of all drawn mHexagons
+    /** the array of all drawn mHexagons */
     private transient Hexagon[][] mHexagons;
 
-    // Selected hex: contains indexes i and j in mHexagons[][] array
+    /** Selected hex: contains indexes i and j in mHexagons[][] array */
     private Point mHoveringCellCoords;
 
-    // Values for every hexagon
+    /** Values for every hexagon */
     private int mHexWidth;
     private int mHexHeight;
     private int mMarginHeight;
 
-    // canvas width and height
+    /** canvas width and height */
     private int mCanvasWidth;
     private int mCanvasHeight;
 
-    // Set of all sectors available for selection
-    // VERY IMPORTANT THING TO KEEP IN MIND
-    // mEnabledCells == null means that you can select EVERY VALID CELL on map!
+    /** Set of all sectors available for selection
+     *  VERY IMPORTANT THING TO KEEP IN MIND
+     *  mEnabledCells == null means that you can select EVERY VALID CELL on map!
+     */
     private transient Set<Point> mEnabledCells = new HashSet<>();
 
+    /** Clicked on cell? */
     private boolean mClickedOnCell = false;
 
+    /** Render mutex */
     private final transient Object mRenderLoopMutex = new Object();
 
+    /** Player position */
     private Point mPlayerPosition;
 
-    // Blinking sectors
+    /** Blinking sectors */
     private Point mNoisePosition = null;
+
+    /** Spotlight sectors */
     private transient Map<String, Point> mSpotlightSectors = null;
+
+    /** Attack point */
     private Point mAttackPoint = null;
+
+    /** Blinking color */
     private Color blinkingColor = null;
     
+    /** Game controller */
     private final transient GameController mController;
 
     /** Create the map canvas.
+     *
      * @param controller The local game controller
      * @param map The map to be displayed
      * @param canvasWidth The width of this canvas
@@ -75,7 +89,7 @@ public class MapCanvasPanel extends JPanel {
      * @param playerPosition The starting position of this player's screen
      */
     public MapCanvasPanel( GameController controller, GameMap map, int canvasWidth, int canvasHeight, Point playerPosition) {
-        // initialization 
+        /** initialization  */
         mController = controller;
         this.mCanvasWidth = canvasWidth;
         this.mCanvasHeight = canvasHeight;
@@ -84,27 +98,26 @@ public class MapCanvasPanel extends JPanel {
         mHoveringCellCoords = null;
         mPlayerPosition = playerPosition;
 
-        // add listeners
+        /** add listeners */
         addMouseListeners();
 
-        // calc width, height and margins according to size
+        /** calc width, height and margins according to size */
         calculateValuesForHexagons();
 
-        // create all hexagons images according to values given by the previous function
+        /** create all hexagons images according to values given by the previous function */
         for( int i = 0; i < GameMap.ROWS; ++i ) {
             for( int j = 0; j < GameMap.COLUMNS; ++j ) {
                 Sector sector = mGameMap.getSectorAt(j, i);
                 int startX = (int)(mHexWidth*3/4.0*j);
                 int startY = (int)(mMarginHeight + i * mHexHeight + ( isEvenColumn(j)  ? 0 : mHexHeight/2 ) );
 
-                // create hexagon: center of it is distant (mHexWidth/2, mHexHeight/2) from the starting point
+                /** create hexagon: center of it is distant (mHexWidth/2, mHexHeight/2) from the starting point */
                 mHexagons[i][j] = HexagonFactory.createHexagon( 
                         new Point(startX + mHexWidth/2, startY + mHexHeight/2), mHexWidth/2, sector.getId());
             }
         }
 
-
-        // Repaint the frame at 30fps (more or less)
+        /** Repaint the frame at 30fps (more or less) */
         new Timer(35, new ActionListener() {
 
             @Override
@@ -117,14 +130,12 @@ public class MapCanvasPanel extends JPanel {
         }).start();
     }
 
-    /** 
-     * Methods for detecting mouse position and clicking 
-     * */
+    /** Methods for detecting mouse position and clicking */
     private void addMouseListeners() {
         addMouseListener( new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e) {
-                // not used
+                /** not used */
             }
 
             @Override
@@ -132,16 +143,17 @@ public class MapCanvasPanel extends JPanel {
                 mClickedOnCell = true;
 
                 if(mHoveringCellCoords != null) {
-                    // VERY IMPORTANT THING TO KEEP IN MIND
-                    // mEnabledCells == null means that you can select EVERY VALID CELL on map!
-
-                    // Here we want to move the player's position when the mEnabledCells set
-                    // DOES NOT contains all sectors (because that means we are not moving,
-                    // but only choosing a position in noise in any sector or in spotlight state!)
+                    /** VERY IMPORTANT THING TO KEEP IN MIND
+                     * mEnabledCells == null means that you can select EVERY VALID CELL on map!
+                     *
+                     * Here we want to move the player's position when the mEnabledCells set
+                     * DOES NOT contains all sectors (because that means we are not moving,
+                     * but only choosing a position in noise in any sector or in spotlight state!)
+                     */
                     if( mEnabledCells != null ) {
                         mPlayerPosition = mHoveringCellCoords;
 
-                        // notify that we have chosen a position on map by clicking on it
+                        /** notify that we have chosen a position on map by clicking on it */
                         mController.onMapPositionChosen(mPlayerPosition);
                     } else {
                         mController.onMapPositionChosen(mHoveringCellCoords);
@@ -154,17 +166,17 @@ public class MapCanvasPanel extends JPanel {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                // not used
+                /** not used */
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                // not used
+                /** not used */
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                // not used
+                /** not used */
             }
         });
 
@@ -174,9 +186,9 @@ public class MapCanvasPanel extends JPanel {
                 Point cell = getCell(e.getPoint());
 
                 synchronized(mRenderLoopMutex) {
-                    // If we can choose every valid sector or if we are on one of the available sectors...
+                    /** If we can choose every valid sector or if we are on one of the available sectors... */
                     if( mEnabledCells == null || (mEnabledCells != null && mEnabledCells.contains(cell)) )    
-                        // register the current sector we are hovering on
+                        /** register the current sector we are hovering on */
                         mHoveringCellCoords = cell;
                     else
                         mHoveringCellCoords = null;
@@ -185,31 +197,33 @@ public class MapCanvasPanel extends JPanel {
 
             @Override
             public void mouseDragged(MouseEvent e) { 
-                // not used
+                /** not used */
             }
         });
     }
 
 
-    /**
-     * Calculate values (width, height and margins) for mHexagons.
-     */
+    /** Calculate values (width, height and margins) for mHexagons. */
     private void calculateValuesForHexagons() {
-        // Reference: http://www.redblobgames.com/grids/mHexagons/
+        /** Reference: http://www.redblobgames.com/grids/mHexagons/ */
         mHexWidth = (int)(mCanvasWidth / ( 0.75 * (GameMap.COLUMNS-1) + 1 ));
         mHexHeight =  (int)(mHexWidth * Math.sqrt(3)/2);
         mMarginHeight = (int)((mCanvasHeight - mHexHeight * ( GameMap.ROWS + 0.5 )) / 2.0);
     }
 
     /** Paint this canvas.
+     *
      * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
      */
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);     // paint parent's background
+        /** paint parent's background */
+        super.paintComponent(g);     
 
         Graphics2D g2d = (Graphics2D)g;
-        setBackground(ColorPalette.BACKGROUND.getColor());  // set background color for this JPanel
+
+        /** set background color for this JPanel */
+        setBackground(ColorPalette.BACKGROUND.getColor());  
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -219,13 +233,12 @@ public class MapCanvasPanel extends JPanel {
         }
     }
 
-    /**
-     * Draw all hexagons, called by paintComponent().
+    /** Draw all hexagons, called by paintComponent().
      *
      * @param g2d The Graphics2D object where to draw on
      */
     private void drawHexagons(Graphics2D g2d) { 
-        // for every hexagon..
+        /** for every hexagon.. */
         for( int i = 0; i <= GameMap.ROWS; ++i ) 
             for( int j = 0; j < GameMap.COLUMNS; ++j ) {
                 
@@ -236,26 +249,27 @@ public class MapCanvasPanel extends JPanel {
                 if(p == null)
                     continue;
 
-                // this is the player position
+                /** this is the player position */
                 boolean isPlayerHere = p.equals(mPlayerPosition);
                 
-                // check if this sector should blink
+                /** check if this sector should blink */
                 blinkingColor = null;
                 boolean shouldBlink = shoudBlink(p);
 
-                // check if this should be enabled
+                /** check if this should be enabled */
                 boolean enabled;
                 if( mEnabledCells != null && !mEnabledCells.contains(p) )
                     enabled = false;
                 else
                     enabled = true;
 
-                // delegate the actual drawing according the values set in this function
+                /** delegate the actual drawing according the values set in this function */
                 mHexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, i == GameMap.ROWS, shouldBlink, blinkingColor );
             }
     }
     
     /** Check if this sector should blink for a noise
+     *
      * @param p The point to compare with
      * @return True if this should blink
      */
@@ -269,6 +283,7 @@ public class MapCanvasPanel extends JPanel {
     }
     
     /** Check if this sector should blink for a spotlight action
+     *
      * @param p The point to compare with
      * @return True if this should blink
      */
@@ -282,6 +297,7 @@ public class MapCanvasPanel extends JPanel {
     }
     
     /** Check if this sector should blink for an attack action
+     * 
      * @param p The point to compare with
      * @return True if this should blink
      */
@@ -295,6 +311,7 @@ public class MapCanvasPanel extends JPanel {
     }
 
     /** Check if a sector should blink (delegates to the other shouldDraw* functions)
+     *
      * @param p The point to compare with
      * @return True if this should blink
      */
@@ -302,8 +319,7 @@ public class MapCanvasPanel extends JPanel {
         return shouldDrawNoise(p) || shouldDrawSpotlight(p) || shouldDrawAttack(p);
     }
  
-    /**
-     * Checks if column % 2 == 0.
+    /** Checks if column % 2 == 0.
      *
      * @param col the column index
      * @return true, if is even column
@@ -313,6 +329,7 @@ public class MapCanvasPanel extends JPanel {
     }
 
     /** Get the sector where the player clicked
+     *
      * @return The point where he clicked
      */
     public Point getChosenMapCell() {
@@ -325,6 +342,7 @@ public class MapCanvasPanel extends JPanel {
     }
 
     /** Initialize mEnabledCells property for later drawing
+     *
      * @param pnt The set to use
      */
     public void setEnabledCells(Set<Point> pnt) {
@@ -334,6 +352,7 @@ public class MapCanvasPanel extends JPanel {
     }
 
     /** Get a crossable point at the given point
+     *
      * @param p The point 
      * @return
      */
@@ -350,6 +369,7 @@ public class MapCanvasPanel extends JPanel {
     }
 
     /** Set current player position
+     *
      * @param point The position of the player
      */
     public void setPlayerPosition(Point point) {
@@ -357,15 +377,14 @@ public class MapCanvasPanel extends JPanel {
     }
 
     /** Set noise position
+     *
      * @param p The point where the noise should be drawn
      */
     public void showNoiseInSector(Point p) {
         mNoisePosition = p;
     }
 
-    /** Toggle all blinking sectors to their default colors after 2 seconds
-     * 
-     */
+    /** Toggle all blinking sectors to their default colors after 2 seconds */
     public void resetBlinkingElements() {
         java.util.Timer timer = new java.util.Timer();
 
@@ -381,6 +400,7 @@ public class MapCanvasPanel extends JPanel {
     }
 
     /** Set the map of spotlight blinking sectors
+     *
      * @param data The map to be used
      */
     public void setSpotlightData(Map<String, Point> data) {
@@ -388,6 +408,7 @@ public class MapCanvasPanel extends JPanel {
     }
 
     /** Set the blinking sector for an attack
+     *
      * @param p The chosen point 
      */
     public void handleAttack(Point p) {

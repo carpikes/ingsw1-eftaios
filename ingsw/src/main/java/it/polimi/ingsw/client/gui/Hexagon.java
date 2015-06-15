@@ -5,19 +5,27 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 
-/** Class for Hexagon view. Contains mCenter, mSize, and shape to be drawn on screen.
- * @author Michele Albanese (michele.albanese@mail.polimi.it)
+/** Class for Hexagon view. 
+ * Contains mCenter, mSize, and shape to be drawn on screen.
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 public class Hexagon {
 
+    /** Center */
     private Point mCenter;
+
+    /** Size */
     private double mSize;
+
+    /** Polygon path */
     private Polygon mPath;
+
+    /** Color */
     private Color mColor;
 
-    /**
-     * Instantiates a new hexagon view.
+    /** Instantiates a new hexagon view.
      *
      * @param mCenter Coordinates of mCenter
      * @param mSize Radius Size
@@ -31,8 +39,7 @@ public class Hexagon {
         mColor = HexagonFactory.getHexagonColorPalette(type).getColor();
     }
     
-    /**
-     * Gets the mPath.
+    /** Gets the mPath.
      *
      * @return the mPath
      */
@@ -40,8 +47,7 @@ public class Hexagon {
         return mPath;
     }
 
-    /**
-     * Gets the mCenter.
+    /** Gets the mCenter.
      *
      * @return the mCenter
      */
@@ -49,8 +55,7 @@ public class Hexagon {
         return mCenter;
     }
 
-    /**
-     * Gets the mSize.
+    /** Gets the mSize.
      *
      * @return the mSize
      */
@@ -59,8 +64,8 @@ public class Hexagon {
     }
 
     
-    /**
-     * Draw an hexagon in the Graphics2d object given (the mapcanvas panel actually)
+    /** Draw an hexagon in the Graphics2d object given (the mapcanvas panel actually)
+     *
      * @param g2d The graphics2D used to draw
      * @param playerOn The player is in this position?
      * @param enabled Can this sector be selected or not?
@@ -73,13 +78,13 @@ public class Hexagon {
 
         boolean drawStroke = true;
 
-        // Color for current position: low priority
+        /** Color for current position: low priority */
         Color real = mColor;
         if(playerOn)
             real = ColorPalette.PLAYER_ON.getColor();
 
         if( shouldBlink ) {
-            // blinking effect
+            /** blinking effect */
             double k = System.currentTimeMillis() / 250.0;
             real = colorBlink;
             real = new Color((int)(Math.abs(Math.cos(k)) * (255-real.getRed()) + real.getRed()), 
@@ -89,25 +94,19 @@ public class Hexagon {
 
         if(!enabled) {
             drawStroke = false;
-            // Overwrite in case it is not selectable and make it gray-ish
+            /** Overwrite in case it is not selectable and make it gray-ish */
             real = new Color(real.getRed()/2, real.getGreen()/2, real.getBlue()/2, 0xa0);
         } else if(mouseOnThis)
-            // hovering color has higher priority than PlayerOn
+            /** hovering color has higher priority than PlayerOn */
             real = ColorPalette.MOUSE_ON_THIS.getColor();
 
         g2d.setColor( real );
         g2d.fill(getPath());
 
-        // border
+        /** border */
         if(drawStroke) {
             g2d.setColor( ColorPalette.STROKE.getColor() );
             g2d.draw(getPath());
         }
-        
-        /*if( text != null ) {
-            g2d.setFont( new Font("Helvetica", Font.PLAIN, 10) );
-            g2d.setColor( Color.BLACK );
-            g2d.drawString("Hello World", (int)(getCenter().x - getSize()/2), getCenter().y );
-        }*/
     }
 }

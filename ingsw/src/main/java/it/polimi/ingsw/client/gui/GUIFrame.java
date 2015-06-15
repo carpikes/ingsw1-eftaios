@@ -34,19 +34,23 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
 
 /** Main Frame of the game. This is where all the GUI stuff takes place.
- * @author Alain
- * @since 24/mag/2015
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
+ * @since 24/mag/2015
  */
-
 public class GUIFrame extends JFrame {
+    /** Serial id */
     private static final long serialVersionUID = 1L;
 
+    /** Logger */
     private static final Logger LOG = Logger.getLogger( GUIFrame.class.getName() );
 
+    /** Controller */
     private final transient GameController mController;
 
-    // Constants
+    /** Constants */
+
     private static EmptyBorder RIGHT_PANEL_MARGIN = new EmptyBorder(Config.PANEL_MARGIN, Config.PANEL_MARGIN, Config.PANEL_MARGIN, Config.PANEL_MARGIN);
     private static final Insets TEXT_AREA_PADDING = new Insets(5, 5, 5, 5);
     private static final EmptyBorder TEXT_AREA_MARGIN = new EmptyBorder( 10, 0, 10, 0 );
@@ -56,12 +60,12 @@ public class GUIFrame extends JFrame {
     private static final Dimension mDimensionCardPanel = new Dimension(Config.WIDTH_RIGHT, Config.CARD_HEIGHT);
     private static final Dimension mDimensionBottomPanel = new Dimension(Config.WIDTH, Config.HEIGHT_BOTTOM);
 
-    // Drawing canvas on the left
+    /** Drawing canvas on the left */
     private MapCanvasPanel mMapCanvas;
     private LoginCanvasPanel mLoginCanvas;
     private EndingCanvasPanel mEndingCanvas;
     
-    // elements on right panel
+    /** elements on right panel */
     private static final int NUMBER_OF_CARD_BUTTONS = Config.MAX_NUMBER_OF_OBJ_CARDS + 1;
     private CardButton[] cardButtons = new CardButton[ NUMBER_OF_CARD_BUTTONS ];
 
@@ -76,6 +80,7 @@ public class GUIFrame extends JFrame {
     private GameInfo gameInfo = null;
 
     /** Create the main frame
+     *
      * @param controller The local game controller
      */
     public GUIFrame(GameController controller) {
@@ -94,11 +99,9 @@ public class GUIFrame extends JFrame {
     }
 
 
-    /** Create player's info panel
-     * 
-     */
+    /** Create player's info panel */
     private void createBottomPanel() {
-        // general settings
+        /** general settings */
         bottomPanel = new JPanel(  );
 
         bottomPanel.setPreferredSize( mDimensionBottomPanel );
@@ -129,9 +132,7 @@ public class GUIFrame extends JFrame {
     }
 
     
-    /** Update all player info labels
-     *  
-     */
+    /** Update all player info labels */
     private void updateLabels() {
         PlayerInfo[] players = gameInfo.getPlayersList();
         
@@ -141,6 +142,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Create text for i-th player label
+     *
      * @param i The index of the player
      */
     private void createTextForLabel(int i) {
@@ -149,7 +151,7 @@ public class GUIFrame extends JFrame {
         String txt = "[" + (i+1) + "] ";
 
         if( i == gameInfo.getId() ) {
-            // Red foreground for current player
+            /** Red foreground for current player */
             userLabel[i].setForeground( Color.RED );
             txt += (gameInfo.isHuman()) ? "** HUMAN ** " : "** ALIEN ** ";
         } else {
@@ -161,35 +163,34 @@ public class GUIFrame extends JFrame {
         userLabel[i].setText( txt );
     }
 
-    /** Create right panel with cards, text area and action buttons
-     * 
-     */
+    /** Create right panel with cards, text area and action buttons */
     private void createRightPanel() {
-        // general settings
+        /** general settings */
         rightPanel = new JPanel(  );
 
         rightPanel.setPreferredSize( mDimensionRightPanel );
         rightPanel.setBorder( RIGHT_PANEL_MARGIN );
         rightPanel.setLayout( new BorderLayout() );
 
-        // card panel
+        /** card panel */
         cardPanel = createCardPanel();
         rightPanel.add(cardPanel, BorderLayout.NORTH);
 
-        // Message Area
+        /** Message Area */
         scrollTextAreaPane = createMessageArea();
         rightPanel.add(scrollTextAreaPane, BorderLayout.CENTER);
 
-        // Action buttons panel 
+        /** Action buttons panel  */
         actionButtonsPanel = createActionPanel();
         rightPanel.add(actionButtonsPanel, BorderLayout.SOUTH);
 
-        // add all this to parent's frame
+        /** add all this to parent's frame */
         this.add(rightPanel, BorderLayout.EAST);
     }
 
     /** Create action button panel (the one below the text area)
-     * @return
+     *
+     * @return The panel
      */
     private JPanel createActionPanel() {
         JPanel actionPanel = new JPanel( new GridLayout(2,2) );
@@ -230,6 +231,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Create the text area and set some default properties
+     *
      * @return The text area
      */
     private JScrollPane createMessageArea() {
@@ -251,6 +253,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Create the panel containing the 4 object cards
+     *
      * @return The create JPanel
      */
     private JPanel createCardPanel( ) {
@@ -271,6 +274,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Set remaining time in the login screen 
+     *
      * @param remainingTime The remaining time
      */
     public void setRemainingTime(int remainingTime) {
@@ -279,16 +283,15 @@ public class GUIFrame extends JFrame {
     }
     
     /** Set number of players in the login screen
-     * @param newPlayers
+     *
+     * @param newPlayers Number of players
      */
     public void setPlayers(int newPlayers) {
         if(mLoginCanvas != null)
             mLoginCanvas.setPlayers(newPlayers);
     }
 
-    /** Add login canvas with the right dimensions
-     * 
-     */
+    /** Add login canvas with the right dimensions */
     private void switchToLogin() {
         mLoginCanvas = new LoginCanvasPanel( );
         mLoginCanvas.setPreferredSize(mDimensionLeftPanel);
@@ -301,6 +304,7 @@ public class GUIFrame extends JFrame {
 
     
     /** Disable login screen and move to the actual game screen
+     *
      * @param map The map to load
      * @param startingPoint The starting point of the player
      */
@@ -322,7 +326,7 @@ public class GUIFrame extends JFrame {
 
             resetViewStatus();
 
-            // It won't change anything otherwise!
+            /** It won't change anything otherwise! */
             validate();
             repaint();
         } catch (ArrayIndexOutOfBoundsException | SectorException | NumberFormatException e) {
@@ -332,6 +336,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Calls underlying map canvas function
+     *
      * @return The chosen point
      */
     public Point getChosenMapCell() {
@@ -339,6 +344,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Calls underlying map canvas function
+     *
      * @param The set of points to choose among
      */
     public void enableMapCells(Set<Point> pnt) {
@@ -346,6 +352,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Calls underlying map canvas function
+     *
      * @param startingPoint The starting point of the player
      */
     public void setPlayerPosition(Point startingPoint) {
@@ -353,6 +360,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Display info in the text area
+     *
      * @param user The player who sent this message( -- INFO -- if this is null )
      * @param message The message sent
      */
@@ -364,6 +372,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Set game info about players' usernames and number of cards
+     *
      * @param container The source of data
      */
     public void setGameInfo(GameInfo container) {
@@ -371,6 +380,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Enable card buttons if you can use them (you're not an alien and you're not selecting a defense card)
+     *
      * @param value The value to set
      */
     public void setCanSelectObjCard(boolean value) {
@@ -384,6 +394,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Enable attack button
+     *
      * @param value The value to use
      */
     public void setAttackEnabled(boolean value) {
@@ -391,6 +402,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Enable right click action on card buttons
+     *
      * @param value The value to use
      */
     public void setDiscardObjCardEnabled(boolean value) {
@@ -400,6 +412,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Enable End Turn button
+     *
      * @param value The value to use
      */
     public void setEndTurnEnabled(boolean value) {
@@ -407,15 +420,14 @@ public class GUIFrame extends JFrame {
     }
 
     /** Enable draw dangerous card button
+     *
      * @param value The value to use
      */
     public void setCanDrawDangerousCard(boolean value) {
         btnDrawDangerousCard.setEnabled( value );
     }
 
-    /** Reset all buttons and disable map selection (used at the beginning of every player state)
-     * 
-     */
+    /** Reset all buttons and disable map selection (used at the beginning of every player state) */
     public void resetViewStatus() {
         enableMapCells( new HashSet<Point>() );
         setCanSelectObjCard( false );
@@ -426,6 +438,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Update card button info's on every change
+     *
      * @param listOfCards A list of the card possessed by this player
      */
     public void notifyObjectCardListChange(List<Integer> listOfCards) {
@@ -447,6 +460,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Delegate to map canvas underlying function 
+     *
      * @param user The user who did this action
      * @param p The point where the action took place
      */
@@ -455,14 +469,13 @@ public class GUIFrame extends JFrame {
         mMapCanvas.showNoiseInSector(p);
     }
 
-    /** Delegate to map canvas underlying function 
-     * 
-     */
+    /** Delegate to map canvas underlying function */
     public void resetBlinkingElements() {
         mMapCanvas.resetBlinkingElements();
     }
 
     /** Update player info for the specified player
+     *
      * @param idPlayer The id of the player
      */
     public void updatePlayerInfoDisplay(int idPlayer) {        
@@ -470,6 +483,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Remove all elements and show ending screen
+     *
      * @param winnerList The list of all winners' id
      * @param loserList The list of all losers' id
      */
@@ -477,7 +491,7 @@ public class GUIFrame extends JFrame {
         mEndingCanvas = new EndingCanvasPanel(gameInfo, winnerList, loserList);
         mEndingCanvas.setPreferredSize(mDimensionLeftPanel);
 
-        // SWING FUCK*NG BUG: DO NOT USE REMOVE ALL()!
+        /** SWING FUCK*NG BUG: DO NOT USE REMOVE ALL()! */
         this.remove( mMapCanvas );
         this.remove( bottomPanel );
         this.remove( rightPanel );
@@ -489,6 +503,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Delegate to map canvas underlying function 
+     * 
      * @param data The map of usernames - positions 
      */
     public void setSpotlightData(Map<String, Point> data) {
@@ -496,6 +511,7 @@ public class GUIFrame extends JFrame {
     }
 
     /** Delegate to map canvas underlying function 
+     *
      * @param p The point where to attack
      */
     public void handleAttack(Point p) {

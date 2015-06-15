@@ -7,6 +7,7 @@ import java.io.IOException;
 
 /** Handle connection to the server 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 10, 2015
  */
 public abstract class Connection {

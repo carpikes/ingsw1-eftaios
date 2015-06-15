@@ -1,14 +1,12 @@
-/**
- * 
- */
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 
 import java.io.File;
 
-/**
- * @author Michele Albanese <michele.albanese93@gmail.com>
+/** Card button enum
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 6 Jun 2015
  */
 public enum CardButtons {
@@ -20,26 +18,44 @@ public enum CardButtons {
     TELEPORT( ObjectCardBuilder.TELEPORT_CARD, new File("img/teleport.png"), true),
     NULL( -1, new File("img/null.png"), false);
 
+    /** Card id */
     private int id;
+    /** Image file */
     private File imgFile;
+    /** Is enabled? */
     private boolean enabled;
 
+    /** Private constructor
+     *
+     * @param id Id
+     * @param file File
+     * @param enabled Enabled
+     */
     private CardButtons( int id, File file, boolean enabled ) {
         this.id = id;
         this.imgFile = file;
         this.enabled = enabled;
     }
 
+    /** Get the card id
+     *
+     * @return The id
+     */
     public int getId() {
         return id;
     }
 
+    /** The the card image file
+     *
+     * @return The image file
+     */
     public File getImageFile() {
         return imgFile;
     }
 
-    /**
-     * @return
+    /** Is this card enables?
+     *
+     * @return True if is enabled
      */
     public boolean isEnabled() {
         return enabled;

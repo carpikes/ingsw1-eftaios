@@ -15,9 +15,11 @@ import java.util.logging.Logger;
 
 /** 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 16, 2015
  */
 public class RMIConnection extends Connection {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(RMIConnection.class.getName());
 
     /** Thread that reads data */
@@ -38,6 +40,7 @@ public class RMIConnection extends Connection {
     /** Is initialized */
     private boolean mInited = false;
 
+    /** Constructor */
     public RMIConnection() {
         super();
     }

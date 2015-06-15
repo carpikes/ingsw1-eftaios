@@ -12,18 +12,23 @@ import java.util.logging.Logger;
 
 /** Helper class for IO operations on CLI
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 10, 2015
  */
-
 class IO {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(IO.class.getName());
+
+    /** Input Reader */
     private static BufferedReader mReader = new BufferedReader(new InputStreamReader(System.in));
 
+    /** Private constructor */
     private IO() {
-        //;
+        /** Unused */
     }
 
     /** Write a message in the console
+     *
      * @param line The message to be printed
      */
     public static void write(String line) {
@@ -31,6 +36,7 @@ class IO {
     }
 
     /** Write a char in the console
+     *
      * @param c The character to be printed
      */
     public static void write(char c) {
@@ -38,6 +44,7 @@ class IO {
     }
 
     /** Read a integer value
+     *
      * @param minusAvailable True if you can go back in this menu
      * @return The vlaue read
      */
@@ -49,8 +56,9 @@ class IO {
                 System.out.flush();
                 String m = mReader.readLine();
 
+                /** console shut down */
                 if(m == null)
-                    System.exit(0); // console shut down
+                    System.exit(0); 
 
                 if(minusAvailable && m.equals("-"))
                     return null;
@@ -66,6 +74,7 @@ class IO {
     }
 
     /** Read a string from the console
+     *
      * @return The string
      */
     public static String readString() {
@@ -83,6 +92,7 @@ class IO {
     }
 
     /** Read an integer in a range
+     *
      * @param min The minimum value in the range
      * @param max The maximum value in the range
      * @param minusAvailable True if you can go back in this menu
@@ -104,6 +114,7 @@ class IO {
 
 
     /** Ask for a value in a list of strings
+     *
      * @param list The list of strings
      * @param minusAvailable True if you can go back in this menu
      * @return The index of the element you chose
@@ -122,6 +133,7 @@ class IO {
     }
 
     /** Ask for a value in a list of View Commands
+     *
      * @param list The list of commands
      * @param minusAvailable True if you can go back in this menu
      * @return The index of the element you chose
@@ -140,6 +152,7 @@ class IO {
     }
 
     /** Ask for a position in the map
+     *
      * @param minusAvailable True if you can go back in this menu
      * @return The chosen position
      */
@@ -151,7 +164,7 @@ class IO {
                 if("-".equals(s) && minusAvailable)
                     return null;
 
-                // parse string
+                /** parse string */
                 if(s.length() == 3 || (s.length() == 4  && s.charAt(1) == '0')) {
                     int x = Character.toLowerCase(s.charAt(0)) - 'a';
                     int y = Integer.parseInt(s.substring(s.length()-2))-1; 

@@ -14,20 +14,21 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-/** GUI implementation of the View
- * @author Alain
- * @since 24/mag/2015
+/** Gui View: last layer between the controller and the view
  *
- */
-/**
- * @author Michele Albanese <michele.albanese93@gmail.com>
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 15 Jun 2015
  */
 public class GUIView extends View {
+    /** Main frame */
     private GUIFrame mMainFrame;
+    
+    /** Game info */
     private GameInfo gameInfo = null;
 
     /** Create view and initialize main frame
+     *
      * @param controller The local game controller
      */
     public GUIView(GameController controller) {
@@ -36,6 +37,7 @@ public class GUIView extends View {
     }
 
     /** Ask for a connection in a dialog
+     *
      * @see it.polimi.ingsw.client.View#askConnectionType(java.lang.String[])
      */
     @Override
@@ -51,6 +53,7 @@ public class GUIView extends View {
     }
 
     /** Ask for a host in a dialog
+     *
      * @see it.polimi.ingsw.client.View#askHost()
      */
     @Override
@@ -59,6 +62,7 @@ public class GUIView extends View {
     }
 
     /** Ask for a username in a dialog
+     *
      * @see it.polimi.ingsw.client.View#askUsername(java.lang.String)
      */
     @Override
@@ -67,6 +71,7 @@ public class GUIView extends View {
     }
 
     /** Ask for a view in a dialog
+     *
      * @see it.polimi.ingsw.client.View#askView(java.lang.String[])
      */
     @Override
@@ -85,6 +90,7 @@ public class GUIView extends View {
     }
 
     /** Ask for a map in a dialog
+     *
      * @see it.polimi.ingsw.client.View#askMap(java.lang.String[])
      */
     @Override
@@ -104,6 +110,7 @@ public class GUIView extends View {
     }
 
     /** Make this frame visible
+     *
      * @see it.polimi.ingsw.client.View#run()
      */
     @Override
@@ -112,6 +119,7 @@ public class GUIView extends View {
     }
 
     /** Show an error in a dialog
+     *
      * @see it.polimi.ingsw.client.View#showError(java.lang.String)
      */
     @Override
@@ -120,6 +128,7 @@ public class GUIView extends View {
     }
 
     /** Update login time in the login canvas
+     *
      * @see it.polimi.ingsw.client.View#updateLoginTime(int)
      */
     @Override
@@ -128,6 +137,7 @@ public class GUIView extends View {
     }
 
     /** Update login statistics about players
+     *
      * @see it.polimi.ingsw.client.View#updateLoginStat(int)
      */
     @Override
@@ -137,6 +147,7 @@ public class GUIView extends View {
 
 
     /** Move to the actual game
+     *
      * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.common.GameInfo)
      */
     @Override
@@ -150,12 +161,14 @@ public class GUIView extends View {
         mMainFrame.repaint();
     }
 
-    /** Handle view commands. Enable several graphical elements according to the view commands received from the server.
+    /** Handle view commands. 
+     * Enable several graphical elements according to the view commands received from the server.
+     *
      * @see it.polimi.ingsw.client.View#handleCommand(java.util.List)
      */
     @Override
     protected void handleCommand(List<ViewCommand> cmd) {
-        // reset GUI 
+        /** reset GUI  */
         resetViewStatus();
 
         for(ViewCommand c : cmd) {
@@ -190,19 +203,21 @@ public class GUIView extends View {
     }
 
     /** Enable some (or all) the sectors in the main map
+     *
      * @param c The main command received from the server
      */
     private void setEnableMap(ViewCommand c) {
         if( c.getArgs().length > 0 && c.getArgs()[0] instanceof Point && c.getArgs()[1] instanceof Integer) {
-            // start from a point and choose a position within x moves
+            /** start from a point and choose a position within x moves */
             Set<Point> enabledCells = mController.getMap().getCellsWithMaxDistance( (Point)c.getArgs()[0], (int)c.getArgs()[1], gameInfo.isHuman());
             mMainFrame.enableMapCells(enabledCells);
         } else 
-            // choose any position
+            /** choose any position */
             mMainFrame.enableMapCells( null );
     }
 
     /** Enable end turn button
+     *
      * @param value The value to set
      */
     private void setEndTurnEnabled( boolean value ) {
@@ -210,6 +225,7 @@ public class GUIView extends View {
     }
 
     /** Enable draw dangerous card button
+     *
      * @param value
      */
     private void setCanDrawDangerousCard( boolean value ) {
@@ -217,14 +233,15 @@ public class GUIView extends View {
     }
 
     /** Enable discard card action
+     *
      * @param value
      */
     private void setDiscardObjCardEnabled(boolean value) {
         mMainFrame.setDiscardObjCardEnabled( value );
     }
 
-
     /** Enable attack button
+     *
      * @param value
      */
     private void setAttackEnabled(boolean value) {
@@ -232,20 +249,20 @@ public class GUIView extends View {
     }
 
     /** Enable use object card action
+     *
      * @param value
      */
     private void setCanSelectObjCard(boolean value) {
         mMainFrame.setCanSelectObjCard( value );
     }
 
-    /** Reset all graphical elements (buttons & map)
-     * 
-     */
+    /** Reset all graphical elements (buttons & map) */
     private void resetViewStatus() {
         mMainFrame.resetViewStatus();
     }
 
     /** Display info in the right area
+     *
      * @see it.polimi.ingsw.client.View#showInfo(java.lang.String, java.lang.String)
      */
     @Override
@@ -255,6 +272,7 @@ public class GUIView extends View {
 
 
     /** Show noise action on map
+     *
      * @see it.polimi.ingsw.client.View#showNoiseInSector(java.lang.String, java.awt.Point)
      */
     @Override
@@ -263,6 +281,7 @@ public class GUIView extends View {
     }
 
     /** Called at the start of my turn
+     *
      * @see it.polimi.ingsw.client.View#onMyTurn()
      */
     @Override
@@ -272,6 +291,7 @@ public class GUIView extends View {
     }
 
     /** Called at the start of someone else's turn
+     *
      * @see it.polimi.ingsw.client.View#onOtherTurn(java.lang.String)
      */
     @Override
@@ -281,6 +301,7 @@ public class GUIView extends View {
     }
 
     /** Not implemented.
+     *
      * @see it.polimi.ingsw.client.View#startup()
      */
     @Override
@@ -289,6 +310,7 @@ public class GUIView extends View {
     }
 
     /** Show ending canvas (with winners and losers stats)
+     *
      * @see it.polimi.ingsw.client.View#showEnding(java.util.List, java.util.List)
      */
     @Override
@@ -297,6 +319,7 @@ public class GUIView extends View {
     }
 
     /** Update the cards panel on every change 
+     *
      * @see it.polimi.ingsw.client.View#notifyObjectCardListChange(java.util.ArrayList)
      */
     @Override
@@ -305,6 +328,7 @@ public class GUIView extends View {
     }
 
     /** Update players' info in the bottom panel
+     *
      * @see it.polimi.ingsw.client.View#updatePlayersInfoDisplay()
      */
     @Override
@@ -313,6 +337,7 @@ public class GUIView extends View {
     }
 
     /** Create map of sector - players to be then passed to the main frame.
+     *
      * @see it.polimi.ingsw.client.View#handleSpotlightResult(java.awt.Point[])
      */
     @Override
@@ -330,6 +355,7 @@ public class GUIView extends View {
     }
 
     /** Handle attack animation
+     *
      * @see it.polimi.ingsw.client.View#handleAttack(java.lang.String, java.awt.Point)
      */
     @Override

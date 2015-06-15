@@ -24,21 +24,37 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /** The ending canvas with winners and losers stats.
- * @author Alain
- * @since 24/mag/2015
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
+ * @since 24/mag/2015
  */
 class EndingCanvasPanel extends JPanel {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger( EndingCanvasPanel.class.getName() );
     
+    /** Serial id */
     private static final long serialVersionUID = 1L;
+
+    /** Big font */
     private Font mBigFont;
+
+    /** Small font */
     private Font mSmallFont;
+
+    /** Medium font */
     private Font mMediumFont;
     
+    /** True if is winner */
     private boolean mIsWinner;
+
+    /** Winner list */
     private transient List<Integer> mWinnerList;
+
+    /** Loser list */
     private transient List<Integer> mLoserList;
+
+    /** Game info container */
     private GameInfo mGameInfo;
     
     /** Create the final panel
@@ -50,18 +66,19 @@ class EndingCanvasPanel extends JPanel {
         
         mGameInfo = gameInfo;
         
-        // save lists
+        /** save lists */
         mIsWinner = winnerList.contains( mGameInfo.getId() );
         mWinnerList = winnerList;
         mLoserList = loserList;
         
-        // create fonts
+        /** create fonts */
         mBigFont = new Font( Config.DEFAULT_FONT, Font.PLAIN, Config.BIG_FONT_SIZE);
         mMediumFont = new Font( Config.DEFAULT_FONT, Font.PLAIN, Config.MEDIUM_FONT_SIZE);
         mSmallFont = new Font( Config.DEFAULT_FONT, Font.PLAIN, Config.SMALL_FONT_SIZE);
         
         new Timer(25, new ActionListener() {
 
+            /** Timer action handler (repaint the screen) */
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 EndingCanvasPanel m = EndingCanvasPanel.this;
@@ -75,6 +92,7 @@ class EndingCanvasPanel extends JPanel {
 
 
     /** Write a list of usernames corresponding to the listOfPlayers IDs
+     *
      * @param g2d The graphics context
      * @param offsetY The Y offset from where to start 
      * @param listOfPlayers The list of all IDs
@@ -92,15 +110,18 @@ class EndingCanvasPanel extends JPanel {
     }
 
     /** Draw the canvas
+     *
      * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
      */
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);     // paint parent's background
+        /** paint parent's background */
+        super.paintComponent(g);     
 
         Graphics2D g2d = (Graphics2D)g;
         
-        setBackground(Color.BLACK);  // set background color for this JPanel
+        /** set background color for this JPanel */
+        setBackground(Color.BLACK);  
         
         try {
             Image bg = ImageIO.read(new File("img/ending.jpg"));
@@ -113,22 +134,23 @@ class EndingCanvasPanel extends JPanel {
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // The title
+        /** The title */
         String title = (mIsWinner) ? "YOU WIN!" : "YOU LOSE!";
         
         int nextY = 20;
         nextY = drawRightAligned(g2d, mBigFont, title,nextY);
         
-        // list of winners 
+        /** list of winners  */
         nextY = drawRightAligned(g2d, mMediumFont, "Winners:", nextY + 80);
         nextY = writePlayers( g2d, nextY, mWinnerList );
         
-        // list of losers
+        /** list of losers */
         nextY = drawRightAligned(g2d, mMediumFont, "Losers:", nextY + 40);
         nextY = writePlayers( g2d, nextY, mLoserList );
     }
 
     /** Draw a string to the right of the screen
+     *
      * @param g The graphics context 
      * @param font The font used
      * @param str The string to display

@@ -8,8 +8,14 @@ import it.polimi.ingsw.game.sector.SectorBuilder;
 import java.awt.Point;
 import java.util.Set;
 
+/** CLI Map Renderer
+ *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
+ */
 public class CLIMapRenderer {
 
+    /** Sector pattern */
     private static final String[] pattern = {
         "  ____  ",
         " /****\\ ",
@@ -18,16 +24,18 @@ public class CLIMapRenderer {
         " \\____/ "
     };
 
+    /** Sector types */
     private static final String[] types = {"????","    ","HTCH","DANG","USED","????","????","????","ALJN","HUMN"};
 
+    /** Private constructor */
     private CLIMapRenderer() {
-        // ;
+        /** Not used */
     }
     
-    /**
-     * @param map
-     * @param curPos
-     * @param enabledPoints
+    /** Render the map
+     * @param map The map
+     * @param curPos Current position (to highlight) or null
+     * @param enabledPoints Set of enabled sector (or null = all enabled)
      */
     public static void renderMap(GameMap map, Point curPos, Set<Point> enabledPoints) {
         final int py = pattern.length;
@@ -51,10 +59,10 @@ public class CLIMapRenderer {
                     String str2 = types[sector.getId()];
                     int spos = 0, spos2 = 0;
 
-                    // Highlight: Player is here
+                    /** Highlight: Player is here */
                     boolean highlight = false;
 
-                    // Disabled: Player can't walk here
+                    /** Disabled: Player can't walk here */
                     boolean disabled = false;
 
                     if(curPos != null && curPos.x == j && curPos.y == i)
@@ -70,7 +78,7 @@ public class CLIMapRenderer {
 
                             char t = pattern[y].charAt(x);
 
-                            // Replace magic chars
+                            /** Replace magic chars */
                             if(t == ' ')
                                 continue;
                             if(t == 'y')
@@ -92,7 +100,7 @@ public class CLIMapRenderer {
 
                             buffer[bfy][bfx] = t;
 
-                            // Bounds. So we will only draw useful chars 
+                            /** Bounds. So we will only draw useful chars  */
                             if(upperPoint == -1 || upperPoint < bfy) upperPoint = bfy;
                             if(lowerPoint == -1 || lowerPoint > bfy) lowerPoint = bfy;
                             if(leftMostPoint == -1 || leftMostPoint > bfx) leftMostPoint = bfx;

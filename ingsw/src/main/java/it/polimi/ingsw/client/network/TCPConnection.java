@@ -12,12 +12,14 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
+/** TCP Connection
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 10, 2015
  */
 
 public class TCPConnection extends Connection {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(TCPConnection.class.getName());
 
     /** Server host */
@@ -144,15 +146,25 @@ public class TCPConnection extends Connection {
         private final TCPConnection mParent;
         private final ObjectInputStream mReader;
 
+        /** Constructor
+         *
+         * @param parent Tcp Connection
+         * @param reader Socket input stream
+         */
         public ReadRunnable(TCPConnection parent, ObjectInputStream reader) {
             mParent = parent;
             mReader = reader;
         }
 
+        /* Set the onReceiveListener
+         *
+         * @listener The listener
+         */
         public void setListener(OnReceiveListener listener) {
             mListener = listener;
         }
 
+        /** Run */
         @Override
         public void run() {
             try  {
@@ -174,10 +186,15 @@ public class TCPConnection extends Connection {
         private final Logger LOG = Logger.getLogger(ReadRunnable.class.getName());
         private final TCPConnection mParent;
 
+        /** Constructor
+         *
+         * @param parent TCP Parent connection
+         */
         public PingRunnable(TCPConnection parent) {
             mParent = parent;
         }
 
+        /** Run */
         @Override
         public void run() {
             try  {

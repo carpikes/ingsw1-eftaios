@@ -22,19 +22,31 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /** The login canvas 
- * @author Alain
- * @since 24/mag/2015
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
+ * @since 24/mag/2015
  */
 class LoginCanvasPanel extends JPanel {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger( LoginCanvasPanel.class.getName() );
     
+    /** Serial version */
     private static final long serialVersionUID = 1L;
+
+    /** Big font */
     private Font mBigFont;
+
+    /** Small font */
     private Font mSmallFont;
+
+    /** Time */
     private int mTime = -1;
+
+    /** Players */
     private int mPlayers = 0;
 
+    /** Constructor */
     public LoginCanvasPanel() {
         mBigFont = new Font("Helvetica", Font.PLAIN, 36);
         mSmallFont = new Font("Helvetica", Font.PLAIN, 24);
@@ -52,15 +64,18 @@ class LoginCanvasPanel extends JPanel {
     }
 
     /** Paint this component
+     *
      * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
      */
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);     // paint parent's background
+        /** paint parent's background */
+        super.paintComponent(g);     
 
         Graphics2D g2d = (Graphics2D)g;
         
-        setBackground(Color.BLACK);  // set background color for this JPanel
+        /** set background color for this JPanel */
+        setBackground(Color.BLACK);  
         try {
             Image bg = ImageIO.read(new File("img/loginbg.jpg"));
             g.drawImage(bg, 0, 0, null);
@@ -87,6 +102,7 @@ class LoginCanvasPanel extends JPanel {
     }
 
     /** Draw a string to the right of the screen
+     *
      * @param g The graphics context 
      * @param font The font used
      * @param str The string to display
@@ -104,6 +120,7 @@ class LoginCanvasPanel extends JPanel {
     }
 
     /** Set remaining time 
+     *
      * @param remainingTime The time to use
      */
     public void setTime(int remainingTime) {
@@ -111,6 +128,7 @@ class LoginCanvasPanel extends JPanel {
     }
     
     /** Set number of players connected to this game
+     *
      * @param newPlayers The number of players
      */
     public void setPlayers(int newPlayers) {

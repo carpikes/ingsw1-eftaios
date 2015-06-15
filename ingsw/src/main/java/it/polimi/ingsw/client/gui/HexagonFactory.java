@@ -6,22 +6,21 @@ import java.awt.Point;
 import java.awt.Polygon;
 
 /** Class for creating and returning a new hexagon according to values given.
+ *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
- * 
  */
 public class HexagonFactory  {
 
+    /** Number of vertices */
     public static final int NUMBER_OF_VERTICES = 6;
 
-    /**
-     * Private constructor. Use createHexagon() instead.
-     */
+    /** Private constructor. Use createHexagon() instead. */
     private HexagonFactory() { 
-
+        /** Empty */
     }
 
-    /**
-     * Creates a new Hexagon object.
+    /** Creates a new Hexagon object.
      *
      * @param center Center coordinates 
      * @param size Radius of the hex
@@ -30,7 +29,7 @@ public class HexagonFactory  {
     public static Hexagon createHexagon( Point center, int size, int type) {
         Polygon hexagonPath = new Polygon();
 
-        // get vertices by simply rotating by PI/6 every time
+        /** get vertices by simply rotating by PI/6 every time */
         for( int i = 0; i < NUMBER_OF_VERTICES; ++i )
             hexagonPath.addPoint((int)(center.getX() + size * Math.cos(i*Math.PI/3)),
                     (int)(center.getY() + size * Math.sin(i*Math.PI/3)));
@@ -38,20 +37,20 @@ public class HexagonFactory  {
         return new Hexagon( center, size, hexagonPath, type);
     }
 
-    /**
-     * @param type
-     * @return
+    /** Get Hexagon color
+     * @param type Hexagon type
+     * @return The color
      */
     public static ColorPalette getHexagonColorPalette(int type) {
         switch(type) {
-        case SectorBuilder.ALIEN:                            return ColorPalette.ALIEN;           
-        case SectorBuilder.DANGEROUS:                        return ColorPalette.DANGEROUS;       
-        case SectorBuilder.NOT_DANGEROUS:                    return ColorPalette.NOT_DANGEROUS;   
-        case SectorBuilder.HATCH:                            return ColorPalette.HATCH;           
-        case SectorBuilder.USED_HATCH:                       return ColorPalette.USED_HATCH;        
-        case SectorBuilder.HUMAN:                            return ColorPalette.HUMAN;          
-        case SectorBuilder.NOT_VALID:                        return ColorPalette.NOT_VALID;       
-        default:                                             return ColorPalette.NOT_VALID;       
+            case SectorBuilder.ALIEN:         return ColorPalette.ALIEN;           
+            case SectorBuilder.DANGEROUS:     return ColorPalette.DANGEROUS;       
+            case SectorBuilder.NOT_DANGEROUS: return ColorPalette.NOT_DANGEROUS;   
+            case SectorBuilder.HATCH:         return ColorPalette.HATCH;           
+            case SectorBuilder.USED_HATCH:    return ColorPalette.USED_HATCH;        
+            case SectorBuilder.HUMAN:         return ColorPalette.HUMAN;          
+            case SectorBuilder.NOT_VALID:     return ColorPalette.NOT_VALID;       
+            default:                          return ColorPalette.NOT_VALID;       
         }
     }
 }

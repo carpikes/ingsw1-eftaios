@@ -2,8 +2,9 @@ package it.polimi.ingsw.client.gui;
 
 import java.awt.Color;
 
-/**
- * @author Michele Albanese <michele.albanese93@gmail.com>
+/** Color palette
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 15 Jun 2015
  */
 public enum ColorPalette {
@@ -21,22 +22,24 @@ public enum ColorPalette {
 
     NOT_VALID        (null),
 
-    // blinking colors
+    /** blinking colors */
     NOISE            (Color.GREEN),
     ATTACK           (Color.RED),
     SPOTLIGHT        (Color.BLACK);
 
+    /** Color */
     private Color mColor;
 
     /** Construct a new color
+     *
      * @param color The desired color
      */
     private ColorPalette( Color color ) {
         mColor = color;
     }
 
-    
     /** Return this color
+     *
      * @return The color
      */
     public Color getColor() {

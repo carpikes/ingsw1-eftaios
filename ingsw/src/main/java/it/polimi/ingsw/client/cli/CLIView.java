@@ -13,15 +13,20 @@ import java.awt.Point;
 import java.util.List;
 import java.util.Set;
 
-/**
+/** CLI View
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 10, 2015
  */
-
 public class CLIView extends View {
         
+    /** Game map */
     private GameMap mMap;
+
+    /** Controller */
     private final GameController mController;
+
+    /** Game info container */
     private GameInfo mContainer;
     
     /** The constructor
@@ -32,9 +37,7 @@ public class CLIView extends View {
         mController = c;
     }
     
-    /** Create the starting banner
-     * 
-     */
+    /** Draw the starting banner */
     private static void banner() {
         IO.write("*******************************************************************************");
         IO.write("*******************************************************************************");
@@ -60,6 +63,7 @@ public class CLIView extends View {
     }
 
     /** Invoked on startup
+     *
      * @see it.polimi.ingsw.client.View#startup()
      */
     @Override
@@ -68,14 +72,16 @@ public class CLIView extends View {
     }
 
     /** Method not used
+     *
      * @see it.polimi.ingsw.client.View#run()
      */
     @Override
     public void run() {
-        // unused
+        /** unused */
     }
 
     /** Ask for a connection type
+     *
      * @see it.polimi.ingsw.client.View#askConnectionType(java.lang.String[])
      */
     @Override
@@ -85,6 +91,7 @@ public class CLIView extends View {
     }
 
     /** Ask for a username
+     * 
      * @see it.polimi.ingsw.client.View#askUsername(java.lang.String)
      */
     @Override
@@ -97,6 +104,7 @@ public class CLIView extends View {
     }
 
     /** Ask for a map
+     * 
      * @see it.polimi.ingsw.client.View#askMap(java.lang.String[])
      */
     @Override
@@ -106,6 +114,7 @@ public class CLIView extends View {
     }
 
     /** Ask for a host
+     *
      * @see it.polimi.ingsw.client.View#askHost()
      */
     @Override
@@ -115,6 +124,7 @@ public class CLIView extends View {
     }
 
     /** Ask for a view
+     *
      * @see it.polimi.ingsw.client.View#askView()
      */
     @Override
@@ -124,6 +134,7 @@ public class CLIView extends View {
     }
 
     /** Display an error
+     *
      * @see it.polimi.ingsw.client.View#showError(java.lang.String)
      */
     @Override
@@ -132,6 +143,7 @@ public class CLIView extends View {
     }
 
     /** Update Login time on startup
+     *
      * @see it.polimi.ingsw.client.View#updateLoginTime(int)
      */
     @Override
@@ -140,6 +152,7 @@ public class CLIView extends View {
     }
 
     /** Update login statistics about players on startup
+     *
      * @see it.polimi.ingsw.client.View#updateLoginStat(int)
      */
     @Override
@@ -148,6 +161,7 @@ public class CLIView extends View {
     }
 
     /** Display map after login phase
+     *
      * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.network.GameStartInfo)
      */
     @Override
@@ -164,6 +178,7 @@ public class CLIView extends View {
     }
 
     /** Handle a map view
+     *
      * @param c ViewCommand
      * @param canGoBack True if user can go back
      * @return True if the command is handled successfully
@@ -189,7 +204,7 @@ public class CLIView extends View {
         do {
             newPos = IO.askMapPos(canGoBack);
 
-            // up in the menu
+            /** up in the menu */
             if(newPos == null)
                 return false;
 
@@ -202,6 +217,7 @@ public class CLIView extends View {
     }
 
     /** Handle a ChooseObjectCard command
+     *
      * @param c ViewCommand
      * @param canGoBack True if user can go back
      * @return True if the command is handled successfully
@@ -221,6 +237,7 @@ public class CLIView extends View {
     }
 
     /** Handle a DiscardObjectCard Command
+     *
      * @param c ViewCommand
      * @param canGoBack True if user can go back
      * @return True if the command is handled successfully
@@ -241,6 +258,7 @@ public class CLIView extends View {
     }
 
     /** Handle a view command received from the game controller
+     *
      * @see it.polimi.ingsw.client.View#handleCommand(java.util.List)
      */
     @Override
@@ -262,7 +280,8 @@ public class CLIView extends View {
 
             switch(c.getOpcode()) {
                 case CMD_ENABLEMAPVIEW:
-                    if(handleEnableMapView(c, loopMenu)) //loopMenu == false if this is the only choice
+                    /** loopMenu == false if this is the only choice */
+                    if(handleEnableMapView(c, loopMenu)) 
                         loopMenu = false;
                     break;
                 case CMD_CHOOSEOBJECTCARD:
@@ -292,6 +311,7 @@ public class CLIView extends View {
     }
 
     /** Display an info on console
+     *
      * @see it.polimi.ingsw.client.View#showInfo(java.lang.String, java.lang.String)
      */
     @Override
@@ -303,6 +323,7 @@ public class CLIView extends View {
     }
 
     /** Display noise info
+     *
      * @see it.polimi.ingsw.client.View#showNoiseInSector(java.lang.String, java.awt.Point)
      */
     @Override
@@ -311,6 +332,7 @@ public class CLIView extends View {
     }
 
     /** Display message on my turn start
+     *
      * @see it.polimi.ingsw.client.View#onMyTurn()
      */
     @Override
@@ -319,6 +341,7 @@ public class CLIView extends View {
     }
 
     /** Display message when someone else's turn starts
+     *
      * @see it.polimi.ingsw.client.View#onOtherTurn(java.lang.String)
      */
     @Override
@@ -327,6 +350,7 @@ public class CLIView extends View {
     }
 
     /** Show ending banner
+     *
      * @see it.polimi.ingsw.client.View#showEnding(java.util.ArrayList, java.util.ArrayList)
      */
     @Override
@@ -355,6 +379,7 @@ public class CLIView extends View {
     }
 
     /** Display your object cards
+     *
      * @see it.polimi.ingsw.client.View#notifyObjectCardListChange(java.util.ArrayList)
      */
     @Override
@@ -377,14 +402,16 @@ public class CLIView extends View {
     }
 
     /** Unused
+     *
      * @see it.polimi.ingsw.client.View#updatePlayersInfoDisplay(it.polimi.ingsw.game.common.PlayerInfo, int)
      */
     @Override
     public void updatePlayerInfoDisplay( int idPlayer ) {
-        // unused
+        /** unused */
     }
 
     /** Display info about spotlight action
+     *
      * @see it.polimi.ingsw.client.View#handleSpotlightResult(java.awt.Point[])
      */
     @Override
@@ -406,6 +433,7 @@ public class CLIView extends View {
     }
 
     /** Display info about attacks in a sector
+     *
      * @see it.polimi.ingsw.client.View#handleAttack(java.awt.Point)
      */
     @Override

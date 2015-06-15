@@ -1,19 +1,23 @@
 package it.polimi.ingsw.client.network;
 
-
-/**
+/** Connection factory
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 10, 2015
  */
-
 public class ConnectionFactory {
     
+    /** Private constructor */
     private ConnectionFactory() {
-        // unused
+        /** unused */
     }
     
+    /** TCP Connection id */
     public static final int CONNECTION_TCP = 0;
+    /** RMI Connection id */
     public static final int CONNECTION_RMI = 1;
+
+    /** Array */
     private static String[] tAssoc = {"TCP", "RMI"};
 
     /** Returns a list of available connections
