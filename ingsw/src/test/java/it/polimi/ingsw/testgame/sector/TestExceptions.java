@@ -12,7 +12,9 @@ import it.polimi.ingsw.exception.TooFewPlayersException;
 import org.junit.Test;
 
 /** Test exceptions
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since Jun 13, 2015
  */
 public class TestExceptions {

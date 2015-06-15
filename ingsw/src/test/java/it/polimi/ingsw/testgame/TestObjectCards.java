@@ -9,8 +9,9 @@ import it.polimi.ingsw.game.state.AwayState;
 import org.junit.Test;
 
 /** Test if object cards are valid
- * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 public class TestObjectCards {
 

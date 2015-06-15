@@ -17,11 +17,11 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
+/** Server Test
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 18, 2015
  */
-
 public class TestServer {
     /** Startup the server
      * @throws java.lang.Exception Throws exception if something is wrong
@@ -72,7 +72,6 @@ public class TestServer {
                 conns[i].setHost("localhost");
                 try {
                     conns[i].connect();
-                    //System.out.println("Connecting [" + i + "]");
                     double maxSecs = 3;
 
                     while(maxSecs > 0 && Server.getInstance().getConnectedClients() != i + 1 ) {
@@ -96,7 +95,6 @@ public class TestServer {
                     Thread.sleep(50);
                     maxSecs -= 0.050;
                 }
-                //System.out.println("Disconnecting [" + i + "]");
                 assertEquals(Server.getInstance().getConnectedClients(),Config.SERVER_MAX_CLIENTS - i);
                 Thread.sleep(500);
             }
@@ -119,22 +117,22 @@ public class TestServer {
         assertTrue(Server.getInstance().addClient(conn));
         assertTrue(Server.getInstance().addClient(conn2));
 
-        // Emulate and invalid packet
+        /** Emulate and invalid packet */
         conn.emulateReadPacket(new GameCommand(CoreOpcode.CMD_PING));
 
-        // Try to change username with an empty one
+        /** Try to change username with an empty one */
         conn.emulateReadPacket(new GameCommand(CoreOpcode.CMD_CS_USERNAME));
         assertFalse(conn.exposeClient().hasUsername());
 
-        // Try a good username
+        /** Try a good username */
         conn.emulateReadPacket(new GameCommand(CoreOpcode.CMD_CS_USERNAME, "test"));
         assertTrue(conn.exposeClient().hasUsername());
 
-        // Try an already used username
+        /** Try an already used username */
         conn2.emulateReadPacket(new GameCommand(CoreOpcode.CMD_CS_USERNAME, "test"));
         assertFalse(conn2.exposeClient().hasUsername());
 
-        // Disconnect clients
+        /** Disconnect clients */
         conn.emulateDisconnect();
         conn2.emulateDisconnect();
 

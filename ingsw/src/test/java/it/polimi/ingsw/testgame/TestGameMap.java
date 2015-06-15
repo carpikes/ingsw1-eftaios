@@ -10,6 +10,8 @@ import java.io.IOException;
 import org.junit.Test;
 
 /** Test all possible errors in loading files 
+ *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 public class TestGameMap {
@@ -50,6 +52,10 @@ public class TestGameMap {
         GameMap.createFromMapFile( new File("testmaps/missing_sectors.txt") );
     }
 
+    /** Get sector at
+     *
+     * @throws IOException If there are errors
+     */
     @Test
     public void TestGetSectorAt() throws IOException {
         GameMap g = GameMap.createFromMapFile( new File("maps/fermi.txt") );

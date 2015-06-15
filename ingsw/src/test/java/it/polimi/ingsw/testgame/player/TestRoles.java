@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.polimi.ingsw.testgame.player;
 
 import static org.junit.Assert.assertEquals;
@@ -17,7 +14,8 @@ import java.util.List;
 import org.junit.Test;
 
 /** Test game roles
- * @author Michele
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 2 Jun 2015
  */
 public class TestRoles {
@@ -27,7 +25,7 @@ public class TestRoles {
      */
     @Test
     public void testRoleFactory() {
-        // test for odd and even numbers
+        /** test for odd and even numbers */
         testRoleFactoryHelper( 5 );
         testRoleFactoryHelper( 6 );
     }

@@ -9,12 +9,14 @@ import it.polimi.ingsw.game.state.PlayerState;
 
 import org.junit.Test;
 
-/**
- * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+/** Test hatches
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
 public class TestHatch {
 
+    /** Test hatches */
     @Test
     public void testHatch() {
         GameState game = new GameState("YES", 1, 2, 0, true);

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.polimi.ingsw.testgame;
 
 import static org.junit.Assert.assertFalse;
@@ -38,7 +35,9 @@ import java.util.Set;
 import org.junit.Test;
 
 /** GameState tests
- * @author Michele
+ *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 8 Jun 2015
  */
 public class TestGameState {
@@ -98,13 +97,13 @@ public class TestGameState {
     public void testInvalidMove() {
         GameState game = new GameState("YES", MAP_ID, NUMBER_OF_PLAYERS, START_ID, true);
 
-        // move to moving state
+        /** move to moving state */
         game.update();
 
-        // drop previous messages
+        /** drop previous messages */
         clearMessageQueue(game);
 
-        // send an invalid position
+        /** send an invalid position */
         game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, new Point(-1, -1) ) );
         game.update();
 
@@ -120,13 +119,13 @@ public class TestGameState {
     public void testMoveWrongParameterType() {
         GameState game = new GameState("YES", MAP_ID, NUMBER_OF_PLAYERS, START_ID, true);
 
-        // move to moving state
+        /** move to moving state */
         game.update();
 
-        // drop previous messages
+        /** drop previous messages */
         clearMessageQueue(game);
 
-        // send an invalid position
+        /** send an invalid position */
         game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, new GameInfo(null, 0, false, null) ) );
         game.update();
 
@@ -142,7 +141,7 @@ public class TestGameState {
     public void testMoveOK() {
         GameState game = playToMovingState( false, false );
 
-        // send position and update game
+        /** send position and update game */
         Point newPosition = dangerousPoints.iterator().next();
         game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, newPosition ) );
         game.update();
@@ -157,7 +156,7 @@ public class TestGameState {
     public void testMoveToHatchOK() {
         GameState game = playToMovingState( true, true );
 
-        // send position and update game
+        /** send position and update game */
         Point newPosition = hatchPoints.iterator().next();
         game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, newPosition ) );
         int id = game.getCurrentPlayer().getId();
@@ -167,9 +166,10 @@ public class TestGameState {
 
         PlayerState state = game.getCurrentPlayer().getCurrentState();
 
-        // since we're playing a 2-player game, there are only two possibilities:
-        // 1) The player has won, leaving the other player alone -> the game ends
-        // 2) The player has moved into a broken hatch -> let the other player start his turn
+        /** Since we're playing a 2-player game, there are only two possibilities:
+          * 1) The player has won, leaving the other player alone -> the game ends
+          * 2) The player has moved into a broken hatch -> let the other player start his turn
+          */
         assertTrue( game.debugGameEnded() || (state instanceof StartTurnState && game.getCurrentPlayer().getId() != id));
     }
 
@@ -180,7 +180,7 @@ public class TestGameState {
     public void testAlienMoveToHatch( ) {
         playToMovingState( true, false );
 
-        // Alien cannot have hatch sector in their sets of possible moves!
+        /** Alien cannot have hatch sector in their sets of possible moves! */
         assertTrue( hatchPoints.isEmpty() );
     }
 
@@ -189,7 +189,7 @@ public class TestGameState {
      */
     @Test
     public void testAlienAttack() {
-        // play as an alien till reaching move done state
+        /** play as an alien till reaching move done state */
         GameState game = this.playToMoveDoneState(true, false, true);
 
         game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_ATTACK) );
@@ -267,14 +267,14 @@ public class TestGameState {
      */
     @Test
     public void testHumanAttack() {
-        // play as an alien till reaching move done state
+        /** play as an alien till reaching move done state */
         GameState game = this.playToMoveDoneState(true, true, true);
 
         game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_ATTACK) );
         clearMessageQueue(game);
         game.update();
 
-        // Humans cannot attack!
+        /** Humans cannot attack! */
         assertFalse( findGameCommandInQueue(game, InfoOpcode.INFO_PLAYER_ATTACKED) );
     }
 
@@ -297,14 +297,14 @@ public class TestGameState {
     public void testInvalidActionInMovingState() {
         GameState game = playToMoveDoneState(false, false, true);
     
-        // move to moving state
+        /** move to moving state */
         game.update();
         
-        // drop previous messages
+        /** drop previous messages */
         clearMessageQueue(game);
         
         assertTrue(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD.toString().length() > 0);
-        // send an invalid position
+        /** send an invalid position */
         game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD) );
         PlayerState p = game.getCurrentPlayer().getCurrentState();
         p.update();
@@ -328,13 +328,13 @@ public class TestGameState {
             }
         }
 
-        // move to moving state
+        /** move to moving state */
         game.update();
 
-        // drop previous messages
+        /** drop previous messages */
         clearMessageQueue(game);
 
-        // create set of dangerous, not dangerous and hatch sectors available for current player
+        /** create set of dangerous, not dangerous and hatch sectors available for current player */
         createSetsOfPossibleSectors(game);
 
         return game;
@@ -352,7 +352,7 @@ public class TestGameState {
 
         Point newPosition;
         if( dangerous ) {
-            // send position and update game
+            /** send position and update game */
             newPosition = dangerousPoints.iterator().next();
         } else {
             newPosition = notDangerousPoints.iterator().next();
@@ -385,7 +385,7 @@ public class TestGameState {
         notDangerousPoints.clear();
         hatchPoints.clear();
 
-        // Get first point among the available ones
+        /** Get first point among the available ones */
         Set<Point> points = game.getCellsWithMaxDistance();
         Iterator<Point> it = points.iterator();
 
@@ -408,8 +408,6 @@ public class TestGameState {
     private void clearMessageQueue(GameState game) {
         game.debugGetOutputQueue().clear();
     }
-
-
 
     /**
      * Find if the given command was sent in game.

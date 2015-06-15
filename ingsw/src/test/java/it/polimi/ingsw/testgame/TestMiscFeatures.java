@@ -13,7 +13,9 @@ import it.polimi.ingsw.game.common.ViewOpcode;
 import org.junit.Test;
 
 /** Some misc tests
+ *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since Jun 13, 2015
  */
 public class TestMiscFeatures {
