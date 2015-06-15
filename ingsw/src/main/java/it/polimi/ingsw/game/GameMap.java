@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game;
 
+import it.polimi.ingsw.exception.InvalidMapIdException;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
@@ -140,7 +141,7 @@ public class GameMap implements Serializable {
      * @return
      */
     public boolean isWithinBounds(Point p) {
-        return ( p.x >= 0 && p.y >= 0 && p.x < COLUMNS && p.y < ROWS ); 
+        return p.x >= 0 && p.y >= 0 && p.x < COLUMNS && p.y < ROWS; 
     }
 
     /** Get the player starting point
@@ -185,7 +186,7 @@ public class GameMap implements Serializable {
      */
     public static GameMap createFromId(int mapId) throws IOException {
         if(!isValidMap(mapId))
-            throw new RuntimeException("Invalid map id");
+            throw new InvalidMapIdException("Invalid map id");
 
         return GameMap.createFromMapFile(new File(mapFiles[mapId]));
     }
@@ -207,13 +208,14 @@ public class GameMap implements Serializable {
         frontier.add( currentPosition );
         frontier.add( delimiter );
 
-        while( maxMoves > 0 ) {
+        int moves = maxMoves;
+        while( moves > 0 ) {
 
             do {
                 currentPoint = frontier.poll();
 
                 if( currentPoint != null ) {
-                    ArrayList<Point> neighbors = getNeighbourAccessibleSectors( currentPoint, isHuman, false);
+                    List<Point> neighbors = getNeighbourAccessibleSectors( currentPoint, isHuman, false);
 
                     frontier.addAll( neighbors );
                     frontier.add( delimiter );
@@ -223,7 +225,7 @@ public class GameMap implements Serializable {
                 }
             } while( currentPoint != null );
 
-            --maxMoves;
+            --moves;
         }
 
         sectors.remove( currentPosition );
@@ -245,18 +247,18 @@ public class GameMap implements Serializable {
      * @param currentPosition The starting sector
      * @return A list of all neighbours
      */
-    public ArrayList<Point> getNeighbourAccessibleSectors( Point currentPosition, boolean isHuman, boolean allSectors) {
+    public List<Point> getNeighbourAccessibleSectors( Point currentPosition, boolean isHuman, boolean allSectors) {
         /** get x and y for simplicity's sake */
         int x = currentPosition.x;
         int y = currentPosition.y;
 
-        ArrayList<Point> sectors = new ArrayList< >();
+        List<Point> sectors = new ArrayList< >();
 
         for( int i = -1; i <= 1; ++i ) {
             for( int j = -1; j <= 1; ++j ) {
 
                 /** exclude the - sectors */
-                boolean isValid = (i == 0 && j != 0);
+                boolean isValid = i == 0 && j != 0;
                 if(currentPosition.x % 2 == 0) 
                     isValid |= (i == 1 && j == 0) || (i == -1);
                 else
