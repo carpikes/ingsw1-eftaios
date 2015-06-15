@@ -9,7 +9,9 @@ package it.polimi.ingsw.server;
 public class Main {
 
     /** Private constructor */
-    private Main() { }
+    private Main() { 
+        
+    }
 
     /** Server entry point */
     public static void main(String[] args) {

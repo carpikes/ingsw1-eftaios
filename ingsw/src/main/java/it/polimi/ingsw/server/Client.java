@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.exception.ServerException;
 import it.polimi.ingsw.game.common.CoreOpcode;
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.common.Opcode;
@@ -59,22 +60,14 @@ public class Client {
                     if(pkt.getOpcode() instanceof CoreOpcode) {
                         CoreOpcode opcode = (CoreOpcode) pkt.getOpcode();
                         switch(opcode) {
-                            case CMD_CS_USERNAME:
-                                String name = (String) args[0];
-                                if(mGame.canSetName(name) && mUser == null) {
-                                    setUsername(name);
-                                    sendPacket(new GameCommand(CoreOpcode.CMD_SC_USERNAMEOK, mGame.getNumberOfClients(), mGame.getRemainingLoginTime()));
-                                } else
-                                    sendPacket(CoreOpcode.CMD_SC_USERNAMEFAIL);
-                                break;
-                            case CMD_CS_LOADMAP:
-                                if(args.length == 1 && args[0] instanceof Integer && mGame.setMap(this, (Integer)args[0]))
-                                    sendPacket(CoreOpcode.CMD_SC_MAPOK);
-                                else
-                                    sendPacket(CoreOpcode.CMD_SC_MAPFAIL);
-                                break;
-                            default:
-                                break;
+                        case CMD_CS_USERNAME:
+                            handleUsernameCommand(args);
+                            break;
+                        case CMD_CS_LOADMAP:
+                            handleLoadMapCommand(args);
+                            break;
+                        default:
+                            break;
                         }
                     }
                 }
@@ -85,13 +78,29 @@ public class Client {
             mGame.handlePacket(this, pkt);
     }
 
+    private void handleLoadMapCommand(Serializable[] args) {
+        if(args.length == 1 && args[0] instanceof Integer && mGame.setMap(this, (Integer)args[0]))
+            sendPacket(CoreOpcode.CMD_SC_MAPOK);
+        else
+            sendPacket(CoreOpcode.CMD_SC_MAPFAIL);
+    }
+
+    private void handleUsernameCommand(Serializable[] args) {
+        String name = (String) args[0];
+        if(mGame.canSetName(name) && mUser == null) {
+            setUsername(name);
+            sendPacket(new GameCommand(CoreOpcode.CMD_SC_USERNAMEOK, mGame.getNumberOfClients(), mGame.getRemainingLoginTime()));
+        } else
+            sendPacket(CoreOpcode.CMD_SC_USERNAMEFAIL);
+    }
+
     /** Send a packet through the network
      * 
      * @param pkt The packet
      */
     public void sendPacket(GameCommand pkt) {
         if(!isConnected())
-            throw new RuntimeException("You can't send data to an inactive client");
+            throw new ServerException("You can't send data to an inactive client");
 
         mConn.sendPacket(pkt);
     }
@@ -137,7 +146,7 @@ public class Client {
      */
     public void setUsername(String username) {
         if(mUser != null)
-            throw new RuntimeException("Username is already set");
+            throw new ServerException("Username is already set");
         mUser = username;
     }
 

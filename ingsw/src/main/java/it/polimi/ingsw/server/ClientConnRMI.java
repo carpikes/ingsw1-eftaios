@@ -47,6 +47,7 @@ public class ClientConnRMI extends ClientConn {
      */
     @Override
     public void run() {
+        // Empty method, RMI does not need a separate thread
     }
 
     /** Send a GameCommand to this client

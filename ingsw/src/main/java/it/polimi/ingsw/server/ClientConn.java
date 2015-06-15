@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.exception.ServerException;
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.common.Opcode;
 import it.polimi.ingsw.game.config.Config;
@@ -30,7 +31,7 @@ public abstract class ClientConn implements Runnable {
      */
     public void setClient(Client client) {
         if(mClient != null)
-            throw new RuntimeException("This connection already has a client");
+            throw new ServerException("This connection already has a client");
         mClient = client;
     }
 

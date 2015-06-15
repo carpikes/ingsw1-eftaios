@@ -6,12 +6,14 @@ import it.polimi.ingsw.game.common.ServerRMIMask;
 import it.polimi.ingsw.game.config.Config;
 
 import java.rmi.AccessException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +28,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
     private static final Logger LOG = Logger.getLogger(ServerRMI.class.getName());
 
     /** HashMap with connected clients */
-    private HashMap<String, ClientConnRMI> mMap;
+    private Map<String, ClientConnRMI> mMap;
 
     /** RMI Registry instance */
     private Registry mRegistry;
@@ -45,22 +47,27 @@ public class ServerRMI implements Listener, ServerRMIMask {
     @Override
     public void run() {
         try {
-            try {
-                mRegistry = LocateRegistry.getRegistry();
-                mRegistry.list(); // This will throw an exception if the mRegistry does not exists
-            } catch(Exception e) {
-                LOG.log(Level.FINEST, e.toString(), e);
-                mRegistry = LocateRegistry.createRegistry(1099);
-            }
-
-            ServerRMIMask stub = (ServerRMIMask) UnicastRemoteObject.exportObject(this, 0);
-            mRegistry.bind(Config.RMISERVER_STRING, stub);
-
-            LOG.log(Level.INFO, "RMI server is running");
-            mIsUp = true;
+            handleRMIInit();
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "RMI server is down: " + e.toString(), e);
         }
+    }
+
+    private void handleRMIInit() throws RemoteException, AlreadyBoundException,
+            AccessException {
+        try {
+            mRegistry = LocateRegistry.getRegistry();
+            mRegistry.list(); // This will throw an exception if the mRegistry does not exists
+        } catch(Exception e) {
+            LOG.log(Level.FINEST, e.toString(), e);
+            mRegistry = LocateRegistry.createRegistry(1099);
+        }
+
+        ServerRMIMask stub = (ServerRMIMask) UnicastRemoteObject.exportObject(this, 0);
+        mRegistry.bind(Config.RMISERVER_STRING, stub);
+
+        LOG.log(Level.INFO, "RMI server is running");
+        mIsUp = true;
     }
 
     /** [REMOTE] 

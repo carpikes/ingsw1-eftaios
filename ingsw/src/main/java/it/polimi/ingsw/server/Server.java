@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.exception.DebugException;
+import it.polimi.ingsw.exception.ServerException;
 import it.polimi.ingsw.game.common.CoreOpcode;
 import it.polimi.ingsw.game.config.Config;
 
@@ -20,20 +21,6 @@ import java.util.logging.Logger;
 public class Server {
     /** Logger */
     private static final Logger LOG = Logger.getLogger(Server.class.getName());
-
-    /** Singleton Holder */
-    private static class Holder {
-        /** The singleton instance */
-        private static final Server INSTANCE = new Server();
-    }
-
-    /** Returns the current server instance
-     * 
-     * @return The instance
-     */
-    public static Server getInstance() {
-        return Holder.INSTANCE;
-    }
 
     /** This list contains all listeners running (e.g. Socket listener, RMI, ...) */
     private final List<Listener> mServers;
@@ -56,6 +43,16 @@ public class Server {
     /** Debug mode */
     private boolean dDebugMode = false;
 
+    /** Singleton Holder */
+    private static class Holder {
+        private Holder() {
+
+        }
+
+        /** The singleton instance */
+        private static final Server INSTANCE = new Server();
+    }
+
     /** Constructor */
     private Server() { 
         mServers = new ArrayList<Listener>();
@@ -68,6 +65,14 @@ public class Server {
 
         mServers.add(tcp);
         mServers.add(rmi);
+    }
+
+    /** Returns the current server instance
+     * 
+     * @return The instance
+     */
+    public static Server getInstance() {
+        return Holder.INSTANCE;
     }
 
     /** New client connected: call this method to add him in a new game
@@ -112,7 +117,7 @@ public class Server {
         if(mConnectedClients > 0)
             mConnectedClients--;
         else
-            throw new RuntimeException("0 Clients connected. What's Happening?");
+            throw new ServerException("0 Clients connected. What's Happening?");
     }
 
     /** Removes a game from the games-to-update list 
@@ -141,14 +146,12 @@ public class Server {
 
         try {
             while(!mStopEvent) {
-                if(mCurGame != null) {
-                    if(mCurGame.isReady()) {
-                        LOG.log(Level.INFO, "Game ready! Stopping new incoming connections");
-                        synchronized(mGamesRunning) {
-                            mGamesRunning.add(mCurGame);
-                        }
-                        mCurGame = null;
+                if(mCurGame != null && mCurGame.isReady()) {
+                    LOG.log(Level.INFO, "Game ready! Stopping new incoming connections");
+                    synchronized(mGamesRunning) {
+                        mGamesRunning.add(mCurGame);
                     }
+                    mCurGame = null;
                 }
 
                 synchronized(mGamesRunning) {

@@ -1,11 +1,12 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.exception.ServerException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.common.CoreOpcode;
-import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.common.GameInfo;
+import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.config.Config;
 
 import java.io.Serializable;
@@ -141,8 +142,7 @@ public class GameManager {
     }
 
     /** This method is called on each game update cycle
-     * @todo notify users about someone without username
-     * @todo generate a random username if someone won't choose it
+     * 
      */
     public synchronized void update() {
 
@@ -166,7 +166,7 @@ public class GameManager {
             /** Game is ready but it is not running */
             for(Client client : mClients) {
                 if(!client.isConnected())
-                    throw new RuntimeException("Client can't be inactive before the game is started. What's happening?");
+                    throw new ServerException("Client can't be inactive before the game is started. What's happening?");
 
                 if(!client.hasUsername()) {
                     /** Some slow users still haven't typed their name*/
@@ -244,10 +244,10 @@ public class GameManager {
             mAwayClients++;
         else
             if(mClients.remove(index) == null)
-                throw new RuntimeException("Are you trying to remove a non-existent client?");
+                throw new ServerException("Are you trying to remove a non-existent client?");
 
         if(mAwayClients > getNumberOfClients())
-            throw new RuntimeException("AwayClients >= ConnectedClients. What's Happening?");
+            throw new ServerException("AwayClients >= ConnectedClients. What's Happening?");
 
         /** Decrement global user counter*/
         Server.getInstance().removeClient();
@@ -273,7 +273,7 @@ public class GameManager {
         if(mState != null && ((mIsRunning) || (!canAskAtLeastOne && mustAskForMap)))
             mState.onPlayerDisconnect(index);
 
-        LOG.log(Level.INFO, "Player disconnected. Game Running? " + String.valueOf(mIsRunning) + ". Clients connected: " + (getNumberOfClients() - mAwayClients));
+        LOG.log(Level.INFO, "Player disconnected. Game Running? " + mIsRunning + ". Clients connected: " + (getNumberOfClients() - mAwayClients));
     }
 
     /** Remove a client from the game
@@ -294,7 +294,7 @@ public class GameManager {
         GameCommand pkt;
 
         if(!client.isConnected())
-            throw new RuntimeException("I am trying to ask a map to an inactive client. What's happening?");
+            throw new ServerException("I am trying to ask a map to an inactive client. What's happening?");
         pkt = new GameCommand(CoreOpcode.CMD_SC_CHOOSEMAP, (Serializable[]) GameMap.getListOfMaps());
         client.sendPacket(pkt);
     }
@@ -313,7 +313,7 @@ public class GameManager {
         int turnId = mState.getTurnId();
         if(turnId >=0 && turnId <= mClients.size() && mClients.get(turnId).equals(client)) {
             if(!mClients.get(turnId).isConnected())
-                throw new RuntimeException("GameState is broken: mTurnId -> AwayPlayer. What's happening?");
+                throw new ServerException("GameState is broken: mTurnId -> AwayPlayer. What's happening?");
             mState.enqueuePacket(pkt);
         }
     }
@@ -328,7 +328,7 @@ public class GameManager {
         if(mChosenMapId != null)
             return false;
 
-        if(mClients.size() > 0 && mClients.get(0).equals(client) && GameMap.isValidMap(chosenMap)) {
+        if( !mClients.isEmpty() && mClients.get(0).equals(client) && GameMap.isValidMap(chosenMap)) {
             mChosenMapId = chosenMap;
             return true;
         }
