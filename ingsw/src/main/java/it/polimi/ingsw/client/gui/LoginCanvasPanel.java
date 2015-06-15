@@ -76,7 +76,7 @@ class LoginCanvasPanel extends JPanel {
         nextY = drawRightAligned(g2d, mBigFont, "Waiting for other players",nextY);
         nextY = drawRightAligned(g2d, mSmallFont, "Players online: " + mPlayers, nextY + 20);
 
-        int dt = (int) (mTime - (int)(System.currentTimeMillis()/1000));
+        int dt = mTime - (int)(System.currentTimeMillis()/1000);
         if(mTime >= 0 && dt >= 0)
             nextY = drawRightAligned(g2d, mSmallFont, "Remaining time: " + dt + "s",nextY);
         else

@@ -14,14 +14,16 @@ public class HexagonFactory  {
     /**
      * Private constructor. Use createHexagon() instead.
      */
-    private HexagonFactory() { }
+    private HexagonFactory() { 
+        
+    }
 
     /**
      * Creates a new Hexagon object.
      *
-     * @param center the center
-     * @param size radius of hex
-     * @return the hexagon
+     * @param center Center coordinates 
+     * @param size Radius of the hex
+     * @return The hexagon just created
      */
     public static Hexagon createHexagon( Point center, int size, int type) {
         Polygon hexagonPath = new Polygon();

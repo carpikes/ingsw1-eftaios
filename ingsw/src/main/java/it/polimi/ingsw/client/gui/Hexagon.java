@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -12,9 +13,6 @@ import java.awt.Polygon;
  *
  */
 public class Hexagon {
-
-
-
 
     private Point mCenter;
     private double mSize;
@@ -116,5 +114,11 @@ public class Hexagon {
             g2d.setColor( ColorPalette.STROKE );
             g2d.draw(getPath());
         }
+        
+        /*if( text != null ) {
+            g2d.setFont( new Font("Helvetica", Font.PLAIN, 10) );
+            g2d.setColor( Color.BLACK );
+            g2d.drawString("Hello World", (int)(getCenter().x - getSize()/2), getCenter().y );
+        }*/
     }
 }

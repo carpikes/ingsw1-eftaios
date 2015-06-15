@@ -40,7 +40,7 @@ public class MovingState extends PlayerState {
         buildAndSendAvailableCommands();
     }
 
-    /** Build and send available commands
+    /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
      */
     protected void buildAndSendAvailableCommands() {
@@ -51,9 +51,8 @@ public class MovingState extends PlayerState {
         sendAvailableCommands(availableCommands);
     }
 
-    /** Update the game
+    /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.State#update()
-     * @return New player state
      */
     @Override
     public PlayerState update() {
@@ -98,9 +97,6 @@ public class MovingState extends PlayerState {
         PlayerState nextState;
         mGameState.rawMoveTo(player, chosenPos);
 
-        // notify all players that current players has just moved
-        mGameState.broadcastPacket( InfoOpcode.INFO_HAS_MOVED );
-
         Sector sector = map.getSectorAt( player.getCurrentPosition() );
         // If we are on an hatch sector, draw an hatch card and act accordingly
         if( sector.getId() == SectorBuilder.HATCH ) {
@@ -112,7 +108,7 @@ public class MovingState extends PlayerState {
     }
 
     /** Draw an hatch card
-     * @return The hatch card
+     * @return
      */
     private PlayerState drawHatchCard( ) {
         GameMap map = mGameState.getMap();
@@ -124,9 +120,8 @@ public class MovingState extends PlayerState {
         return HatchCardBuilder.getRandomCard(mGameState).getNextState( );
     }
 
-    /** Is the player still in game?
+    /* (non-Javadoc)
      * @see it.polimi.ingsw.game.state.PlayerState#stillInGame()
-     * @return True if the player is still in game
      */
     @Override
     public boolean stillInGame() {

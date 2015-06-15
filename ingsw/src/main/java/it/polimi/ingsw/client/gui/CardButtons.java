@@ -8,7 +8,7 @@ import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import java.io.File;
 
 /**
- * @author Michele
+ * @author Michele Albanese <michele.albanese93@gmail.com>
  * @since 6 Jun 2015
  */
 public enum CardButtons {
