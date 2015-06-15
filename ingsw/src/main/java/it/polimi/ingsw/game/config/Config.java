@@ -16,7 +16,7 @@ public class Config {
     public static final int GAME_MAX_PLAYERS                = 8;
 
     /** Players waiting secs (default: 30) */
-    public static final int GAME_WAITING_SECS               = 5;
+    public static final int GAME_WAITING_SECS               = 30;
 
     /** Max seconds per turn */
     public static final int GAME_MAX_SECONDS_PER_TURN       = 120;
