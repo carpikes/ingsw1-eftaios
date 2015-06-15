@@ -1,9 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.game.sector.SectorBuilder;
-
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -31,17 +28,9 @@ public class Hexagon {
         this.mSize = size;
         this.mPath = hexagonPath;
 
-        switch(type) {
-            case SectorBuilder.ALIEN:         mColor = ColorPalette.ALIEN; break;
-            case SectorBuilder.DANGEROUS:     mColor = ColorPalette.DANGEROUS; break;
-            case SectorBuilder.NOT_DANGEROUS: mColor = ColorPalette.NOT_DANGEROUS; break;
-            case SectorBuilder.HATCH:         mColor = ColorPalette.HATCH; break;
-            case SectorBuilder.USED_HATCH:    mColor = ColorPalette.USED_HATCH; break;
-            case SectorBuilder.HUMAN:         mColor = ColorPalette.HUMAN; break;
-            case SectorBuilder.NOT_VALID:     mColor = ColorPalette.NOT_VALID; 
-        }
+        mColor = HexagonFactory.getHexagonColorPalette(type).getColor();
     }
-
+    
     /**
      * Gets the mPath.
      *
@@ -71,12 +60,12 @@ public class Hexagon {
 
     
     /**
-     * 
-     * @param g2d
-     * @param playerOn
-     * @param enabled
-     * @param mouseOnThis
-     * @param shouldBlink
+     * Draw an hexagon in the Graphics2d object given (the mapcanvas panel actually)
+     * @param g2d The graphics2D used to draw
+     * @param playerOn The player is in this position?
+     * @param enabled Can this sector be selected or not?
+     * @param mouseOnThis Is mouse hovering on this sector
+     * @param shouldBlink True if this should blink (attack, spotlight and noise actions)
      */
     public void draw(Graphics2D g2d, boolean playerOn, boolean enabled, boolean mouseOnThis, boolean shouldBlink, Color colorBlink) {
         if( mColor == null )
@@ -87,7 +76,7 @@ public class Hexagon {
         // Color for current position: low priority
         Color real = mColor;
         if(playerOn)
-            real = ColorPalette.PLAYER_ON;
+            real = ColorPalette.PLAYER_ON.getColor();
 
         if( shouldBlink ) {
             // blinking effect
@@ -104,14 +93,14 @@ public class Hexagon {
             real = new Color(real.getRed()/2, real.getGreen()/2, real.getBlue()/2, 0xa0);
         } else if(mouseOnThis)
             // hovering color has higher priority than PlayerOn
-            real = ColorPalette.MOUSE_ON_THIS;
+            real = ColorPalette.MOUSE_ON_THIS.getColor();
 
         g2d.setColor( real );
         g2d.fill(getPath());
 
         // border
         if(drawStroke) {
-            g2d.setColor( ColorPalette.STROKE );
+            g2d.setColor( ColorPalette.STROKE.getColor() );
             g2d.draw(getPath());
         }
         

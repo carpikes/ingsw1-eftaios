@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;

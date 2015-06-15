@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.game.sector.SectorBuilder;
+
 import java.awt.Point;
 import java.awt.Polygon;
 
@@ -15,7 +17,7 @@ public class HexagonFactory  {
      * Private constructor. Use createHexagon() instead.
      */
     private HexagonFactory() { 
-        
+
     }
 
     /**
@@ -34,5 +36,22 @@ public class HexagonFactory  {
                     (int)(center.getY() + size * Math.sin(i*Math.PI/3)));
 
         return new Hexagon( center, size, hexagonPath, type);
+    }
+
+    /**
+     * @param type
+     * @return
+     */
+    public static ColorPalette getHexagonColorPalette(int type) {
+        switch(type) {
+        case SectorBuilder.ALIEN:                            return ColorPalette.ALIEN;           
+        case SectorBuilder.DANGEROUS:                        return ColorPalette.DANGEROUS;       
+        case SectorBuilder.NOT_DANGEROUS:                    return ColorPalette.NOT_DANGEROUS;   
+        case SectorBuilder.HATCH:                            return ColorPalette.HATCH;           
+        case SectorBuilder.USED_HATCH:                       return ColorPalette.USED_HATCH;        
+        case SectorBuilder.HUMAN:                            return ColorPalette.HUMAN;          
+        case SectorBuilder.NOT_VALID:                        return ColorPalette.NOT_VALID;       
+        default:                                             return ColorPalette.NOT_VALID;       
+        }
     }
 }

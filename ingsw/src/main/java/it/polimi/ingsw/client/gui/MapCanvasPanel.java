@@ -198,7 +198,7 @@ public class MapCanvasPanel extends JPanel {
         super.paintComponent(g);     // paint parent's background
 
         Graphics2D g2d = (Graphics2D)g;
-        setBackground(ColorPalette.BACKGROUND);  // set background color for this JPanel
+        setBackground(ColorPalette.BACKGROUND.getColor());  // set background color for this JPanel
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -240,7 +240,7 @@ public class MapCanvasPanel extends JPanel {
     
     private boolean shouldDrawNoise( Point p ) {
         if( mNoisePosition != null && p.equals( mNoisePosition ) ) {
-            blinkingColor = ColorPalette.NOISE;
+            blinkingColor = ColorPalette.NOISE.getColor();
             return true;
         } else {
            return false;
@@ -249,7 +249,7 @@ public class MapCanvasPanel extends JPanel {
     
     private boolean shouldDrawSpotlight( Point p ) {
         if( mSpotlightSectors != null && mSpotlightSectors.values().contains(p) ) {
-            blinkingColor = ColorPalette.SPOTLIGHT;
+            blinkingColor = ColorPalette.SPOTLIGHT.getColor();
             return true;
         } else {
             return false;
@@ -258,7 +258,7 @@ public class MapCanvasPanel extends JPanel {
     
     private boolean shouldDrawAttack(Point p) {
         if( mAttackPoint != null && p.equals( mAttackPoint ) ) {
-            blinkingColor = ColorPalette.ATTACK;
+            blinkingColor = ColorPalette.ATTACK.getColor();
             return true;
         } else {
             return false;
