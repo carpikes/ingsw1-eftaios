@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.PlayerInfo;
-import it.polimi.ingsw.game.config.Config;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,8 +11,6 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
@@ -43,9 +40,6 @@ class EndingCanvasPanel extends JPanel {
     private List<Integer> mLoserList;
     private GameInfo mGameInfo;
 
-    private String winnerString;
-    private String loserString;
-    
     public EndingCanvasPanel( GameInfo gameInfo, List<Integer> winnerList, List<Integer> loserList ) {
         
         mGameInfo = gameInfo;

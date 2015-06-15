@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.network;
 
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.common.ServerRMIMask;
+import it.polimi.ingsw.game.config.Config;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -17,9 +18,6 @@ import java.util.logging.Logger;
  */
 public class RMIConnection extends Connection {
     private static final Logger LOG = Logger.getLogger(RMIConnection.class.getName());
-
-    /** Service */
-    private static final String RMISERVER_STRING = "eftaiosRMI";
 
     /** Thread that reads data */
     private ReadRunnable mReader = null;
@@ -68,7 +66,7 @@ public class RMIConnection extends Connection {
         Registry registry = LocateRegistry.getRegistry(mHost);
 
         try {
-            mServerMask = (ServerRMIMask) registry.lookup(RMISERVER_STRING);
+            mServerMask = (ServerRMIMask) registry.lookup(Config.RMISERVER_STRING);
             mUniqueId = mServerMask.registerAndGetId();
             if(mUniqueId == null)
                 throw new RuntimeException("Cannot receive a unique id");

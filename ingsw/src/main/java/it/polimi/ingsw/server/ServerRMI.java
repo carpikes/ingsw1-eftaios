@@ -3,6 +3,7 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.common.Rand;
 import it.polimi.ingsw.game.common.ServerRMIMask;
+import it.polimi.ingsw.game.config.Config;
 
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -23,9 +24,6 @@ import java.util.logging.Logger;
 public class ServerRMI implements Listener, ServerRMIMask {
     /** Logger */
     private static final Logger LOG = Logger.getLogger(ServerRMI.class.getName());
-
-    /** RMI service identifier */
-    private static final String RMISERVER_STRING = "eftaiosRMI";
 
     /** HashMap with connected clients */
     private HashMap<String, ClientConnRMI> mMap;
@@ -56,7 +54,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
             }
 
             ServerRMIMask stub = (ServerRMIMask) UnicastRemoteObject.exportObject(this, 0);
-            mRegistry.bind(RMISERVER_STRING, stub);
+            mRegistry.bind(Config.RMISERVER_STRING, stub);
 
             LOG.log(Level.INFO, "RMI server is running");
             mIsUp = true;
@@ -141,7 +139,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
         try {
             if(mRegistry != null) {
                 UnicastRemoteObject.unexportObject(this, true);
-                mRegistry.unbind(RMISERVER_STRING);
+                mRegistry.unbind(Config.RMISERVER_STRING);
                 mRegistry = null;
             }
             mIsUp = false;

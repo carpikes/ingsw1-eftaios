@@ -54,6 +54,9 @@ public class Config {
     /** Max clients that a server can handle */
     public static final int SERVER_MAX_CLIENTS              = 5 * GAME_MAX_PLAYERS;
 
+    /** RMI Service string */
+    public static final String RMISERVER_STRING             = "eftaiosRMI";
+
     /** TCP listening port
      * Why port 3834? 3834 = 0xEFA -> Escape From Aliens
      * Note: ports < 1024 are privileges 
