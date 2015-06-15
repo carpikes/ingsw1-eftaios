@@ -7,6 +7,7 @@ import it.polimi.ingsw.game.config.Config;
 /** Common client connection interface 
  *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 8, 2015
  */
 public abstract class ClientConn implements Runnable {

@@ -11,9 +11,11 @@ import java.util.logging.Logger;
 /** TCP Server Listener
  *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 8, 2015
  */
 class ServerTCP implements Listener {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(ServerTCP.class.getName());
 
     /** Pool of threads */

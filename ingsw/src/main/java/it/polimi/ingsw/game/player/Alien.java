@@ -5,6 +5,7 @@ import it.polimi.ingsw.game.config.Config;
 /** Alien role. 
  * Can move up to 2 sectors per time (3 if it has eaten).
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 3 Jun 2015
  */

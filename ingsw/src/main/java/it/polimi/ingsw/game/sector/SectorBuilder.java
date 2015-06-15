@@ -5,6 +5,7 @@ import it.polimi.ingsw.exception.SectorException;
 /** Builder for sectors. 
  * Create a new sector based on ID.
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 3 Jun 2015
  */

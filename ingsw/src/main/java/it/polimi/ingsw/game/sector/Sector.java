@@ -3,6 +3,7 @@ package it.polimi.ingsw.game.sector;
 import java.io.Serializable;
 
 /** Model for a sector.
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since May, 2015
  */

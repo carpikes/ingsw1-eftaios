@@ -11,9 +11,11 @@ import java.util.logging.Logger;
 /** Player (connection) manager
  *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 8, 2015
  */
 public class Client {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
 
     /** Connection to the client*/

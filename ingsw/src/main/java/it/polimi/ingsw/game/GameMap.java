@@ -20,6 +20,7 @@ import java.util.Set;
 
 /** Game Map manager
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since Far, so far...
  */

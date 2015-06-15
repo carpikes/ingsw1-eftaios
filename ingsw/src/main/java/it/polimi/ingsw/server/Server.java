@@ -14,13 +14,16 @@ import java.util.logging.Logger;
 /** The server
  * 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 8, 2015
  */
 public class Server {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(Server.class.getName());
 
     /** Singleton Holder */
     private static class Holder {
+        /** The singleton instance */
         private static final Server INSTANCE = new Server();
     }
 

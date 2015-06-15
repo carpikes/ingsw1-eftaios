@@ -2,6 +2,7 @@ package it.polimi.ingsw.game.player;
 
 /** Human or alien?
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 3 Jun 2015
  */

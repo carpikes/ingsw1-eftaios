@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 /** Class representing an in-game player. 
  * It contains all the cards, the role, the current state...
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 19, 2015
  */

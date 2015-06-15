@@ -10,6 +10,7 @@ import java.util.Queue;
 /** RMI Connection Handler
  *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 16, 2015
  */
 public class ClientConnRMI extends ClientConn {

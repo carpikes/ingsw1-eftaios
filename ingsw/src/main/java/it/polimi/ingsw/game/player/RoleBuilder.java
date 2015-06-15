@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 
 /** Class for creating the roles for the player in a game
+ * 
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 3 Jun 2015
  */

@@ -13,9 +13,11 @@ import java.util.logging.Logger;
 /** TCP connection Handler
  *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 8, 2015
  */
 public class ClientConnTCP extends ClientConn {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(ClientConnTCP.class.getName());
 
     /** Socket output stream */

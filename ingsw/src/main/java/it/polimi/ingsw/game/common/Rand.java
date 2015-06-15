@@ -5,6 +5,7 @@ import java.security.SecureRandom;
 /** Secure random generator
  * 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since Jun 14, 2015
  */
 public class Rand {

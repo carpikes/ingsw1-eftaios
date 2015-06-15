@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 /** Game manager
  *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 9, 2015
  */
 public class GameManager {

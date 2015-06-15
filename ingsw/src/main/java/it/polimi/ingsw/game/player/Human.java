@@ -5,6 +5,7 @@ import it.polimi.ingsw.game.config.Config;
 /** Human role. 
  * Can move up to 2 move when adrenaline is active (1 otherwise)
  *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 3 Jun 2015
  */

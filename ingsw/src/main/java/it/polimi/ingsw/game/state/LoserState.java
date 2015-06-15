@@ -8,13 +8,20 @@ import it.polimi.ingsw.game.common.InfoOpcode;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
+/** Loser State
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
  */
 public class LoserState extends PlayerState {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(LoserState.class.getName());
 
+    /** Constructor
+     *
+     * @param state Game State
+     * @param loserPlayer Who lose?
+     */
     public LoserState(GameState state, Integer loserPlayer) {
         super(state);
         LOG.log(Level.FINE, "Constructor");

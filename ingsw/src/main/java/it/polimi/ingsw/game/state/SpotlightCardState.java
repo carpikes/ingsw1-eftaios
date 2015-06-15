@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.polimi.ingsw.game.state;
 
 import it.polimi.ingsw.exception.IllegalStateOperationException;
@@ -15,12 +12,19 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * @author Michele
+/** Spotlight Card
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
  */
 public class SpotlightCardState extends PlayerState {
+    /** Logger */
     private static final Logger LOG = Logger.getLogger(SpotlightCardState.class.getName());
+
+    /** Constructor
+     *
+     * @param state Game State
+     */
     public SpotlightCardState(GameState state) {
         super(state);
         LOG.log(Level.FINE, "Constructor");

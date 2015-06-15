@@ -6,7 +6,8 @@ import it.polimi.ingsw.game.common.InfoOpcode;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
+/** Away State
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 25 May 2015
  */

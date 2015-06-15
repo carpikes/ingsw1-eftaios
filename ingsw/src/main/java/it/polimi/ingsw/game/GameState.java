@@ -37,8 +37,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Class representing the current state of the game. It is the beating heart of the game: it holds
- * a list of all players, the mGameManager and an event queue of messages coming from the clients.
+/** Class representing the current state of the game. 
+ * It is the beating heart of the game: it holds a list of all players, 
+ * the mGameManager and an event queue of messages coming from the clients.
+ *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it) 
  * @since  May 21, 2015
  */
@@ -128,7 +131,9 @@ public class GameState {
             Role role = roles.get(i);
             GamePlayer player = new GamePlayer(i, role, getMap().getStartingPoint(role instanceof Human));
             mPlayers.add(player);
-            if(i == mCurPlayerId) // is my turn
+
+            /** Is this my turn? */
+            if(i == mCurPlayerId)
                 player.setCurrentState(new StartTurnState(this));
             else
                 player.setCurrentState(new NotMyTurnState(this));
@@ -137,6 +142,12 @@ public class GameState {
 
     /** DEBUG MODE CONSTRUCTOR
      * Constructs a new game.
+     * 
+     * @param areYouSureToEnableDebugMode YES or NO
+     * @param mapId map id
+     * @param numberOfPlayers number of players
+     * @param startPlayerId start player id
+     * @param randomizePlayers True if you want to use the random generator
      */
     public GameState(String areYouSureToEnableDebugMode, int mapId, int numberOfPlayers, int startPlayerId, boolean randomizePlayers) {
         GameMap tmpMap = null;
@@ -183,10 +194,10 @@ public class GameState {
         GamePlayer player = getCurrentPlayer();
         PlayerState nextState = null;
 
-        // Check for timeout
+        /** Check for timeout */
         long curTime = System.currentTimeMillis() / 1000;
         
-        // Timeout elapsed
+        /** Timeout elapsed */
         if(curTime > mCurTurnStartTime + Config.GAME_MAX_SECONDS_PER_TURN) {
             nextState = new AwayState(this);
             player.setCurrentState(nextState);
@@ -200,7 +211,7 @@ public class GameState {
             }
         }
         
-        // broadcast messages at the end of the turn
+        /** broadcast messages at the end of the turn */
         flushOutputQueue();
 
         if(nextState != null && (nextState instanceof NotMyTurnState || !nextState.stillInGame()))
@@ -246,11 +257,11 @@ public class GameState {
         broadcastPacket( new GameCommand(InfoOpcode.INFO_CHANGED_NUMBER_OF_CARDS, player.getId(), player.getNumberOfCards() ) );
         sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_OBJECT_CARD_OBTAINED, (Integer)newCard.getId()) );
 
-        // We're ok, proceed
+        /** We're ok, proceed */
         if( player.getNumberOfCards() <= Config.MAX_NUMBER_OF_OBJ_CARDS ) {
             nextState = new EndingTurnState(this);
         } else {
-            // tell the user he has to drop or use a card
+            /** tell the user he has to drop or use a card */
             nextState = new DiscardingObjectCardState(this);
         }
 
@@ -313,7 +324,7 @@ public class GameState {
             }
         }
 
-        // set the player as full if he has an alien role
+        /** set the player as full if he has an alien role */
         if( !killedPlayers.isEmpty() ) {
             GamePlayer player = getCurrentPlayer();
             if( player.isAlien() ) {
@@ -339,11 +350,19 @@ public class GameState {
      * @param justKilledHumans True if this function is called after an attack and there are killed humans
      */
     private void checkEndGame() {
-        boolean allWinnersMode = false; // set to true if inGamePlayers < MIN PLAYERS
+        /** set to true if inGamePlayers < MIN PLAYERS */
+        boolean allWinnersMode = false; 
+
+        /** Number of alive humans */
         int aliveHumans = 0;
+
+        /** Number of player still playing */
         int inGamePlayers = 0;
+
+        /** Number of remaining hatches */
         int remainingHatches = mMap.getRemainingHatches();
 
+        /** Check how many players and humans are still playing */
         for(GamePlayer p : mPlayers)
             if(p.stillInGame()) {
                 inGamePlayers++;
@@ -359,10 +378,10 @@ public class GameState {
            (mRoundsPlayed > Config.MAX_NUMBER_OF_TURNS)     || // (3)
            (inGamePlayers < Config.GAME_MIN_PLAYERS)) {        // (4)
 
-            // So, the game will end.
-            // Let's gather some stats
-
-            // Move all players either into WinnerState or LoserState 
+            /** So, the game will end.
+             * Let's gather some stats
+             * Move all players either into WinnerState or LoserState 
+             */
             for(int i = 0; i < mPlayers.size(); i++) {
                 GamePlayer p = mPlayers.get(i);
                 if((p.stillInGame() && ((p.isAlien() && mLastThing != LastThings.HUMAN_USED_HATCH)|| allWinnersMode)))
@@ -373,7 +392,7 @@ public class GameState {
 
             clearOutputQueue();
 
-            // Fill this two arrays
+            /** Fill this two arrays */
             ArrayList<Integer> winnersList = new ArrayList<>();
             ArrayList<Integer> loserList = new ArrayList<>();
 

@@ -5,19 +5,26 @@ import it.polimi.ingsw.game.GameState.LastThings;
 import it.polimi.ingsw.game.state.PlayerState;
 import it.polimi.ingsw.game.state.WinnerState;
 
-/**
- * Green Hatch Card. It lets the player win.
- * @author Michele
+/** Green Hatch Card. 
+ * It lets the player win.
+ *
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 2 Jun 2015
  */
 public class GreenHatchCard extends HatchCard {
 
+    /** Constructor
+     *
+     * @param state Game State
+     */
     public GreenHatchCard(GameState state) {
         super(state);
     }
 
-    /**
-     * Set next state to WinnerState
+    /** Set next state to WinnerState
+     *
+     * @return Next player state
      */
     @Override
     public PlayerState getNextState() {
