@@ -2,6 +2,7 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.cli.CLIView;
 import it.polimi.ingsw.client.gui.GUIView;
+import it.polimi.ingsw.exception.InvalidViewException;
 
 /** View Factory
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -41,7 +42,7 @@ public class ViewFactory {
         switch(type) {
             case VIEW_GUI: return new GUIView( c );
             case VIEW_CLI: return new CLIView( c );
+            default:       throw new InvalidViewException("Invalid view selected");
         }
-        return null;
     }
 }

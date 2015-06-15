@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.network;
 
+import it.polimi.ingsw.exception.TCPException;
 import it.polimi.ingsw.game.common.CoreOpcode;
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.config.Config;
@@ -63,10 +64,10 @@ public class TCPConnection extends Connection {
     @Override
     public void connect() throws IOException {
         if(!mInited)
-            throw new RuntimeException("TCPConnection must be configured before use");
+            throw new TCPException("TCPConnection must be configured before use");
 
         if(mSocket != null)
-            throw new RuntimeException("Socket already created");
+            throw new TCPException("Socket already created");
 
         mSocket = new Socket(mHost, mPort);
         mOut = new ObjectOutputStream(mSocket.getOutputStream());
@@ -87,7 +88,7 @@ public class TCPConnection extends Connection {
     @Override
     public void sendPacket(GameCommand pkt) {
         if(mSocket == null || !mSocket.isConnected() || mOut == null)
-            throw new RuntimeException("Cannot send message. Socket is closed.");
+            throw new TCPException("Cannot send message. Socket is closed.");
 
         try {
             mOut.writeObject(pkt);

@@ -11,7 +11,7 @@ public class Main {
 
     /** Main
      * 
-     * @param args Args
+     * @param args Arguments for the client
      */
     public static void main(String[] args) {
         new GameController(args).run();

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.network;
 
+import it.polimi.ingsw.exception.RMIException;
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.common.ServerRMIMask;
 import it.polimi.ingsw.game.config.Config;
@@ -58,10 +59,10 @@ public class RMIConnection extends Connection {
     @Override
     public void connect() throws IOException {
         if(!mInited)
-            throw new RuntimeException("RMIConnection must be configured before use");
+            throw new RMIException("RMIConnection must be configured before use");
 
         if(mServerMask != null)
-            throw new RuntimeException("Socket already created");
+            throw new RMIException("Socket already created");
 
         Registry registry = LocateRegistry.getRegistry(mHost);
 
@@ -69,7 +70,7 @@ public class RMIConnection extends Connection {
             mServerMask = (ServerRMIMask) registry.lookup(Config.RMISERVER_STRING);
             mUniqueId = mServerMask.registerAndGetId();
             if(mUniqueId == null)
-                throw new RuntimeException("Cannot receive a unique id");
+                throw new RMIException("Cannot receive a unique id");
 
             mReader = new ReadRunnable(mServerMask, mUniqueId);
             if(mTempRecv != null) {
@@ -103,7 +104,7 @@ public class RMIConnection extends Connection {
     @Override
     public void sendPacket(GameCommand pkt) {
         if(mServerMask == null || mUniqueId == null)
-            throw new RuntimeException("RMI Connection is offline");
+            throw new RMIException("RMI Connection is offline");
 
         try {
             mServerMask.onRMICommand(mUniqueId, pkt);

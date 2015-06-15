@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
+/** Helper class for IO operations on CLI
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @since  May 10, 2015
  */
@@ -19,13 +19,28 @@ class IO {
     private static final Logger LOG = Logger.getLogger(IO.class.getName());
     private static BufferedReader mReader = new BufferedReader(new InputStreamReader(System.in));
 
+    private IO() {
+        //;
+    }
+
+    /** Write a message in the console
+     * @param line The message to be printed
+     */
     public static void write(String line) {
         System.out.println(line);
     }
 
+    /** Write a char in the console
+     * @param c The character to be printed
+     */
     public static void write(char c) {
         System.out.print(c);
     }
+
+    /** Read a integer value
+     * @param minusAvailable True if you can go back in this menu
+     * @return The vlaue read
+     */
     public static Integer readInt(boolean minusAvailable) {
         int i = 0;
         while(true) {
@@ -33,10 +48,10 @@ class IO {
                 System.out.print("> ");
                 System.out.flush();
                 String m = mReader.readLine();
-                
+
                 if(m == null)
                     System.exit(0); // console shut down
-                
+
                 if(minusAvailable && m.equals("-"))
                     return null;
 
@@ -50,6 +65,9 @@ class IO {
         return i;
     }
 
+    /** Read a string from the console
+     * @return The string
+     */
     public static String readString() {
         try {
             System.out.print("> ");
@@ -64,6 +82,12 @@ class IO {
         return "";
     }
 
+    /** Read an integer in a range
+     * @param min The minimum value in the range
+     * @param max The maximum value in the range
+     * @param minusAvailable True if you can go back in this menu
+     * @return The number read
+     */
     public static Integer readRangeInt(int min, int max, boolean minusAvailable) {
         Integer i;
         while(true) {
@@ -79,6 +103,11 @@ class IO {
     }
 
 
+    /** Ask for a value in a list of strings
+     * @param list The list of strings
+     * @param minusAvailable True if you can go back in this menu
+     * @return The index of the element you chose
+     */
     public static Integer askInAList(String[] list, boolean minusAvailable) {
         for(int i = 0; i<list.length;i++)
             IO.write((i+1) + ") " + list[i]);
@@ -92,6 +121,11 @@ class IO {
         } while(true);
     }
 
+    /** Ask for a value in a list of View Commands
+     * @param list The list of commands
+     * @param minusAvailable True if you can go back in this menu
+     * @return The index of the element you chose
+     */
     public static Integer askInAList(List<ViewCommand> list, boolean minusAvailable) {
         for(int i = 0; i<list.size();i++)
             IO.write((i+1) + ") " + list.get(i).getOpcode().toString());
@@ -105,17 +139,21 @@ class IO {
         } while(true);
     }
 
+    /** Ask for a position in the map
+     * @param minusAvailable True if you can go back in this menu
+     * @return The chosen position
+     */
     public static Point askMapPos(boolean minusAvailable) {
         do {
             try {
                 String s = IO.readString();
 
-                if(s.equals("-") && minusAvailable)
+                if("-".equals(s) && minusAvailable)
                     return null;
 
+                // parse string
                 if(s.length() == 3 || (s.length() == 4  && s.charAt(1) == '0')) {
-
-                    int x = (int)(Character.toLowerCase(s.charAt(0)) - 'a');
+                    int x = Character.toLowerCase(s.charAt(0)) - 'a';
                     int y = Integer.parseInt(s.substring(s.length()-2))-1; 
                     if(x >= 0 && x <= GameMap.COLUMNS && y >=0 && y <= GameMap.ROWS)
                         return new Point(x,y);

@@ -7,6 +7,11 @@ package it.polimi.ingsw.client.network;
  */
 
 public class ConnectionFactory {
+    
+    private ConnectionFactory() {
+        // unused
+    }
+    
     public static final int CONNECTION_TCP = 0;
     public static final int CONNECTION_RMI = 1;
     private static String[] tAssoc = {"TCP", "RMI"};

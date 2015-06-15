@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
+import it.polimi.ingsw.exception.CommandNotValidException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import it.polimi.ingsw.game.common.GameInfo;
@@ -18,7 +19,22 @@ import java.util.Set;
  */
 
 public class CLIView extends View {
-
+        
+    private GameMap mMap;
+    private final GameController mController;
+    private GameInfo mContainer;
+    
+    /** The constructor
+     * @param c Game Controller
+     */
+    public CLIView(GameController c) {
+        super(c);
+        mController = c;
+    }
+    
+    /** Create the starting banner
+     * 
+     */
     private static void banner() {
         IO.write("*******************************************************************************");
         IO.write("*******************************************************************************");
@@ -43,19 +59,7 @@ public class CLIView extends View {
         IO.write("");
     }
 
-    private GameMap mMap;
-    private final GameController mController;
-    private GameInfo mContainer;
-
-    /** The constructor
-     * @param c Game Controller
-     */
-    public CLIView(GameController c) {
-        super(c);
-        mController = c;
-    }
-
-    /* (non-Javadoc)
+    /** Invoked on startup
      * @see it.polimi.ingsw.client.View#startup()
      */
     @Override
@@ -63,14 +67,15 @@ public class CLIView extends View {
         CLIView.banner();
     }
 
-    /* (non-Javadoc)
+    /** Method not used
      * @see it.polimi.ingsw.client.View#run()
      */
     @Override
     public void run() {
+        // unused
     }
 
-    /* (non-Javadoc)
+    /** Ask for a connection type
      * @see it.polimi.ingsw.client.View#askConnectionType(java.lang.String[])
      */
     @Override
@@ -79,7 +84,7 @@ public class CLIView extends View {
         return IO.askInAList(params, false);
     }
 
-    /* (non-Javadoc)
+    /** Ask for a username
      * @see it.polimi.ingsw.client.View#askUsername(java.lang.String)
      */
     @Override
@@ -91,7 +96,7 @@ public class CLIView extends View {
         return name;
     }
 
-    /* (non-Javadoc)
+    /** Ask for a map
      * @see it.polimi.ingsw.client.View#askMap(java.lang.String[])
      */
     @Override
@@ -100,7 +105,7 @@ public class CLIView extends View {
         return IO.askInAList(mapList, false);
     }
 
-    /* (non-Javadoc)
+    /** Ask for a host
      * @see it.polimi.ingsw.client.View#askHost()
      */
     @Override
@@ -109,7 +114,7 @@ public class CLIView extends View {
         return IO.readString();
     }
 
-    /* (non-Javadoc)
+    /** Ask for a view
      * @see it.polimi.ingsw.client.View#askView()
      */
     @Override
@@ -118,7 +123,7 @@ public class CLIView extends View {
         return IO.askInAList(viewList, false);
     }
 
-    /* (non-Javadoc)
+    /** Display an error
      * @see it.polimi.ingsw.client.View#showError(java.lang.String)
      */
     @Override
@@ -126,7 +131,7 @@ public class CLIView extends View {
         IO.write("ERROR: " + string);
     }
 
-    /* (non-Javadoc)
+    /** Update Login time on startup
      * @see it.polimi.ingsw.client.View#updateLoginTime(int)
      */
     @Override
@@ -134,7 +139,7 @@ public class CLIView extends View {
         IO.write("Remaining time: " + i);
     }
 
-    /* (non-Javadoc)
+    /** Update login statistics about players on startup
      * @see it.polimi.ingsw.client.View#updateLoginStat(int)
      */
     @Override
@@ -142,7 +147,7 @@ public class CLIView extends View {
         IO.write("Players online: " + i);
     }
 
-    /* (non-Javadoc)
+    /** Display map after login phase
      * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.network.GameStartInfo)
      */
     @Override
@@ -168,6 +173,7 @@ public class CLIView extends View {
         Point curPos = null;
         int maxMoves = 0;
         Set<Point> enabledCells = null;
+        
         if(c.getArgs().length > 0) {
             if(c.getArgs()[0] instanceof Point)
                 curPos = (Point) c.getArgs()[0];
@@ -234,7 +240,7 @@ public class CLIView extends View {
         return false;
     }
 
-    /* (non-Javadoc)
+    /** Handle a view command received from the game controller
      * @see it.polimi.ingsw.client.View#handleCommand(java.util.List)
      */
     @Override
@@ -279,11 +285,13 @@ public class CLIView extends View {
                     mController.endTurn();
                     loopMenu = false;
                     break;
+                default:
+                    throw new CommandNotValidException("Command not valid!");
             }
         }
     }
 
-    /* (non-Javadoc)
+    /** Display an info on console
      * @see it.polimi.ingsw.client.View#showInfo(java.lang.String, java.lang.String)
      */
     @Override
@@ -294,7 +302,7 @@ public class CLIView extends View {
             IO.write("--INFO-- " + message);
     }
 
-    /* (non-Javadoc)
+    /** Display noise info
      * @see it.polimi.ingsw.client.View#showNoiseInSector(java.lang.String, java.awt.Point)
      */
     @Override
@@ -302,7 +310,7 @@ public class CLIView extends View {
         showInfo(user, "NOISE IN SECTOR " + mMap.pointToString(p));
     }
 
-    /* (non-Javadoc)
+    /** Display message on my turn start
      * @see it.polimi.ingsw.client.View#onMyTurn()
      */
     @Override
@@ -310,7 +318,7 @@ public class CLIView extends View {
         showInfo(null, "It's your turn!");
     }
 
-    /* (non-Javadoc)
+    /** Display message when someone else's turn starts
      * @see it.polimi.ingsw.client.View#onOtherTurn(java.lang.String)
      */
     @Override
@@ -318,7 +326,7 @@ public class CLIView extends View {
         showInfo(null, "It's " + username + "'s turn!");
     }
 
-    /* (non-Javadoc)
+    /** Show ending banner
      * @see it.polimi.ingsw.client.View#showEnding(java.util.ArrayList, java.util.ArrayList)
      */
     @Override
@@ -346,7 +354,7 @@ public class CLIView extends View {
         
     }
 
-    /* (non-Javadoc)
+    /** Display your object cards
      * @see it.polimi.ingsw.client.View#notifyObjectCardListChange(java.util.ArrayList)
      */
     @Override
@@ -355,12 +363,12 @@ public class CLIView extends View {
 
         cards.append("Your object cards: ");
         for(int i = 0;i < listOfCards.size(); i++) {
-            cards.append((i == 0? "[ " : "| "));
+            cards.append( i == 0 ? "[ " : "| " );
             cards.append(ObjectCardBuilder.idToString(listOfCards.get(i)));
             cards.append(" ");
         }
 
-        if(listOfCards.size() == 0)
+        if(listOfCards.isEmpty())
             cards.append("[ YOU HAVE NO OBJECT CARDS ]");
         else 
             cards.append("]");
@@ -368,15 +376,15 @@ public class CLIView extends View {
         IO.write(cards.toString());
     }
 
-    /* (non-Javadoc)
+    /** Unused
      * @see it.polimi.ingsw.client.View#updatePlayersInfoDisplay(it.polimi.ingsw.game.common.PlayerInfo, int)
      */
     @Override
     public void updatePlayerInfoDisplay( int idPlayer ) {
-        // TODO Guarda la GUI come reference per questo!
+        // unused
     }
 
-    /* (non-Javadoc)
+    /** Display info about spotlight action
      * @see it.polimi.ingsw.client.View#handleSpotlightResult(java.awt.Point[])
      */
     @Override
@@ -397,7 +405,7 @@ public class CLIView extends View {
         IO.write("\n************************************\n");
     }
 
-    /* (non-Javadoc)
+    /** Display info about attacks in a sector
      * @see it.polimi.ingsw.client.View#handleAttack(java.awt.Point)
      */
     @Override

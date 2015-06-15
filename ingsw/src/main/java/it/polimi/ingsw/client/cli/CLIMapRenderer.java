@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.cli;
 
+import it.polimi.ingsw.exception.CLIException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
@@ -9,7 +10,7 @@ import java.util.Set;
 
 public class CLIMapRenderer {
 
-    private static final String pattern[] = {
+    private static final String[] pattern = {
         "  ____  ",
         " /****\\ ",
         "/*yyyy*\\",
@@ -17,8 +18,17 @@ public class CLIMapRenderer {
         " \\____/ "
     };
 
-    private static final String types[] = {"????","    ","HTCH","DANG","USED","????","????","????","ALJN","HUMN"};
+    private static final String[] types = {"????","    ","HTCH","DANG","USED","????","????","????","ALJN","HUMN"};
 
+    private CLIMapRenderer() {
+        // ;
+    }
+    
+    /**
+     * @param map
+     * @param curPos
+     * @param enabledPoints
+     */
     public static void renderMap(GameMap map, Point curPos, Set<Point> enabledPoints) {
         final int py = pattern.length;
         final int px = pattern[0].length();
@@ -93,10 +103,10 @@ public class CLIMapRenderer {
         }
 
         if(lowerPoint < 0 || upperPoint < 0 || upperPoint >= buffer.length || lowerPoint >= upperPoint)
-            throw new RuntimeException("Can't calculate map height. What's happening?");
+            throw new CLIException("Can't calculate map height. What's happening?");
 
         if(leftMostPoint < 0 || rightMostPoint < 0 || rightMostPoint >= buffer[0].length || leftMostPoint >= rightMostPoint)
-            throw new RuntimeException("Can't calculate map width. What's happening?");
+            throw new CLIException("Can't calculate map width. What's happening?");
 
         for(int i=lowerPoint;i<=upperPoint;i++) {
             for(int j=leftMostPoint;j<=rightMostPoint;j++)

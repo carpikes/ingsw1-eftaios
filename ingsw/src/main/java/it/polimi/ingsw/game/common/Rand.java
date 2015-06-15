@@ -10,15 +10,15 @@ import java.security.SecureRandom;
  */
 public class Rand {
     
+    /** Random source */
+    private static SecureRandom randSource = new SecureRandom();
+    
     /**
      * Unused.
      */
     private Rand() {
         
     }
-    
-    /** Random source */
-    private static SecureRandom randSource = new SecureRandom();
     
     /** Next int
      * 
