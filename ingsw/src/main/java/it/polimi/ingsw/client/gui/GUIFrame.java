@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.config.Config;
@@ -246,7 +247,7 @@ public class GUIFrame extends JFrame {
         cardPanel.setPreferredSize(mDimensionCardPanel);
 
         for( int i = 0; i < numberOfCardButtons; ++i ) {
-            cardButtons[i] = new CardButton( CardButtons.NULL, mController, i );
+            cardButtons[i] = new CardButton( CardButtons.NULL, mController, i, -1 );
             cardPanel.add( cardButtons[i] );
         }
 
@@ -389,18 +390,19 @@ public class GUIFrame extends JFrame {
      * @param listOfCards
      */
     public void notifyObjectCardListChange(List<Integer> listOfCards) {
+        int usableIndex = 0;
         for( int i = 0; i < this.numberOfCardButtons; ++i ) {
             try {
                 int idCard = listOfCards.get(i);
 
                 for( CardButtons btn : CardButtons.values() ) {
                     if( btn.getId() == idCard ) {
-                        cardButtons[i].changeTo( btn );
+                        cardButtons[i].changeTo( btn, i, ( !btn.isEnabled() ) ? -1 : usableIndex++ );
                     }
                 }
             } catch( IndexOutOfBoundsException e ) {
                 LOG.log(Level.FINER, e.toString(), e);
-                cardButtons[i].changeTo( CardButtons.NULL );
+                cardButtons[i].changeTo( CardButtons.NULL, i, -1 );
             }
         }
     }

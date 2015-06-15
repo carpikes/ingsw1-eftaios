@@ -34,29 +34,28 @@ public class CardButton extends JButton {
 
     private float alpha = 1f;
 
-    private int myId;
+    private int mCardId;
+    private int mUsableCardId;
     private boolean canBeDiscarded;
     private boolean canBeUsed;
 
-    public CardButton( final CardButtons type, GameController c, int id ) {
+    public CardButton( final CardButtons type, GameController c, int cardId, int usableCardId ) {
         super( );
 
         controller = c;
-        this.type = type;
-        myId = id;
         
         canBeDiscarded = false;
         canBeUsed = false;
            
-        changeTo( type );
+        changeTo( type, cardId, usableCardId );
 
         this.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
                 if( ((JButton)e.getSource() ).isEnabled() ) {
-                    if( canBeUsed && SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
-                        controller.sendChosenObjectCard( myId );
+                    if( canBeUsed && SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1 && mUsableCardId != -1 ) {
+                        controller.sendChosenObjectCard( mUsableCardId );
                     } else if (canBeDiscarded && SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
-                        controller.sendDiscardObjectCard( myId );
+                        controller.sendDiscardObjectCard( mCardId );
                     }
                 }
             }
@@ -79,7 +78,7 @@ public class CardButton extends JButton {
         });
     }
 
-    public void changeTo(CardButtons type) {
+    public void changeTo(CardButtons type, int id, int usableId) {
         try {
             this.type = type;
             setIcon( new ImageIcon( ImageIO.read( type.getImageFile() ) ) );
@@ -89,6 +88,9 @@ public class CardButton extends JButton {
             
             if( type != CardButtons.NULL )
                 setToolTipText( ObjectCardBuilder.idToString( type.getId() ) );
+            
+            mCardId = id;
+            mUsableCardId = usableId;
             
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Cannot create " + type.toString() + " card button. Please check your assets in img folder.", e);
