@@ -4,7 +4,6 @@ import it.polimi.ingsw.exception.DebugException;
 import it.polimi.ingsw.exception.DefenseException;
 import it.polimi.ingsw.exception.GameException;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
-import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import it.polimi.ingsw.game.common.GameCommand;
