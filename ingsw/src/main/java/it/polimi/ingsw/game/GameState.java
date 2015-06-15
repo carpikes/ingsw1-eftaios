@@ -2,7 +2,9 @@ package it.polimi.ingsw.game;
 
 import it.polimi.ingsw.exception.DebugException;
 import it.polimi.ingsw.exception.DefenseException;
+import it.polimi.ingsw.exception.GameException;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
+import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import it.polimi.ingsw.game.common.GameCommand;
@@ -405,7 +407,7 @@ public class GameState {
                 else if(s instanceof LoserState)
                     loserList.add(i);
                 else
-                    throw new RuntimeException("There are players who are neither winner nor loser. What's happening?");
+                    throw new GameException("There are players who are neither winner nor loser. What's happening?");
             }
 
             broadcastPacket( new GameCommand(InfoOpcode.INFO_END_GAME, winnersList, loserList));
@@ -435,7 +437,7 @@ public class GameState {
      * @param point The position where the card takes effect.
      */
     public void spotlightAction(Point point) {
-        ArrayList<Point> sectors = getMap().getNeighbourAccessibleSectors(point, getCurrentPlayer().isHuman(), true);
+        List<Point> sectors = getMap().getNeighbourAccessibleSectors(point, getCurrentPlayer().isHuman(), true);
         sectors.add(point);
 
         Point[] caughtPlayers = new Point[mPlayers.size()];
@@ -467,7 +469,7 @@ public class GameState {
      */
     public synchronized GamePlayer getCurrentPlayer() {
         if(mCurPlayerId == -1)
-            throw new RuntimeException("CurrentPlayer == -1. What's happening?");
+            throw new GameException("CurrentPlayer == -1. What's happening?");
         return mPlayers.get( mCurPlayerId ); 
     }
 
@@ -496,8 +498,7 @@ public class GameState {
      * @return Game infos
      */
     public GameInfo buildInfoContainer(PlayerInfo[] userList, int i) {
-        GameInfo info = new GameInfo(userList, i, mPlayers.get(i).isHuman(), mMap);
-        return info;
+        return new GameInfo(userList, i, mPlayers.get(i).isHuman(), mMap);
     }
 
     /** Get the cells the current player can go into
