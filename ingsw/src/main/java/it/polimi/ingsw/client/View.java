@@ -6,18 +6,25 @@ import it.polimi.ingsw.game.common.ViewCommand;
 import java.awt.Point;
 import java.util.List;
 
-/**
+/** View interface
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 18, 2015
  */
 public abstract class View {
 
+    /** Stop event */
     protected boolean mStopEvent = false; 
+    
+    /** Controller */
     protected final GameController mController;
 
+    /** Constructor
+     *
+     * @param controller Game Controller
+     */
     public View(GameController controller) {
         mController = controller;
-
     }
 
     /** Ask which connection the user want to use
@@ -40,6 +47,10 @@ public abstract class View {
      */
     public abstract String askUsername(String message);
 
+    /** Ask something to the user
+     *
+     * @param viewList Choice list
+     */
     public abstract Integer askView( String[] viewList );
 
     /** Ask which map to load
@@ -76,47 +87,66 @@ public abstract class View {
      */
     public abstract void switchToMainScreen(GameInfo container);
 
+    /** Handle a command
+     *
+     * @param cmd List of commands
+     */
     protected abstract void handleCommand(List<ViewCommand> cmd);
 
+    /** Show an info
+     *
+     * @param user Current player
+     * @param message  Message
+     */
     public abstract void showInfo(String user, String message);
 
+    /** Show a noise in the specified sector
+     *
+     * @param user Current player
+     * @param p Point
+     */
     public abstract void showNoiseInSector(String user, Point p);
 
-    /**
-     * @param username
-     */
+    /** Called if is my turn */
     public abstract void onMyTurn();
+
+    /** Called if is turn of anyone
+     *
+     * @param username Username
+     */
     public abstract void onOtherTurn(String username);
 
-    /**
-     * 
-     */
+    /** Startup */
     public abstract void startup();
 
-    /**
+    /** Show ending
      * @param winnerList The list of winners' id
      * @param loserList The list of losers's id
      * @return True when the game has to be stopped
      */
     public abstract void showEnding(List<Integer> winnerList, List<Integer> loserList);
 
-    /**
-     * @param listOfCards
+    /** Notification on object card change
+     * @param listOfCards list of card
      */
     public abstract void notifyObjectCardListChange(List<Integer> listOfCards);
 
-    /**
-     * 
+    /** Update player info
+     *  @param idPlayer Id
      */
     public abstract void updatePlayerInfoDisplay( int idPlayer );
 
-    /** Handle a spotlight result. (e.g. n players spotted)
+    /** Handle a spotlight result. 
+     * (e.g. n players spotted)
+     *
      * @param coords Player coordinates. null = not spotted
      */
     public abstract void handleSpotlightResult(Point chosenPoint, Point[] playersFound);
 
-    /**
-     * @param p
+    /** Handles an attack
+     *
+     * @param user Username
+     * @param p Point
      */
     public abstract void handleAttack(String user, Point p);
 

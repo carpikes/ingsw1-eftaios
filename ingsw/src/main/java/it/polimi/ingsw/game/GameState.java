@@ -122,9 +122,9 @@ public class GameState {
         mCurTurnStartTime = System.currentTimeMillis()/1000;
     }
 
-    /**
-     * @param roles
-     * @param numberOfPlayers
+    /** Build the player list
+     * @param roles Array of roles
+     * @param numberOfPlayers Number of players
      */
     private void buildPlayersList(List<Role> roles, int numberOfPlayers) {
         for(int i = 0;i<numberOfPlayers; i++) {
@@ -181,8 +181,8 @@ public class GameState {
         mCurTurnStartTime = System.currentTimeMillis()/1000;
     }
 
-    /**
-     * Method called by the server hosting the games. According to the current player's state, it lets the game flow.
+    /** Method called by the server hosting the games. 
+     * According to the current player's state, it lets the game flow.
      */
     public void update() {
         if( !dDebugMode && !mManager.isRunning() )
@@ -242,8 +242,7 @@ public class GameState {
         }
     }
 
-    /**
-     * Method invoked when a player draws an object card.  
+    /** Method invoked when a player draws an object card.  
      * @return Next PlayerState for current player
      */
     public PlayerState getObjectCard( ) {
@@ -268,7 +267,8 @@ public class GameState {
         return nextState;
     }
 
-    /** Method invoked when someone sends a CMD_CS_USE_OBJ_CARD command. Invoke the correct underlying method 
+    /** Method invoked when someone sends a CMD_CS_USE_OBJ_CARD command.
+     * Invoke the correct underlying method 
      * (attack() for Attack card..., moveTo() for Teleport card...)
      * @param objectCard The card the user wants to use
      * @return Next PlayerState for current player
@@ -295,7 +295,8 @@ public class GameState {
         return nextState;
     }
 
-    /** Kills all players in a position. It is used when an alien sends an attack command or 
+    /** Kills all players in a position. 
+     * It is used when an alien sends an attack command or 
      * when a human player draws an Attack object card. 
      * @param currentPosition The point where the players wants to attack
      */
@@ -417,8 +418,8 @@ public class GameState {
                 }
     }
 
-    /**
-     * Moves current player in a position. It is used by the Teleport card and when moving during
+    /** Moves current player in a position. 
+     * It is used by the Teleport card and when moving during
      * the normal flow of the game.
      * @param dest Where to move 
      */
@@ -429,7 +430,8 @@ public class GameState {
         }
     }
 
-    /** Invoked in SpotLightCardState. It lists all people in the set position and in the 6 surrounding it.
+    /** Invoked in SpotLightCardState. 
+     * It lists all people in the set position and in the 6 surrounding it.
      * @param point The position where the card takes effect.
      */
     public void spotlightAction(Point point) {
@@ -651,7 +653,7 @@ public class GameState {
         return q;
     }
 
-    /** Change next player
+    /** [DEBUG] Change next player
      * 
      * @param id Who's the next?
      */
@@ -661,7 +663,7 @@ public class GameState {
         dForceNextTurn = id;
     }
 
-    /** Get the player object. Useful to add card or change values
+    /** [DEBUG] Get the player object. Useful to add card or change values
      * 
      * @param playerId The player id [0-7]
      * @return The player object
@@ -673,6 +675,10 @@ public class GameState {
         return mPlayers.get(playerId);
     }
 
+    /** [DEBUG] Check if the game is end
+     *
+     * @return True if the game is end
+     */
     public boolean debugGameEnded() {
         if(!dDebugMode)
             throw new DebugException("Cannot use this method in normal mode");
@@ -681,11 +687,10 @@ public class GameState {
     }
 
     /** Check if debug mode is enabled
+     *
      * @return True if game is in debug mode
      */
     public boolean isDebugModeEnabled() {
         return dDebugMode;
     }
-
-
 }

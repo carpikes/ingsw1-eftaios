@@ -2,6 +2,7 @@ package it.polimi.ingsw.client;
 
 /** Client launcher
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 10, 2015
  */
 public class Main {	
@@ -10,7 +11,7 @@ public class Main {
 
     /** Main
      * 
-     * @param args
+     * @param args Args
      */
     public static void main(String[] args) {
         new GameController(args).run();
