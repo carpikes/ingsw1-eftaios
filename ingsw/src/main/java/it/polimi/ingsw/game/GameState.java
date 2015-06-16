@@ -49,6 +49,9 @@ import java.util.logging.Logger;
 public class GameState {
     /** Logger */
     private static final Logger LOG = Logger.getLogger(GameState.class.getName());
+    
+    /** Debug error */
+    private static final String DEBUG_ERROR = "Cannot use this method in normal mode";
 
     /** Game Manager */
     private final GameManager mManager;
@@ -107,41 +110,22 @@ public class GameState {
             LOG.log(Level.SEVERE, "Missing map files: " + e.toString(), e);
         }
         mMap = tmpMap;
-
+        
         dDebugMode = false;
         mManager = gameManager;
-
+        
         mInputQueue = new LinkedList<>();
         mOutputQueue = new LinkedList<>();
-
+        
         mPlayers = new ArrayList<>();
         List<Role> roles = RoleBuilder.generateRoles(gameManager.getNumberOfClients(), true);
         int numberOfPlayers = gameManager.getNumberOfClients();
         buildPlayersList(roles, numberOfPlayers);
-
+        
         if(mMap == null)
             gameManager.shutdown();
         
         mCurTurnStartTime = System.currentTimeMillis()/1000;
-    }
-
-    /** Build the player list
-     * 
-     * @param roles Array of roles
-     * @param numberOfPlayers Number of players
-     */
-    private void buildPlayersList(List<Role> roles, int numberOfPlayers) {
-        for(int i = 0;i<numberOfPlayers; i++) {
-            Role role = roles.get(i);
-            GamePlayer player = new GamePlayer(i, role, getMap().getStartingPoint(role instanceof Human));
-            mPlayers.add(player);
-
-            /** Is this my turn? */
-            if(i == mCurPlayerId)
-                player.setCurrentState(new StartTurnState(this));
-            else
-                player.setCurrentState(new NotMyTurnState(this));
-        }
     }
 
     /** DEBUG MODE CONSTRUCTOR
@@ -160,31 +144,50 @@ public class GameState {
         } catch(IOException e) {
             LOG.log(Level.SEVERE, "Missing map files: " + e.toString(), e);
         }
-
+        
         if(!("YES".equalsIgnoreCase(areYouSureToEnableDebugMode)))
             throw new DebugException("Cannot enable debug mode.");
-
+        
         mMap = tmpMap;
-
+        
         dDebugMode = true;
         mManager = null;
-
+        
         mInputQueue = new LinkedList<>();
         mOutputQueue = new LinkedList<>();
-
+        
         mPlayers = new ArrayList<>();
-
+        
         mCurPlayerId = startPlayerId;
         List<Role> roles = RoleBuilder.generateRoles(numberOfPlayers, randomizePlayers);
-
+        
         buildPlayersList(roles, numberOfPlayers);
-
+        
         if(mMap == null)
             throw new DebugException("Invalid map file");
         
         mCurTurnStartTime = System.currentTimeMillis()/1000;
     }
-
+    
+    /** Build the player list
+     * 
+     * @param roles Array of roles
+     * @param numberOfPlayers Number of players
+     */
+    private void buildPlayersList(List<Role> roles, int numberOfPlayers) {
+        for(int i = 0;i<numberOfPlayers; i++) {
+            Role role = roles.get(i);
+            GamePlayer player = new GamePlayer(i, role, getMap().getStartingPoint(role instanceof Human));
+            mPlayers.add(player);
+            
+            /** Is this my turn? */
+            if(i == mCurPlayerId)
+                player.setCurrentState(new StartTurnState(this));
+            else
+                player.setCurrentState(new NotMyTurnState(this));
+        }
+    }
+    
     /** Method called by the server hosting the games. 
      * According to the current player's state, it lets the game flow.
      */
@@ -646,14 +649,13 @@ public class GameState {
 
     /** ====== DEBUG ====== */
 
-
     /** [DEBUG] Get the output queue
      *
      * @return The output packet queue
      */
     public Queue<Map.Entry<Integer,GameCommand>> debugGetOutputQueue() {
         if(!dDebugMode)
-            throw new DebugException("Cannot use this method in normal mode");
+            throw new DebugException(DEBUG_ERROR);
 
         Queue<Map.Entry<Integer,GameCommand>> q = new LinkedList<>();
 
@@ -671,7 +673,7 @@ public class GameState {
      */
     public void debugSetNextTurnId(int id) {
         if(!dDebugMode)
-            throw new DebugException("Cannot use this method in normal mode");
+            throw new DebugException(DEBUG_ERROR);
         dForceNextTurn = id;
     }
 
@@ -682,7 +684,7 @@ public class GameState {
      */
     public GamePlayer debugGetPlayer(int playerId) {
         if(!dDebugMode)
-            throw new DebugException("Cannot use this method in normal mode");
+            throw new DebugException(DEBUG_ERROR);
 
         return mPlayers.get(playerId);
     }
@@ -693,7 +695,7 @@ public class GameState {
      */
     public boolean debugGameEnded() {
         if(!dDebugMode)
-            throw new DebugException("Cannot use this method in normal mode");
+            throw new DebugException(DEBUG_ERROR);
 
         return dGameOver;
     }
@@ -712,7 +714,7 @@ public class GameState {
      */
     public LastThings debugGetLastThingDid() {
         if(!dDebugMode)
-            throw new DebugException("Cannot use this method in normal mode");
+            throw new DebugException(DEBUG_ERROR);
         
         return mLastThing; 
     }

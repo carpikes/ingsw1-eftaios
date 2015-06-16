@@ -198,6 +198,10 @@ public class GUIFrame extends JFrame {
         mBtnAttack = new JButton("Attack");
         mBtnAttack.addActionListener( new ActionListener() {
 
+            /** Action listener
+             *
+             * @param e Event
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 mController.attack();
@@ -207,6 +211,10 @@ public class GUIFrame extends JFrame {
         mBtnDrawDangerousCard = new JButton("Dangerous Card");
         mBtnDrawDangerousCard.addActionListener( new ActionListener() {
 
+            /** Action listener
+            *
+            * @param e Event
+            */
             @Override
             public void actionPerformed(ActionEvent e) {
                 mController.drawDangerousCard();
@@ -215,7 +223,11 @@ public class GUIFrame extends JFrame {
 
         mBtnEndTurn = new JButton("End Turn");
         mBtnEndTurn.addActionListener( new ActionListener() {
-
+            
+            /** Action listener
+            *
+            * @param e Event
+            */
             @Override
             public void actionPerformed(ActionEvent e) {
                 resetViewStatus();

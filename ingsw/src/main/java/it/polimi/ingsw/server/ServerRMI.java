@@ -53,8 +53,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
         }
     }
 
-    private void handleRMIInit() throws RemoteException, AlreadyBoundException,
-            AccessException {
+    private void handleRMIInit() throws RemoteException, AlreadyBoundException {
         try {
             mRegistry = LocateRegistry.getRegistry();
             mRegistry.list(); // This will throw an exception if the mRegistry does not exists

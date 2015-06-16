@@ -191,28 +191,26 @@ public class GameManager {
         }
     }
 
-    /** Start a game */
+    /** Start the game */
     private void startGame() {
         /** Let the game begin */
+        
         LOG.log(Level.INFO, "Players ready! Rolling the dice and starting up...");
-
         Collections.shuffle(mClients);
-
         mState = new GameState(this, mChosenMapId);
-
         LOG.log(Level.INFO, mClients.get(0).getUsername() + " is the first player");
-
+        
         /** Send infos to all players */
         PlayerInfo[] userList = new PlayerInfo[mClients.size()];
-
+        
         for(int i = 0; i < mClients.size(); i++)
             userList[i] = new PlayerInfo(mClients.get(i).getUsername());
-
+        
         for(int i = 0; i < mClients.size(); i++) {
             GameInfo info = mState.buildInfoContainer(userList, i);
             mClients.get(i).sendPacket(new GameCommand(CoreOpcode.CMD_SC_RUN, info));
         }
-
+        
         mIsRunning = true;
     }
 

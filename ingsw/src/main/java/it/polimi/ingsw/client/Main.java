@@ -5,10 +5,12 @@ package it.polimi.ingsw.client;
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since  May 10, 2015
  */
-public class Main {	
+public class Main {
     /** This class is not instantiable */
-    private Main() { }
-
+    private Main() {
+        
+    }
+    
     /** Main
      * 
      * @param args Arguments for the client

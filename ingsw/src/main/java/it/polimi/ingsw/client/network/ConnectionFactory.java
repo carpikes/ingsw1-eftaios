@@ -7,19 +7,19 @@ package it.polimi.ingsw.client.network;
  */
 public class ConnectionFactory {
     
+    /** TCP Connection id */
+    public static final int CONNECTION_TCP = 0;
+    /** RMI Connection id */
+    public static final int CONNECTION_RMI = 1;
+    
+    /** Array */
+    private static String[] tAssoc = {"TCP", "RMI"};
+    
     /** Private constructor */
     private ConnectionFactory() {
         /** unused */
     }
     
-    /** TCP Connection id */
-    public static final int CONNECTION_TCP = 0;
-    /** RMI Connection id */
-    public static final int CONNECTION_RMI = 1;
-
-    /** Array */
-    private static String[] tAssoc = {"TCP", "RMI"};
-
     /** Returns a list of available connections
      * 
      * @return The list

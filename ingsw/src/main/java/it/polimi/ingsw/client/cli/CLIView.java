@@ -37,10 +37,16 @@ public class CLIView extends View {
         mController = c;
     }
     
+    /** Print a fancy border */
+    private static void printBorder() {
+        IO.write("*******************************************************************************");
+    }
+    
     /** Draw the starting banner */
     private static void banner() {
-        IO.write("*******************************************************************************");
-        IO.write("*******************************************************************************");
+        
+        for(int i=0;i<2;i++)
+            printBorder();
         IO.write("***  ______        _____       _____                    _____       ______  ***");  
         IO.write("*** |  ____|      / ____|     / ____|        /\\        |  __ \\     |  ____| ***");  
         IO.write("*** | |__        | (___      | |            /  \\       | |__) |    | |__    ***");  
@@ -57,8 +63,8 @@ public class CLIView extends View {
         IO.write("*** |___||_|\\_|  \\___/  \\___/   |_|  |___||_|_\\  |___/|_| /_/ \\_\\\\___||___| ***");
         IO.write("***                                                                         ***");
         IO.write("*** Command line client                by Michele Albanese & Alain Carlucci ***");
-        IO.write("*******************************************************************************");
-        IO.write("*******************************************************************************");
+        for(int i=0;i<2;i++)
+            printBorder();
         IO.write("");
     }
 
@@ -208,7 +214,8 @@ public class CLIView extends View {
             if(newPos == null)
                 return false;
 
-            if( (enabledCells == null && mMap.isWithinBounds(newPos)) || (enabledCells != null && enabledCells.contains(newPos)))
+            if( (enabledCells == null && mMap.isWithinBounds(newPos)) || 
+                (enabledCells != null && enabledCells.contains(newPos)))
                 break;
             IO.write("Invalid position");
         } while(true);
@@ -231,8 +238,8 @@ public class CLIView extends View {
                 return false;
             mController.sendChosenObjectCard(choice);
             return true;
-        } else 
-            IO.write("ERROR: " + c.getArgs().length);
+        } else
+            showError(""+c.getArgs().length);
         return false;
     }
 
@@ -252,8 +259,9 @@ public class CLIView extends View {
                 return false;
             mController.sendDiscardObjectCard(i);
             return true;
-        } else
-            IO.write("ERROR: " + c.getArgs().length);
+        } else {
+            showError(""+c.getArgs().length);
+        }
         return false;
     }
 
@@ -363,16 +371,18 @@ public class CLIView extends View {
             IO.write("Nobody won this game.");
         else {
             IO.write("====  Winners  ====");
-            for(Integer i : winnerList)
+            for(Integer i : winnerList) {
                 IO.write(" -> " + mContainer.getPlayersList()[i].getUsername());
+            }
         }
 
-        if(loserList.isEmpty()) 
+        if(loserList.isEmpty()) {
             IO.write("Nobody lost this game.");
-        else {
+        } else {
             IO.write("====  Losers   ====");
-            for(Integer i : loserList)
+            for(Integer i : loserList) {
                 IO.write(" -> " + mContainer.getPlayersList()[i].getUsername());
+            }
         }
         
         
@@ -440,6 +450,4 @@ public class CLIView extends View {
     public void handleAttack(String user, Point p) {
         showInfo(user, "Player just attacked in sector " + mContainer.getMap().pointToString(p));
     }
-
-
 }

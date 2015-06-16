@@ -45,12 +45,13 @@ public class Server {
 
     /** Singleton Holder */
     private static class Holder {
-        private Holder() {
-
-        }
-
         /** The singleton instance */
         private static final Server INSTANCE = new Server();
+        
+        /** Private constructor */
+        private Holder() {
+            /** Unused */
+        }
     }
 
     /** Constructor */

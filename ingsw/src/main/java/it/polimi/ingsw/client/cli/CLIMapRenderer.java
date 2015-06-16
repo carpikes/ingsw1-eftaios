@@ -101,10 +101,14 @@ public class CLIMapRenderer {
                             buffer[bfy][bfx] = t;
 
                             /** Bounds. So we will only draw useful chars  */
-                            if(upperPoint == -1 || upperPoint < bfy) upperPoint = bfy;
-                            if(lowerPoint == -1 || lowerPoint > bfy) lowerPoint = bfy;
-                            if(leftMostPoint == -1 || leftMostPoint > bfx) leftMostPoint = bfx;
-                            if(rightMostPoint == -1 || rightMostPoint < bfx) rightMostPoint = bfx;
+                            if(upperPoint == -1 || upperPoint < bfy)
+                                upperPoint = bfy;
+                            if(lowerPoint == -1 || lowerPoint > bfy)
+                                lowerPoint = bfy;
+                            if(leftMostPoint == -1 || leftMostPoint > bfx)
+                                leftMostPoint = bfx;
+                            if(rightMostPoint == -1 || rightMostPoint < bfx)
+                                rightMostPoint = bfx;
                         }
                 }
             }
