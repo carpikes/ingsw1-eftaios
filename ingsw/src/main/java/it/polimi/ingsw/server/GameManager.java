@@ -300,10 +300,10 @@ public class GameManager {
     }
 
     /** Handle a packet
-     * @param client
-     * @param pkt
+     * @param client The client
+     * @param cmd The command
      */
-    public void handlePacket(Client client, GameCommand pkt) {
+    public void handlePacket(Client client, GameCommand cmd) {
         if(!mIsRunning)
             LOG.log(Level.SEVERE, "Game is not started yet. What's happening?");
 
@@ -314,7 +314,7 @@ public class GameManager {
         if(turnId >=0 && turnId <= mClients.size() && mClients.get(turnId).equals(client)) {
             if(!mClients.get(turnId).isConnected())
                 throw new ServerException("GameState is broken: mTurnId -> AwayPlayer. What's happening?");
-            mState.enqueuePacket(pkt);
+            mState.enqueuePacket(cmd);
         }
     }
 
@@ -338,11 +338,11 @@ public class GameManager {
 
     /** Get a connection object
      * 
-     * @param i Connection id
-     * @return
+     * @param id Connection id
+     * @return The client
      */
-    public Client getPlayerConnection(int i) {
-        return mClients.get(i);
+    public Client getPlayerConnection(int id) {
+        return mClients.get(id);
     }
 
     /** Send a packet to an user

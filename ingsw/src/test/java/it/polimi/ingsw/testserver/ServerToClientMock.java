@@ -49,12 +49,18 @@ public class ServerToClientMock extends ClientConn {
             mClient.handleDisconnect();
     }
 
-    /** Emulate a packet read */
-    public void emulateReadPacket(GameCommand pkt) {
-        mClient.handlePacket(pkt);
+    /** Emulate a command read 
+     *
+     * @param cmd The command
+     */
+    public void emulateReadPacket(GameCommand cmd) {
+        mClient.handlePacket(cmd);
     }
 
-    /** Get the client */
+    /** Get the client
+     *
+     * @return The client
+     */
     public Client exposeClient() {
         return mClient;
     }

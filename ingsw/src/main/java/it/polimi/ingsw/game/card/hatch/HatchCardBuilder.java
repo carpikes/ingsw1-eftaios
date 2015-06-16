@@ -28,7 +28,6 @@ public class HatchCardBuilder {
     /** Give a random hatch card to set player
      * 
      * @param state GameState of the player
-     * @param player Player who draws the card
      * @return An Hatch Card
      */
     public static HatchCard getRandomCard( GameState state ) {

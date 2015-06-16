@@ -30,6 +30,7 @@ import javax.swing.Timer;
  */
 public class MapCanvasPanel extends JPanel {
 
+    /** Serial version */
     private static final long serialVersionUID = -5583245069814214909L;
 
     /** the map being loaded */
@@ -133,11 +134,14 @@ public class MapCanvasPanel extends JPanel {
     /** Methods for detecting mouse position and clicking */
     private void addMouseListeners() {
         addMouseListener( new MouseListener() {
+            
+            /** Mouse pressed */
             @Override
             public void mousePressed(MouseEvent e) {
                 /** not used */
             }
 
+            /** Mouse clicked */
             @Override
             public void mouseClicked(MouseEvent arg0) { 
                 mClickedOnCell = true;
@@ -164,16 +168,19 @@ public class MapCanvasPanel extends JPanel {
                 }
             }
 
+            /** Mouse entered */
             @Override
             public void mouseEntered(MouseEvent e) {
                 /** not used */
             }
 
+            /** Mouse exited */
             @Override
             public void mouseExited(MouseEvent e) {
                 /** not used */
             }
 
+            /** Mouse released */
             @Override
             public void mouseReleased(MouseEvent e) {
                 /** not used */
@@ -181,6 +188,8 @@ public class MapCanvasPanel extends JPanel {
         });
 
         addMouseMotionListener( new MouseMotionListener() {
+            
+            /** Mouse moved */
             @Override
             public void mouseMoved(MouseEvent e) {
                 Point cell = getCell(e.getPoint());
@@ -195,6 +204,7 @@ public class MapCanvasPanel extends JPanel {
                 }
             }
 
+            /** Mouse Dragged */
             @Override
             public void mouseDragged(MouseEvent e) { 
                 /** not used */

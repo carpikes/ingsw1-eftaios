@@ -37,7 +37,7 @@ public class Client {
         mConn = conn;
         mGame = game;
 
-        /* Enable bidirectional communication Client <-> ClientConn */
+        /** Enable bidirectional communication Client <-> ClientConn */
         mConn.setClient(this);  
     }
 

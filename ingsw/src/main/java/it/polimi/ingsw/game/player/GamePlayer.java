@@ -57,8 +57,7 @@ public class GamePlayer {
      * 
      * @param id ID in game
      * @param playerRole Role of the player (alien or human)
-     * @param game The game he's playing
-     * @param isMyTurn Is he the first player?
+     * @param startPosition Initial point
      */
     public GamePlayer( int id, Role playerRole, Point startPosition ) {
         resetValues();
@@ -257,7 +256,7 @@ public class GamePlayer {
     /** Set the player to full or not. 
      * Ignored when used on a human.
      *
-     * @param isFull
+     * @param isFull Full status
      */
     public void setFull(boolean isFull) {
         if( role instanceof Alien )
@@ -313,8 +312,8 @@ public class GamePlayer {
 
     /** Use an object card
      *
-     * @param objectCardPos
-     * @return
+     * @param index The index
+     * @return The object card
      */
     public ObjectCard useObjectCard(int index) {
         ObjectCard c = mUsableObjectCards.get(index);
@@ -340,7 +339,7 @@ public class GamePlayer {
 
     /** Add an object cards for this player
      *
-     * @return The deck of object cards
+     * @param c Object Card
      */
     public void addObjectCard(ObjectCard c) {
         mObjectCards.add(c);

@@ -40,7 +40,6 @@ public class ObjectCardBuilder {
     /** Get a new random Object Card
      *
      * @param game Current GameState
-     * @param player The Player who wants to get an object card
      * @return The object card
      */
     public static ObjectCard getRandomCard(GameState game) {

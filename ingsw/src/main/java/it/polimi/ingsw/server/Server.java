@@ -135,7 +135,10 @@ public class Server {
         }
     }
 
-    /** Start the server and put listeners online. */
+    /** Start the server and put listeners online.
+     *
+     * @param debugMode True if would like to start the debug mode
+     */
     public void runServer(boolean debugMode) {
         dDebugMode = debugMode;
         if(!dDebugMode) {  

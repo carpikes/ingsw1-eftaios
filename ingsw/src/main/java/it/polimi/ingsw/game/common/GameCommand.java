@@ -27,12 +27,18 @@ public class GameCommand implements Serializable {
         mArgs = args;
     }
 
-    /** Get the opcode */
+    /** Get the opcode 
+     * 
+     * @return The opcode
+     */
     public Opcode getOpcode() {
         return mOpcode;
     }
 
-    /** Get the arguments */
+    /** Get the arguments 
+     *
+     * @return Arguments
+     */
     public Serializable[] getArgs() {
         return mArgs;
     }

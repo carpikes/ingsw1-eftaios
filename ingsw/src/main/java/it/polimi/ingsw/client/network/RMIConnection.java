@@ -57,7 +57,7 @@ public class RMIConnection extends Connection {
 
     /** Start the connection
      * 
-     * @throws IOException
+     * @throws IOException Can't establish a connection
      */
     @Override
     public void connect() throws IOException {
@@ -87,7 +87,7 @@ public class RMIConnection extends Connection {
         }
     }
 
-    /* Sets the listener
+    /** Sets the listener
      * 
      * @param listener The new listener
      */

@@ -25,7 +25,6 @@ public class DangerousCardBuilder {
     /** Get a random Dangerous Sector Card and give it to the player.
      *
      * @param gameState Current GameState
-     * @param gamePlayer The Player who is getting the card
      * @return A dangerous sector card
      */
     public static DangerousCard getRandomCard( GameState gameState ) {

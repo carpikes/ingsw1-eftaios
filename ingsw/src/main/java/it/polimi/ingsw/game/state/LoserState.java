@@ -34,7 +34,7 @@ public class LoserState extends PlayerState {
 
     /** Update the game
      * 
-     * @see it.polimi.ingsw.game.state.State#update()
+     * @see it.polimi.ingsw.game.state.PlayerState#update()
      * @return New player state
      */
     @Override

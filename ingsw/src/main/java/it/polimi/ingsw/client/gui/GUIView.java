@@ -320,7 +320,7 @@ public class GUIView extends View {
 
     /** Update the cards panel on every change 
      *
-     * @see it.polimi.ingsw.client.View#notifyObjectCardListChange(java.util.ArrayList)
+     * @see it.polimi.ingsw.client.View#notifyObjectCardListChange(java.util.List)
      */
     @Override
     public void notifyObjectCardListChange(List<Integer> listOfCards) {
@@ -329,7 +329,7 @@ public class GUIView extends View {
 
     /** Update players' info in the bottom panel
      *
-     * @see it.polimi.ingsw.client.View#updatePlayersInfoDisplay()
+     * @see it.polimi.ingsw.client.View#updatePlayerInfoDisplay(int)
      */
     @Override
     public void updatePlayerInfoDisplay( int idPlayer ) {
@@ -338,7 +338,7 @@ public class GUIView extends View {
 
     /** Create map of sector - players to be then passed to the main frame.
      *
-     * @see it.polimi.ingsw.client.View#handleSpotlightResult(java.awt.Point[])
+     * @see it.polimi.ingsw.client.View#handleSpotlightResult(java.awt.Point, java.awt.Point[])
      */
     @Override
     public void handleSpotlightResult(Point chosenPoint, Point[] playersFound) {

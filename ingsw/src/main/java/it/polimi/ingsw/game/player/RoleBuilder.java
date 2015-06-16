@@ -23,6 +23,7 @@ public class RoleBuilder {
     /** Generate a list of roles, half humans and half aliens. 
      *
      * @param numberOfPlayers The number of roles it has to create
+     * @param randomizeRoles True to randomize roles
      * @return The list of roles
      */
     public static List<Role> generateRoles(int numberOfPlayers, boolean randomizeRoles) {

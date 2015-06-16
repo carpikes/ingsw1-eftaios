@@ -74,6 +74,10 @@ public class CardButton extends JButton {
         /** add left-click and right-click listeners */
         addMouseListener(new MouseListener() {
             
+            /** Mouse clicked
+             * 
+             * @param e MouseEvent
+             */
             @Override
             public void mouseClicked(MouseEvent e) {
                 if( ((JButton)e.getSource() ).isEnabled() ) {
@@ -134,8 +138,8 @@ public class CardButton extends JButton {
     /** Set properties to this card according to the parameters given
      *
      * @param type The type of object card this button is representing
-     * @param cardId Absolute position ID in the cardPanel
-     * @param usableCardId Position ID in the cardPanel among the *usable* cards only
+     * @param id Absolute position ID in the cardPanel
+     * @param usableId Position ID in the cardPanel among the *usable* cards only
      */
     public void changeTo(CardButtons type, int id, int usableId) {
         try {
@@ -179,8 +183,10 @@ public class CardButton extends JButton {
         repaint();
     }
 
-    /* (non-Javadoc)
+    /** Repaint method
+     * 
      * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     * @param g Graphics
      */
     @Override
     public void paintComponent(Graphics g)

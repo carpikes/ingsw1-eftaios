@@ -50,6 +50,7 @@ public abstract class View {
     /** Ask something to the user
      *
      * @param viewList Choice list
+     * @return The choice
      */
     public abstract Integer askView( String[] viewList );
 
@@ -122,7 +123,6 @@ public abstract class View {
     /** Show ending
      * @param winnerList The list of winners' id
      * @param loserList The list of losers's id
-     * @return True when the game has to be stopped
      */
     public abstract void showEnding(List<Integer> winnerList, List<Integer> loserList);
 
@@ -139,7 +139,8 @@ public abstract class View {
     /** Handle a spotlight result. 
      * (e.g. n players spotted)
      *
-     * @param coords Player coordinates. null = not spotted
+     * @param chosenPoint Player coordinates. null = not spotted
+     * @param playersFound How many players are there
      */
     public abstract void handleSpotlightResult(Point chosenPoint, Point[] playersFound);
 

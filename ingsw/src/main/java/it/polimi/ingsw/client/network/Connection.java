@@ -14,7 +14,7 @@ public abstract class Connection {
     /** This listener is called on each received packet */
     protected OnReceiveListener mListener = null;
 
-    /* Sets the listener
+    /** Sets the listener
      * 
      * @param listener The new listener
      */
@@ -30,7 +30,7 @@ public abstract class Connection {
 
     /** Start the connection
      * 
-     * @throws IOException
+     * @throws IOException Can't establish a connection
      */
     public abstract void connect() throws IOException;
 

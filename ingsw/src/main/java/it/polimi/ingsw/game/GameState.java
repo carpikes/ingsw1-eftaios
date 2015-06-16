@@ -98,7 +98,6 @@ public class GameState {
      * 
      * @param gameManager The GameManager that created this game.
      * @param mapId Id of the map
-     * @param clients List of connections of all players
      */
     public GameState(GameManager gameManager, int mapId) {
         GameMap tmpMap = null;
@@ -275,7 +274,7 @@ public class GameState {
     /** Method invoked when someone sends a CMD_CS_USE_OBJ_CARD command.
      * Invoke the correct underlying method 
      * (attack() for Attack card..., moveTo() for Teleport card...)
-     * @param objectCard The card the user wants to use
+     * @param objectCardPos The card the user wants to use
      * @return Next PlayerState for current player
      */
     public PlayerState startUsingObjectCard(Integer objectCardPos) {
@@ -433,6 +432,8 @@ public class GameState {
     /** Moves current player in a position. 
      * It is used by the Teleport card and when moving during
      * the normal flow of the game.
+     * 
+     * @param player Player
      * @param dest Where to move 
      */
     public void rawMoveTo(GamePlayer player, Point dest) {
@@ -585,22 +586,22 @@ public class GameState {
      * 
      * @param command The packet command
      */
-    public void sendPacketToCurrentPlayer(GameCommand networkPacket) {
+    public void sendPacketToCurrentPlayer(GameCommand command) {
         synchronized(mOutputQueue) {
-            mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(mCurPlayerId, networkPacket));
+            mOutputQueue.add( new AbstractMap.SimpleEntry<Integer,GameCommand>(mCurPlayerId, command));
         }
     }
 
     /** Get the number of player in this sector
      * 
-     * @param p Sector
+     * @param point Sector
      * @return Number of players
      */
-    public int getNumberOfPlayersInSector( Point p ) {
+    public int getNumberOfPlayersInSector( Point point ) {
         int counter = 0;
 
         for( GamePlayer player : mPlayers )
-            if( player.stillInGame() && player.getCurrentPosition().equals(p) )
+            if( player.stillInGame() && player.getCurrentPosition().equals(point) )
                 counter++;
 
         return counter;
@@ -615,7 +616,7 @@ public class GameState {
     }
 
     /** Called when a client disconnects
-     * @param id
+     * @param id Id
      */
     public void onPlayerDisconnect(int id) {
         GamePlayer player = mPlayers.get(id);

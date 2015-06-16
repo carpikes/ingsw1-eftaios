@@ -73,7 +73,7 @@ public class ClientConnRMI extends ClientConn {
     /** This method is called on each received command
      * 
      * @param pkt The packet
-     * @throws RemoteException
+     * @throws RemoteException Connection error
      */
     public void onRMICommand(GameCommand pkt) throws RemoteException {
         resetTimeoutTimer();

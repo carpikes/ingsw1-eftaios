@@ -42,10 +42,16 @@ public abstract class PlayerState {
         mGameState.sendPacketToCurrentPlayer(new GameCommand(GameOpcode.CMD_SC_AVAILABLE_COMMANDS, availableCommands));
     }
 
-    /** Update the game */
+    /** Update the game 
+     *
+     * @return New state
+     */
     public abstract PlayerState update();
 
-    /** Is the player still in game? */
+    /** Is the player still in game? 
+     *
+     * @return True if is still in game
+     */
     public abstract boolean stillInGame();
 
     /** Build and send available commands */

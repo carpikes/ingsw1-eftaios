@@ -39,7 +39,10 @@ public class TestMiscFeatures {
         assertEquals(c.getArgs().length, 0);
     }
     
-    /** Test if GameInfo is working as expected */
+    /** Test if GameInfo is working as expected 
+     *
+     * @throws IOException if there are errors
+     */
     @Test
     public void testGameInfo() throws IOException {
         GameMap map = GameMap.createFromId(1);

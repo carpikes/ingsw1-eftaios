@@ -2,7 +2,7 @@ package it.polimi.ingsw.game.common;
 
 import java.io.Serializable;
 
-/* View opcodes
+/** View opcodes
  * 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)

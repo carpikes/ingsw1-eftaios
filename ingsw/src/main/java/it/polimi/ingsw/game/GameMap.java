@@ -137,11 +137,11 @@ public class GameMap implements Serializable {
 
     /** Check if given point is inside the map
      *
-     * @param destination
-     * @return
+     * @param point Point to check
+     * @return True if is within bounds
      */
-    public boolean isWithinBounds(Point p) {
-        return p.x >= 0 && p.y >= 0 && p.x < COLUMNS && p.y < ROWS; 
+    public boolean isWithinBounds(Point point) {
+        return point.x >= 0 && point.y >= 0 && point.x < COLUMNS && point.y < ROWS; 
     }
 
     /** Get the player starting point
@@ -195,10 +195,10 @@ public class GameMap implements Serializable {
      *
      * @param currentPosition Starting position
      * @param maxMoves Range
-     * @return
+     * @param isHuman True if is human
+     * @return Set of sectors nearby
      */
-    public Set<Point> getCellsWithMaxDistance(Point currentPosition,
-            int maxMoves, boolean isHuman) {
+    public Set<Point> getCellsWithMaxDistance(Point currentPosition, int maxMoves, boolean isHuman) {
         Set<Point> sectors = new HashSet< >();
         Queue<Point> frontier = new LinkedList<Point>();
 
@@ -245,7 +245,9 @@ public class GameMap implements Serializable {
      * - x -
      *
      * @param currentPosition The starting sector
-     * @return A list of all neighbours
+     * @param isHuman True if is human
+     * @param allSectors True to get all sectors nearby
+     * @return A list of all neighbors
      */
     public List<Point> getNeighbourAccessibleSectors( Point currentPosition, boolean isHuman, boolean allSectors) {
         /** get x and y for simplicity's sake */

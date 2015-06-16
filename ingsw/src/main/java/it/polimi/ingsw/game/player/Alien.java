@@ -11,12 +11,12 @@ import it.polimi.ingsw.game.config.Config;
  */
 public class Alien implements Role {
     /** Has the alien eaten yet? */
-    private boolean hasEaten;
+    private boolean mHasEaten;
 
     /** Alien constructor */
     public Alien( ) {
         super();
-        this.hasEaten = false;
+        mHasEaten = false;
     }
 
     /** Get number of max moves
@@ -25,7 +25,7 @@ public class Alien implements Role {
      */
     @Override
     public int getMaxMoves() {
-        if( hasEaten ) 
+        if( mHasEaten ) 
             return Config.MAX_ALIEN_FULL_MOVES;
         else
             return Config.MAX_ALIEN_MOVES;
@@ -36,15 +36,15 @@ public class Alien implements Role {
      * @return If it has eaten or not
      */
     public boolean hasEaten() {
-        return hasEaten;
+        return mHasEaten;
     }
 
     /** Set alien to full or not
      *
-     * @param hasEaten
+     * @param hasEaten True if the alien has eaten
      */
     public void setHasEaten(boolean hasEaten) {
-        this.hasEaten = hasEaten;
+        mHasEaten = hasEaten;
     }
 
 }

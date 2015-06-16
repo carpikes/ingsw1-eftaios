@@ -24,6 +24,7 @@ public class HexagonFactory  {
      *
      * @param center Center coordinates 
      * @param size Radius of the hex
+     * @param type Type of the hexagon
      * @return The hexagon just created
      */
     public static Hexagon createHexagon( Point center, int size, int type) {

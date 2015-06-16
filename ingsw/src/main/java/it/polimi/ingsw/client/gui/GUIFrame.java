@@ -345,10 +345,10 @@ public class GUIFrame extends JFrame {
 
     /** Calls underlying map canvas function
      *
-     * @param The set of points to choose among
+     * @param point The set of points to choose among
      */
-    public void enableMapCells(Set<Point> pnt) {
-        mMapCanvas.setEnabledCells(pnt);
+    public void enableMapCells(Set<Point> point) {
+        mMapCanvas.setEnabledCells(point);
     }
 
     /** Calls underlying map canvas function

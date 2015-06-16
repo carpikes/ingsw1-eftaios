@@ -61,7 +61,10 @@ public class GameController implements OnReceiveListener {
     private int mCurPlayerId = 0;
     private boolean mHostDone = false;
 
-    /** The constructor */
+    /** The constructor 
+     *
+     * @param args Main args
+     */
     public GameController(String[] args) {
 
         mView = determineView(args);

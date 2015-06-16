@@ -13,7 +13,10 @@ public class Main {
         
     }
 
-    /** Server entry point */
+    /** Server entry point 
+     *
+     * @param args Main args
+     */
     public static void main(String[] args) {
         Server.getInstance().runServer(false);
     }

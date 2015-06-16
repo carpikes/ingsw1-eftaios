@@ -46,7 +46,8 @@ public class MovingState extends PlayerState {
         buildAndSendAvailableCommands();
     }
 
-    /* (non-Javadoc)
+    /** Build and send available commands
+     * 
      * @see it.polimi.ingsw.game.state.PlayerState#buildAndSendAvailableCommands()
      */
     protected void buildAndSendAvailableCommands() {
@@ -57,8 +58,9 @@ public class MovingState extends PlayerState {
         sendAvailableCommands(availableCommands);
     }
 
-    /* (non-Javadoc)
-     * @see it.polimi.ingsw.game.state.State#update()
+    /** Update the game
+     * @see it.polimi.ingsw.game.state.PlayerState#update()
+     * @return New player state
      */
     @Override
     public PlayerState update() {

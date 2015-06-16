@@ -27,9 +27,10 @@ public class Hexagon {
 
     /** Instantiates a new hexagon view.
      *
-     * @param mCenter Coordinates of mCenter
-     * @param mSize Radius Size
+     * @param center Coordinates of mCenter
+     * @param size Radius Size
      * @param hexagonPath Shape of hexagon
+     * @param type Type of hexagon
      */
     public Hexagon(Point center, int size, Polygon hexagonPath, int type) {
         mCenter = center;
@@ -71,6 +72,7 @@ public class Hexagon {
      * @param enabled Can this sector be selected or not?
      * @param mouseOnThis Is mouse hovering on this sector
      * @param shouldBlink True if this should blink (attack, spotlight and noise actions)
+     * @param colorBlink Color to blink
      */
     public void draw(Graphics2D g2d, boolean playerOn, boolean enabled, boolean mouseOnThis, boolean shouldBlink, Color colorBlink) {
         if( mColor == null )

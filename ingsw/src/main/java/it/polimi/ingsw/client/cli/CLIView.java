@@ -125,7 +125,7 @@ public class CLIView extends View {
 
     /** Ask for a view
      *
-     * @see it.polimi.ingsw.client.View#askView()
+     * @see it.polimi.ingsw.client.View#askView(java.lang.String[])
      */
     @Override
     public Integer askView( String[] viewList ) {
@@ -162,7 +162,7 @@ public class CLIView extends View {
 
     /** Display map after login phase
      *
-     * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.network.GameStartInfo)
+     * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.common.GameInfo)
      */
     @Override
     public void switchToMainScreen(GameInfo container) {
@@ -351,7 +351,7 @@ public class CLIView extends View {
 
     /** Show ending banner
      *
-     * @see it.polimi.ingsw.client.View#showEnding(java.util.ArrayList, java.util.ArrayList)
+     * @see it.polimi.ingsw.client.View#showEnding(java.util.List, java.util.List)
      */
     @Override
     public void showEnding(List<Integer> winnerList, List<Integer> loserList) {
@@ -380,7 +380,7 @@ public class CLIView extends View {
 
     /** Display your object cards
      *
-     * @see it.polimi.ingsw.client.View#notifyObjectCardListChange(java.util.ArrayList)
+     * @see it.polimi.ingsw.client.View#notifyObjectCardListChange(java.util.List)
      */
     @Override
     public void notifyObjectCardListChange(List<Integer> listOfCards) {
@@ -403,7 +403,7 @@ public class CLIView extends View {
 
     /** Unused
      *
-     * @see it.polimi.ingsw.client.View#updatePlayersInfoDisplay(it.polimi.ingsw.game.common.PlayerInfo, int)
+     * @see it.polimi.ingsw.client.View#updatePlayerInfoDisplay(int)
      */
     @Override
     public void updatePlayerInfoDisplay( int idPlayer ) {
@@ -412,7 +412,7 @@ public class CLIView extends View {
 
     /** Display info about spotlight action
      *
-     * @see it.polimi.ingsw.client.View#handleSpotlightResult(java.awt.Point[])
+     * @see it.polimi.ingsw.client.View#handleSpotlightResult(java.awt.Point, java.awt.Point[])
      */
     @Override
     public void handleSpotlightResult(Point chosenPoint, Point[] playersFound) {
@@ -434,7 +434,7 @@ public class CLIView extends View {
 
     /** Display info about attacks in a sector
      *
-     * @see it.polimi.ingsw.client.View#handleAttack(java.awt.Point)
+     * @see it.polimi.ingsw.client.View#handleAttack(java.lang.String, java.awt.Point)
      */
     @Override
     public void handleAttack(String user, Point p) {

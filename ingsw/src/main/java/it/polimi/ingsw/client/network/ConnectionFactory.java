@@ -31,6 +31,7 @@ public class ConnectionFactory {
     /** Get an instance of the chosen connection
      *
      * @param type The chosen connection type
+     * @return The specified connection
      */
     public static Connection getConnection(int type) {
         switch(type) {
