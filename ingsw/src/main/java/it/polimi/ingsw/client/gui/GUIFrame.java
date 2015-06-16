@@ -93,7 +93,7 @@ public class GUIFrame extends JFrame {
         setSize(Config.WIDTH, Config.HEIGHT);
         setLocationRelativeTo(null);
         setResizable(false);
-
+        
         createRightPanel();
         switchToLogin();
     }
@@ -312,8 +312,13 @@ public class GUIFrame extends JFrame {
             mRightPanel.setVisible(false);
 
         add(mLoginCanvas, BorderLayout.CENTER);
+        
+        /** Start rendering this frame */
+        pack();
+        
+        /** Set right size back again */
+        setSize(Config.WIDTH, Config.HEIGHT);
     }
-
     
     /** Disable login screen and move to the actual game screen
      *
