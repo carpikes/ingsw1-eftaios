@@ -8,6 +8,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
@@ -15,11 +16,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -30,6 +35,9 @@ import javax.swing.Timer;
  */
 public class MapCanvasPanel extends JPanel {
 
+    /** Logger */
+    private static final Logger LOG = Logger.getLogger( MapCanvasPanel.class.getName() );
+    
     /** Serial version */
     private static final long serialVersionUID = -5583245069814214909L;
 
@@ -80,6 +88,9 @@ public class MapCanvasPanel extends JPanel {
     
     /** Game controller */
     private final transient GameController mController;
+    
+    /** Background */
+    Image bg;
 
     /** Create the map canvas.
      *
@@ -99,6 +110,12 @@ public class MapCanvasPanel extends JPanel {
         mHoveringCellCoords = null;
         mPlayerPosition = playerPosition;
 
+        try {
+            bg = ImageIO.read(new File("img/mainbg2.jpg"));
+        } catch( IOException e ) {
+            LOG.warning("Cannot load ending images: " + e);
+        }
+        
         /** add listeners */
         addMouseListeners();
 
@@ -234,6 +251,8 @@ public class MapCanvasPanel extends JPanel {
 
         /** set background color for this JPanel */
         setBackground(ColorPalette.BACKGROUND.getColor());  
+        
+        g.drawImage(bg, 0, 0, null);
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 

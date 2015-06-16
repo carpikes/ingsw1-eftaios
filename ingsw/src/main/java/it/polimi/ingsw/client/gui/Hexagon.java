@@ -97,7 +97,7 @@ public class Hexagon {
         if(!enabled) {
             drawStroke = false;
             /** Overwrite in case it is not selectable and make it gray-ish */
-            real = new Color(real.getRed()/2, real.getGreen()/2, real.getBlue()/2, 0xa0);
+            real = new Color(real.getRed()*2/3, real.getGreen()*2/3, real.getBlue()*2/3, 0xa0);
         } else if(mouseOnThis)
             /** hovering color has higher priority than PlayerOn */
             real = ColorPalette.MOUSE_ON_THIS.getColor();

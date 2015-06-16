@@ -9,14 +9,14 @@ import java.awt.Color;
  */
 public enum ColorPalette {
 
-    BACKGROUND       (Color.WHITE),
+    BACKGROUND       (Color.BLACK),
     PLAYER_ON        (Color.YELLOW),
     MOUSE_ON_THIS    (Color.CYAN),
-    ALIEN            (new Color(0,50,0)),
-    DANGEROUS        (new Color(150,150,150)),
+    ALIEN            (new Color(0,207,70)),
+    DANGEROUS        (new Color(170,170,170)),
     NOT_DANGEROUS    (new Color(255,255,255)),
-    HATCH            (new Color(47,53,87)),
-    USED_HATCH       (new Color(178,0,0)),
+    HATCH            (new Color(255,131,0)),
+    USED_HATCH       (new Color(178,100,100)),
     HUMAN            (new Color(50,0,0)),
     STROKE           (Color.DARK_GRAY),
 
