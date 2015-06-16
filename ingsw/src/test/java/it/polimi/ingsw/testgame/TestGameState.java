@@ -119,7 +119,7 @@ public class TestGameState {
         gm.addPlayer(new Client(c1, gm));
         gm.addPlayer(new Client(c2, gm));
         
-        GameState game = new GameState(gm, 50000);
+        new GameState(gm, 50000);
     }
     
     /**
@@ -127,7 +127,7 @@ public class TestGameState {
      */
     @Test(expected=DebugException.class)
     public void testDebugConstructorError() {
-        GameState gm = new GameState("NO", 0, 0, 0, false);
+        new GameState("NO", 0, 0, 0, false);
     }
        
     

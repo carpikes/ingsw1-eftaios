@@ -76,6 +76,10 @@ public class GameController implements OnReceiveListener {
         createViewCommandQueueThread();
     }
 
+    /** Load parameters from cli
+     * 
+     * @param args Main args
+     */
     private void loadParams(String[] args) {
         if(args.length > 3)
             return;
@@ -137,6 +141,7 @@ public class GameController implements OnReceiveListener {
 
 
     /** Add a list of view commands to be then processed by the view.
+     * 
      * @param arrayList A list of Viewcommands to be added
      */
     protected void enqueueViewCommands(List<ViewCommand> arrayList) {
