@@ -111,7 +111,7 @@ public class MapCanvasPanel extends JPanel {
         mPlayerPosition = playerPosition;
 
         try {
-            bg = ImageIO.read(new File("img/mainbg2.jpg"));
+            bg = ImageIO.read(new File("img/b3.jpg"));
         } catch( IOException e ) {
             LOG.warning("Cannot load ending images: " + e);
         }
