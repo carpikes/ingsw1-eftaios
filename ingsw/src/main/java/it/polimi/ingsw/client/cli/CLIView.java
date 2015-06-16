@@ -19,7 +19,7 @@ import java.util.Set;
  * @since  May 10, 2015
  */
 public class CLIView extends View {
-        
+    
     /** Game map */
     private GameMap mMap;
 
@@ -385,7 +385,8 @@ public class CLIView extends View {
             }
         }
         
-        
+        mController.stop();
+        System.exit(0);
     }
 
     /** Display your object cards
