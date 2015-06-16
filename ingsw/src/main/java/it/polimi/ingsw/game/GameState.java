@@ -208,7 +208,6 @@ public class GameState {
         if(curTime > mCurTurnStartTime + Config.GAME_MAX_SECONDS_PER_TURN) {
             nextState = new AwayState(this);
             player.setCurrentState(nextState);
-            moveToNextPlayer();
         } else {
             try {
                 nextState = player.getCurrentState().update();
