@@ -90,7 +90,7 @@ public class MapCanvasPanel extends JPanel {
     private final transient GameController mController;
     
     /** Background */
-    Image bg;
+    private transient Image bg;
 
     /** Create the map canvas.
      *
