@@ -40,6 +40,7 @@ public class TestGamePlayer {
     public void testDropDefense() {
         GamePlayer human = new GamePlayer( 0,new Human(), new Point(0,0) );
         human.setDefense( true );
+        human.addObjectCard(new DefenseCard(new GameState("YES",1,2,0,true), ""));
         assertTrue( human.isDefenseEnabled() );
 
         human.dropDefense();

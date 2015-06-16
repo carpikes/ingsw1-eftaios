@@ -524,7 +524,6 @@ public class GameController implements OnReceiveListener {
      * @param cmd The command to be processed
      */
     private void parseCoreCmd(GameCommand cmd) {
-        String msg = "";
         CoreOpcode lop = (CoreOpcode) cmd.getOpcode();
         Object obj = null;
 
@@ -541,14 +540,17 @@ public class GameController implements OnReceiveListener {
                     mView.updateLoginStat((Integer) obj);
                 break;
             case CMD_SC_USERNAMEFAIL:
-                msg = "Invalid name or another player is using your name. Choose another one.";
+                handleChooseUser("Invalid name or another player is using your name. Choose another one.");
+                break;
             case CMD_SC_CHOOSEUSER:
-                handleChooseUser(msg);
+                handleChooseUser("");
                 break;
             case CMD_SC_USERNAMEOK:
                 mView.showInfo(null, "Username accepted. Waiting for other players...");
                 break;
             case CMD_SC_MAPFAIL:
+                handleChooseMap(cmd);
+                break;
             case CMD_SC_CHOOSEMAP:
                 handleChooseMap(cmd);
                 break;

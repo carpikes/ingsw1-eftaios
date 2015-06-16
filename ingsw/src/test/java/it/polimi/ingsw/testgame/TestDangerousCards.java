@@ -22,6 +22,7 @@ public class TestDangerousCards {
         for(int i = 0; i < 50; i ++) {
             DangerousCard c = DangerousCardBuilder.getRandomCard(game);
             assertFalse(c == null);
+            assertFalse(c.doAction() == null);
         }
     }
 }

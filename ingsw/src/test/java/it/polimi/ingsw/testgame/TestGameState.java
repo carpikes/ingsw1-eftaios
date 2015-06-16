@@ -1,5 +1,6 @@
 package it.polimi.ingsw.testgame;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
@@ -20,6 +21,7 @@ import it.polimi.ingsw.game.state.MovingState;
 import it.polimi.ingsw.game.state.NoiseInAnySectorState;
 import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
+import it.polimi.ingsw.game.state.SpotlightCardState;
 import it.polimi.ingsw.game.state.StartTurnState;
 import it.polimi.ingsw.server.Client;
 import it.polimi.ingsw.server.ClientConn;
@@ -88,6 +90,10 @@ public class TestGameState {
         
         GameState game = new GameState(gm, 1);
         assertFalse(game.isDebugModeEnabled());
+        
+        game.clearOutputQueue();
+        game.flushOutputQueue();
+        game.update();
     }
     
     /**
@@ -206,8 +212,17 @@ public class TestGameState {
     public void testDiscardObjectCardState() {
         GameState game = this.playToMoveDoneState(true, true, true);
         PlayerState p = new DiscardingObjectCardState(game);
+        game.getCurrentPlayer().setCurrentState(p);
+        
+        game.update();
         assertTrue(p.update() instanceof EndingTurnState);
         
+        game.update();
+        game.enqueuePacket(new GameCommand(GameOpcode.CMD_CS_END_TURN, 0));
+        
+        game.update();
+        assertTrue(game.getCurrentPlayer().getCurrentState() instanceof StartTurnState);
+
         for(int i = 0; i < 4; i++)
             game.getCurrentPlayer().addObjectCard(new AttackCard(game, "Attack"));
         p = new DiscardingObjectCardState(game);
@@ -220,8 +235,37 @@ public class TestGameState {
         p = new DiscardingObjectCardState(game);
         p.update();
         
+        game.getCurrentPlayer().setCurrentState(p);
         game.enqueuePacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD, 0));
         assertTrue(p.update() != null);
+    }
+    
+    /**
+     * Test the startUsingObjectCardState
+     */
+    @Test
+    public void testStartUsingObjectCardState() {
+        GameState game = this.playToMoveDoneState(true, true, true);
+        PlayerState p = new DiscardingObjectCardState(game);
+        
+        game.getCurrentPlayer().setCurrentState(p.update());
+        
+        assertTrue(game.getCurrentPlayer().getCurrentState() instanceof EndingTurnState);
+        
+        game.getCurrentPlayer().addObjectCard(new AttackCard(game, "Attack"));
+        game.enqueuePacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD, 0));
+        game.update();
+        assertTrue(game.getCurrentPlayer().getCurrentState() instanceof EndingTurnState);
+        
+        for(int i = 0; i < 4; i++)
+            game.getCurrentPlayer().addObjectCard(new AttackCard(game, "Attack"));
+        p = new DiscardingObjectCardState(game);
+        
+        game.getCurrentPlayer().setObjectCardUsed(false);
+        game.getCurrentPlayer().setCurrentState(p);
+        game.enqueuePacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD, 0));
+        p = p.update();
+        assertTrue(p.update() instanceof EndingTurnState);
     }
     
     /**
@@ -235,6 +279,22 @@ public class TestGameState {
         game.enqueuePacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, hatchPoints.iterator().next()));
         assertTrue(p.update() != null);
         assertTrue(p.stillInGame());
+    }
+    
+    /**
+     * Test Spotlight state
+     */
+    @Test
+    public void testSpotlightState() {
+        GameState game = this.playToMoveDoneState(true, true, true);
+        game.getCurrentPlayer().setCurrentState(new SpotlightCardState(game));
+        game.update();
+        
+        assertTrue(game.getCurrentPlayer().getCurrentState().stillInGame());
+        game.enqueuePacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, hatchPoints.iterator().next()));
+        game.getCurrentPlayer().setStateBeforeSpotlightCard(new MoveDoneState(game));
+        game.update();
+        assertTrue( findGameCommandInQueue(game, InfoOpcode.INFO_SPOTLIGHT) );
     }
     
     /**
@@ -308,6 +368,16 @@ public class TestGameState {
         game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD) );
         PlayerState p = game.getCurrentPlayer().getCurrentState();
         p.update();
+    }
+    
+    /** 
+     * Test last thing did
+     */
+    @Test
+    public void testLastThing() {
+        GameState game = playToMoveDoneState(false, false, true);
+        game.setLastThingDid(GameState.LastThings.GONE_OFFLINE);
+        assertEquals(game.debugGetLastThingDid(),GameState.LastThings.GONE_OFFLINE);
     }
        
 

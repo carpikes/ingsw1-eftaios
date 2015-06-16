@@ -211,7 +211,7 @@ public class GameState {
                 nextState = player.getCurrentState().update();
                 player.setCurrentState(nextState);
             } catch( IllegalStateOperationException e) {
-                LOG.log(Level.INFO, e.toString(), e);
+                LOG.log(Level.INFO, e.toString());
                 LOG.log(Level.FINEST, "", e);
             }
         }
@@ -319,7 +319,8 @@ public class GameState {
                         sendPacketToPlayer( i, new GameCommand(GameOpcode.CMD_SC_DROP_CARD, indexCard) );
                         defendedPlayers.add(i);
                     } catch( DefenseException e ) {
-                        LOG.warning(e.getLocalizedMessage());
+                        LOG.log(Level.INFO, e.toString());
+                        LOG.log(Level.FINEST, "", e);
                     }
                 } else {
                     if(player.isHuman())
@@ -384,43 +385,49 @@ public class GameState {
            (mRoundsPlayed > Config.MAX_NUMBER_OF_TURNS)     || // (3)
            (inGamePlayers < Config.GAME_MIN_PLAYERS)) {        // (4)
 
-            /** So, the game will end.
-             * Let's gather some stats
-             * Move all players either into WinnerState or LoserState 
-             */
-            for(int i = 0; i < mPlayers.size(); i++) {
-                GamePlayer p = mPlayers.get(i);
-                if((p.stillInGame() && ((p.isAlien() && mLastThing != LastThings.HUMAN_USED_HATCH)|| allWinnersMode)))
-                    p.setCurrentState(new WinnerState(this, i));
-                else if(!(p.getCurrentState() instanceof WinnerState))
-                    p.setCurrentState(new LoserState(this, i));
-            }
+            rawEndGame(allWinnersMode);
+        }
+    }
 
-            clearOutputQueue();
+    /** The game will end
+     * Let's gather some stats
+     * 
+     * @param allWinnersMode True if all connected players are winner
+     */
+    private void rawEndGame(boolean allWinnersMode) {
+        /** Move all players either into WinnerState or LoserState */
+        for(int i = 0; i < mPlayers.size(); i++) {
+            GamePlayer p = mPlayers.get(i);
+            if(p.stillInGame() && ((p.isAlien() && mLastThing != LastThings.HUMAN_USED_HATCH)|| allWinnersMode))
+                p.setCurrentState(new WinnerState(this, i));
+            else if(!(p.getCurrentState() instanceof WinnerState))
+                p.setCurrentState(new LoserState(this, i));
+        }
 
-            /** Fill this two arrays */
-            ArrayList<Integer> winnersList = new ArrayList<>();
-            ArrayList<Integer> loserList = new ArrayList<>();
+        clearOutputQueue();
 
-            for(int i = 0; i < mPlayers.size(); i++) {
-                GamePlayer p = mPlayers.get(i);
-                PlayerState s = p.getCurrentState();
-                if(s instanceof WinnerState)
-                    winnersList.add(i);
-                else if(s instanceof LoserState)
-                    loserList.add(i);
-                else
-                    throw new GameException("There are players who are neither winner nor loser. What's happening?");
-            }
+        /** Fill this two arrays */
+        ArrayList<Integer> winnersList = new ArrayList<>();
+        ArrayList<Integer> loserList = new ArrayList<>();
 
-            broadcastPacket( new GameCommand(InfoOpcode.INFO_END_GAME, winnersList, loserList));
-            flushOutputQueue();
-
-            if(!dDebugMode)
-                mManager.shutdown();
+        for(int i = 0; i < mPlayers.size(); i++) {
+            GamePlayer p = mPlayers.get(i);
+            PlayerState s = p.getCurrentState();
+            if(s instanceof WinnerState)
+                winnersList.add(i);
+            else if(s instanceof LoserState)
+                loserList.add(i);
             else
-                dGameOver = true;
-                }
+                throw new GameException("There are players who are neither winner nor loser. What's happening?");
+        }
+
+        broadcastPacket( new GameCommand(InfoOpcode.INFO_END_GAME, winnersList, loserList));
+        flushOutputQueue();
+
+        if(!dDebugMode)
+            mManager.shutdown();
+        else
+            dGameOver = true;
     }
 
     /** Moves current player in a position. 
@@ -696,5 +703,16 @@ public class GameState {
      */
     public boolean isDebugModeEnabled() {
         return dDebugMode;
+    }
+
+    /** Get last thing did 
+     * 
+     * @return Last thing did
+     */
+    public LastThings debugGetLastThingDid() {
+        if(!dDebugMode)
+            throw new DebugException("Cannot use this method in normal mode");
+        
+        return mLastThing; 
     }
 }

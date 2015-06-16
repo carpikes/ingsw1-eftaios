@@ -7,6 +7,7 @@ import java.io.IOException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.PlayerInfo;
+import it.polimi.ingsw.game.common.Rand;
 import it.polimi.ingsw.game.common.ViewCommand;
 import it.polimi.ingsw.game.common.ViewOpcode;
 
@@ -48,5 +49,14 @@ public class TestMiscFeatures {
         assertEquals(g.getId(), 0);
         assertEquals(g.isHuman(), true);
         assertFalse(g.getListOfCards() == null);
+    }
+    
+    /** Test the Rand class */
+    @Test
+    public void testRandomGenerator() {
+        for(int i = 0;i<100;i++) {
+            assertTrue(Rand.nextInt(10) < 10);
+            assertTrue((Rand.nextInt() % 10) < 10);
+        }
     }
 }

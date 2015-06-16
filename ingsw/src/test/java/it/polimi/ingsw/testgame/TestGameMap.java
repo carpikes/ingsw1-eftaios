@@ -1,9 +1,10 @@
 package it.polimi.ingsw.testgame;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 
@@ -60,6 +61,19 @@ public class TestGameMap {
     public void TestGetSectorAt() throws IOException {
         GameMap g = GameMap.createFromMapFile( new File("maps/fermi.txt") );
 
+        assertEquals(g.getRemainingHatches(),4);
         assertTrue("First cell in 'Fermi' map is 0.", g.getSectorAt(0, 0).getId() == 0 );
+    }
+    
+    /** Test Point2String methods
+     * 
+     * @throws IOException If there are errors
+     */
+    @Test
+    public void testPointToString() throws IOException {
+        GameMap g = GameMap.createFromMapFile( new File("maps/fermi.txt") );
+        String a1 = g.pointToString(new Point(1,1)).trim();
+        String a2 = "B002";
+        assertTrue(a1.equals(a2));
     }
 }
