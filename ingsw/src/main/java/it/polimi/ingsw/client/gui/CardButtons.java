@@ -1,8 +1,10 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.game.ResourceLoader;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /** Card button enum
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
@@ -10,18 +12,18 @@ import java.io.File;
  * @since 6 Jun 2015
  */
 public enum CardButtons {
-    ADRENALINE( ObjectCardBuilder.ADRENALINE_CARD, new File("img/adrenaline.png"), true),
-    ATTACK( ObjectCardBuilder.ATTACK_CARD, new File("img/attack.png"), true),
-    DEFENSE( ObjectCardBuilder.DEFENSE_CARD, new File("img/defense.png"), false),
-    SEDATIVES( ObjectCardBuilder.SEDATIVES_CARD, new File("img/sedatives.png"), true),
-    SPOTLIGHT( ObjectCardBuilder.SPOTLIGHT_CARD, new File("img/spotlight.png"), true),
-    TELEPORT( ObjectCardBuilder.TELEPORT_CARD, new File("img/teleport.png"), true),
-    NULL( -1, new File("img/null.png"), false);
+    ADRENALINE( ObjectCardBuilder.ADRENALINE_CARD, "img/adrenaline.png", true),
+    ATTACK( ObjectCardBuilder.ATTACK_CARD, "img/attack.png", true),
+    DEFENSE( ObjectCardBuilder.DEFENSE_CARD, "img/defense.png", false),
+    SEDATIVES( ObjectCardBuilder.SEDATIVES_CARD, "img/sedatives.png", true),
+    SPOTLIGHT( ObjectCardBuilder.SPOTLIGHT_CARD, "img/spotlight.png", true),
+    TELEPORT( ObjectCardBuilder.TELEPORT_CARD, "img/teleport.png", true),
+    NULL( -1, "img/null.png", false);
 
     /** Card id */
     private int mId;
     /** Image file */
-    private File mImgFile;
+    private String mImgFile;
     /** Is enabled? */
     private boolean mEnabled;
 
@@ -31,7 +33,7 @@ public enum CardButtons {
      * @param file File
      * @param enabled Enabled
      */
-    private CardButtons( int id, File file, boolean enabled ) {
+    private CardButtons( int id, String file, boolean enabled ) {
         mId = id;
         mImgFile = file;
         mEnabled = enabled;
@@ -48,9 +50,10 @@ public enum CardButtons {
     /** The the card image file
      *
      * @return The image file
+     * @throws IOException File not found
      */
-    public File getImageFile() {
-        return mImgFile;
+    public InputStream getImageFile() throws IOException {
+        return ResourceLoader.getInstance().loadResource(mImgFile);
     }
 
     /** Is this card enables?

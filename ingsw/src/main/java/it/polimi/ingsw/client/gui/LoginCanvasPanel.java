@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.game.ResourceLoader;
 import it.polimi.ingsw.game.config.Config;
 
 import java.awt.Color;
@@ -12,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +30,10 @@ import javax.swing.Timer;
 class LoginCanvasPanel extends JPanel {
     /** Logger */
     private static final Logger LOG = Logger.getLogger( LoginCanvasPanel.class.getName() );
+    
+    /** Login BG */
+    private static final String LOGINBG = "img/loginbg.jpg";
+    private static final String LOGO = "img/logo.png";
     
     /** Serial version */
     private static final long serialVersionUID = 1L;
@@ -77,10 +81,11 @@ class LoginCanvasPanel extends JPanel {
         /** set background color for this JPanel */
         setBackground(Color.BLACK);  
         try {
-            Image bg = ImageIO.read(new File("img/loginbg.jpg"));
+            
+            Image bg = ImageIO.read(ResourceLoader.getInstance().loadResource(LOGINBG));
             g.drawImage(bg, 0, 0, null);
             
-            Image logo = ImageIO.read(new File("img/logo.png"));
+            Image logo = ImageIO.read(ResourceLoader.getInstance().loadResource(LOGO));
             g.drawImage(logo, (int)(g2d.getClipBounds().getWidth() - logo.getWidth(null) - 60), 60, null);
         } catch( IOException e ) {
             LOG.warning("Cannot load login images!");

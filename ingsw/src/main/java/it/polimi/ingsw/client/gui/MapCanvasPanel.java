@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.game.GameMap;
+import it.polimi.ingsw.game.ResourceLoader;
 import it.polimi.ingsw.game.sector.Sector;
 
 import java.awt.BasicStroke;
@@ -16,7 +17,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
@@ -111,7 +111,7 @@ public class MapCanvasPanel extends JPanel {
         mPlayerPosition = playerPosition;
 
         try {
-            bg = ImageIO.read(new File("img/b3.jpg"));
+            bg = ImageIO.read(ResourceLoader.getInstance().loadResource("img/b3.jpg"));
         } catch( IOException e ) {
             LOG.warning("Cannot load ending images: " + e);
         }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.game.ResourceLoader;
 import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.config.Config;
@@ -14,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -124,7 +124,7 @@ class EndingCanvasPanel extends JPanel {
         setBackground(Color.BLACK);  
         
         try {
-            Image bg = ImageIO.read(new File("img/ending.jpg"));
+            Image bg = ImageIO.read(ResourceLoader.getInstance().loadResource("img/ending.jpg"));
             g.drawImage(bg, 0, 0, null);
         } catch( IOException e ) {
             LOG.warning("Cannot load ending images: " + e);

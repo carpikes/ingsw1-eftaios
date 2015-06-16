@@ -1,11 +1,11 @@
 package it.polimi.ingsw.testgame;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
 
 import java.awt.Point;
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class TestGameMap {
      */
     @Test(expected=IOException.class)
     public void testCreateFromNonExistentFile() throws IOException {
-        GameMap.createFromMapFile( new File("testmaps/allyourbasearebelongtous.txt") );
+        GameMap.createFromMapFile( "testmaps/allyourbasearebelongtous.txt" );
     }
 
     /** Character not valid 
@@ -32,7 +32,7 @@ public class TestGameMap {
      */
     @Test(expected=NumberFormatException.class)
     public void testCreateFromFileCharacterNotValid() throws IOException {
-        GameMap.createFromMapFile( new File("testmaps/invalid_character.txt") );
+        GameMap.createFromMapFile( "testmaps/invalid_character.txt" );
     }
 
     /** Too many characters
@@ -41,7 +41,7 @@ public class TestGameMap {
      */
     @Test(expected=ArrayIndexOutOfBoundsException.class)
     public void testCreateFromFileTooManyLines() throws IOException {
-        GameMap.createFromMapFile( new File("testmaps/too_many_lines.txt") );
+        GameMap.createFromMapFile( "testmaps/too_many_lines.txt" );
     }
 
     /** Characters missing 
@@ -50,7 +50,7 @@ public class TestGameMap {
      */
     @Test(expected=SectorException.class)
     public void testCreateFromFileMissingSectors() throws IOException {
-        GameMap.createFromMapFile( new File("testmaps/missing_sectors.txt") );
+        GameMap.createFromMapFile( "testmaps/missing_sectors.txt" );
     }
 
     /** Get sector at
@@ -59,7 +59,7 @@ public class TestGameMap {
      */
     @Test
     public void TestGetSectorAt() throws IOException {
-        GameMap g = GameMap.createFromMapFile( new File("maps/fermi.txt") );
+        GameMap g = GameMap.createFromMapFile( "maps/fermi.txt" );
 
         assertEquals(g.getRemainingHatches(),4);
         assertTrue("First cell in 'Fermi' map is 0.", g.getSectorAt(0, 0).getId() == 0 );
@@ -71,7 +71,7 @@ public class TestGameMap {
      */
     @Test
     public void testPointToString() throws IOException {
-        GameMap g = GameMap.createFromMapFile( new File("maps/fermi.txt") );
+        GameMap g = GameMap.createFromMapFile( "maps/fermi.txt" );
         String a1 = g.pointToString(new Point(1,1)).trim();
         String a2 = "B002";
         assertTrue(a1.equals(a2));

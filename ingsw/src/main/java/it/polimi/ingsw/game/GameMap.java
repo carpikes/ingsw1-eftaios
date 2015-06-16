@@ -6,11 +6,12 @@ import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.awt.Point;
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -73,12 +74,21 @@ public class GameMap implements Serializable {
      * @return The map
      * @throws IOException File not found
      */
-    public static GameMap createFromMapFile( File file ) throws IOException {
+    public static GameMap createFromMapFile( String file ) throws IOException {
         Sector[][] sectors = new Sector[ROWS][COLUMNS];
         String title = null;
         Point human=null, alien=null;
 
-        List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+        InputStream is = ResourceLoader.getInstance().loadResource(file);
+        InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+        BufferedReader buf = new BufferedReader(isr);
+        List<String> lines = new ArrayList<>();
+        String s;
+        
+        while((s = buf.readLine()) != null)
+            lines.add(s);
+        
+        is.close();
         Iterator<String> iterator = lines.iterator();
 
         int i = 0, j = 0;
@@ -188,7 +198,7 @@ public class GameMap implements Serializable {
         if(!isValidMap(mapId))
             throw new InvalidMapIdException("Invalid map id");
 
-        return GameMap.createFromMapFile(new File(mMapFiles[mapId]));
+        return GameMap.createFromMapFile(mMapFiles[mapId]);
     }
 
     /** Return the cells within the specified range

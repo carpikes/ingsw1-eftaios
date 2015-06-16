@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -145,8 +146,9 @@ public class CardButton extends JButton {
         try {
             mType = type;
             
+            BufferedImage bImg = ImageIO.read( type.getImageFile() );
             /** change image */
-            setIcon( new ImageIcon( ImageIO.read( type.getImageFile() ) ) );
+            setIcon( new ImageIcon( bImg ) );
 
             /** no borders nor margins */
             setBorder(BorderFactory.createEmptyBorder());
