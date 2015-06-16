@@ -60,18 +60,31 @@ public class GameController implements OnReceiveListener {
 
     private int mCurPlayerId = 0;
     private boolean mHostDone = false;
+    
+    private String mArgsView, mArgsHost, mArgsConn;
 
     /** The constructor 
      *
      * @param args Main args
      */
     public GameController(String[] args) {
-
-        mView = determineView(args);
+        loadParams(args);
+        mView = determineView();
         mCommandQueue = new LinkedBlockingQueue<>();
         mViewQueue = new LinkedBlockingQueue<>();
 
         createViewCommandQueueThread();
+    }
+
+    private void loadParams(String[] args) {
+        if(args.length > 3)
+            return;
+        if(args.length >= 1)
+            mArgsView = args[0];
+        if(args.length >= 2)
+            mArgsConn = args[1];
+        if(args.length >= 3)
+            mArgsHost = args[2];
     }
 
     /** Create the thread responsible for getting new View Commands */
@@ -99,14 +112,14 @@ public class GameController implements OnReceiveListener {
      * @param args The view list
      * @return The temporary, initial view
      */
-    private View determineView(String[] args) {
+    private View determineView() {
         View tempView = null;
 
         String[] viewList = ViewFactory.getViewList();
-        if(args.length == 1) {
+        if(mArgsView != null && mArgsView.length() > 0) {
             for(int i = 0; i < viewList.length; i++) {
                 String v = viewList[i];
-                if(v.equalsIgnoreCase(args[0])) {
+                if(v.equalsIgnoreCase(mArgsView)) {
                     tempView = ViewFactory.getView( this, i );
                     break;
                 }
@@ -187,13 +200,18 @@ public class GameController implements OnReceiveListener {
      * @throws IOException
      */
     private void setupHost() throws IOException {
-        String host;
-        do {
-            host = mView.askHost();
-        } while( host == null || host.trim().length() == 0);
-
-        mConn.setHost(host.trim());
-        mConn.connect();
+        if(mArgsHost != null && mArgsHost.length() > 0) {
+            mConn.setHost(mArgsHost);
+            mConn.connect();
+            mArgsHost = null;
+        } else {
+            String host;
+            do {
+                host = mView.askHost();
+            } while( host == null || host.trim().length() == 0);
+            mConn.setHost(host.trim());
+            mConn.connect();
+        }
     }
 
     /** Ask for a connection type
@@ -201,12 +219,24 @@ public class GameController implements OnReceiveListener {
      * @return Whether this choice was successful or not
      */
     private boolean setupConnection() {
+        
+        mConn = null;
         String[] connList = ConnectionFactory.getConnectionList();
-        int conn = mView.askConnectionType(connList);
-        mConn = ConnectionFactory.getConnection(conn);
-        if(mConn == null)
-            return false;
-
+        if(mArgsConn != null && mArgsConn.length() > 0) {
+            for(int i = 0; i < connList.length; i++)
+                if(connList[i].equalsIgnoreCase(mArgsConn)) {
+                    mConn = ConnectionFactory.getConnection(i);
+                    break;
+                }
+        }
+        
+        if(mConn == null) {
+            int conn = mView.askConnectionType(connList);
+            mConn = ConnectionFactory.getConnection(conn);
+            if(mConn == null)
+                return false;
+        }
+        
         mConn.setOnReceiveListener(this);
         
         return true;
