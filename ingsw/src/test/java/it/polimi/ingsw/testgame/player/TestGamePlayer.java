@@ -16,6 +16,7 @@ import java.awt.Point;
 import org.junit.Test;
 
 /** Test GamePlayer
+ * 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 2 Jun 2015

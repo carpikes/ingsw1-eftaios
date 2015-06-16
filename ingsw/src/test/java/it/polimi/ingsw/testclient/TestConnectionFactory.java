@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.polimi.ingsw.testclient;
 
 import static org.junit.Assert.assertTrue;
@@ -10,8 +7,10 @@ import it.polimi.ingsw.client.network.TCPConnection;
 
 import org.junit.Test;
 
-/**
- * @author Michele Albanese <michele.albanese93@gmail.com>
+/** Test Connection Factory
+ * 
+ * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
+ * @author Michele Albanese (michele.albanese93@gmail.com)
  * @since 16 Jun 2015
  */
 public class TestConnectionFactory {
