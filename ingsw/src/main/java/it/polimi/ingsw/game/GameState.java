@@ -240,9 +240,11 @@ public class GameState {
 
         if( !mOutputQueue.isEmpty() ) {
             for( Map.Entry<Integer, GameCommand> pkt : mOutputQueue )
+                // broadcast message
                 if(pkt.getKey().equals(-1))
                     mManager.broadcastPacket(pkt.getValue());
                 else
+                    // unicast message
                     mManager.sendDirectPacket(pkt.getKey(), pkt.getValue());
 
             mOutputQueue.clear();

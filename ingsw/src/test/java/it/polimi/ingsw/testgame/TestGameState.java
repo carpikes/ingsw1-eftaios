@@ -3,11 +3,15 @@ package it.polimi.ingsw.testgame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import it.polimi.ingsw.exception.DebugException;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
+import it.polimi.ingsw.exception.InvalidMapIdException;
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.GameState.LastThings;
 import it.polimi.ingsw.game.card.dangerous.DangerousCard;
 import it.polimi.ingsw.game.card.dangerous.NoiseInAnySectorCard;
 import it.polimi.ingsw.game.card.object.AttackCard;
+import it.polimi.ingsw.game.card.object.DefenseCard;
 import it.polimi.ingsw.game.common.GameCommand;
 import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.GameOpcode;
@@ -91,10 +95,41 @@ public class TestGameState {
         GameState game = new GameState(gm, 1);
         assertFalse(game.isDebugModeEnabled());
         
-        game.clearOutputQueue();
         game.flushOutputQueue();
         game.update();
+        
+        // Check if at least 1 packet has arrived
+        GameCommand cmd = ((ServerToClientMock)c1).getPacketFromList();
+        assertTrue(  cmd != null );
+        
+        game.clearOutputQueue();
+        assertTrue( game.getPacketFromQueue() == null );
     }
+    
+    /**
+     * Check if an invalid map exception is thrown when loading a fake map
+     */
+    @Test(expected=InvalidMapIdException.class)
+    public void testRealConstructorMissingMap() {
+        GameManager gm = new GameManager();
+        ClientConn c1 = new ServerToClientMock();
+        ClientConn c2 = new ServerToClientMock();
+        c1.run();
+        c2.run();
+        gm.addPlayer(new Client(c1, gm));
+        gm.addPlayer(new Client(c2, gm));
+        
+        GameState game = new GameState(gm, 50000);
+    }
+    
+    /**
+     * Check if the class prevents you from using debug functionalities when not in debug mode
+     */
+    @Test(expected=DebugException.class)
+    public void testDebugConstructorError() {
+        GameState gm = new GameState("NO", 0, 0, 0, false);
+    }
+       
     
     /**
      * Check if server acknowledges a wrong position
@@ -203,6 +238,47 @@ public class TestGameState {
         game.update();
 
         assertTrue( findGameCommandInQueue(game, InfoOpcode.INFO_PLAYER_ATTACKED) );
+    }
+    
+    @Test
+    public void testLastThingAfterKillingHuman() {
+        /** play as an alien till reaching move done state */
+        GameState game = this.playToMoveDoneState(true, false, true);
+        
+        // Set a defense card, simulate its effects for the enemy and move to the same sector
+        int enemyId = ( game.getCurrentPlayer().getId() == 0 ) ? 1 : 0;
+        game.debugGetPlayer(enemyId).setCurrentPosition( game.getCurrentPlayer().getCurrentPosition() );
+        game.update();
+        
+        // try to attack
+        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_ATTACK) );
+        clearMessageQueue(game);
+        game.update();
+        
+        assertTrue( game.debugGetLastThingDid() == LastThings.KILLED_HUMAN );
+    }
+    
+    @Test
+    public void testDefendedAttack() {
+        /** play as an alien till reaching move done state */
+        GameState game = this.playToMoveDoneState(true, false, true);
+        
+        // Set a defense card, simulate its effects for the enemy and move to the same sector
+        int enemyId = ( game.getCurrentPlayer().getId() == 0 ) ? 1 : 0;
+        game.debugGetPlayer(enemyId).addObjectCard( new DefenseCard(game, "Defense") );
+        game.debugGetPlayer(enemyId).setDefense(true);
+        game.debugGetPlayer(enemyId).setCurrentPosition( game.getCurrentPlayer().getCurrentPosition() );
+        game.update();
+        
+        assertTrue( game.debugGetPlayer(enemyId).getNumberOfCards() == 1 && game.debugGetPlayer(enemyId).getNamesOfCards()[0].equals("Defense") );
+        
+        // try to attack
+        game.enqueuePacket( new GameCommand(GameOpcode.CMD_CS_ATTACK) );
+        clearMessageQueue(game);
+        game.update();
+        
+        // defense card dropped!
+        assertTrue( game.debugGetPlayer(enemyId).getNumberOfCards() == 0 );
     }
 
     /**
@@ -379,8 +455,44 @@ public class TestGameState {
         game.setLastThingDid(GameState.LastThings.GONE_OFFLINE);
         assertEquals(game.debugGetLastThingDid(),GameState.LastThings.GONE_OFFLINE);
     }
-       
+        
+    /** Check if number of players in sector() gives the right value in a blank sector
+     * 
+     */
+    @Test
+    public void testNumberOfPlayersInSector() {
+        GameState game = new GameState("YES", MAP_ID, NUMBER_OF_PLAYERS, START_ID, true);
 
+        /** move to moving state */
+        game.update();
+
+        /** drop previous messages */
+        clearMessageQueue(game);
+
+        assertTrue( game.getNumberOfPlayersInSector( new Point(0, 2) ) == 0);
+    }
+    
+    /** Test if the game manager sets this game to not runnning after only one player remained
+     * 
+     */
+    @Test
+    public void testEndGameAfterDisconnect() {
+        GameManager gm = new GameManager();
+        ClientConn c1 = new ServerToClientMock();
+        ClientConn c2 = new ServerToClientMock();
+        c1.run();
+        c2.run();
+        gm.addPlayer(new Client(c1, gm));
+        gm.addPlayer(new Client(c2, gm));
+        
+        GameState game = new GameState(gm, 1);
+        game.update();
+        
+        c1.disconnect();
+        game.update();
+        assertFalse( gm.isRunning() );
+    }
+       
     /*----- END OF TESTS ----- */
 
     /**
