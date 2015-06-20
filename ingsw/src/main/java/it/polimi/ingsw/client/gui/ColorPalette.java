@@ -19,7 +19,7 @@ public enum ColorPalette {
     USED_HATCH       (new Color(178,100,100)),
     HUMAN            (new Color(50,0,0)),
     STROKE           (Color.DARK_GRAY),
-
+    USERNAME_ON_BOARD(Color.WHITE),
     NOT_VALID        (null),
 
     /** blinking colors */

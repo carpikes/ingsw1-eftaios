@@ -18,8 +18,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimerTask;
 import java.util.logging.Logger;
@@ -79,6 +81,7 @@ public class MapCanvasPanel extends JPanel {
 
     /** Spotlight sectors */
     private transient Map<String, Point> mSpotlightSectors = null;
+    private transient Map<Point, Integer> mFrequenciesForSpotlightPoints = null;
 
     /** Attack point */
     private Point mAttackPoint = null;
@@ -259,7 +262,34 @@ public class MapCanvasPanel extends JPanel {
         g2d.setStroke(new BasicStroke(2f));
         synchronized(mRenderLoopMutex) {
             drawHexagons(g2d);
+            
+            // write usernames when spotlight is on
+            if( mSpotlightSectors != null ) {
+                writeUsernamesOnBoard( g2d );
+            }
         }
+    }
+
+    /** Write usernames when spotlight is invoked
+     * @param g2d The graphics controller
+     */
+    private void writeUsernamesOnBoard(Graphics2D g2d) {
+        
+        // for each point, get counter
+        for (Entry<Point, Integer> freqEntry : mFrequenciesForSpotlightPoints.entrySet())
+        {
+            Point p = freqEntry.getKey();
+            int counter = freqEntry.getValue();
+            
+            int i = 0;
+            for (Entry<String, Point> entry : this.mSpotlightSectors.entrySet()) {
+                if( entry.getValue().equals(p) ) {
+                    mHexagons[p.y][p.x].writeUsername( g2d, entry.getKey(), i );
+                    i++;
+                }
+            }
+        }
+        
     }
 
     /** Draw all hexagons, called by paintComponent().
@@ -424,6 +454,7 @@ public class MapCanvasPanel extends JPanel {
                 mNoisePosition = null;
                 mSpotlightSectors = null;
                 mAttackPoint = null;
+                mFrequenciesForSpotlightPoints = null;
             }
         }, duration);
     }
@@ -434,6 +465,19 @@ public class MapCanvasPanel extends JPanel {
      */
     public void setSpotlightData(Map<String, Point> data) {
         mSpotlightSectors = data;
+        
+        Map<Point, Integer> result = new HashMap<Point, Integer>();
+        
+        for (Entry<String, Point> entry : mSpotlightSectors.entrySet()) {
+           Point value = entry.getValue();
+           Integer count = result.get(value);
+           if (count == null)
+              result.put(value, new Integer(1));
+           else
+              result.put(value, new Integer(count+1));
+        }
+        
+        mFrequenciesForSpotlightPoints = result;
     }
 
     /** Set the blinking sector for an attack

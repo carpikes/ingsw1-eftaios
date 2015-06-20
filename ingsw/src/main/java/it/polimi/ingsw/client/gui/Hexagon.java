@@ -111,4 +111,19 @@ public class Hexagon {
             g2d.draw(getPath());
         }
     }
+
+    /**Write a name on the cell lit by a spotlight card
+     * @param g2d The graphics controller
+     * @param username The username you are writing
+     * @param currentWriting The number of string you are writing here
+     */
+    public void writeUsername( Graphics2D g2d, String username, int currentWriting ) {
+        if( g2d == null || username == null )
+            return;
+        
+        Color color = ColorPalette.USERNAME_ON_BOARD.getColor();
+        g2d.setColor(color);
+        
+        g2d.drawString(username, (int) (getCenter().x - this.getSize()/2), getCenter().y - 5 + currentWriting * 15);
+    }
 }
