@@ -14,6 +14,7 @@ import it.polimi.ingsw.game.common.InfoOpcode;
 import it.polimi.ingsw.game.common.Opcode;
 import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.common.ViewCommand;
+import it.polimi.ingsw.game.config.Config;
 
 import java.awt.Point;
 import java.io.IOException;
@@ -629,7 +630,7 @@ public class GameController implements OnReceiveListener {
      */
     private void handleChooseUser(String msg) {
         do {
-            mMyUsername = mView.askUsername("".equals(msg)?"Choose a username":msg);
+            mMyUsername = mView.askUsername("".equals(msg)?"Choose a username (Max " + Config.MAX_USERNAME_LENGTH + " chars)":msg);
             if(mMyUsername != null)
                 mMyUsername = mMyUsername.trim();
         } while(mMyUsername == null || mMyUsername.length() == 0);

@@ -17,6 +17,9 @@ public class Config {
 
     /** Players waiting secs (default: 30) */
     public static final int GAME_WAITING_SECS               = 30;
+    
+    /** Max username length */
+    public static int MAX_USERNAME_LENGTH                   = 10;
 
     /** Max seconds per turn */
     public static final int GAME_MAX_SECONDS_PER_TURN       = 120;

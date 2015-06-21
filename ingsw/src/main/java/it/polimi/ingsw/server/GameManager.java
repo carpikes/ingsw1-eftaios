@@ -65,13 +65,13 @@ public class GameManager {
 
         mClients.add(client);
         client.sendPacket(new GameCommand(CoreOpcode.CMD_SC_TIME, (Integer) getRemainingLoginTime()));
-        client.sendPacket(CoreOpcode.CMD_SC_CHOOSEUSER);
         broadcastPacket(new GameCommand(CoreOpcode.CMD_SC_STAT, (Integer) mClients.size()));
 
         /** @first client: ask for map*/
         if(mClients.size() == 1)
             askForMap(client);
 
+        client.sendPacket(CoreOpcode.CMD_SC_CHOOSEUSER);
         return true;
     }
 
@@ -131,7 +131,7 @@ public class GameManager {
         if(name == null)
             return false;
 
-        if(name.length() > 32)
+        if(name.length() > Config.MAX_USERNAME_LENGTH)
             return false;
 
         for(Client c : mClients) {

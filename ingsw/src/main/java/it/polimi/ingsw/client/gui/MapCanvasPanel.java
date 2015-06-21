@@ -279,7 +279,6 @@ public class MapCanvasPanel extends JPanel {
         for (Entry<Point, Integer> freqEntry : mFrequenciesForSpotlightPoints.entrySet())
         {
             Point p = freqEntry.getKey();
-            int counter = freqEntry.getValue();
             
             int i = 0;
             for (Entry<String, Point> entry : this.mSpotlightSectors.entrySet()) {
