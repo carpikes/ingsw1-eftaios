@@ -162,14 +162,17 @@ public class GameController implements OnReceiveListener {
         mView.startup();
         
         /** handle connection */
-        setupConnection();
+        if(!setupConnection()) {
+            System.exit(0);
+            return;
+        }
         
         /** handle host */
         do {
             try {
                 setupHost();
                 
-                while(!mConn.isOnline()) 
+                while(mConn != null && !mConn.isOnline()) 
                     Thread.sleep(100);
                 
                 mHostDone = true;
@@ -181,6 +184,9 @@ public class GameController implements OnReceiveListener {
             }    
         } while( !mHostDone  );
 
+        if(mStopEvent)
+            return;
+        
         /** starts the view */
         mView.run();
 
@@ -208,15 +214,20 @@ public class GameController implements OnReceiveListener {
     private void setupHost() throws IOException {
         if(mArgsHost != null && mArgsHost.length() > 0) {
             mConn.setHost(mArgsHost);
-            mConn.connect();
             mArgsHost = null;
+            mConn.connect();
         } else {
             String host;
             do {
                 host = mView.askHost();
-            } while( host == null || host.trim().length() == 0);
-            mConn.setHost(host.trim());
-            mConn.connect();
+            } while( host != null && host.trim().length() == 0);
+            
+            if(host != null) {
+                mConn.setHost(host.trim());
+                mConn.connect();
+            } else {
+                System.exit(0);
+            }
         }
     }
 
@@ -232,6 +243,7 @@ public class GameController implements OnReceiveListener {
             for(int i = 0; i < connList.length; i++)
                 if(connList[i].equalsIgnoreCase(mArgsConn)) {
                     mConn = ConnectionFactory.getConnection(i);
+                    mArgsConn = null;
                     break;
                 }
         }
@@ -668,7 +680,8 @@ public class GameController implements OnReceiveListener {
     /** Stop the game */
     public void stop() {
         mStopEvent = true;
-        mConn.disconnect();
+        if(mConn != null)
+            mConn.disconnect();
     }
 
     /** Return current loaded map

@@ -93,7 +93,11 @@ public class CLIView extends View {
     @Override
     public int askConnectionType(String[] params) {
         IO.write("Which connection do you want to use?");
-        return IO.askInAList(params, false);
+        Integer i = IO.askInAList(params, false);
+        if(i == null)
+            return -1;
+        
+        return i;
     }
 
     /** Ask for a username
