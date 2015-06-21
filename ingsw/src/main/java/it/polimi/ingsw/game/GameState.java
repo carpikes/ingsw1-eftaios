@@ -338,7 +338,7 @@ public class GameState {
         /** set the player as full if he has an alien role */
         if( !killedPlayers.isEmpty() ) {
             GamePlayer player = getCurrentPlayer();
-            if( player.isAlien() ) {
+            if( player.isAlien() && mLastThing == LastThings.KILLED_HUMAN) {
                 player.setFull(true);
                 broadcastPacket(new GameCommand(InfoOpcode.INFO_ALIEN_FULL));
             }
