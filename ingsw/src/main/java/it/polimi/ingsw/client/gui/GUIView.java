@@ -362,5 +362,14 @@ public class GUIView extends View {
     public void handleAttack(String user, Point p) {
         mMainFrame.handleAttack( p );
     }
+
+    /** Show ending
+     * @see it.polimi.ingsw.client.View#showEnding(java.lang.String)
+     * @param string The string
+     */
+    @Override
+    public void showEnding(String string) {
+        mMainFrame.showEnding(string);
+    }
   
 }

@@ -69,7 +69,9 @@ class ServerTCP implements Listener {
             }
             mServer.close();
         } catch(IOException e){
-            LOG.log(Level.SEVERE, "TCP Server is down: " + e.toString(), e);
+            LOG.log(Level.SEVERE, "TCP Server is down: " + e.toString());
+            LOG.log(Level.FINEST, "", e);
+            Server.getInstance().tearDown();
         }
     }
 

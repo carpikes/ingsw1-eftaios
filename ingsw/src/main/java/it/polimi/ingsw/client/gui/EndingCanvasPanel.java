@@ -57,6 +57,9 @@ class EndingCanvasPanel extends JPanel {
     /** Game info container */
     private GameInfo mGameInfo;
     
+    /** String to show */
+    private String mString;
+    
     /** Create the final panel
      * @param gameInfo The local game info 
      * @param winnerList The list of winners' id
@@ -71,6 +74,11 @@ class EndingCanvasPanel extends JPanel {
         mWinnerList = winnerList;
         mLoserList = loserList;
         
+        buildPanel();
+    }
+
+    /** Initialize this panel */
+    private void buildPanel() {
         /** create fonts */
         mBigFont = new Font( Config.DEFAULT_FONT, Font.PLAIN, Config.BIG_FONT_SIZE);
         mMediumFont = new Font( Config.DEFAULT_FONT, Font.PLAIN, Config.MEDIUM_FONT_SIZE);
@@ -87,7 +95,21 @@ class EndingCanvasPanel extends JPanel {
             }
 
         }).start();
+    }
+    
+    /** Create the final panel
+     * @param gameInfo The local game info 
+     * @param string String to show
+     */
+    public EndingCanvasPanel( GameInfo gameInfo, String string ) {
+        
+        mGameInfo = gameInfo;
 
+        mString = string;
+        mWinnerList = null;
+        mLoserList = null;
+        
+        buildPanel();
     }
 
 
@@ -133,20 +155,26 @@ class EndingCanvasPanel extends JPanel {
         setForeground(Color.WHITE);
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        /** The title */
-        String title = (mIsWinner) ? "YOU WIN!" : "YOU LOSE!";
         
         int nextY = 20;
-        nextY = drawRightAligned(g2d, mBigFont, title,nextY);
         
-        /** list of winners  */
-        nextY = drawRightAligned(g2d, mMediumFont, "Winners:", nextY + 80);
-        nextY = writePlayers( g2d, nextY, mWinnerList );
+        if(mWinnerList != null && mLoserList != null) {
+            /** The title */
+            String title = (mIsWinner) ? "YOU WIN!" : "YOU LOSE!";
         
-        /** list of losers */
-        nextY = drawRightAligned(g2d, mMediumFont, "Losers:", nextY + 40);
-        nextY = writePlayers( g2d, nextY, mLoserList );
+            
+            nextY = drawRightAligned(g2d, mBigFont, title,nextY);
+            
+            /** list of winners  */
+            nextY = drawRightAligned(g2d, mMediumFont, "Winners:", nextY + 80);
+            nextY = writePlayers( g2d, nextY, mWinnerList );
+            
+            /** list of losers */
+            nextY = drawRightAligned(g2d, mMediumFont, "Losers:", nextY + 40);
+            nextY = writePlayers( g2d, nextY, mLoserList );
+        } else {
+            drawRightAligned(g2d, mBigFont, mString, nextY);
+        }
     }
 
     /** Draw a string to the right of the screen

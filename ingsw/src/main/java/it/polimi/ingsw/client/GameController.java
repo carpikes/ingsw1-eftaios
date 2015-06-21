@@ -666,7 +666,8 @@ public class GameController implements OnReceiveListener {
      */
     @Override
     public void onDisconnect() {
-        mStopEvent = true;
+        if(!mStopEvent)
+            stop();
     }
 
     /** Check if the game is still running
@@ -682,6 +683,8 @@ public class GameController implements OnReceiveListener {
         mStopEvent = true;
         if(mConn != null)
             mConn.disconnect();
+        if(mView != null)
+            mView.showEnding("Connection closed");
     }
 
     /** Return current loaded map

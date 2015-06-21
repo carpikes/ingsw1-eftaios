@@ -63,7 +63,7 @@ public class GUIFrame extends JFrame {
     /** Drawing canvas on the left */
     private MapCanvasPanel mMapCanvas;
     private LoginCanvasPanel mLoginCanvas;
-    private EndingCanvasPanel mEndingCanvas;
+    private EndingCanvasPanel mEndingCanvas = null;
     
     /** elements on right panel */
     private static final int NUMBER_OF_CARD_BUTTONS = Config.MAX_NUMBER_OF_OBJ_CARDS + 1;
@@ -78,6 +78,8 @@ public class GUIFrame extends JFrame {
     private JLabel[] mUserLabel;
 
     private GameInfo mGameInfo = null;
+
+    private boolean mAlreadyEnd = false;
 
     /** Create the main frame
      *
@@ -505,13 +507,20 @@ public class GUIFrame extends JFrame {
      * @param loserList The list of all losers' id
      */
     public void showEnding(List<Integer> winnerList, List<Integer> loserList) {
-        mEndingCanvas = new EndingCanvasPanel(mGameInfo, winnerList, loserList);
-        mEndingCanvas.setPreferredSize(mDimensionLeftPanel);
+        mAlreadyEnd = true;
 
         /** SWING FUCK*NG BUG: DO NOT USE REMOVE ALL()! */
-        remove( mMapCanvas );
-        remove( mBottomPanel );
-        remove( mRightPanel );
+        try {
+            remove( mMapCanvas );
+            remove( mBottomPanel );
+            remove( mRightPanel );
+            if(mEndingCanvas != null)
+                remove( mEndingCanvas );
+        } catch(Exception e) {
+            LOG.log(Level.FINEST, "", e);
+        }
+        mEndingCanvas = new EndingCanvasPanel(mGameInfo, winnerList, loserList);
+        mEndingCanvas.setPreferredSize(mDimensionLeftPanel);
         
         add( mEndingCanvas, BorderLayout.CENTER );
         
@@ -533,6 +542,37 @@ public class GUIFrame extends JFrame {
      */
     public void handleAttack(Point p) {
         mMapCanvas.handleAttack( p );
+    }
+
+
+    /** Show ending
+     * @param string The string
+     */
+    public void showEnding(String string) {
+        if(mAlreadyEnd || mEndingCanvas != null)
+            return;
+        mAlreadyEnd = true;
+        
+        mEndingCanvas = new EndingCanvasPanel(mGameInfo, string);
+        mEndingCanvas.setPreferredSize(mDimensionLeftPanel);
+
+        /** SWING FUCK*NG BUG: DO NOT USE REMOVE ALL()! */
+        try {
+            remove( mLoginCanvas );
+        } catch(Exception e) {
+            LOG.log(Level.FINEST, "", e);
+        }
+        try {
+            remove( mMapCanvas );
+            remove( mBottomPanel );
+            remove( mRightPanel );
+        } catch(Exception e) {
+            LOG.log(Level.FINEST, "", e);
+        }
+        add( mEndingCanvas, BorderLayout.CENTER );
+        
+        validate();
+        repaint();
     }
 
 }

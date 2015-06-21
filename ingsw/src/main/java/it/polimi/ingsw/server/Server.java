@@ -177,6 +177,15 @@ public class Server {
         if(!dDebugMode) {
             for(Listener server : mServers)
                 server.tearDown();
+            
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                LOG.log(Level.FINER, e.toString(), e);
+            }
+            
+            // Force exit
+            System.exit(0);
         }
     }
 

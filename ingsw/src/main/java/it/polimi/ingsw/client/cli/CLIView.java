@@ -455,4 +455,13 @@ public class CLIView extends View {
     public void handleAttack(String user, Point p) {
         showInfo(user, "Player just attacked in sector " + mContainer.getMap().pointToString(p));
     }
+
+    /** Show ending
+     * @see it.polimi.ingsw.client.View#showEnding(java.lang.String)
+     * @param string The string
+     */
+    @Override
+    public void showEnding(String string) {
+       IO.write(string);
+    }
 }

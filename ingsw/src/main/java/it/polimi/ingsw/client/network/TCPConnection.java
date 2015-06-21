@@ -125,7 +125,7 @@ public class TCPConnection extends Connection {
 
     /** Disconnect */
     @Override
-    public synchronized void disconnect() {
+    public void disconnect() {
         if(mListener != null)
             mListener.onDisconnect();
         if(mSocket != null && mSocket.isConnected())
@@ -174,7 +174,7 @@ public class TCPConnection extends Connection {
                         mListener.onReceive((GameCommand) obj);
                 }
             } catch (Exception e) {
-                LOG.log(Level.FINER, "Connection closed:" + e.toString(), e);
+                LOG.log(Level.FINE, "Connection closed:" + e.toString(), e);
             } finally {
                 mParent.disconnect();
             }

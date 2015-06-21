@@ -49,7 +49,9 @@ public class ServerRMI implements Listener, ServerRMIMask {
         try {
             handleRMIInit();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "RMI server is down: " + e.toString(), e);
+            LOG.log(Level.SEVERE, "RMI server is down: " + e.toString());
+            LOG.log(Level.FINEST, "", e);
+            Server.getInstance().tearDown();
         }
     }
 
