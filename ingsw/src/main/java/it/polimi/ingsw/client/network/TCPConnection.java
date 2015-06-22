@@ -133,7 +133,7 @@ public class TCPConnection extends Connection {
                 mOut.close();
                 mIn.close();
                 mSocket.close();                
-            } catch(IOException e) {
+            } catch(Exception e) {
                 LOG.log(Level.FINER, e.toString(), e);
             }
         mSocket = null;
