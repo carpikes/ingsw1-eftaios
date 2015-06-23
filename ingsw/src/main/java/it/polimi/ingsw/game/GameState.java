@@ -463,7 +463,7 @@ public class GameState {
         for(int i = 0; i < mPlayers.size(); i++) {
             GamePlayer player = mPlayers.get(i);
             caughtPlayers[i] = null;
-            if(sectors.contains( player.getCurrentPosition()))
+            if( player.stillInGame() && sectors.contains( player.getCurrentPosition() ))
                 caughtPlayers[i] = player.getCurrentPosition();
         }
 
