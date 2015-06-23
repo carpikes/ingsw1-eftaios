@@ -595,5 +595,13 @@ public class GUIFrame extends JFrame {
         endTurnAction();
     }
 
+
+    /** Click automatically on draw dangerous card button when it is the only option left
+     * 
+     */
+    public void clickOnDrawDangerousCard() {
+        mController.drawDangerousCard();
+    }
+
 }
 

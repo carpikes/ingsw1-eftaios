@@ -173,8 +173,11 @@ public class GUIView extends View {
         resetViewStatus();
 
         // end turn automatically if the only option possible is End Turn
-        if( cmd.size() == 1 && cmd.get(0).getOpcode() == ViewOpcode.CMD_ENDTURN)
-            mMainFrame.clickOnEndTurn();
+        if( cmd.size() == 1 && cmd.get(0).getOpcode() == ViewOpcode.CMD_ENDTURN )
+                mMainFrame.clickOnEndTurn();
+        // draw a dangerous card automatically if this is the only option left
+        else if( cmd.size() == 1 && cmd.get(0).getOpcode() == ViewOpcode.CMD_DRAWDANGEROUSCARD ) 
+                mMainFrame.clickOnDrawDangerousCard();
         else {
             // enable a gui element if requested by a command
             for(ViewCommand c : cmd) {
@@ -306,6 +309,7 @@ public class GUIView extends View {
     @Override
     public void onOtherTurn(String username) {
         mMainFrame.resetBlinkingElements();
+        mMainFrame.resetViewStatus();
         mMainFrame.showInfo( null, "-- It's " + username + "'s turn! --" );
     }
 
