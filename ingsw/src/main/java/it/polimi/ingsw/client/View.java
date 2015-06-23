@@ -158,4 +158,9 @@ public abstract class View {
      * @param point The coordinates of the points to be changed
      */
     public abstract void changeSectorToUsedHatch(Point point);
+
+    /** Set current position in this view
+     * @param p The position point
+     */
+    public abstract void setPosition(Point p);
 }

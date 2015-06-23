@@ -444,6 +444,9 @@ public class GameState {
     public void rawMoveTo(GamePlayer player, Point dest) {
         if( getMap().isWithinBounds(dest) && !player.getCurrentPosition().equals(dest) ) {
             player.setCurrentPosition(dest);
+            
+            // update remote position on view
+            sendPacketToCurrentPlayer( new GameCommand(GameOpcode.CMD_SC_UPDATE_POSITION, dest) );
             broadcastPacket( InfoOpcode.INFO_HAS_MOVED );
         }
     }

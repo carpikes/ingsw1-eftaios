@@ -51,4 +51,10 @@ public enum InfoOpcode implements Opcode {
 
     /** Alien is full */
     INFO_ALIEN_FULL, 
+    
+    /** A broken hatch has been used */
+    INFO_RED_HATCH, 
+    
+    /** A working hatch has been used */
+    INFO_GREEN_HATCH
 }

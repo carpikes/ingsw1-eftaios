@@ -473,4 +473,12 @@ public class CLIView extends View {
     public void changeSectorToUsedHatch(Point point) {
        // unused           
     }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#setPosition(java.awt.Point)
+     */
+    @Override
+    public void setPosition(Point p) {
+        // unused: current position updated only when you have to choose a position
+    }
 }

@@ -41,4 +41,6 @@ public enum GameOpcode implements Opcode{
     CMD_SC_LOSE,
     /** Win */
     CMD_SC_WIN,
+    /** Update position */
+    CMD_SC_UPDATE_POSITION
 }

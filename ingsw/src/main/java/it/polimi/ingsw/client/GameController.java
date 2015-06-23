@@ -303,7 +303,8 @@ public class GameController implements OnReceiveListener {
             case CMD_SC_MOVE_INVALID:
                 mView.showError("Invalid move");
                 break;
-                
+            case CMD_SC_UPDATE_POSITION:
+                handleUpdatePosition(obj);
             case CMD_SC_DROP_CARD:
                 handleDropCard(obj);
                 break;
@@ -315,6 +316,15 @@ public class GameController implements OnReceiveListener {
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * @param obj
+     */
+    private void handleUpdatePosition(Object obj) {
+        if(obj != null && obj instanceof Point) {
+            mView.setPosition( (Point) obj );
         }
     }
 
@@ -405,6 +415,13 @@ public class GameController implements OnReceiveListener {
             case INFO_USED_HATCH:
                 handleInfoUsedHatch(cmd, curUser);
                 break;
+            case INFO_RED_HATCH:
+                mView.showInfo(curUser, "Trying to use a broken hatch. Sorry for that.");
+                break;
+                
+            case INFO_GREEN_HATCH:
+                mView.showInfo(curUser, "Got a good hatch finally!");
+                break;
             case INFO_WINNER:
                 mView.showInfo(curUser, "This player won the game!");
                 break;
@@ -424,7 +441,6 @@ public class GameController implements OnReceiveListener {
     private void handleInfoUsedHatch(GameCommand cmd, String curUser) {
         if(cmd.getArgs().length == 1 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Point) {
             mGameInfo.getMap().useHatch((Point) cmd.getArgs()[0]);
-            mView.showInfo(curUser, "Used a hatch");
             mView.changeSectorToUsedHatch( (Point) cmd.getArgs()[0] );
         }
     }

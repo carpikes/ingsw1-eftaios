@@ -393,5 +393,13 @@ public class GUIView extends View {
         mMainFrame.changeSectorToUsedHatch(point);
         
     }
+
+    /** Change position on GUI
+     * @see it.polimi.ingsw.client.View#setPosition(java.awt.Point)
+     */
+    @Override
+    public void setPosition(Point p) {
+        mMainFrame.setPlayerPosition(p);
+    }
   
 }

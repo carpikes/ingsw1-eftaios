@@ -1,6 +1,8 @@
 package it.polimi.ingsw.game.card.hatch;
 
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.game.common.InfoOpcode;
 import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
 
@@ -24,6 +26,7 @@ public class RedHatchCard extends HatchCard {
     /** Return a new EndingTurnState */
     @Override
     public PlayerState getNextState() {
+        mGameState.broadcastPacket( new GameCommand( InfoOpcode.INFO_RED_HATCH ) );
         return new NotMyTurnState(mGameState);
     }
 
