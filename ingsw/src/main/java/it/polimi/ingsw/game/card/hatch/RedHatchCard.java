@@ -25,7 +25,7 @@ public class RedHatchCard extends HatchCard {
 
     /** Return a new EndingTurnState */
     @Override
-    public PlayerState getNextState() {
+    public PlayerState doAction() {
         mGameState.broadcastPacket( new GameCommand( InfoOpcode.INFO_RED_HATCH ) );
         return new NotMyTurnState(mGameState);
     }

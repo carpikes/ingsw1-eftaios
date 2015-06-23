@@ -368,6 +368,7 @@ public class CLIView extends View {
      */
     @Override
     public void showEnding(List<Integer> winnerList, List<Integer> loserList) {
+        IO.write("");
         IO.write("*******************");
         IO.write("**    THE END    **");
         IO.write("*******************\n");
@@ -389,6 +390,7 @@ public class CLIView extends View {
                 IO.write(" -> " + mContainer.getPlayersList()[i].getUsername());
             }
         }
+        IO.write("");
         
         mController.stop();
         System.exit(0);

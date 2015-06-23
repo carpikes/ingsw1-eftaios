@@ -4,6 +4,7 @@ import it.polimi.ingsw.exception.DebugException;
 import it.polimi.ingsw.exception.DefenseException;
 import it.polimi.ingsw.exception.GameException;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
+import it.polimi.ingsw.game.card.CardBuilder;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 import it.polimi.ingsw.game.common.GameCommand;
@@ -96,6 +97,9 @@ public class GameState {
 
     /** [DEBUG] If != -1, set this player as next */
     private int dForceNextTurn = -1;
+
+    /** Object card builder */
+    private CardBuilder objCardBuilder = new ObjectCardBuilder();
 
     /** Constructs a new game.
      * 
@@ -256,7 +260,7 @@ public class GameState {
      */
     public PlayerState getObjectCard( ) {
         GamePlayer player = getCurrentPlayer();
-        ObjectCard newCard = ObjectCardBuilder.getRandomCard( this );
+        ObjectCard newCard = (ObjectCard) objCardBuilder.getRandomCard( this );
 
         PlayerState nextState;
 

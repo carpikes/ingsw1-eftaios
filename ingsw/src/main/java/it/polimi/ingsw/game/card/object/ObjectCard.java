@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game.card.object;
 
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.card.Card;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 
@@ -12,7 +13,7 @@ import it.polimi.ingsw.game.state.PlayerState;
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 23 May 2015
  */
-public abstract class ObjectCard {
+public abstract class ObjectCard implements Card {
 
     /** Game State */
     protected GameState mGameState;
@@ -42,6 +43,7 @@ public abstract class ObjectCard {
      *
      * @return Next state for the invoker
      */
+    @Override
     public abstract PlayerState doAction();
 
     /** Get the card name

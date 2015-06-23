@@ -2,6 +2,7 @@ package it.polimi.ingsw.game.card.object;
 
 import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.card.CardBuilder;
 import it.polimi.ingsw.game.common.Rand;
 
 /** Class for getting a random Object Card.
@@ -10,7 +11,7 @@ import it.polimi.ingsw.game.common.Rand;
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 2 Jun 2015
  */
-public class ObjectCardBuilder {
+public class ObjectCardBuilder implements CardBuilder {
     /** Number of object cards */
     public static final int OBJECT_CARD_TYPES = 6;
 
@@ -32,27 +33,24 @@ public class ObjectCardBuilder {
     /** Teleport Card */
     public static final int TELEPORT_CARD = 5;
 
-    /** Private Constructor */
-    private ObjectCardBuilder() {
-        /** Nothing here */
-    }
-
     /** Get a new random Object Card
      *
      * @param game Current GameState
      * @return The object card
      */
-    public static ObjectCard getRandomCard(GameState game) {
-        return idToObjectCard(Rand.nextInt(OBJECT_CARD_TYPES), game);
+    @Override
+    public ObjectCard getRandomCard(GameState game) {
+        return getCard(game, Rand.nextInt(OBJECT_CARD_TYPES));
     }
 
     /** Get an object card using the id
-     *
-     * @param id The given id
      * @param game Game State
+     * @param id The given id
+     *
      * @return The object card
      */
-    public static ObjectCard idToObjectCard(int id, GameState game) {
+    @Override
+    public ObjectCard getCard(GameState game, int id) {
         switch( id ) {
             case ADRENALINE_CARD:             return new AdrenalineCard(game, idToString(id));
             case ATTACK_CARD:                 return new AttackCard(game, idToString(id));

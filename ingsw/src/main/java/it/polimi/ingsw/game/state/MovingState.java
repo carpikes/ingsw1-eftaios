@@ -128,7 +128,7 @@ public class MovingState extends PlayerState {
         /** set current cell as no more accessible */
         mGameState.broadcastPacket( new GameCommand( InfoOpcode.INFO_USED_HATCH, mGamePlayer.getCurrentPosition() ) );
 
-        return HatchCardBuilder.getRandomCard(mGameState).getNextState( );
+        return new HatchCardBuilder().getRandomCard(mGameState).doAction( );
     }
 
     /** Is the player still in game?

@@ -102,7 +102,7 @@ public class MoveDoneState extends PlayerState {
      * @return A dangerous card
      */
     private PlayerState drawDangerousCard( ) {                
-        return DangerousCardBuilder.getRandomCard(mGameState).doAction( );
+        return new DangerousCardBuilder().getRandomCard(mGameState).doAction( );
     }
 
     /** Is the player still in game?

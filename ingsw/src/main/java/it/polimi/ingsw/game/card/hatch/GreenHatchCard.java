@@ -29,7 +29,7 @@ public class GreenHatchCard extends HatchCard {
      * @return Next player state
      */
     @Override
-    public PlayerState getNextState() {
+    public PlayerState doAction() {
         mGameState.setLastThingDid(LastThings.HUMAN_USED_HATCH);
         
         mGameState.broadcastPacket( new GameCommand( InfoOpcode.INFO_GREEN_HATCH ) );

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game.card.dangerous;
 
 import it.polimi.ingsw.game.GameState;
+import it.polimi.ingsw.game.card.Card;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 
@@ -9,7 +10,7 @@ import it.polimi.ingsw.game.state.PlayerState;
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 23 May 2015
  */
-public abstract class DangerousCard {
+public abstract class DangerousCard implements Card {
     /** Game state */
     protected GameState mGameState;
 
@@ -30,5 +31,6 @@ public abstract class DangerousCard {
      *
      * @return Next state for the player
      */
+    @Override
     public abstract PlayerState doAction();
 }

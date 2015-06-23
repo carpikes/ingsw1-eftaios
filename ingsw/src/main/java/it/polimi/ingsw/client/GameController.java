@@ -309,7 +309,7 @@ public class GameController implements OnReceiveListener {
                 handleDropCard(obj);
                 break;
             case CMD_SC_LOSE:
-                mView.showInfo(null, "YOU'VE JUST LOST THE GAME. <3");
+                mView.showInfo(null, "You've just lost the game. Better luck next time!");
                 break;
             case CMD_SC_WIN:
                 mView.showInfo(null, "You won! Congrats!");
