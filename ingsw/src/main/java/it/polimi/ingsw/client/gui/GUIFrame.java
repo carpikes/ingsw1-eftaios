@@ -232,8 +232,7 @@ public class GUIFrame extends JFrame {
             */
             @Override
             public void actionPerformed(ActionEvent e) {
-                resetViewStatus();
-                mController.endTurn();
+                endTurnAction();
             }
         });
 
@@ -242,6 +241,11 @@ public class GUIFrame extends JFrame {
         actionPanel.add( mBtnEndTurn );
 
         return actionPanel;
+    }
+    
+    private void endTurnAction() {
+        resetViewStatus();
+        mController.endTurn();
     }
 
     /** Create the text area and set some default properties
@@ -581,6 +585,14 @@ public class GUIFrame extends JFrame {
      */
     public void changeSectorToUsedHatch(Point point) {
         mMapCanvas.changeSectorToUsedHatch( point );
+    }
+
+
+    /** Click automatically on end turn button when it is the only option left
+     * 
+     */
+    public void clickOnEndTurn() {
+        endTurnAction();
     }
 
 }

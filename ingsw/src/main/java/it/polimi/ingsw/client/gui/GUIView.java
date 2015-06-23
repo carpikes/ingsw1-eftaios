@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.common.GameInfo;
 import it.polimi.ingsw.game.common.ViewCommand;
+import it.polimi.ingsw.game.common.ViewOpcode;
 
 import java.awt.Point;
 import java.util.HashMap;
@@ -171,8 +172,13 @@ public class GUIView extends View {
         /** reset GUI  */
         resetViewStatus();
 
-        for(ViewCommand c : cmd) {
-            switch(c.getOpcode()) {
+        // end turn automatically if the only option possible is End Turn
+        if( cmd.size() == 1 && cmd.get(0).getOpcode() == ViewOpcode.CMD_ENDTURN)
+            mMainFrame.clickOnEndTurn();
+        else {
+            // enable a gui element if requested by a command
+            for(ViewCommand c : cmd) {
+                switch(c.getOpcode()) {
                 case CMD_CHOOSEOBJECTCARD:
                     setCanSelectObjCard( true );
                     break;
@@ -187,6 +193,7 @@ public class GUIView extends View {
 
                 case CMD_DISCARDOBJECTCARD:
                     setDiscardObjCardEnabled( true );
+                    showInfo(null, "Discard a card by right clicking on it (or use it as usual if possible)");
                     break;
 
                 case CMD_DRAWDANGEROUSCARD:
@@ -198,6 +205,7 @@ public class GUIView extends View {
 
                 default:
                     break;
+                }
             }
         }
     }
