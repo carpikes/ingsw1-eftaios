@@ -285,9 +285,10 @@ public class GUIView extends View {
      * @see it.polimi.ingsw.client.View#onMyTurn()
      */
     @Override
-    public void onMyTurn() {
+    public void onMyTurn( int moveCounter ) {
         mMainFrame.resetBlinkingElements();
-        mMainFrame.showInfo( null, "-- It's your turn! --" );
+        showInfo(null, "It's your turn!");
+        showInfo(null, "Move number: " + moveCounter);
     }
 
     /** Called at the start of someone else's turn
@@ -370,6 +371,15 @@ public class GUIView extends View {
     @Override
     public void showEnding(String string) {
         mMainFrame.showEnding(string);
+    }
+
+    /** Change the color for this sector
+     * @see it.polimi.ingsw.client.View#changeSectorToUsedHatch(java.awt.Point)
+     */
+    @Override
+    public void changeSectorToUsedHatch(Point point) {
+        mMainFrame.changeSectorToUsedHatch(point);
+        
     }
   
 }

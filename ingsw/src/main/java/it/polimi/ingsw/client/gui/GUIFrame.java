@@ -575,5 +575,13 @@ public class GUIFrame extends JFrame {
         repaint();
     }
 
+
+    /** Delegate the changing of the color of this sector to the map canvas
+     * @param point
+     */
+    public void changeSectorToUsedHatch(Point point) {
+        mMapCanvas.changeSectorToUsedHatch( point );
+    }
+
 }
 

@@ -425,6 +425,7 @@ public class GameController implements OnReceiveListener {
         if(cmd.getArgs().length == 1 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Point) {
             mGameInfo.getMap().useHatch((Point) cmd.getArgs()[0]);
             mView.showInfo(curUser, "Used a hatch");
+            mView.changeSectorToUsedHatch( (Point) cmd.getArgs()[0] );
         }
     }
 
@@ -445,10 +446,12 @@ public class GameController implements OnReceiveListener {
      * @param cmd The command to be processed
      */
     private void handleInfoStartTurn(GameCommand cmd) {
-        if(cmd.getArgs().length == 1 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Integer) {
+        if(cmd.getArgs().length == 2 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Integer
+                && cmd.getArgs()[1] != null && cmd.getArgs()[1] instanceof Integer) {
             mCurPlayerId = (Integer) cmd.getArgs()[0];
+            int moveCounter = (Integer) cmd.getArgs()[1];
             if(mCurPlayerId == mMyTurn)
-                mView.onMyTurn();
+                mView.onMyTurn( moveCounter );
             else
                 mView.onOtherTurn(mGameInfo.getPlayersList()[mCurPlayerId].getUsername());
         }

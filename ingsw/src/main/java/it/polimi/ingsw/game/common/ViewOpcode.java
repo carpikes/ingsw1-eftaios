@@ -1,13 +1,11 @@
 package it.polimi.ingsw.game.common;
 
-import java.io.Serializable;
-
 /** View opcodes
  * 
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  */
-public enum ViewOpcode implements Serializable {
+public enum ViewOpcode implements Opcode {
     
     /** Choose a position on the map */
     CMD_ENABLEMAPVIEW("Choose a position on the map"),

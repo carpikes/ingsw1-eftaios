@@ -108,8 +108,9 @@ public abstract class View {
      */
     public abstract void showNoiseInSector(String user, Point p);
 
-    /** Called if is my turn */
-    public abstract void onMyTurn();
+    /** Called if is my turn 
+     * @param moveCounter */
+    public abstract void onMyTurn(int moveCounter);
 
     /** Called if is turn of anyone
      *
@@ -153,4 +154,8 @@ public abstract class View {
 
     public abstract void showEnding(String string);
 
+    /** Change sector to used hatch
+     * @param point The coordinates of the points to be changed
+     */
+    public abstract void changeSectorToUsedHatch(Point point);
 }

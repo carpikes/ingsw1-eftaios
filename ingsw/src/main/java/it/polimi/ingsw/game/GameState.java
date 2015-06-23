@@ -720,4 +720,8 @@ public class GameState {
         
         return mLastThing; 
     }
+
+    public int getRoundsPlayed() {
+        return mRoundsPlayed;
+    }
 }

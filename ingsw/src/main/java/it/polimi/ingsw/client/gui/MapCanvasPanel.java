@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.ResourceLoader;
 import it.polimi.ingsw.game.sector.Sector;
+import it.polimi.ingsw.game.sector.SectorBuilder;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -128,13 +129,7 @@ public class MapCanvasPanel extends JPanel {
         /** create all hexagons images according to values given by the previous function */
         for( int i = 0; i < GameMap.ROWS; ++i ) {
             for( int j = 0; j < GameMap.COLUMNS; ++j ) {
-                Sector sector = mGameMap.getSectorAt(j, i);
-                int startX = (int)(mHexWidth*3/4.0*j);
-                int startY = (int)(mMarginHeight + i * mHexHeight + ( isEvenColumn(j)  ? 0 : mHexHeight/2 ) );
-
-                /** create hexagon: center of it is distant (mHexWidth/2, mHexHeight/2) from the starting point */
-                mHexagons[i][j] = HexagonFactory.createHexagon( 
-                        new Point(startX + mHexWidth/2, startY + mHexHeight/2), mHexWidth/2, sector.getId());
+                initHexagon(mGameMap.getSectorAt(j, i), i, j);
             }
         }
 
@@ -149,6 +144,21 @@ public class MapCanvasPanel extends JPanel {
             }
 
         }).start();
+    }
+
+    /** Initialize hexagon in position i, j
+     * @param sector The corresponding sector in position
+     * @param i The x position
+     * @param j The y position
+     */
+    private void initHexagon(Sector sector, int i, int j) {
+        
+        int startX = (int)(mHexWidth*3/4.0*j);
+        int startY = (int)(mMarginHeight + i * mHexHeight + ( isEvenColumn(j)  ? 0 : mHexHeight/2 ) );
+
+        /** create hexagon: center of it is distant (mHexWidth/2, mHexHeight/2) from the starting point */
+        mHexagons[i][j] = HexagonFactory.createHexagon( 
+                new Point(startX + mHexWidth/2, startY + mHexHeight/2), mHexWidth/2, sector.getId());
     }
 
     /** Methods for detecting mouse position and clicking */
@@ -485,5 +495,12 @@ public class MapCanvasPanel extends JPanel {
      */
     public void handleAttack(Point p) {
         mAttackPoint = p;
+    }
+
+    /** Change this sector to used hatch
+     * @param point The point to change
+     */
+    public void changeSectorToUsedHatch(Point point) {
+        initHexagon(SectorBuilder.getSectorFor(SectorBuilder.USED_HATCH), point.y, point.x);
     }
 }

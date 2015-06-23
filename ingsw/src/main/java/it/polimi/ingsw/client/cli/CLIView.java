@@ -348,8 +348,9 @@ public class CLIView extends View {
      * @see it.polimi.ingsw.client.View#onMyTurn()
      */
     @Override
-    public void onMyTurn() {
+    public void onMyTurn( int moveCounter ) {
         showInfo(null, "It's your turn!");
+        showInfo(null, "Move number: " + moveCounter);
     }
 
     /** Display message when someone else's turn starts
@@ -463,5 +464,13 @@ public class CLIView extends View {
     @Override
     public void showEnding(String string) {
        IO.write(string);
+    }
+
+    /* (non-Javadoc)
+     * @see it.polimi.ingsw.client.View#changeSectorToUsedHatch(java.awt.Point)
+     */
+    @Override
+    public void changeSectorToUsedHatch(Point point) {
+       // unused           
     }
 }

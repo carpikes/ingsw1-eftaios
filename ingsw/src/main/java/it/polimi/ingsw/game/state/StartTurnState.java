@@ -29,7 +29,7 @@ public class StartTurnState extends PlayerState {
         mGamePlayer.resetValues();
         
         /** tell everybody I'm starting playing! */
-        state.broadcastPacket( new GameCommand(InfoOpcode.INFO_START_TURN, state.getTurnId()) );
+        state.broadcastPacket( new GameCommand(InfoOpcode.INFO_START_TURN, state.getTurnId(), state.getRoundsPlayed() + 1) );
     }
 
     /** Update
