@@ -152,6 +152,10 @@ public abstract class View {
      */
     public abstract void handleAttack(String user, Point p);
 
+    /** Show the ending window with a message
+     * 
+     * @param string Message to show
+     */
     public abstract void showEnding(String string);
 
     /** Change sector to used hatch

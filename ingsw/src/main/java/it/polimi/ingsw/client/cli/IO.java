@@ -60,7 +60,7 @@ class IO {
                 if(m == null)
                     System.exit(0); 
 
-                if(minusAvailable && m.equals("-"))
+                if(minusAvailable && "-".equals(m))
                     return null;
 
                 i = Integer.valueOf(m);

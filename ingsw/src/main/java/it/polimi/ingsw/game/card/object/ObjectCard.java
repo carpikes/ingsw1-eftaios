@@ -5,7 +5,6 @@ import it.polimi.ingsw.game.card.Card;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 
-
 /** Abstract class for a generic Object Card. 
  * Always drawn by a human after using some sorts of Dangerous Cards.
  *

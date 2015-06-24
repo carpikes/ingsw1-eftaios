@@ -293,7 +293,7 @@ public class GUIView extends View {
 
     /** Called at the start of my turn
      *
-     * @see it.polimi.ingsw.client.View#onMyTurn()
+     * @see it.polimi.ingsw.client.View#onMyTurn(int)
      */
     @Override
     public void onMyTurn( int moveCounter ) {

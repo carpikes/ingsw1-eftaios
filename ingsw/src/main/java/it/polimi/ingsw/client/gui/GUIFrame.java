@@ -518,11 +518,17 @@ public class GUIFrame extends JFrame {
             remove( mMapCanvas );
             remove( mBottomPanel );
             remove( mRightPanel );
+        } catch(Exception e) {
+            LOG.log(Level.FINEST, "", e);
+        }
+        
+        try {
             if(mEndingCanvas != null)
                 remove( mEndingCanvas );
         } catch(Exception e) {
             LOG.log(Level.FINEST, "", e);
         }
+        
         mEndingCanvas = new EndingCanvasPanel(mGameInfo, winnerList, loserList);
         mEndingCanvas.setPreferredSize(mDimensionLeftPanel);
         
@@ -548,7 +554,6 @@ public class GUIFrame extends JFrame {
         mMapCanvas.handleAttack( p );
     }
 
-
     /** Show ending
      * @param string The string
      */
@@ -566,6 +571,7 @@ public class GUIFrame extends JFrame {
         } catch(Exception e) {
             LOG.log(Level.FINEST, "", e);
         }
+        
         try {
             remove( mMapCanvas );
             remove( mBottomPanel );
@@ -588,17 +594,13 @@ public class GUIFrame extends JFrame {
     }
 
 
-    /** Click automatically on end turn button when it is the only option left
-     * 
-     */
+    /** Click automatically on end turn button when it is the only option left */
     public void clickOnEndTurn() {
         endTurnAction();
     }
 
 
-    /** Click automatically on draw dangerous card button when it is the only option left
-     * 
-     */
+    /** Click automatically on draw dangerous card button when it is the only option left */
     public void clickOnDrawDangerousCard() {
         mController.drawDangerousCard();
     }

@@ -422,7 +422,7 @@ public class MapCanvasPanel extends JPanel {
     /** Get a crossable point at the given point
      *
      * @param p The point 
-     * @return
+     * @return The cell corresponding to the given point
      */
     private Point getCell(Point p) {
         for( int i = 0; i < mHexagons.length; ++i )

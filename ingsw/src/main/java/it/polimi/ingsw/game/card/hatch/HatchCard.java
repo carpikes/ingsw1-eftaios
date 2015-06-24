@@ -5,7 +5,6 @@ import it.polimi.ingsw.game.card.Card;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.state.PlayerState;
 
-
 /** Abstract class for a generic Hatch card.
  *
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)

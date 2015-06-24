@@ -522,12 +522,12 @@ public class TestGameState {
         return game;
     }
 
-    /**
-     * Play a game until reaching a MoveDone State
-     * @param forceRole
-     * @param human
-     * @param dangerous
-     * @return
+    /** Play a game until reaching a MoveDone State
+     * 
+     * @param forceRole Force a role
+     * @param human Human or alien?
+     * @param dangerous Go to a dangerous point
+     * @return Next state
      */
     private GameState playToMoveDoneState(boolean forceRole, boolean human, boolean dangerous) {
         GameState game = playToMovingState(forceRole, human);

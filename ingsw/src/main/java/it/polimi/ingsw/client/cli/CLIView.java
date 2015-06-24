@@ -19,6 +19,8 @@ import java.util.Set;
  * @since  May 10, 2015
  */
 public class CLIView extends View {
+    /** "(or type - to go back)" String */
+    private static final String GOBACK_STR = " (or type - to go back)";
     
     /** Game map */
     private GameMap mMap;
@@ -210,7 +212,7 @@ public class CLIView extends View {
             enabledCells = mController.getMap().getCellsWithMaxDistance(curPos, maxMoves, mContainer.isHuman());
 
         CLIMapRenderer.renderMap(mMap, curPos, enabledCells);
-        IO.write("Choose a position on the map" + (canGoBack?" (or type - to go back)":""));
+        IO.write("Choose a position on the map" + (canGoBack?GOBACK_STR:""));
         do {
             newPos = IO.askMapPos(canGoBack);
 
@@ -236,7 +238,7 @@ public class CLIView extends View {
     private boolean handleChooseObjectCard(ViewCommand c, boolean canGoBack) {
         if(c.getArgs().length > 0 && c.getArgs() instanceof String[]) {
             String[] objs = (String[]) c.getArgs();
-            IO.write("Which card do you want to use?" + (canGoBack?" (or type - to go back)":""));
+            IO.write("Which card do you want to use?" + (canGoBack?GOBACK_STR:""));
             Integer choice = IO.askInAList(objs, canGoBack);
             if(choice == null)
                 return false;
@@ -256,7 +258,7 @@ public class CLIView extends View {
     private boolean handleDiscardObjectCard(ViewCommand c, boolean canGoBack) {
         if(c.getArgs().length > 0 && c.getArgs() instanceof String[]) {
             String[] objs = (String[]) c.getArgs();
-            IO.write("Which card do you want to discard?" + (canGoBack?" (or type - to go back)":""));
+            IO.write("Which card do you want to discard?" + (canGoBack?GOBACK_STR:""));
             Integer i = IO.askInAList(objs, canGoBack);
 
             if(i == null)
@@ -345,12 +347,11 @@ public class CLIView extends View {
 
     /** Display message on my turn start
      *
-     * @see it.polimi.ingsw.client.View#onMyTurn()
+     * @see it.polimi.ingsw.client.View#onMyTurn(int)
      */
     @Override
     public void onMyTurn( int moveCounter ) {
-        showInfo(null, "It's your turn!");
-        showInfo(null, "Move number: " + moveCounter);
+        showInfo(null, "It's your turn! (Move number: " + moveCounter + ")");
     }
 
     /** Display message when someone else's turn starts
@@ -468,19 +469,23 @@ public class CLIView extends View {
        IO.write(string);
     }
 
-    /* (non-Javadoc)
+    /** Change your sector to a used hatch. Unused here
      * @see it.polimi.ingsw.client.View#changeSectorToUsedHatch(java.awt.Point)
+     * @param point Coordinates
      */
     @Override
     public void changeSectorToUsedHatch(Point point) {
-       // unused           
+       /** unused */
     }
 
-    /* (non-Javadoc)
+    /** Set new player position
      * @see it.polimi.ingsw.client.View#setPosition(java.awt.Point)
+     * @param p New position
      */
     @Override
     public void setPosition(Point p) {
-        // unused: current position updated only when you have to choose a position
+        CLIMapRenderer.renderMap(mMap, p, null);
+        IO.write("");
+        IO.write("Your new coordinates are:" + mMap.pointToString(p));
     }
 }

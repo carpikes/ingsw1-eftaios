@@ -106,12 +106,9 @@ public class GameController implements OnReceiveListener {
                 } catch(InterruptedException e) {
                     LOG.log(Level.FINEST, e.toString(), e);
                 }
-
-
             }
         }).start();
     }
-
 
     /** Determine initial view. 
      * @param args The view list
@@ -305,6 +302,7 @@ public class GameController implements OnReceiveListener {
                 break;
             case CMD_SC_UPDATE_POSITION:
                 handleUpdatePosition(obj);
+                break;
             case CMD_SC_DROP_CARD:
                 handleDropCard(obj);
                 break;
@@ -319,8 +317,9 @@ public class GameController implements OnReceiveListener {
         }
     }
 
-    /**
-     * @param obj
+    /** Handle update position
+     * 
+     * @param obj The Point
      */
     private void handleUpdatePosition(Object obj) {
         if(obj != null && obj instanceof Point) {

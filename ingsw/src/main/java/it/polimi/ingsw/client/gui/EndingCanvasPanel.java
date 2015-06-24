@@ -61,6 +61,7 @@ class EndingCanvasPanel extends JPanel {
     private String mString;
     
     /** Create the final panel
+     * 
      * @param gameInfo The local game info 
      * @param winnerList The list of winners' id
      * @param loserList The list of losers' id
@@ -76,6 +77,22 @@ class EndingCanvasPanel extends JPanel {
         
         buildPanel();
     }
+    
+    /** Create the final panel
+     * 
+     * @param gameInfo The local game info 
+     * @param string String to show
+     */
+    public EndingCanvasPanel( GameInfo gameInfo, String string ) {
+        
+        mGameInfo = gameInfo;
+
+        mString = string;
+        mWinnerList = null;
+        mLoserList = null;
+        
+        buildPanel();
+    }   
 
     /** Initialize this panel */
     private void buildPanel() {
@@ -97,22 +114,6 @@ class EndingCanvasPanel extends JPanel {
         }).start();
     }
     
-    /** Create the final panel
-     * @param gameInfo The local game info 
-     * @param string String to show
-     */
-    public EndingCanvasPanel( GameInfo gameInfo, String string ) {
-        
-        mGameInfo = gameInfo;
-
-        mString = string;
-        mWinnerList = null;
-        mLoserList = null;
-        
-        buildPanel();
-    }
-
-
     /** Write a list of usernames corresponding to the listOfPlayers IDs
      *
      * @param g2d The graphics context
