@@ -1,9 +1,9 @@
 package it.polimi.ingsw.game.card.object;
 
+import it.polimi.ingsw.common.Rand;
 import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.game.GameState;
 import it.polimi.ingsw.game.card.CardBuilder;
-import it.polimi.ingsw.game.common.Rand;
 
 /** Class for getting a random Object Card.
  *

@@ -1,11 +1,11 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.GameController;
+import it.polimi.ingsw.common.GameInfo;
+import it.polimi.ingsw.common.PlayerInfo;
 import it.polimi.ingsw.exception.GUIException;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.common.GameInfo;
-import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.config.Config;
 
 import java.awt.BorderLayout;

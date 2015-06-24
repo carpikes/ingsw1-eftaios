@@ -1,7 +1,7 @@
 package it.polimi.ingsw.game.state;
 
+import it.polimi.ingsw.common.InfoOpcode;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.common.InfoOpcode;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

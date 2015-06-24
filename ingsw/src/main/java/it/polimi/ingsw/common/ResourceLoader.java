@@ -1,4 +1,4 @@
-package it.polimi.ingsw.game;
+package it.polimi.ingsw.common;
 
 import java.io.FileInputStream;
 import java.io.IOException;

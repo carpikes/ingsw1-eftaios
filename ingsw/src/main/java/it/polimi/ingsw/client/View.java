@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.game.common.GameInfo;
-import it.polimi.ingsw.game.common.ViewCommand;
+import it.polimi.ingsw.common.GameInfo;
+import it.polimi.ingsw.common.ViewCommand;
 
 import java.awt.Point;
 import java.util.List;

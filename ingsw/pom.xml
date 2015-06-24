@@ -95,7 +95,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>it.polimi.ingsw.game.PackageMain</mainClass>
+                            <mainClass>it.polimi.ingsw.common.PackageMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

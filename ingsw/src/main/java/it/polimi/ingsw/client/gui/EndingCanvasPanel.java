@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.game.ResourceLoader;
-import it.polimi.ingsw.game.common.GameInfo;
-import it.polimi.ingsw.game.common.PlayerInfo;
+import it.polimi.ingsw.common.GameInfo;
+import it.polimi.ingsw.common.PlayerInfo;
+import it.polimi.ingsw.common.ResourceLoader;
 import it.polimi.ingsw.game.config.Config;
 
 import java.awt.Color;

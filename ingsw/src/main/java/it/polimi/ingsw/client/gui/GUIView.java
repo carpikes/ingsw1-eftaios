@@ -2,10 +2,10 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
+import it.polimi.ingsw.common.GameInfo;
+import it.polimi.ingsw.common.ViewCommand;
+import it.polimi.ingsw.common.ViewOpcode;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.common.GameInfo;
-import it.polimi.ingsw.game.common.ViewCommand;
-import it.polimi.ingsw.game.common.ViewOpcode;
 
 import java.awt.Point;
 import java.util.HashMap;
@@ -149,7 +149,7 @@ public class GUIView extends View {
 
     /** Move to the actual game
      *
-     * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.common.GameInfo)
+     * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.common.GameInfo)
      */
     @Override
     public void switchToMainScreen(GameInfo container) {

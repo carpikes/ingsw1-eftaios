@@ -4,12 +4,12 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
+import it.polimi.ingsw.common.GameInfo;
+import it.polimi.ingsw.common.PlayerInfo;
+import it.polimi.ingsw.common.Rand;
+import it.polimi.ingsw.common.ViewCommand;
+import it.polimi.ingsw.common.ViewOpcode;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.common.GameInfo;
-import it.polimi.ingsw.game.common.PlayerInfo;
-import it.polimi.ingsw.game.common.Rand;
-import it.polimi.ingsw.game.common.ViewCommand;
-import it.polimi.ingsw.game.common.ViewOpcode;
 
 import org.junit.Test;
 

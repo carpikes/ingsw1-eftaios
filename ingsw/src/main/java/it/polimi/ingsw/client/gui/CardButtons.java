@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.game.ResourceLoader;
+import it.polimi.ingsw.common.ResourceLoader;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
 
 import java.io.IOException;

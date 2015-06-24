@@ -1,4 +1,4 @@
-package it.polimi.ingsw.game.common;
+package it.polimi.ingsw.common;
 
 /** Info to all players
  * 

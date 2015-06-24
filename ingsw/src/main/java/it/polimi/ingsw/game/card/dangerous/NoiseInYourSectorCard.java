@@ -1,8 +1,8 @@
 package it.polimi.ingsw.game.card.dangerous;
 
+import it.polimi.ingsw.common.GameCommand;
+import it.polimi.ingsw.common.InfoOpcode;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.InfoOpcode;
 import it.polimi.ingsw.game.state.PlayerState;
 
 /** Noise in your sector Dangerous Card. 

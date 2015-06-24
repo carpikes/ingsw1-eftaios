@@ -1,12 +1,12 @@
 package it.polimi.ingsw.game.state;
 
+import it.polimi.ingsw.common.GameCommand;
+import it.polimi.ingsw.common.GameOpcode;
+import it.polimi.ingsw.common.InfoOpcode;
+import it.polimi.ingsw.common.ViewCommand;
+import it.polimi.ingsw.common.ViewOpcode;
 import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.GameOpcode;
-import it.polimi.ingsw.game.common.InfoOpcode;
-import it.polimi.ingsw.game.common.ViewCommand;
-import it.polimi.ingsw.game.common.ViewOpcode;
 
 import java.awt.Point;
 import java.util.ArrayList;

@@ -2,12 +2,12 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.GameController;
 import it.polimi.ingsw.client.View;
+import it.polimi.ingsw.common.GameInfo;
+import it.polimi.ingsw.common.PlayerInfo;
+import it.polimi.ingsw.common.ViewCommand;
 import it.polimi.ingsw.exception.CommandNotValidException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
-import it.polimi.ingsw.game.common.GameInfo;
-import it.polimi.ingsw.game.common.PlayerInfo;
-import it.polimi.ingsw.game.common.ViewCommand;
 
 import java.awt.Point;
 import java.util.List;
@@ -174,7 +174,7 @@ public class CLIView extends View {
 
     /** Display map after login phase
      *
-     * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.game.common.GameInfo)
+     * @see it.polimi.ingsw.client.View#switchToMainScreen(it.polimi.ingsw.common.GameInfo)
      */
     @Override
     public void switchToMainScreen(GameInfo container) {

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.common.GameCommand;
+import it.polimi.ingsw.common.Opcode;
 import it.polimi.ingsw.exception.ServerException;
-import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.Opcode;
 import it.polimi.ingsw.game.config.Config;
 
 /** Common client connection interface 

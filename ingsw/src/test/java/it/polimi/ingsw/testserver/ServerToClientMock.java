@@ -1,6 +1,6 @@
 package it.polimi.ingsw.testserver;
 
-import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.common.GameCommand;
 import it.polimi.ingsw.server.Client;
 import it.polimi.ingsw.server.ClientConn;
 

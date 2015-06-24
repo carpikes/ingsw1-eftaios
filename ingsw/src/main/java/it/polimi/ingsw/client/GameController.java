@@ -4,16 +4,16 @@ import it.polimi.ingsw.client.cli.CLIView;
 import it.polimi.ingsw.client.network.Connection;
 import it.polimi.ingsw.client.network.ConnectionFactory;
 import it.polimi.ingsw.client.network.OnReceiveListener;
+import it.polimi.ingsw.common.CoreOpcode;
+import it.polimi.ingsw.common.GameCommand;
+import it.polimi.ingsw.common.GameInfo;
+import it.polimi.ingsw.common.GameOpcode;
+import it.polimi.ingsw.common.InfoOpcode;
+import it.polimi.ingsw.common.Opcode;
+import it.polimi.ingsw.common.PlayerInfo;
+import it.polimi.ingsw.common.ViewCommand;
 import it.polimi.ingsw.exception.InvalidGameInfoException;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.common.CoreOpcode;
-import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.GameInfo;
-import it.polimi.ingsw.game.common.GameOpcode;
-import it.polimi.ingsw.game.common.InfoOpcode;
-import it.polimi.ingsw.game.common.Opcode;
-import it.polimi.ingsw.game.common.PlayerInfo;
-import it.polimi.ingsw.game.common.ViewCommand;
 import it.polimi.ingsw.game.config.Config;
 
 import java.awt.Point;
@@ -669,7 +669,7 @@ public class GameController implements OnReceiveListener {
 
     /** This method handles an incoming packet
      *
-     * @see it.polimi.ingsw.client.network.OnReceiveListener#onReceive(it.polimi.ingsw.game.common.GameCommand)
+     * @see it.polimi.ingsw.client.network.OnReceiveListener#onReceive(it.polimi.ingsw.common.GameCommand)
      */
     @Override
     public void onReceive(GameCommand obj) {

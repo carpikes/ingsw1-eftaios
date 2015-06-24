@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.network;
 
-import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.common.GameCommand;
 
 /** A packet listener
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)

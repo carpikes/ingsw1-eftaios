@@ -1,44 +1,43 @@
-package it.polimi.ingsw.game.common;
+package it.polimi.ingsw.common;
 
 import java.io.Serializable;
-
-/** View command
- * 
+/** Game command
  * @author Alain Carlucci (alain.carlucci@mail.polimi.it)
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
+ * @since  May 17, 2015
  */
-public class ViewCommand implements Serializable{
-    
+public class GameCommand implements Serializable {
+
     /** Serial version */
     private static final long serialVersionUID = 1L;
 
     /** Opcode */
-    private final ViewOpcode mOpcode;
-
+    private final Opcode mOpcode;
+    
     /** Arguments */
     private final Serializable[] mArgs;
 
     /** Constructor
      *
-     * @param opcode The opcode
-     * @param args Arguments
+     * @param opcode Command opcode
+     * @param args Command arguments
      */
-    public ViewCommand(ViewOpcode opcode, Serializable... args) {
+    public GameCommand(Opcode opcode, Serializable... args) {
         mOpcode = opcode;
         mArgs = args;
     }
 
-    /** Get the opcode
-     *
-     * @return the opcode
+    /** Get the opcode 
+     * 
+     * @return The opcode
      */
-    public ViewOpcode getOpcode() {
+    public Opcode getOpcode() {
         return mOpcode;
     }
 
-    /** Get the arguments
+    /** Get the arguments 
      *
-     * @return command arguments
+     * @return Arguments
      */
     public Serializable[] getArgs() {
         return mArgs;

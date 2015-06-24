@@ -1,8 +1,8 @@
 package it.polimi.ingsw.game.card.hatch;
 
+import it.polimi.ingsw.common.GameCommand;
+import it.polimi.ingsw.common.InfoOpcode;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.InfoOpcode;
 import it.polimi.ingsw.game.state.NotMyTurnState;
 import it.polimi.ingsw.game.state.PlayerState;
 

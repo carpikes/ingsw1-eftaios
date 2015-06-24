@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.GameController;
+import it.polimi.ingsw.common.ResourceLoader;
 import it.polimi.ingsw.game.GameMap;
-import it.polimi.ingsw.game.ResourceLoader;
 import it.polimi.ingsw.game.sector.Sector;
 import it.polimi.ingsw.game.sector.SectorBuilder;
 

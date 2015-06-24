@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game;
 
+import it.polimi.ingsw.common.ResourceLoader;
 import it.polimi.ingsw.exception.InvalidMapIdException;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.game.sector.Sector;

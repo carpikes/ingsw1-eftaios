@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.Rand;
-import it.polimi.ingsw.game.common.ServerRMIMask;
+import it.polimi.ingsw.common.GameCommand;
+import it.polimi.ingsw.common.Rand;
+import it.polimi.ingsw.common.ServerRMIMask;
 import it.polimi.ingsw.game.config.Config;
 
 import java.rmi.AccessException;

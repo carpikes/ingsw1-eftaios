@@ -1,5 +1,10 @@
 package it.polimi.ingsw.game;
 
+import it.polimi.ingsw.common.GameCommand;
+import it.polimi.ingsw.common.GameInfo;
+import it.polimi.ingsw.common.GameOpcode;
+import it.polimi.ingsw.common.InfoOpcode;
+import it.polimi.ingsw.common.PlayerInfo;
 import it.polimi.ingsw.exception.DebugException;
 import it.polimi.ingsw.exception.DefenseException;
 import it.polimi.ingsw.exception.GameException;
@@ -7,11 +12,6 @@ import it.polimi.ingsw.exception.IllegalStateOperationException;
 import it.polimi.ingsw.game.card.CardBuilder;
 import it.polimi.ingsw.game.card.object.ObjectCard;
 import it.polimi.ingsw.game.card.object.ObjectCardBuilder;
-import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.GameInfo;
-import it.polimi.ingsw.game.common.GameOpcode;
-import it.polimi.ingsw.game.common.InfoOpcode;
-import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.config.Config;
 import it.polimi.ingsw.game.player.GamePlayer;
 import it.polimi.ingsw.game.player.Human;

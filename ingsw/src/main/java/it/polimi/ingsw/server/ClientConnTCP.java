@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game.common.CoreOpcode;
-import it.polimi.ingsw.game.common.GameCommand;
+import it.polimi.ingsw.common.CoreOpcode;
+import it.polimi.ingsw.common.GameCommand;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -65,7 +65,7 @@ public class ClientConnTCP extends ClientConn {
     }
 
     /** Send a GameCommand to this client
-     * @see it.polimi.ingsw.server.ClientConn#sendPacket(it.polimi.ingsw.game.common.GameCommand)
+     * @see it.polimi.ingsw.server.ClientConn#sendPacket(it.polimi.ingsw.common.GameCommand)
      */
     @Override
     public synchronized void sendPacket(GameCommand pkt) {

@@ -1,12 +1,12 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.common.CoreOpcode;
+import it.polimi.ingsw.common.GameCommand;
+import it.polimi.ingsw.common.GameInfo;
+import it.polimi.ingsw.common.PlayerInfo;
 import it.polimi.ingsw.exception.ServerException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.GameState;
-import it.polimi.ingsw.game.common.CoreOpcode;
-import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.GameInfo;
-import it.polimi.ingsw.game.common.PlayerInfo;
 import it.polimi.ingsw.game.config.Config;
 
 import java.io.Serializable;

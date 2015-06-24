@@ -1,9 +1,9 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.common.CoreOpcode;
+import it.polimi.ingsw.common.GameCommand;
+import it.polimi.ingsw.common.Opcode;
 import it.polimi.ingsw.exception.ServerException;
-import it.polimi.ingsw.game.common.CoreOpcode;
-import it.polimi.ingsw.game.common.GameCommand;
-import it.polimi.ingsw.game.common.Opcode;
 
 import java.io.Serializable;
 import java.util.logging.Level;
