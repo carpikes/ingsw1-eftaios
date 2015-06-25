@@ -145,7 +145,7 @@ public class ServerRMI implements Listener, ServerRMIMask {
     @Override
     public synchronized void tearDown() {
         try {
-            if(mRegistry != null) {
+            if(mRegistry != null && mIsUp) {
                 UnicastRemoteObject.unexportObject(this, true);
                 mRegistry.unbind(Config.RMISERVER_STRING);
                 mRegistry = null;
