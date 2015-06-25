@@ -12,6 +12,7 @@ import it.polimi.ingsw.common.InfoOpcode;
 import it.polimi.ingsw.common.Opcode;
 import it.polimi.ingsw.common.PlayerInfo;
 import it.polimi.ingsw.common.ViewCommand;
+import it.polimi.ingsw.exception.ClientConnException;
 import it.polimi.ingsw.exception.InvalidGameInfoException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.config.Config;
@@ -650,7 +651,7 @@ public class GameController implements OnReceiveListener {
             chosenMap = mView.askMap((String[])cmd.getArgs());
         } while(chosenMap == null);
 
-        mConn.sendPacket(new GameCommand(CoreOpcode.CMD_CS_LOADMAP, chosenMap));
+        sendCommand(new GameCommand(CoreOpcode.CMD_CS_LOADMAP, chosenMap));
     }
 
     /** Send to the server a username
@@ -663,7 +664,8 @@ public class GameController implements OnReceiveListener {
             if(mMyUsername != null)
                 mMyUsername = mMyUsername.trim();
         } while(mMyUsername == null || mMyUsername.length() == 0);
-        mConn.sendPacket(new GameCommand(CoreOpcode.CMD_CS_USERNAME, mMyUsername));
+        
+        sendCommand(new GameCommand(CoreOpcode.CMD_CS_USERNAME, mMyUsername));
     }
 
     /** This method handles an incoming packet
@@ -717,22 +719,22 @@ public class GameController implements OnReceiveListener {
      * @param mCurHexCoords The point on the map
      */
     public void onMapPositionChosen(Point mCurHexCoords) {
-        mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, mCurHexCoords));
+        sendCommand(new GameCommand(GameOpcode.CMD_CS_CHOSEN_MAP_POSITION, mCurHexCoords));
     }
 
     /** Send a draw dangerous card command */
     public void drawDangerousCard() {
-        mConn.sendPacket(GameOpcode.CMD_CS_DRAW_DANGEROUS_CARD);
+        sendCommand(GameOpcode.CMD_CS_DRAW_DANGEROUS_CARD);
     }
 
     /** Send an end turn command */
     public void endTurn() {
-        mConn.sendPacket(GameOpcode.CMD_CS_END_TURN);
+        sendCommand(GameOpcode.CMD_CS_END_TURN);
     }
 
     /** Send an attack command */
     public void attack() {
-        mConn.sendPacket(GameOpcode.CMD_CS_ATTACK);
+        sendCommand(GameOpcode.CMD_CS_ATTACK);
     }
 
     /** Send a chosen card command
@@ -740,7 +742,7 @@ public class GameController implements OnReceiveListener {
      * @param choice The card you chose
      */
     public void sendChosenObjectCard(int choice) {
-        mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD, choice));
+        sendCommand(new GameCommand(GameOpcode.CMD_CS_CHOSEN_OBJECT_CARD, choice));
     }
 
     /** Send a discard object command
@@ -748,7 +750,7 @@ public class GameController implements OnReceiveListener {
      * @param choice The card to be discarded
      */
     public void sendDiscardObjectCard(int choice) {
-        mConn.sendPacket(new GameCommand(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD, choice));
+        sendCommand(new GameCommand(GameOpcode.CMD_CS_DISCARD_OBJECT_CARD, choice));
     }
 
     /** Start the game
@@ -767,5 +769,27 @@ public class GameController implements OnReceiveListener {
             mView.switchToMainScreen(mGameInfo);
         } else
             throw new InvalidGameInfoException("Can't get game infos!");
+    }
+    
+    /** Send a command using the current connection
+     * and check if it is still online
+     * 
+     * @param cmd Command
+     */
+    private void sendCommand(GameCommand cmd) {
+        try {
+            mConn.sendCommand(cmd);
+        } catch(ClientConnException e) {
+            LOG.log(Level.FINEST, "", e);
+            stop();
+        }
+    }
+    
+    /** Send a command wrapper
+     * 
+     * @param opcode Opcode
+     */
+    private void sendCommand(GameOpcode opcode) {
+        sendCommand(new GameCommand(opcode));
     }
 }

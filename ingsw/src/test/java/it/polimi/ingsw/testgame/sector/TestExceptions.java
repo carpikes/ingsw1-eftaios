@@ -1,8 +1,8 @@
 package it.polimi.ingsw.testgame.sector;
 
 import static org.junit.Assert.assertTrue;
-
 import it.polimi.ingsw.exception.CLIException;
+import it.polimi.ingsw.exception.ClientConnException;
 import it.polimi.ingsw.exception.CommandNotValidException;
 import it.polimi.ingsw.exception.DebugException;
 import it.polimi.ingsw.exception.DefenseException;
@@ -14,10 +14,8 @@ import it.polimi.ingsw.exception.InvalidCardException;
 import it.polimi.ingsw.exception.InvalidGameInfoException;
 import it.polimi.ingsw.exception.InvalidMapIdException;
 import it.polimi.ingsw.exception.InvalidViewException;
-import it.polimi.ingsw.exception.RMIException;
 import it.polimi.ingsw.exception.SectorException;
 import it.polimi.ingsw.exception.ServerException;
-import it.polimi.ingsw.exception.TCPException;
 import it.polimi.ingsw.exception.TooFewPlayersException;
 
 import org.junit.Test;
@@ -45,10 +43,9 @@ public class TestExceptions {
         assertTrue(new InvalidGameInfoException("test1").toString().contains("test1"));
         assertTrue(new InvalidMapIdException("test1").toString().contains("test1"));
         assertTrue(new InvalidViewException("test1").toString().contains("test1"));
-        assertTrue(new RMIException("test1").toString().contains("test1"));
+        assertTrue(new ClientConnException("test1").toString().contains("test1"));
         assertTrue(new SectorException("test1").toString().contains("test1"));
         assertTrue(new ServerException("test1").toString().contains("test1"));
-        assertTrue(new TCPException("test1").toString().contains("test1"));
         assertTrue(new TooFewPlayersException("test1").toString().contains("test1"));
     }
 }

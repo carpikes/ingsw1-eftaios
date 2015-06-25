@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.network;
 
 import it.polimi.ingsw.common.GameCommand;
 import it.polimi.ingsw.common.ServerRMIMask;
-import it.polimi.ingsw.exception.RMIException;
+import it.polimi.ingsw.exception.ClientConnException;
 import it.polimi.ingsw.game.config.Config;
 
 import java.io.IOException;
@@ -62,10 +62,10 @@ public class RMIConnection extends Connection {
     @Override
     public void connect() throws IOException {
         if(!mInited)
-            throw new RMIException("RMIConnection must be configured before use");
+            throw new ClientConnException("RMIConnection must be configured before use");
 
         if(mServerMask != null)
-            throw new RMIException("Socket already created");
+            throw new ClientConnException("Socket already created");
 
         Registry registry = LocateRegistry.getRegistry(mHost);
 
@@ -73,7 +73,7 @@ public class RMIConnection extends Connection {
             mServerMask = (ServerRMIMask) registry.lookup(Config.RMISERVER_STRING);
             mUniqueId = mServerMask.registerAndGetId();
             if(mUniqueId == null)
-                throw new RMIException("Cannot receive a unique id");
+                throw new ClientConnException("Cannot receive a unique id");
 
             mReader = new ReadRunnable(mServerMask, mUniqueId);
             if(mTempRecv != null) {
@@ -100,17 +100,18 @@ public class RMIConnection extends Connection {
         }
     }
 
-    /** Send a packet to the server
+    /** Send a command to the server
      *
-     * @param pkt the packet
+     * @see it.polimi.ingsw.client.network.Connection#sendCommand(it.polimi.ingsw.common.GameCommand)
+     * @param cmd The command
      */
     @Override
-    public void sendPacket(GameCommand pkt) {
+    public void sendCommand(GameCommand cmd) {
         if(mServerMask == null || mUniqueId == null)
-            throw new RMIException("RMI Connection is offline");
+            throw new ClientConnException("RMI Connection is offline");
 
         try {
-            mServerMask.onRMICommand(mUniqueId, pkt);
+            mServerMask.onRMICommand(mUniqueId, cmd);
         } catch (RemoteException e) {
             LOG.log(Level.FINE, e.toString(), e);
             disconnect();
@@ -174,7 +175,7 @@ public class RMIConnection extends Connection {
                     Thread.sleep(250);
                 }
             } catch (Exception e) {
-                LOG.log(Level.INFO, "Connection closed: " + e.toString(), e);
+                LOG.log(Level.FINEST, "Connection closed: " + e.toString(), e);
             } finally {
                 if(mListener != null)
                     mListener.onDisconnect();

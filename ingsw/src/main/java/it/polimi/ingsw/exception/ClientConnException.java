@@ -6,7 +6,7 @@ package it.polimi.ingsw.exception;
  * @author Michele Albanese (michele.albanese@mail.polimi.it)
  * @since 2 Jun 2015
  */
-public class RMIException extends RuntimeException {
+public class ClientConnException extends RuntimeException {
 
     /** Serial version */
     private static final long serialVersionUID = -3785617445339999499L;
@@ -15,7 +15,7 @@ public class RMIException extends RuntimeException {
      *
      * @param message The message to be shown
      */
-    public RMIException(String message) {
+    public ClientConnException(String message) {
         super(message);
     }
 }

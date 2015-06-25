@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.network;
 
 import it.polimi.ingsw.common.CoreOpcode;
 import it.polimi.ingsw.common.GameCommand;
-import it.polimi.ingsw.exception.TCPException;
+import it.polimi.ingsw.exception.ClientConnException;
 import it.polimi.ingsw.game.config.Config;
 
 import java.io.IOException;
@@ -66,10 +66,10 @@ public class TCPConnection extends Connection {
     @Override
     public void connect() throws IOException {
         if(!mInited)
-            throw new TCPException("TCPConnection must be configured before use");
+            throw new ClientConnException("TCPConnection must be configured before use");
 
         if(mSocket != null)
-            throw new TCPException("Socket already created");
+            throw new ClientConnException("Socket already created");
 
         mSocket = new Socket(mHost, mPort);
         mOut = new ObjectOutputStream(mSocket.getOutputStream());
@@ -83,17 +83,18 @@ public class TCPConnection extends Connection {
         new Thread(mPinger).start();
     }
 
-    /** Send a packet to the server
-     *
-     * @param pkt the packet
-     */
+    /** Send a command to the server
+    *
+    * @see it.polimi.ingsw.client.network.Connection#sendCommand(it.polimi.ingsw.common.GameCommand)
+    * @param cmd The command
+    */
     @Override
-    public void sendPacket(GameCommand pkt) {
+    public void sendCommand(GameCommand cmd) {
         if(mSocket == null || !mSocket.isConnected() || mOut == null)
-            throw new TCPException("Cannot send message. Socket is closed.");
+            throw new ClientConnException("Cannot send message. Socket is closed.");
 
         try {
-            mOut.writeObject(pkt);
+            mOut.writeObject(cmd);
             mOut.flush();
         } catch(IOException e) {
             LOG.log(Level.FINER, "Connection closed: " + e.toString(), e);
@@ -134,7 +135,7 @@ public class TCPConnection extends Connection {
                 mIn.close();
                 mSocket.close();                
             } catch(Exception e) {
-                LOG.log(Level.FINER, e.toString(), e);
+                LOG.log(Level.FINEST, e.toString(), e);
             }
         mSocket = null;
     }
@@ -199,7 +200,12 @@ public class TCPConnection extends Connection {
         public void run() {
             try  {
                 while(mParent.isOnline()) {
-                    mParent.sendPacket(CoreOpcode.CMD_PING);
+                    try {
+                        mParent.sendCommand(new GameCommand(CoreOpcode.CMD_PING));
+                    } catch (Exception e) {
+                        LOG.log(Level.FINEST, "", e);
+                        mParent.disconnect();
+                    }
                     Thread.sleep(Config.CLIENT_TCP_PING_TIME);
                 }
             } catch (Exception e) {

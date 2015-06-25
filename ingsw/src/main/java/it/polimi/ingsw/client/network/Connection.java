@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client.network;
 
 import it.polimi.ingsw.common.GameCommand;
-import it.polimi.ingsw.common.Opcode;
 
 import java.io.IOException;
 
@@ -36,23 +35,16 @@ public abstract class Connection {
 
     /** Disconnect */
     public abstract void disconnect();
+    
     /** Send a packet to the server
      * 
-     * @param pkt The packet
+     * @param cmd The command
      */
-    public abstract void sendPacket(GameCommand pkt);
+    public abstract void sendCommand(GameCommand cmd);
 
     /** Check if the client is correctly connected
      * 
      * @return True if is online
      */
     public abstract boolean isOnline();
-
-    /** Send a packet to the server
-     * 
-     * @param opcode The packet opcode
-     */
-    public void sendPacket(Opcode opcode) {
-        sendPacket(new GameCommand(opcode));
-    }
 }
