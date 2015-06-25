@@ -30,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
 
@@ -61,22 +62,26 @@ public class GUIFrame extends JFrame {
     private static final Dimension mDimensionBottomPanel = new Dimension(Config.WIDTH, Config.HEIGHT_BOTTOM);
 
     /** Drawing canvas on the left */
-    private MapCanvasPanel mMapCanvas;
-    private LoginCanvasPanel mLoginCanvas;
+    private MapCanvasPanel mMapCanvas = null;
+    private LoginCanvasPanel mLoginCanvas = null;
     private EndingCanvasPanel mEndingCanvas = null;
     
-    /** elements on right panel */
+    /** Elements on right panel */
     private static final int NUMBER_OF_CARD_BUTTONS = Config.MAX_NUMBER_OF_OBJ_CARDS + 1;
     private CardButton[] mCardButtons = new CardButton[ NUMBER_OF_CARD_BUTTONS ];
 
+    /** Panels */
     private JPanel mBottomPanel, mRightPanel, mCardPanel, mActionButtonsPanel;
     private JScrollPane mScrollTextAreaPane;
 
+    /** Text ares */
     private JTextArea mTextArea;
     private JButton mBtnAttack, mBtnDrawDangerousCard, mBtnEndTurn;
 
+    /** User label */
     private JLabel[] mUserLabel;
 
+    /** Game info */
     private GameInfo mGameInfo = null;
 
     private boolean mAlreadyEnd = false;
@@ -98,8 +103,20 @@ public class GUIFrame extends JFrame {
         
         createRightPanel();
         switchToLogin();
+        
+        new Timer(50, new ActionListener() {
+            /** Timer action handler (repaint the screen) */
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                if(mMapCanvas != null)
+                    mMapCanvas.repaint();
+                if(mLoginCanvas != null)
+                    mLoginCanvas.repaint();
+                if(mEndingCanvas != null)
+                    mEndingCanvas.repaint();
+            }
+        }).start();
     }
-
 
     /** Create player's info panel */
     private void createBottomPanel() {
@@ -529,6 +546,8 @@ public class GUIFrame extends JFrame {
             LOG.log(Level.FINEST, "", e);
         }
         
+        mLoginCanvas = null;
+        mMapCanvas = null;
         mEndingCanvas = new EndingCanvasPanel(mGameInfo, winnerList, loserList);
         mEndingCanvas.setPreferredSize(mDimensionLeftPanel);
         
@@ -581,6 +600,8 @@ public class GUIFrame extends JFrame {
         }
         add( mEndingCanvas, BorderLayout.CENTER );
         
+        mLoginCanvas = null;
+        mMapCanvas = null;
         validate();
         repaint();
     }

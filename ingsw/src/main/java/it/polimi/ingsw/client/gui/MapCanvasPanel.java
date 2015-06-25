@@ -13,8 +13,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -29,7 +27,6 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 /** Panel where the map is drawn. It is used in {@link GUIFrame} class. 
  *
@@ -132,18 +129,6 @@ public class MapCanvasPanel extends JPanel {
                 initHexagon(mGameMap.getSectorAt(j, i), i, j);
             }
         }
-
-        /** Repaint the frame at 30fps (more or less) */
-        new Timer(35, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                MapCanvasPanel m = MapCanvasPanel.this;
-                if(m != null)
-                    m.repaint();
-            }
-
-        }).start();
     }
 
     /** Initialize hexagon in position i, j

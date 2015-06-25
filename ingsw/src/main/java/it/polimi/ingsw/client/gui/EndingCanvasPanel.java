@@ -11,8 +11,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
@@ -21,7 +19,6 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 /** The ending canvas with winners and losers stats.
  *
@@ -59,6 +56,9 @@ class EndingCanvasPanel extends JPanel {
     
     /** String to show */
     private String mString;
+    
+    /** Background image */
+    private Image mBg;
     
     /** Create the final panel
      * 
@@ -101,17 +101,11 @@ class EndingCanvasPanel extends JPanel {
         mMediumFont = new Font( Config.DEFAULT_FONT, Font.PLAIN, Config.MEDIUM_FONT_SIZE);
         mSmallFont = new Font( Config.DEFAULT_FONT, Font.PLAIN, Config.SMALL_FONT_SIZE);
         
-        new Timer(25, new ActionListener() {
-
-            /** Timer action handler (repaint the screen) */
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                EndingCanvasPanel m = EndingCanvasPanel.this;
-                if(m != null)
-                    m.repaint();
-            }
-
-        }).start();
+        try {
+            mBg = ImageIO.read(ResourceLoader.getInstance().loadResource("img/ending.jpg"));
+        } catch( IOException e ) {
+            LOG.warning("Cannot load ending images: " + e);
+        }
     }
     
     /** Write a list of usernames corresponding to the listOfPlayers IDs
@@ -144,17 +138,12 @@ class EndingCanvasPanel extends JPanel {
         Graphics2D g2d = (Graphics2D)g;
         
         /** set background color for this JPanel */
-        setBackground(Color.BLACK);  
-        
-        try {
-            Image bg = ImageIO.read(ResourceLoader.getInstance().loadResource("img/ending.jpg"));
-            g.drawImage(bg, 0, 0, null);
-        } catch( IOException e ) {
-            LOG.warning("Cannot load ending images: " + e);
-        }
+        setBackground(Color.BLACK);
+        if(mBg != null)
+            g.drawImage(mBg, 0, 0, null);
         
         setForeground(Color.WHITE);
-
+        
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
         int nextY = 20;
@@ -162,7 +151,6 @@ class EndingCanvasPanel extends JPanel {
         if(mWinnerList != null && mLoserList != null) {
             /** The title */
             String title = (mIsWinner) ? "YOU WIN!" : "YOU LOSE!";
-        
             
             nextY = drawRightAligned(g2d, mBigFont, title,nextY);
             
