@@ -12,7 +12,6 @@ import it.polimi.ingsw.common.InfoOpcode;
 import it.polimi.ingsw.common.Opcode;
 import it.polimi.ingsw.common.PlayerInfo;
 import it.polimi.ingsw.common.ViewCommand;
-import it.polimi.ingsw.exception.ClientConnException;
 import it.polimi.ingsw.exception.InvalidGameInfoException;
 import it.polimi.ingsw.game.GameMap;
 import it.polimi.ingsw.game.config.Config;
@@ -779,7 +778,7 @@ public class GameController implements OnReceiveListener {
     private void sendCommand(GameCommand cmd) {
         try {
             mConn.sendCommand(cmd);
-        } catch(ClientConnException e) {
+        } catch(Exception e) {
             LOG.log(Level.FINEST, "", e);
             stop();
         }
