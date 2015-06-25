@@ -412,7 +412,7 @@ public class GameController implements OnReceiveListener {
                 handleInfoStartTurn(cmd);
                 break;
             case INFO_USED_HATCH:
-                handleInfoUsedHatch(cmd, curUser);
+                handleInfoUsedHatch(cmd);
                 break;
             case INFO_RED_HATCH:
                 mView.showInfo(curUser, "Trying to use a broken hatch. Sorry for that.");
@@ -435,9 +435,8 @@ public class GameController implements OnReceiveListener {
     /** Handle a used hatch info
      *
      * @param cmd The command to be processed
-     * @param curUser The user that sent this message
      */
-    private void handleInfoUsedHatch(GameCommand cmd, String curUser) {
+    private void handleInfoUsedHatch(GameCommand cmd) {
         if(cmd.getArgs().length == 1 && cmd.getArgs()[0] != null && cmd.getArgs()[0] instanceof Point) {
             mGameInfo.getMap().useHatch((Point) cmd.getArgs()[0]);
             mView.changeSectorToUsedHatch( (Point) cmd.getArgs()[0] );
