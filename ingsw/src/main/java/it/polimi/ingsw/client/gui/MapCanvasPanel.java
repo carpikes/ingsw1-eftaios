@@ -85,13 +85,13 @@ public class MapCanvasPanel extends JPanel {
     private Point mAttackPoint = null;
 
     /** Blinking color */
-    private Color blinkingColor = null;
+    private Color mBlinkingColor = null;
     
     /** Game controller */
     private final transient GameController mController;
     
     /** Background */
-    private transient Image bg;
+    private transient Image mBg;
 
     /** Create the map canvas.
      *
@@ -112,7 +112,7 @@ public class MapCanvasPanel extends JPanel {
         mPlayerPosition = playerPosition;
 
         try {
-            bg = ImageIO.read(ResourceLoader.getInstance().loadResource("img/b3.jpg"));
+            mBg = ImageIO.read(ResourceLoader.getInstance().loadResource("img/b3.jpg"));
         } catch( IOException e ) {
             LOG.warning("Cannot load ending images: " + e);
         }
@@ -250,7 +250,7 @@ public class MapCanvasPanel extends JPanel {
         /** set background color for this JPanel */
         setBackground(ColorPalette.BACKGROUND.getColor());  
         
-        g.drawImage(bg, 0, 0, null);
+        g.drawImage(mBg, 0, 0, null);
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -306,7 +306,7 @@ public class MapCanvasPanel extends JPanel {
                 boolean isPlayerHere = p.equals(mPlayerPosition);
                 
                 /** check if this sector should blink */
-                blinkingColor = null;
+                mBlinkingColor = null;
                 boolean shouldBlink = shoudBlink(p);
 
                 /** check if this should be enabled */
@@ -317,7 +317,7 @@ public class MapCanvasPanel extends JPanel {
                     enabled = true;
 
                 /** delegate the actual drawing according the values set in this function */
-                mHexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, i == GameMap.ROWS, shouldBlink, blinkingColor );
+                mHexagons[p.y][p.x].draw(g2d, isPlayerHere, enabled, i == GameMap.ROWS, shouldBlink, mBlinkingColor );
             }
     }
     
@@ -328,7 +328,7 @@ public class MapCanvasPanel extends JPanel {
      */
     private boolean shouldDrawNoise( Point p ) {
         if( mNoisePosition != null && p.equals( mNoisePosition ) ) {
-            blinkingColor = ColorPalette.NOISE.getColor();
+            mBlinkingColor = ColorPalette.NOISE.getColor();
             return true;
         } else {
            return false;
@@ -342,7 +342,7 @@ public class MapCanvasPanel extends JPanel {
      */
     private boolean shouldDrawSpotlight( Point p ) {
         if( mSpotlightSectors != null && mSpotlightSectors.values().contains(p) ) {
-            blinkingColor = ColorPalette.SPOTLIGHT.getColor();
+            mBlinkingColor = ColorPalette.SPOTLIGHT.getColor();
             return true;
         } else {
             return false;
@@ -356,7 +356,7 @@ public class MapCanvasPanel extends JPanel {
      */
     private boolean shouldDrawAttack(Point p) {
         if( mAttackPoint != null && p.equals( mAttackPoint ) ) {
-            blinkingColor = ColorPalette.ATTACK.getColor();
+            mBlinkingColor = ColorPalette.ATTACK.getColor();
             return true;
         } else {
             return false;

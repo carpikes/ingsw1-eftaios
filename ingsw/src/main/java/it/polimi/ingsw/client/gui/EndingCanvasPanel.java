@@ -58,7 +58,7 @@ class EndingCanvasPanel extends JPanel {
     private String mString;
     
     /** Background image */
-    private Image mBg;
+    private transient Image mBg;
     
     /** Create the final panel
      * 
